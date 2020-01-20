@@ -32,6 +32,19 @@ function poll() {
   return ret;
 }
 
+function transceiveCallback(data) {
+  if (pending) pending(data);
+}
+
+function transceive(rapdu) {
+  const ret = new Promise((resolve) => {
+    pending = resolve;
+  });
+
+  nativeCaller.postMessage('transceive', rapdu);
+  return ret;
+}
+
 function log(data) {
   nativeCaller.postMessage('log', data);
 }

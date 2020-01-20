@@ -72,7 +72,15 @@ class _MyHomePageState extends State<MyHomePage> {
     switch (scriptModel.action) {
       case 'poll':
         final tag = await FlutterNfcKit.poll();
+        setState(() {
+          _state = "detect: ${tag.type.toString()}";
+        });
         _webView.evalJavascript("pollCallback(${jsonEncode(tag)})");
+        break;
+
+      case 'transceive':
+        final rapdu = await FlutterNfcKit.transceive(scriptModel.data);
+        _webView.evalJavascript("transceiveCallback('$rapdu')");
         break;
 
       case 'log':
