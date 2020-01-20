@@ -43,8 +43,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _addWebViewHandler() async {
-    final script = await rootBundle.loadString('assets/reader.js');
-    _webView.evalJavascript(script);
+    _webView.evalJavascript(await rootBundle.loadString('assets/crypto-js.js'));
+    _webView.evalJavascript(await rootBundle.loadString('assets/crypto.js'));
+    _webView.evalJavascript(await rootBundle.loadString('assets/reader.js'));
     _webView.didReceiveMessage.listen(this._onReceivedMessage);
   }
 
