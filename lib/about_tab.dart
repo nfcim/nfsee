@@ -77,7 +77,7 @@ class _AboutTabState extends State<AboutTab> {
   }
 
   Widget _buildIos(BuildContext context) {
-    return Text('About');
+    return Center(child: Text('About'));
   }
 
   @override
