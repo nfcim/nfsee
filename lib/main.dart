@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'scan_tab.dart';
+import 'about_tab.dart';
 import 'widgets.dart';
 
 void main() => runApp(NFSeeApp());
@@ -40,7 +41,8 @@ class NFSeeApp extends StatelessWidget {
 // depending on the app and content.
 class PlatformAdaptingHomePage extends StatefulWidget {
   @override
-  _PlatformAdaptingHomePageState createState() => _PlatformAdaptingHomePageState();
+  _PlatformAdaptingHomePageState createState() =>
+      _PlatformAdaptingHomePageState();
 }
 
 class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
@@ -74,7 +76,10 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
         items: [
-          BottomNavigationBarItem(title: Text(ScanTab.title), icon: ScanTab.iosIcon),
+          BottomNavigationBarItem(
+              title: Text(ScanTab.title), icon: ScanTab.iosIcon),
+          BottomNavigationBarItem(
+              title: Text(AboutTab.title), icon: AboutTab.iosIcon),
         ],
       ),
       tabBuilder: (context, index) {
@@ -83,6 +88,11 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
             return CupertinoTabView(
               defaultTitle: ScanTab.title,
               builder: (context) => ScanTab(key: songsTabKey),
+            );
+          case 1:
+            return CupertinoTabView(
+              defaultTitle: AboutTab.title,
+              builder: (context) => AboutTab(key: songsTabKey),
             );
           default:
             assert(false, 'Unexpected tab');

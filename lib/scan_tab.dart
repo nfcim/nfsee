@@ -117,7 +117,8 @@ class _ScanTabState extends State<ScanTab> {
             ),
             FlatButton(
               onPressed: _readTag,
-              child: Row(children: <Widget>[Icon(Icons.nfc), Text('Scan a card')]),
+              child:
+                  Row(children: <Widget>[Icon(Icons.nfc), Text('Scan a card')]),
             )
           ],
         ),
@@ -134,9 +135,6 @@ class _ScanTabState extends State<ScanTab> {
             child: Icon(CupertinoIcons.shuffle),
             onPressed: _togglePlatform,
           ),
-        ),
-        SliverSafeArea(
-          top: false,
         ),
       ],
     );
