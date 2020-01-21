@@ -1,111 +1,137 @@
-import 'dart:convert';
-import 'dart:developer';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
-import 'package:interactive_webview/interactive_webview.dart';
 
-import 'models.dart';
+import 'scan_tab.dart';
+import 'widgets.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(NFSeeApp());
 
-class MyApp extends StatelessWidget {
+class NFSeeApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
+    // Either Material or Cupertino widgets work in either Material or Cupertino
+    // Apps.
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'NFSee',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        // Use the green theme for Material widgets.
+        primarySwatch: Colors.deepOrange,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      builder: (context, child) {
+        return CupertinoTheme(
+          // Instead of letting Cupertino widgets auto-adapt to the Material
+          // theme (which is green), this app will use a different theme
+          // for Cupertino (which is blue by default).
+          data: CupertinoThemeData(),
+          child: Material(child: child),
+        );
+      },
+      home: PlatformAdaptingHomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
+// Shows a different type of scaffold depending on the platform.
+//
+// This file has the most amount of non-sharable code since it behaves the most
+// differently between the platforms.
+//
+// These differences are also subjective and have more than one 'right' answer
+// depending on the app and content.
+class PlatformAdaptingHomePage extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _PlatformAdaptingHomePageState createState() => _PlatformAdaptingHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  var _state = '';
-  final _webView = InteractiveWebView();
+class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
+  // This app keeps a global key for the songs tab because it owns a bunch of
+  // data. Since changing platform re-parents those tabs into different
+  // scaffolds, keeping a global key to it lets this app keep that tab's data as
+  // the platform toggles.
+  //
+  // This isn't needed for apps that doesn't toggle platforms while running.
+  final songsTabKey = GlobalKey();
+
+  // In Material, this app uses the hamburger menu paradigm and flatly lists
+  // all 4 possible tabs. This drawer is injected into the songs tab which is
+  // actually building the scaffold around the drawer.
+  Widget _buildAndroidHomePage(BuildContext context) {
+    return ScanTab(
+      key: songsTabKey,
+      androidDrawer: _AndroidDrawer(),
+    );
+  }
+
+  // On iOS, the app uses a bottom tab paradigm. Here, each tab view sits inside
+  // a tab in the tab scaffold. The tab scaffold also positions the tab bar
+  // in a row at the bottom.
+  //
+  // An important thing to note is that while a Material Drawer can display a
+  // large number of items, a tab bar cannot. To illustrate one way of adjusting
+  // for this, the app folds its fourth tab (the settings page) into the
+  // third tab. This is a common pattern on iOS.
+  Widget _buildIosHomePage(BuildContext context) {
+    return CupertinoTabScaffold(
+      tabBar: CupertinoTabBar(
+        items: [
+          BottomNavigationBarItem(title: Text(ScanTab.title), icon: ScanTab.iosIcon),
+        ],
+      ),
+      tabBuilder: (context, index) {
+        switch (index) {
+          case 0:
+            return CupertinoTabView(
+              defaultTitle: ScanTab.title,
+              builder: (context) => ScanTab(key: songsTabKey),
+            );
+          default:
+            assert(false, 'Unexpected tab');
+            return null;
+        }
+      },
+    );
+  }
 
   @override
-  void initState() {
-    super.initState();
-    this._addWebViewHandler();
+  Widget build(context) {
+    return PlatformWidget(
+      androidBuilder: _buildAndroidHomePage,
+      iosBuilder: _buildIosHomePage,
+    );
   }
+}
 
-  _addWebViewHandler() async {
-    _webView.evalJavascript(await rootBundle.loadString('assets/crypto-js.js'));
-    _webView.evalJavascript(await rootBundle.loadString('assets/crypto.js'));
-    _webView.evalJavascript(await rootBundle.loadString('assets/reader.js'));
-    _webView.didReceiveMessage.listen(this._onReceivedMessage);
-  }
-
-  _onReceivedMessage(WebkitMessage message) async {
-    var scriptModel = ScriptDataModel.fromJson(message.data);
-    switch (scriptModel.action) {
-      case 'poll':
-        final tag = await FlutterNfcKit.poll();
-        setState(() {
-          _state = "detect: ${tag.type.toString()}";
-        });
-        _webView.evalJavascript("pollCallback(${jsonEncode(tag)})");
-        break;
-
-      case 'transceive':
-        final rapdu = await FlutterNfcKit.transceive(scriptModel.data);
-        _webView.evalJavascript("transceiveCallback('$rapdu')");
-        break;
-
-      case 'log':
-        log(message.data.toString());
-        break;
-    }
-  }
-
-  void _readTag() async {
-    setState(() {
-      _state = 'polling';
-    });
-    final script = await rootBundle.loadString('assets/read.js');
-    _webView.evalJavascript("""async function run() {
-    $script
-    }
-    run();""");
-  }
-
+class _AndroidDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Current state:',
+    return Drawer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          DrawerHeader(
+            decoration: BoxDecoration(color: Colors.green),
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: Icon(
+                Icons.account_circle,
+                color: Colors.green.shade800,
+                size: 96,
+              ),
             ),
-            Text(
-              '$_state',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _readTag,
-        tooltip: 'Read a tag',
-        child: Icon(Icons.add),
+          ),
+          ListTile(
+            leading: ScanTab.androidIcon,
+            title: Text(ScanTab.title),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          // Long drawer contents are often segmented.
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Divider(),
+          ),
+        ],
       ),
     );
   }
