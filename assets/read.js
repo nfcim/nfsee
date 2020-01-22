@@ -11,7 +11,7 @@ let ReadBalance = async () => {
     const rapdu = await transceive('805C000204');
     if (!rapdu.endsWith('9000'))
         return 'N/A';
-    return parseInt(rapdu.slice(0, 8), 16) / 100 + '元';
+    return parseInt(rapdu.slice(0, 8), 16) % 0x80000000 / 100 + '元';
 };
 let BasicInfoFile = async (fci) => {
     let r = await transceive('00B095001E');
@@ -20,7 +20,7 @@ let BasicInfoFile = async (fci) => {
     return r.slice(0, -4);
 };
 let ReadTransBeijing = async (content04) => {
-    let r = await transceive('00A40000021001');
+    let r = await transceive('00A4000002100100');
     if (!r.endsWith('9000'))
         return {};
     const number = content04.slice(0, 16);
@@ -113,7 +113,7 @@ let ReadqPBOC = async (fci) => {
 };
 let ReadAnyCard = async () => {
     const tag = JSON.parse(await poll());
-    let r = await transceive('00B08400020');
+    let r = await transceive('00B0840020');
     if (r.endsWith('9000') && r.startsWith('10007510'))
         return await ReadTransBeijing(r.slice(0, -4));
     r = await transceive('00A4040009A0000000038698070100');
