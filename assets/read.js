@@ -135,8 +135,8 @@ let ReadAnyCard = async () => {
     return {};
 };
 (async function () {
-    let result = await ReadAnyCard(2);
+    let result = await ReadAnyCard();
     if (!('title' in result))
         result.title = '未知卡片';
-    report(JSON.stringify(result));
+    report(result);
 })();
