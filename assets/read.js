@@ -7,6 +7,31 @@ let Hex2TypeArray = (hexStr) => {
 let ParseGBKText = (hexStr) => {
     return GBKDecoder.decode(Hex2TypeArray(hexStr));
 };
+let ExtractFromTLV = (hexStr, tagPath) => {
+    try {
+        let tlvList = TlvFactory.parse(hexStr);
+        let value = null;
+        for (const wanted of tagPath) {
+            let found = false;
+            for (const tlvObj of tlvList) {
+                if(tlvObj.tag === wanted) {
+                    value = tlvObj.value;
+                    tlvList = tlvObj.items;
+                    found = true;
+                    break;
+                }
+            }
+            if(!found) {
+                console.error('tag not found:', wanted);
+                return null;
+            }
+        }
+        return value;
+    } catch (err) {
+        console.error('except', err);
+    }
+    return null;
+};
 let ReadBalance = async () => {
     const rapdu = await transceive('805C000204');
     if (!rapdu.endsWith('9000'))
@@ -21,6 +46,7 @@ let BasicInfoFile = async (fci) => {
 };
 let ReadTransBeijing = async (content04) => {
     let r = await transceive('00A4000002100100');
+
     if (!r.endsWith('9000'))
         return {};
     const number = content04.slice(0, 16);
@@ -124,13 +150,21 @@ let ReadAnyCard = async () => {
     }
     r = await transceive('00A404000E325041592E5359532E444446303100');
     if (r.endsWith('9000')) {
-        r.slice(0, -4)
+        r = r.slice(0, -4);
         return await ReadTUnion(r);
     }
     r = await transceive('00A4000002100100');
     if (r.endsWith('9000')) {
-        r.slice(0, -4)
-        return await ReadTransShenzhen(r);
+        r = r.slice(0, -4);
+        let DFName = ExtractFromTLV(r, ['6F', '84']);
+        if(DFName) {
+            DFName = GBKDecoder.decode(DFName);
+            if(DFName.startsWith('PAY.SZT'))
+                return await ReadTransShenzhen(r);
+            else if (DFName.startsWith('AP1.WHCTC'))
+                return await ReadTransWuhan(r);
+        }
+        
     }
     return {};
 };
