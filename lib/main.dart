@@ -1,33 +1,54 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nfsee/data/blocs/bloc.dart';
+import 'package:nfsee/data/blocs/provider.dart';
 
-import 'scan_tab.dart';
-import 'about_tab.dart';
+import 'ui/scan_tab.dart';
+import 'ui/about_tab.dart';
 import 'widgets.dart';
 
 void main() => runApp(NFSeeApp());
 
-class NFSeeApp extends StatelessWidget {
+class NFSeeApp extends StatefulWidget {
+  @override
+  _NFSeeAppState createState() => _NFSeeAppState();
+}
+
+class _NFSeeAppState extends State<NFSeeApp> {
+  NFSeeAppBloc bloc;
+
+  @override
+  void initState() {
+    bloc = NFSeeAppBloc();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    bloc.dispose();
+  }
+
   @override
   Widget build(context) {
-    // Either Material or Cupertino widgets work in either Material or Cupertino
-    // Apps.
-    return MaterialApp(
-      title: 'NFSee',
-      theme: ThemeData(
-        // Use the green theme for Material widgets.
-        primarySwatch: Colors.deepOrange,
+    return BlocProvider(
+      bloc: bloc,
+      // Either Material or Cupertino widgets work in either Material or Cupertino
+      // Apps.
+      child: MaterialApp(
+        title: 'NFSee',
+        theme: ThemeData(primarySwatch: Colors.deepOrange),
+        builder: (context, child) {
+          return CupertinoTheme(
+            // Instead of letting Cupertino widgets auto-adapt to the Material
+            // theme (which is green), this app will use a different theme
+            // for Cupertino (which is blue by default).
+            data: CupertinoThemeData(),
+            child: Material(child: child),
+          );
+        },
+        home: PlatformAdaptingHomePage(),
       ),
-      builder: (context, child) {
-        return CupertinoTheme(
-          // Instead of letting Cupertino widgets auto-adapt to the Material
-          // theme (which is green), this app will use a different theme
-          // for Cupertino (which is blue by default).
-          data: CupertinoThemeData(),
-          child: Material(child: child),
-        );
-      },
-      home: PlatformAdaptingHomePage(),
     );
   }
 }

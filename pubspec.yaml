@@ -7,17 +7,23 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
-  interactive_webview:
+  flutter:
+    sdk: flutter
   flutter_nfc_kit:
     git:
       url: https://github.com/nfcim/flutter_nfc_kit.git
-  flutter:
-    sdk: flutter
+  interactive_webview:
   cupertino_icons:
+  moor:
+  moor_ffi:
+  path_provider:
+  path:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  moor_generator:
+  build_runner:
 
 flutter:
   uses-material-design: true

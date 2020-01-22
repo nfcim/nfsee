@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'widgets.dart';
+import '../widgets.dart';
 
 class AboutTab extends StatefulWidget {
   static const title = 'About';

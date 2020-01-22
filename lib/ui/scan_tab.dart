@@ -8,8 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:interactive_webview/interactive_webview.dart';
 
-import 'models.dart';
-import 'widgets.dart';
+import '../models.dart';
+import '../widgets.dart';
 
 class ScanTab extends StatefulWidget {
   static const title = 'Scan';
@@ -51,6 +51,10 @@ class _ScanTabState extends State<ScanTab> {
       case 'transceive':
         final rapdu = await FlutterNfcKit.transceive(scriptModel.data);
         _webView.evalJavascript("transceiveCallback('$rapdu')");
+        break;
+
+      case 'report':
+        log(message.data.toString());
         break;
 
       case 'log':
