@@ -7,29 +7,28 @@ part of 'database.dart';
 // **************************************************************************
 
 // ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
-class DumpedDataData extends DataClass implements Insertable<DumpedDataData> {
+class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
   final int id;
   final DateTime time;
   final String data;
-  DumpedDataData({@required this.id, @required this.time, @required this.data});
-  factory DumpedDataData.fromData(
-      Map<String, dynamic> data, GeneratedDatabase db,
+  DumpedRecord({@required this.id, @required this.time, @required this.data});
+  factory DumpedRecord.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final dateTimeType = db.typeSystem.forDartType<DateTime>();
     final stringType = db.typeSystem.forDartType<String>();
-    return DumpedDataData(
+    return DumpedRecord(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       time:
           dateTimeType.mapFromDatabaseResponse(data['${effectivePrefix}time']),
       data: stringType.mapFromDatabaseResponse(data['${effectivePrefix}data']),
     );
   }
-  factory DumpedDataData.fromJson(Map<String, dynamic> json,
+  factory DumpedRecord.fromJson(Map<String, dynamic> json,
       {ValueSerializer serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
-    return DumpedDataData(
+    return DumpedRecord(
       id: serializer.fromJson<int>(json['id']),
       time: serializer.fromJson<DateTime>(json['time']),
       data: serializer.fromJson<String>(json['data']),
@@ -46,23 +45,22 @@ class DumpedDataData extends DataClass implements Insertable<DumpedDataData> {
   }
 
   @override
-  DumpedDataCompanion createCompanion(bool nullToAbsent) {
-    return DumpedDataCompanion(
+  DumpedRecordsCompanion createCompanion(bool nullToAbsent) {
+    return DumpedRecordsCompanion(
       id: id == null && nullToAbsent ? const Value.absent() : Value(id),
       time: time == null && nullToAbsent ? const Value.absent() : Value(time),
       data: data == null && nullToAbsent ? const Value.absent() : Value(data),
     );
   }
 
-  DumpedDataData copyWith({int id, DateTime time, String data}) =>
-      DumpedDataData(
+  DumpedRecord copyWith({int id, DateTime time, String data}) => DumpedRecord(
         id: id ?? this.id,
         time: time ?? this.time,
         data: data ?? this.data,
       );
   @override
   String toString() {
-    return (StringBuffer('DumpedDataData(')
+    return (StringBuffer('DumpedRecord(')
           ..write('id: $id, ')
           ..write('time: $time, ')
           ..write('data: $data')
@@ -76,30 +74,30 @@ class DumpedDataData extends DataClass implements Insertable<DumpedDataData> {
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
-      (other is DumpedDataData &&
+      (other is DumpedRecord &&
           other.id == this.id &&
           other.time == this.time &&
           other.data == this.data);
 }
 
-class DumpedDataCompanion extends UpdateCompanion<DumpedDataData> {
+class DumpedRecordsCompanion extends UpdateCompanion<DumpedRecord> {
   final Value<int> id;
   final Value<DateTime> time;
   final Value<String> data;
-  const DumpedDataCompanion({
+  const DumpedRecordsCompanion({
     this.id = const Value.absent(),
     this.time = const Value.absent(),
     this.data = const Value.absent(),
   });
-  DumpedDataCompanion.insert({
+  DumpedRecordsCompanion.insert({
     this.id = const Value.absent(),
     @required DateTime time,
     @required String data,
   })  : time = Value(time),
         data = Value(data);
-  DumpedDataCompanion copyWith(
+  DumpedRecordsCompanion copyWith(
       {Value<int> id, Value<DateTime> time, Value<String> data}) {
-    return DumpedDataCompanion(
+    return DumpedRecordsCompanion(
       id: id ?? this.id,
       time: time ?? this.time,
       data: data ?? this.data,
@@ -107,11 +105,11 @@ class DumpedDataCompanion extends UpdateCompanion<DumpedDataData> {
   }
 }
 
-class $DumpedDataTable extends DumpedData
-    with TableInfo<$DumpedDataTable, DumpedDataData> {
+class $DumpedRecordsTable extends DumpedRecords
+    with TableInfo<$DumpedRecordsTable, DumpedRecord> {
   final GeneratedDatabase _db;
   final String _alias;
-  $DumpedDataTable(this._db, [this._alias]);
+  $DumpedRecordsTable(this._db, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
   GeneratedIntColumn _id;
   @override
@@ -148,13 +146,13 @@ class $DumpedDataTable extends DumpedData
   @override
   List<GeneratedColumn> get $columns => [id, time, data];
   @override
-  $DumpedDataTable get asDslTable => this;
+  $DumpedRecordsTable get asDslTable => this;
   @override
-  String get $tableName => _alias ?? 'dumped_data';
+  String get $tableName => _alias ?? 'dumped_records';
   @override
-  final String actualTableName = 'dumped_data';
+  final String actualTableName = 'dumped_records';
   @override
-  VerificationContext validateIntegrity(DumpedDataCompanion d,
+  VerificationContext validateIntegrity(DumpedRecordsCompanion d,
       {bool isInserting = false}) {
     final context = VerificationContext();
     if (d.id.present) {
@@ -178,13 +176,13 @@ class $DumpedDataTable extends DumpedData
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  DumpedDataData map(Map<String, dynamic> data, {String tablePrefix}) {
+  DumpedRecord map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return DumpedDataData.fromData(data, _db, prefix: effectivePrefix);
+    return DumpedRecord.fromData(data, _db, prefix: effectivePrefix);
   }
 
   @override
-  Map<String, Variable> entityToSql(DumpedDataCompanion d) {
+  Map<String, Variable> entityToSql(DumpedRecordsCompanion d) {
     final map = <String, Variable>{};
     if (d.id.present) {
       map['id'] = Variable<int, IntType>(d.id.value);
@@ -199,17 +197,18 @@ class $DumpedDataTable extends DumpedData
   }
 
   @override
-  $DumpedDataTable createAlias(String alias) {
-    return $DumpedDataTable(_db, alias);
+  $DumpedRecordsTable createAlias(String alias) {
+    return $DumpedRecordsTable(_db, alias);
   }
 }
 
 abstract class _$Database extends GeneratedDatabase {
   _$Database(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
-  $DumpedDataTable _dumpedData;
-  $DumpedDataTable get dumpedData => _dumpedData ??= $DumpedDataTable(this);
+  $DumpedRecordsTable _dumpedRecords;
+  $DumpedRecordsTable get dumpedRecords =>
+      _dumpedRecords ??= $DumpedRecordsTable(this);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [dumpedData];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [dumpedRecords];
 }

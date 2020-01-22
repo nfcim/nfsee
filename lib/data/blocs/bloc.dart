@@ -8,11 +8,15 @@ class NFSeeAppBloc {
 
   NFSeeAppBloc() : db = constructDb();
 
-  void createDumpedData(Map<String, String> data) {
-    db.createDumpedData(DumpedDataCompanion(
+  void addDumpedRecord(dynamic data) {
+    db.addDumpedRecord(DumpedRecordsCompanion(
       time: Value(DateTime.now()),
       data: Value(jsonEncode(data)),
     ));
+  }
+
+  Future<List<DumpedRecord>> listDumpedRecords() {
+    return db.listDumpedRecords();
   }
 
   void dispose() {}

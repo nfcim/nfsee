@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:interactive_webview/interactive_webview.dart';
+import 'package:nfsee/data/blocs/bloc.dart';
+import 'package:nfsee/data/blocs/provider.dart';
 
 import '../models.dart';
 import '../widgets.dart';
@@ -26,6 +28,8 @@ class ScanTab extends StatefulWidget {
 
 class _ScanTabState extends State<ScanTab> {
   final _webView = InteractiveWebView();
+
+  NFSeeAppBloc get bloc => BlocProvider.provideBloc(context);
 
   @override
   void initState() {
@@ -54,7 +58,9 @@ class _ScanTabState extends State<ScanTab> {
         break;
 
       case 'report':
-        log(message.data.toString());
+        log(scriptModel.data.toString());
+        bloc.addDumpedRecord(scriptModel.data);
+        (await bloc.listDumpedRecords()).forEach((el) => log(el.toString()));
         break;
 
       case 'log':

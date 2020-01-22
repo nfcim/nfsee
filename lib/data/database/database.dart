@@ -8,7 +8,8 @@ import 'package:path/path.dart' as p;
 
 part 'database.g.dart';
 
-class DumpedData extends Table {
+@DataClassName('DumpedRecord')
+class DumpedRecords extends Table {
   IntColumn get id => integer().autoIncrement()();
 
   DateTimeColumn get time => dateTime()();
@@ -17,7 +18,7 @@ class DumpedData extends Table {
 }
 
 @UseMoor(
-  tables: [DumpedData],
+  tables: [DumpedRecords],
 )
 class Database extends _$Database {
   Database(QueryExecutor e) : super(e);
@@ -25,8 +26,12 @@ class Database extends _$Database {
   @override
   int get schemaVersion => 1;
 
-  Future createDumpedData(DumpedDataCompanion entry) {
-    return into(dumpedData).insert(entry);
+  Future<int> addDumpedRecord(DumpedRecordsCompanion entry) {
+    return into(dumpedRecords).insert(entry);
+  }
+
+  Future<List<DumpedRecord>> listDumpedRecords() {
+    return select(dumpedRecords).get();
   }
 }
 
