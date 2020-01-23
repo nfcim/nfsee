@@ -84,6 +84,27 @@ let ReadTransShenzhen = async (fci) => {
     };
 };
 let ReadTransWuhan = async (fci) => {
+    const balance = await ReadBalance();
+    let mf = await transceive('00A40000023F00');
+    if (!mf.endsWith('9000'))
+        return {};
+    let f05 = await transceive('00B0850004');
+    if (!f05.endsWith('9000'))
+        return {};
+    let f0a = await transceive('00B08A0019');
+    if (!f0a.endsWith('9000'))
+        return {};
+    const number = f05.slice(0, 8);
+    const issue_date = f0a.slice(40, 48);
+    const expiry_date = f0a.slice(32, 40);
+    return {
+        'title': "武汉通",
+        '卡号': number,
+        '余额': balance,
+        '版本': f0a.slice(48, 50),
+        '发卡日期': issue_date,
+        '失效日期': expiry_date,
+    };
 
 };
 let ReadCityUnion = async (fci) => {
