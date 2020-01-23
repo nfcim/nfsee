@@ -190,7 +190,7 @@ let ReadqPBOC = async (fci) => {
 let ReadAnyCard = async () => {
     const tag = await poll();
     let r = await transceive('00B0840020');
-    if (r.endsWith('9000') && r.startsWith('10007510'))
+    if (r.endsWith('9000') && r.startsWith('1000'))
         return await ReadTransBeijing(r.slice(0, -4));
     r = await transceive('00A4040009A0000000038698070100');
     if (r.endsWith('9000')) {
