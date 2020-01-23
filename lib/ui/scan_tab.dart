@@ -9,6 +9,7 @@ import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:interactive_webview/interactive_webview.dart';
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';
+import 'package:nfsee/data/database/database.dart';
 
 import '../models.dart';
 import '../widgets.dart';
@@ -28,6 +29,7 @@ class ScanTab extends StatefulWidget {
 
 class _ScanTabState extends State<ScanTab> {
   final _webView = InteractiveWebView();
+  List<DumpedRecord> _records = new List<DumpedRecord>();
 
   NFSeeAppBloc get bloc => BlocProvider.provideBloc(context);
 
@@ -35,6 +37,7 @@ class _ScanTabState extends State<ScanTab> {
   void initState() {
     super.initState();
     this._addWebViewHandler();
+    this._updateRecords();
   }
 
   _addWebViewHandler() async {
@@ -42,6 +45,13 @@ class _ScanTabState extends State<ScanTab> {
     _webView.evalJavascript(await rootBundle.loadString('assets/crypto.js'));
     _webView.evalJavascript(await rootBundle.loadString('assets/reader.js'));
     _webView.didReceiveMessage.listen(this._onReceivedMessage);
+  }
+
+  _updateRecords() async {
+    var records = await bloc.listDumpedRecords();
+    setState(() {
+      this._records = records;
+    });
   }
 
   _onReceivedMessage(WebkitMessage message) async {
@@ -58,9 +68,11 @@ class _ScanTabState extends State<ScanTab> {
         break;
 
       case 'report':
-        log(scriptModel.data.toString());
+        print(scriptModel.data.toString());
         bloc.addDumpedRecord(scriptModel.data);
-        (await bloc.listDumpedRecords()).forEach((el) => log(el.toString()));
+        await this._updateRecords();
+        this._records.forEach((el) => print(el.toString()));
+        await FlutterNfcKit.finish();
         break;
 
       case 'log':
@@ -143,9 +155,27 @@ class _ScanTabState extends State<ScanTab> {
           trailing: CupertinoButton(
             padding: EdgeInsets.zero,
             child: Icon(CupertinoIcons.shuffle),
-            onPressed: _togglePlatform,
+            onPressed: _readTag,
           ),
         ),
+        SliverPadding(
+            // Top media padding consumed by CupertinoSliverNavigationBar.
+            // Left/Right media padding consumed by Tab1RowItem.
+            padding: MediaQuery.of(context)
+                .removePadding(
+                  removeTop: true,
+                  removeLeft: true,
+                  removeRight: true,
+                )
+                .padding,
+            sliver: SliverList(
+              delegate:
+                  SliverChildBuilderDelegate((BuildContext context, int index) {
+                return ReportRowItem(
+                  record: this._records[index],
+                );
+              }, childCount: this._records.length),
+            )),
       ],
     );
   }
@@ -156,5 +186,16 @@ class _ScanTabState extends State<ScanTab> {
       androidBuilder: _buildAndroid,
       iosBuilder: _buildIos,
     );
+  }
+}
+
+class ReportRowItem extends StatelessWidget {
+  const ReportRowItem({this.record});
+
+  final DumpedRecord record;
+
+  @override
+  Widget build(context) {
+    return Text(record.toString());
   }
 }
