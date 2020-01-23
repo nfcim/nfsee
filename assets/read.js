@@ -32,8 +32,9 @@ let ExtractFromTLV = (hexStr, tagPath) => {
     }
     return null;
 };
-let ReadBalance = async () => {
-    const rapdu = await transceive('805C000204');
+let ReadBalance = async (usage) => {
+    usage = usage || 2;
+    const rapdu = await transceive(`805C000${usage}04`);
     if (!rapdu.endsWith('9000'))
         return 'N/A';
     return parseInt(rapdu.slice(0, 8), 16) % 0x80000000 / 100 + '元';
@@ -111,7 +112,7 @@ let ReadTHU = async (fci) => {
         return {};
     const name = ParseGBKText(f16.slice(0, 40).replace(/(00)+$/, ''));
     const stuNum = ParseGBKText(f16.slice(56, 76));
-    const balance = await ReadBalance();
+    const balance = await ReadBalance(1);
     let mf = await transceive('00A40000023F00');
     if (!mf.endsWith('9000'))
         return {};
