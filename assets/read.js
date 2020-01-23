@@ -4,6 +4,11 @@ let Hex2TypeArray = (hexStr) => {
         return parseInt(h, 16)
     }));
 };
+let TypeArray2Hex = (byteArray) => {
+    return Array.prototype.map.call(byteArray, function (byte) {
+        return ('0' + (byte & 0xFF).toString(16)).slice(-2);
+    }).join('');
+};
 let ParseGBKText = (hexStr) => {
     return GBKDecoder.decode(Hex2TypeArray(hexStr));
 };
@@ -14,14 +19,14 @@ let ExtractFromTLV = (hexStr, tagPath) => {
         for (const wanted of tagPath) {
             let found = false;
             for (const tlvObj of tlvList) {
-                if(tlvObj.tag === wanted) {
+                if (tlvObj.tag === wanted) {
                     value = tlvObj.value;
                     tlvList = tlvObj.items;
                     found = true;
                     break;
                 }
             }
-            if(!found) {
+            if (!found) {
                 console.error('tag not found:', wanted);
                 return null;
             }
@@ -40,14 +45,15 @@ let ReadBalance = async (usage) => {
     return parseInt(rapdu.slice(0, 8), 16) % 0x80000000 / 100 + '元';
 };
 let BasicInfoFile = async (fci) => {
-    let r = await transceive('00B095001E');
+    let r = ExtractFromTLV(fci, ['6F', 'A5', '9F0C']);
+    if (r) return TypeArray2Hex(r);
+    r = await transceive('00B095001E');
     if (!r.endsWith('9000'))
         return '';
     return r.slice(0, -4);
 };
 let ReadTransBeijing = async (content04) => {
     let r = await transceive('00A4000002100100');
-
     if (!r.endsWith('9000'))
         return {};
     const number = content04.slice(0, 16);
@@ -63,9 +69,8 @@ let ReadTransBeijing = async (content04) => {
     };
 };
 let ReadTransShenzhen = async (fci) => {
-    let r = await transceive('00B095001C');
-    if (!r.endsWith('9000'))
-        return {};
+    let r = await BasicInfoFile(fci);
+    if (!r) return {};
     const number = parseInt(r.slice(32, 40), 16);
     const issue_date = r.slice(40, 48);
     const expiry_date = r.slice(48, 56);
@@ -158,14 +163,14 @@ let ReadAnyCard = async () => {
     if (r.endsWith('9000')) {
         r = r.slice(0, -4);
         let DFName = ExtractFromTLV(r, ['6F', '84']);
-        if(DFName) {
+        if (DFName) {
             DFName = GBKDecoder.decode(DFName);
-            if(DFName.startsWith('PAY.SZT'))
+            if (DFName.startsWith('PAY.SZT'))
                 return await ReadTransShenzhen(r);
             else if (DFName.startsWith('AP1.WHCTC'))
                 return await ReadTransWuhan(r);
         }
-        
+
     }
     return {};
 };
