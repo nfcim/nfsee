@@ -1,4 +1,11 @@
 const GBKDecoder = new TextDecoder('gbk');
+const TUnionDF11Type = {
+    1: '普通卡',
+    2: '学生卡',
+    3: '老人卡',
+    4: '测试卡',
+    5: '军人卡',
+};
 let Hex2TypeArray = (hexStr) => {
     return new Uint8Array(hexStr.match(/[\da-f]{2}/gi).map(function (h) {
         return parseInt(h, 16)
@@ -159,7 +166,29 @@ let ReadTHU = async (fci) => {
     };
 };
 let ReadTUnion = async (fci) => {
-
+    let f15 = await BasicInfoFile(fci);
+    if (f15 == '') return {};
+    let f17 = await transceive('00B097000B');
+    if (!f17.endsWith('9000'))
+        return {};
+    const balance = await ReadBalance();
+    const number = f15.slice(20, 36);
+    const issue_date = f15.slice(40, 48);
+    const expiry_date = f15.slice(48, 56);
+    const province = f17.slice(8, 12);
+    const city = f17.slice(12, 16);
+    let type = parseInt(f17.slice(20, 22), 16);
+    type = (type in TUnionDF11Type) ? TUnionDF11Type[type] : `未知(${type})`;
+    return {
+        'title': "交通联合卡",
+        '卡号': number,
+        '余额': balance,
+        '省级代码': province,
+        '城市代码': city,
+        '卡种类型': type,
+        '发卡日期': issue_date,
+        '失效日期': expiry_date,
+    };
 };
 let ReadqPBOC = async (fci) => {
 
@@ -175,10 +204,15 @@ let ReadAnyCard = async () => {
             return await ReadTHU(r.slice(0, -4));
         return await ReadCityUnion(r.slice(0, -4));
     }
-    r = await transceive('00A404000E325041592E5359532E444446303100');
+    r = await transceive('00A4040008A00000063201010500');
     if (r.endsWith('9000')) {
         r = r.slice(0, -4);
         return await ReadTUnion(r);
+    }
+    r = await transceive('00A404000E325041592E5359532E444446303100');
+    if (r.endsWith('9000')) {
+        r = r.slice(0, -4);
+        return await ReadqPBOC(r);
     }
     r = await transceive('00A4000002100100');
     if (r.endsWith('9000')) {
