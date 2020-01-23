@@ -36,7 +36,7 @@ const PresetAPDU = [
     [CardEnum.THU, '805C000104', '8000164e9000'],
     [CardEnum.ALL ^ CardEnum.THU, '805C000204', '8000164e9000'],
 ];
-let MockCard = CardEnum.CQ;
+let MockCard = CardEnum.TU;
 
 function poll() {
     return Promise.resolve(JSON.stringify({

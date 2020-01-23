@@ -124,7 +124,7 @@ let ReadCityUnion = async (fci) => {
     const number = f15.slice(24, 40);
     const issue_date = f15.slice(40, 48);
     const balance = await ReadBalance();
-    city = (city in CityUnionCity) ? CityUnionCity[city] : `未知代码${city}`;
+    city = (city in ChinaPostCode) ? ChinaPostCode[city] : `未知代码${city}`;
     return {
         'title': `城市一卡通（${city}）`,
         '卡号': number,
@@ -170,15 +170,16 @@ let ReadTUnion = async (fci) => {
     const issue_date = f15.slice(40, 48);
     const expiry_date = f15.slice(48, 56);
     const province = f17.slice(8, 12);
-    const city = f17.slice(12, 16);
+    let city = f17.slice(12, 16);
     let type = parseInt(f17.slice(20, 22), 16);
     type = (type in TUnionDF11Type) ? TUnionDF11Type[type] : `未知(${type})`;
+    city = (city in ChinaPostCode) ? ChinaPostCode[city] : `未知代码${city}`;
     return {
         'title': "交通联合卡",
         '卡号': number,
         '余额': balance,
         '省级代码': province,
-        '城市代码': city,
+        '城市': city,
         '卡种类型': type,
         '发卡日期': issue_date,
         '失效日期': expiry_date,
