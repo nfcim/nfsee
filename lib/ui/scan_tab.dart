@@ -45,6 +45,7 @@ class _ScanTabState extends State<ScanTab> {
     _webView.evalJavascript(await rootBundle.loadString('assets/crypto-js.js'));
     _webView.evalJavascript(await rootBundle.loadString('assets/crypto.js'));
     _webView.evalJavascript(await rootBundle.loadString('assets/reader.js'));
+    _webView.evalJavascript(await rootBundle.loadString('assets/codes.js'));
     _webView.didReceiveMessage.listen(this._onReceivedMessage);
   }
 

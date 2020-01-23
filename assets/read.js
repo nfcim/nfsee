@@ -1,11 +1,4 @@
 const GBKDecoder = new TextDecoder('gbk');
-const TUnionDF11Type = {
-    1: '普通卡',
-    2: '学生卡',
-    3: '老人卡',
-    4: '测试卡',
-    5: '军人卡',
-};
 let Hex2TypeArray = (hexStr) => {
     return new Uint8Array(hexStr.match(/[\da-f]{2}/gi).map(function (h) {
         return parseInt(h, 16)
@@ -117,7 +110,7 @@ let ReadTransWuhan = async (fci) => {
 let ReadCityUnion = async (fci) => {
     let f15 = await BasicInfoFile(fci);
     if (f15 == '') return {};
-    const city = f15.slice(4, 8);
+    let city = f15.slice(4, 8);
     let expiry_date = f15.slice(48, 56);
     if (city == '4000') { // special case for CQ
         expiry_date = f15.slice(16, 24);
@@ -131,6 +124,7 @@ let ReadCityUnion = async (fci) => {
     const number = f15.slice(24, 40);
     const issue_date = f15.slice(40, 48);
     const balance = await ReadBalance();
+    city = (city in CityUnionCity) ? CityUnionCity[city] : `未知代码${city}`;
     return {
         'title': `城市一卡通（${city}）`,
         '卡号': number,
