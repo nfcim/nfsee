@@ -173,7 +173,7 @@ let ReadTUnion = async (fci) => {
     let city = f17.slice(12, 16);
     let type = parseInt(f17.slice(20, 22), 16);
     type = (type in TUnionDF11Type) ? TUnionDF11Type[type] : `未知(${type})`;
-    city = (city in ChinaPostCode) ? ChinaPostCode[city] : `未知代码${city}`;
+    city = (city in UnionPayRegion) ? UnionPayRegion[city] : `未知代码${city}`;
     return {
         'title': "交通联合卡",
         '卡号': number,
