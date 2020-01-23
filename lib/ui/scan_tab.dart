@@ -41,6 +41,7 @@ class _ScanTabState extends State<ScanTab> {
   }
 
   _addWebViewHandler() async {
+    _webView.evalJavascript(await rootBundle.loadString('assets/ber-tlv.js'));
     _webView.evalJavascript(await rootBundle.loadString('assets/crypto-js.js'));
     _webView.evalJavascript(await rootBundle.loadString('assets/crypto.js'));
     _webView.evalJavascript(await rootBundle.loadString('assets/reader.js'));
