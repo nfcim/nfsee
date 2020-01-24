@@ -1,4 +1,11 @@
 const GBKDecoder = new TextDecoder('gbk');
+const PBOC_AID2NAME = {
+    'A000000333010101': '银联借记卡',
+    'A000000333010102': '银联信用卡',
+    'A000000333010103': '银联准贷记卡',
+    'A0000000031010': 'VISA卡',
+    'A0000000041010': 'MasterCard',
+};
 let Hex2TypeArray = (hexStr) => {
     return new Uint8Array(hexStr.match(/[\da-f]{2}/gi).map(function (h) {
         return parseInt(h, 16)
@@ -7,7 +14,7 @@ let Hex2TypeArray = (hexStr) => {
 let TypeArray2Hex = (byteArray) => {
     return Array.prototype.map.call(byteArray, function (byte) {
         return ('0' + (byte & 0xFF).toString(16)).slice(-2);
-    }).join('');
+    }).join('').toUpperCase();
 };
 let ParseGBKText = (hexStr) => {
     return GBKDecoder.decode(Hex2TypeArray(hexStr));
@@ -36,6 +43,38 @@ let ExtractFromTLV = (hexStr, tagPath) => {
         console.error('except', err);
     }
     return null;
+};
+let BuildRespOfPDOL = (pdol) => {
+    const ans2pdol = {
+        0x9F66: '26000000',
+        0x9F02: '000000000001',
+        0x9F03: '000000000000',
+        0x9F1A: '0156',
+        0x95: '0000000000',
+        0x5F2A: '0156',
+        0x9A: '200331',
+        0x9C: '00',
+        0x9F37: '11223344',
+    };
+    try {
+        let resp = '';
+        for (let i = 0; i < pdol.length; i++) {
+            let tag = pdol[i];
+            if ((tag & 0x1F) == 0x1F)
+                tag = (tag << 8) | pdol[++i];
+            let len = pdol[++i];
+            if (tag in ans2pdol)
+                resp += ans2pdol[tag];
+            else {
+                resp += '00'.repeat(len);
+                log(`Unknown tag ${tag} in PDOL`);
+            }
+        }
+        return resp;
+    } catch (error) {
+        log("error: " + error);
+        return null;
+    }
 };
 let ReadBalance = async (usage) => {
     usage = usage || 2;
@@ -186,7 +225,38 @@ let ReadTUnion = async (fci) => {
     };
 };
 let ReadqPBOC = async (fci) => {
-
+    let DFName = ExtractFromTLV(fci, ['6F', 'A5', 'BF0C', '61', '4F']);
+    if (!DFName) return {};
+    const select = Uint8Array.from([DFName.length, ...DFName, 0]);
+    DFName = TypeArray2Hex(DFName);
+    const name = PBOC_AID2NAME[DFName];
+    log(`qPBOC DF Name: ${DFName} (${name})`);
+    if (!name) return {};
+    fci = await transceive('00A40400' + TypeArray2Hex(select));
+    if (!fci.endsWith('9000')) return {};
+    let pdol = ExtractFromTLV(fci, ['6F', 'A5', '9F38']);
+    pdol = BuildRespOfPDOL(pdol);
+    if (!pdol) return {};
+    pdol = TypeArray2Hex(new Uint8Array([pdol.length / 2 + 2, 0x83, pdol.length / 2])) + pdol
+    const gpo_resp = await transceive(`80A80000${pdol}00`);
+    log("GPO: " + gpo_resp);
+    if (!fci.endsWith('9000')) return {};
+    let track2 = ExtractFromTLV(gpo_resp, ['77', '57']);
+    // let atc = ExtractFromTLV(gpo_resp, ['77', '9F36']);
+    if (!track2) {
+        // None-qPBOC procedure
+        const AIP_AFL = ExtractFromTLV(gpo_resp, ['80']);
+        if (!AIP_AFL) return {};
+        log("AIP-AFL " + AIP_AFL);
+        // TODO: Read record as per AFL
+        return {};
+    }
+    track2 = TypeArray2Hex(track2);
+    return {
+        'title': name,
+        '账号': track2.slice(0, 16),
+        '有效期 年/月': track2.slice(17, 19) + '/' + track2.slice(19, 21),
+    }
 };
 let ReadAnyCard = async () => {
     const tag = await poll();
