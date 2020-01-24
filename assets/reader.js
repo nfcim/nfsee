@@ -33,7 +33,7 @@ const returnDataToPendingPromise = (data) => {
   }
 };
 
-const poll = callNativeAndSetPendingPromise('poll');
+const poll = () => callNativeAndSetPendingPromise('poll');
 
 const pollCallback = returnDataToPendingPromise;
 
