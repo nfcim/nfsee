@@ -86,10 +86,7 @@ class _ScanTabState extends State<ScanTab> {
 
   void _readTag() async {
     final script = await rootBundle.loadString('assets/read.js');
-    _webView.evalJavascript("""async function run() {
-    $script
-    }
-    run();""");
+    _webView.evalJavascript(script);
   }
 
   void _togglePlatform() {
