@@ -150,6 +150,7 @@ let ReadCityUnion = async (fci) => {
     let f15 = await BasicInfoFile(fci);
     if (f15 == '') return {};
     let city = f15.slice(4, 8);
+    const balance = await ReadBalance();
     let expiry_date = f15.slice(48, 56);
     if (city == '4000') { // special case for CQ
         expiry_date = f15.slice(16, 24);
@@ -162,7 +163,6 @@ let ReadCityUnion = async (fci) => {
     }
     const number = f15.slice(24, 40);
     const issue_date = f15.slice(40, 48);
-    const balance = await ReadBalance();
     city = (city in ChinaPostCode) ? ChinaPostCode[city] : `未知代码${city}`;
     return {
         'title': `城市一卡通（${city}）`,
