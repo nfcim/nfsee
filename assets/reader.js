@@ -15,33 +15,31 @@ class NativeCaller {
 
 const nativeCaller = new NativeCaller();
 
-let pending = null;
+let pendingPromise = null;
 
-function pollCallback(data) {
-  if (pending) pending(data);
-}
-
-function poll() {
+const callNativeAndSetPendingPromise = (message, data) => {
   const ret = new Promise((resolve) => {
-    pending = resolve;
+    pendingPromise = resolve;
   });
 
-  nativeCaller.postMessage('poll');
+  nativeCaller.postMessage(message, data);
   return ret;
 }
 
-function transceiveCallback(data) {
-  if (pending) pending(data);
-}
+const returnDataToPendingPromise = (data) => {
+  if (pendingPromise) {
+    pendingPromise(data);
+    pendingPromise = null;
+  }
+};
 
-function transceive(rapdu) {
-  const ret = new Promise((resolve) => {
-    pending = resolve;
-  });
+const poll = callNativeAndSetPendingPromise('poll');
 
-  nativeCaller.postMessage('transceive', rapdu);
-  return ret;
-}
+const pollCallback = returnDataToPendingPromise;
+
+const transceive = (rapdu) => callNativeAndSetPendingPromise('transceive', rapdu);
+
+const transceiveCallback = returnDataToPendingPromise;
 
 function report(data) {
   nativeCaller.postMessage('report', data);
