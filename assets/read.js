@@ -242,7 +242,7 @@ let ReadqPBOC = async (fci) => {
     log("GPO: " + gpo_resp);
     if (!fci.endsWith('9000')) return {};
     let track2 = ExtractFromTLV(gpo_resp, ['77', '57']);
-    // let atc = ExtractFromTLV(gpo_resp, ['77', '9F36']);
+    let atc = ExtractFromTLV(gpo_resp, ['77', '9F36']);
     if (!track2) {
         // None-qPBOC procedure
         const AIP_AFL = ExtractFromTLV(gpo_resp, ['80']);
@@ -252,10 +252,14 @@ let ReadqPBOC = async (fci) => {
         return {};
     }
     track2 = TypeArray2Hex(track2);
+    if (atc) {
+        atc = atc[0] << 8 | atc[1];
+    }
     return {
         'title': name,
         '账号': track2.slice(0, 16),
         '有效期 年/月': track2.slice(17, 19) + '/' + track2.slice(19, 21),
+        '交易计数器': atc,
     }
 };
 let ReadAnyCard = async () => {
