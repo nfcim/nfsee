@@ -240,7 +240,7 @@ let ReadqPBOC = async (fci) => {
     pdol = TypeArray2Hex(new Uint8Array([pdol.length / 2 + 2, 0x83, pdol.length / 2])) + pdol
     const gpo_resp = await transceive(`80A80000${pdol}00`);
     log("GPO: " + gpo_resp);
-    if (!fci.endsWith('9000')) return {};
+    if (!gpo_resp.endsWith('9000')) return {};
     let track2 = ExtractFromTLV(gpo_resp, ['77', '57']);
     let atc = ExtractFromTLV(gpo_resp, ['77', '9F36']);
     if (!track2) {
