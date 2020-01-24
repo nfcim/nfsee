@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';
+import 'package:nfsee/localizations.dart';
 
-import 'ui/scan_tab.dart';
 import 'ui/about_tab.dart';
+import 'ui/scan_tab.dart';
 import 'widgets.dart';
 
 void main() => runApp(NFSeeApp());
@@ -36,13 +38,18 @@ class _NFSeeAppState extends State<NFSeeApp> {
       // Either Material or Cupertino widgets work in either Material or Cupertino
       // Apps.
       child: MaterialApp(
+        localizationsDelegates: [
+          const AppLocalizationsDelegate(),
+          GlobalMaterialLocalizations.delegate
+        ],
+        supportedLocales: [
+          const Locale('en'),
+          const Locale('zh'),
+        ],
         title: 'NFSee',
         theme: ThemeData(primarySwatch: Colors.deepOrange),
         builder: (context, child) {
           return CupertinoTheme(
-            // Instead of letting Cupertino widgets auto-adapt to the Material
-            // theme (which is green), this app will use a different theme
-            // for Cupertino (which is blue by default).
             data: CupertinoThemeData(),
             child: Material(child: child),
           );

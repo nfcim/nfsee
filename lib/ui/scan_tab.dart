@@ -10,6 +10,7 @@ import 'package:interactive_webview/interactive_webview.dart';
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';
 import 'package:nfsee/data/database/database.dart';
+import 'package:nfsee/localizations.dart';
 
 import '../models.dart';
 import '../widgets.dart';
@@ -122,7 +123,7 @@ class _ScanTabState extends State<ScanTab> {
   Widget _buildAndroid(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(ScanTab.title),
+        title: Text(AppLocalizations.of(context).scan_tab_title),
         actions: [
           IconButton(
             icon: Icon(Icons.shuffle),

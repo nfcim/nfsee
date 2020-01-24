@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   flutter_nfc_kit:
   interactive_webview:
   cupertino_icons:
@@ -16,6 +18,8 @@ dependencies:
   moor_ffi:
   path_provider:
   path:
+  intl:
+  intl_translation:
 
 dev_dependencies:
   flutter_test:
