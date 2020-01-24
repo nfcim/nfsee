@@ -120,7 +120,7 @@ class _ScanTabState extends State<ScanTab> {
   Widget _buildAndroid(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).scan_tab_title),
+        title: Text(AppLocalizations.of(context).scanTabTitle),
         actions: [
           IconButton(
             icon: Icon(Icons.shuffle),

@@ -19,7 +19,7 @@ class AppLocalizations {
 
   final String localeName;
 
-  String get scan_tab_title {
+  String get scanTabTitle {
     return Intl.message('Scan', name: 'scan_tab_title');
   }
 }
