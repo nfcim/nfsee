@@ -1,12 +1,15 @@
 (async function () {
     const GBKDecoder = new TextDecoder('gbk');
-    const EMV_AID2NAME = {
-        'A000000333010101': '银联借记卡',
-        'A000000333010102': '银联信用卡',
-        'A000000333010103': '银联准贷记卡',
-        'A0000000031010': 'VISA卡',
-        'A0000000041010': 'MasterCard',
-    };
+    const EMV_AID2NAME = [
+        ['A000000333010101', '银联借记卡'],
+        ['A000000333010102', '银联信用卡'],
+        ['A000000333010103', '银联准贷记卡'],
+        ['A000000003', 'VISA'],
+        ['A000000004', 'MasterCard'],
+        ['A000000025', 'American Express'],
+        ['A000000065', 'JCB'],
+        ['A000000152', 'Discover'],
+    ];
 
     let ParseGBKText = (hexStr) => {
         return GBKDecoder.decode(hex2buf(hexStr));
@@ -231,7 +234,13 @@
         if (!DFName) return {};
         const select = Uint8Array.from([DFName.length, ...DFName, 0]);
         DFName = buf2hex(DFName);
-        const name = EMV_AID2NAME[DFName];
+        let name = null;
+        for (const item of EMV_AID2NAME) {
+            if (DFName.startsWith(item[0])) {
+                name = item[1];
+                break;
+            }
+        }
         log(`PPSE DF Name: ${DFName} (${name})`);
         if (!name) return {};
         fci = await transceive('00A40400' + buf2hex(select));
