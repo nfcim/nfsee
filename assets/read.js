@@ -144,6 +144,7 @@
         };
 
     };
+
     let ReadCityUnion = async (fci) => {
         let f15 = await BasicInfoFile(fci);
         if (f15 === '') return {};
@@ -266,6 +267,21 @@
         }
     };
 
+    let ReadLingnanTong = async (fci) => {
+        let f15 = await BasicInfoFile(fci);
+        if (f15 === '') return {};
+        let r = await transceive('00A40400085041592E5449434C00');
+        if (!r.endsWith('9000'))
+            return {};
+        const number = f15.slice(22, 32);
+        const balance = await ReadBalance();
+        return {
+            'title': '岭南通',
+            'card_number': number,
+            'balance': balance,
+        };
+    };
+
     let ReadAnyCard = async () => {
         const tag = await poll();
         let r = await transceive('00B0840020');
@@ -298,6 +314,11 @@
                 else if (DFName.startsWith('AP1.WHCTC'))
                     return await ReadTransWuhan(r);
             }
+        }
+        r = await transceive('00A40400085041592E4150505900');
+        if (r.endsWith('9000')) {
+            r = r.slice(0, -4);
+            return await ReadLingnanTong(r);
         }
         return {};
     };
