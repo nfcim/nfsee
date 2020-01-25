@@ -253,13 +253,15 @@
             return {};
         }
         track2 = buf2hex(track2);
+        const sep = track2.indexOf('D');
+        if (sep < 0) return {};
         if (atc) {
             atc = atc[0] << 8 | atc[1];
         }
         return {
             'title': name,
-            'card_number': track2.slice(0, 16),
-            'expiration': track2.slice(17, 19) + '/' + track2.slice(19, 21),
+            'card_number': track2.slice(0, sep),
+            'expiration': track2.slice(sep + 1, sep + 3) + '/' + track2.slice(sep + 3, sep + 5),
             'atc': atc,
         }
     };
