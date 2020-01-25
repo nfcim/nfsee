@@ -75,6 +75,27 @@
         }
     };
 
+    let FetchElementsFromAFL = async (afl, tag_list) => {
+        let ret = {};
+        try {
+            for (let i = 0; i < afl.length; i += 4) {
+                log(`Reading record ${afl[i+1]}~${afl[i+2]} of SFI ${afl[0]}`);
+                for (let j = afl[i + 1]; j <= afl[i + 2]; j++) {
+                    const apdu = Uint8Array.from([0, 0xB2, j, 0x4 | afl[i], 0]);
+                    const r = await transceive(buf2hex(apdu));
+                    if (!r.endsWith('9000')) continue;
+                    for (const tag of tag_list) {
+                        const v = ExtractFromTLV(r, ['70', tag])
+                        if (v) ret[tag] = v;
+                    }
+                }
+            }
+        } catch (error) {
+            log("error: " + error);
+        }
+        return ret;
+    };
+
     let ReadBalance = async (usage) => {
         usage = usage || 2;
         const rapdu = await transceive(`805C000${usage}04`);
@@ -247,8 +268,7 @@
         fci = await transceive('00A40400' + buf2hex(select));
         if (!fci.endsWith('9000')) return {};
         let pdol = ExtractFromTLV(fci, ['6F', 'A5', '9F38']);
-        pdol = BuildRespOfPDOL(pdol);
-        if (!pdol) return {};
+        pdol = pdol ? BuildRespOfPDOL(pdol) : '';
         pdol = buf2hex(new Uint8Array([pdol.length / 2 + 2, 0x83, pdol.length / 2])) + pdol
         const gpo_resp = await transceive(`80A80000${pdol}00`);
         log("GPO: " + gpo_resp);
@@ -257,11 +277,15 @@
         let atc = ExtractFromTLV(gpo_resp, ['77', '9F36']);
         if (!track2) {
             // None-PPSE procedure
-            const AIP_AFL = ExtractFromTLV(gpo_resp, ['80']);
-            if (!AIP_AFL) return {};
-            log("AIP-AFL " + AIP_AFL);
-            // TODO: Read record as per AFL
-            return {};
+            let AFL = ExtractFromTLV(gpo_resp, ['77', '94']);
+            if (!AFL) {
+                const AIP_AFL = ExtractFromTLV(gpo_resp, ['80']);
+                if (!AIP_AFL) return {};
+                AFL = AIP_AFL.slice(2); // skip 2-byte AIP
+            }
+            const elements = await FetchElementsFromAFL(AFL, ['57', '9F36']);
+            track2 = elements['57'];
+            atc = elements['9F36'];
         }
         track2 = buf2hex(track2);
         const sep = track2.indexOf('D');
