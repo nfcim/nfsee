@@ -295,11 +295,17 @@
         const sep = track2.indexOf('D');
         if (sep < 0) return {};
         atc = atc[0] << 8 | atc[1];
+        let pin_retry = await transceive("80CA9F1700");
+        if (!pin_retry.endsWith('9000')) pin_retry = 'N/A';
+        else {
+            pin_retry = ExtractFromTLV(pin_retry, ['9F17'])[0];
+        }
         return {
             'title': name,
             'card_number': track2.slice(0, sep),
             'expiration': track2.slice(sep + 1, sep + 3) + '/' + track2.slice(sep + 3, sep + 5),
             'atc': atc,
+            'pin_retry': pin_retry,
         }
     };
 
