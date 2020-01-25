@@ -283,16 +283,18 @@
                 if (!AIP_AFL) return {};
                 AFL = AIP_AFL.slice(2); // skip 2-byte AIP
             }
-            const elements = await FetchElementsFromAFL(AFL, ['57', '9F36']);
+            const elements = await FetchElementsFromAFL(AFL, ['57']);
             track2 = elements['57'];
-            atc = elements['9F36'];
+        }
+        if (!atc) {
+            let r = await transceive("80CA9F3600");
+            if (!r.endsWith('9000')) return {};
+            atc = ExtractFromTLV(r, ['9F36']);
         }
         track2 = buf2hex(track2);
         const sep = track2.indexOf('D');
         if (sep < 0) return {};
-        if (atc) {
-            atc = atc[0] << 8 | atc[1];
-        }
+        atc = atc[0] << 8 | atc[1];
         return {
             'title': name,
             'card_number': track2.slice(0, sep),
