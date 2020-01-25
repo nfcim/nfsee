@@ -204,7 +204,7 @@ let ReadTUnion = async (fci) => {
   if (!f17.endsWith('9000'))
     return {};
   const balance = await ReadBalance();
-  const number = f15.slice(20, 36);
+  const number = f15.slice(20, 40);
   const issue_date = f15.slice(40, 48);
   const expiry_date = f15.slice(48, 56);
   const province = f17.slice(8, 12);
