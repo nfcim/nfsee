@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';
-import 'package:nfsee/localizations.dart';
 
 import 'ui/about_tab.dart';
 import 'ui/scan_tab.dart';
-import 'widgets.dart';
+import 'ui/widgets.dart';
+
+import 'generated/l10n.dart';
 
 void main() => runApp(NFSeeApp());
 
@@ -39,13 +40,10 @@ class _NFSeeAppState extends State<NFSeeApp> {
       // Apps.
       child: MaterialApp(
         localizationsDelegates: [
-          const AppLocalizationsDelegate(),
-          GlobalMaterialLocalizations.delegate
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
         ],
-        supportedLocales: [
-          const Locale('en'),
-          const Locale('zh'),
-        ],
+        supportedLocales: S.delegate.supportedLocales,
         title: 'NFSee',
         theme: ThemeData(primarySwatch: Colors.deepOrange),
         builder: (context, child) {

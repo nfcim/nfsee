@@ -31,3 +31,6 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
+
+flutter_intl:
+  enabled: true

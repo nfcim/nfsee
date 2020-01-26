@@ -1,8 +1,0 @@
-{
-  "@@last_modified": "2020-01-24T15:54:28.673224",
-  "scan_tab_title": "Scan",
-  "@scan_tab_title": {
-    "type": "text",
-    "placeholders": {}
-  }
-}

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
@@ -10,10 +11,11 @@ import 'package:interactive_webview/interactive_webview.dart';
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';
 import 'package:nfsee/data/database/database.dart';
-import 'package:nfsee/localizations.dart';
+import 'package:nfsee/ui/script_tab.dart';
 
+import '../generated/l10n.dart';
 import '../models.dart';
-import '../widgets.dart';
+import 'widgets.dart';
 
 class ScanTab extends StatefulWidget {
   static const title = 'Scan';
@@ -31,6 +33,7 @@ class ScanTab extends StatefulWidget {
 class _ScanTabState extends State<ScanTab> {
   final _webView = InteractiveWebView();
   List<DumpedRecord> _records = new List<DumpedRecord>();
+  StreamSubscription _webViewListener;
 
   NFSeeAppBloc get bloc => BlocProvider.provideBloc(context);
 
@@ -41,13 +44,14 @@ class _ScanTabState extends State<ScanTab> {
     this._updateRecords();
   }
 
-  _addWebViewHandler() async {
+  void _addWebViewHandler() async {
     _webView.evalJavascript(await rootBundle.loadString('assets/ber-tlv.js'));
     _webView.evalJavascript(await rootBundle.loadString('assets/crypto-js.js'));
     _webView.evalJavascript(await rootBundle.loadString('assets/crypto.js'));
     _webView.evalJavascript(await rootBundle.loadString('assets/reader.js'));
     _webView.evalJavascript(await rootBundle.loadString('assets/codes.js'));
-    _webView.didReceiveMessage.listen(this._onReceivedMessage);
+    _webViewListener =
+        _webView.didReceiveMessage.listen(this._onReceivedMessage);
   }
 
   _updateRecords() async {
@@ -57,7 +61,7 @@ class _ScanTabState extends State<ScanTab> {
     });
   }
 
-  _onReceivedMessage(WebkitMessage message) async {
+  void _onReceivedMessage(WebkitMessage message) async {
     var scriptModel = ScriptDataModel.fromJson(message.data);
     switch (scriptModel.action) {
       case 'poll':
@@ -106,10 +110,22 @@ class _ScanTabState extends State<ScanTab> {
     WidgetsBinding.instance.reassembleApplication();
   }
 
+  void _navigateToScriptMode() {
+    _webViewListener.cancel();
+    Navigator.of(context)
+        .push<void>(
+      MaterialPageRoute(builder: (context) => ScriptTab()),
+    )
+        .then((_) {
+      _webViewListener =
+          _webView.didReceiveMessage.listen(this._onReceivedMessage);
+    });
+  }
+
   // ===========================================================================
   // Non-shared code below because:
   // - Android and iOS have different scaffolds
-  // - There are differenc items in the app bar / nav bar
+  // - There are different items in the app bar / nav bar
   // - Android has a hamburger drawer, iOS has bottom tabs
   // - The iOS nav bar is scrollable, Android is not
   // - Pull-to-refresh works differently, and Android has a button to trigger it too
@@ -120,12 +136,12 @@ class _ScanTabState extends State<ScanTab> {
   Widget _buildAndroid(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).scanTabTitle),
+        title: Text(S.of(context).scanTabTitle),
         actions: [
           IconButton(
-            icon: Icon(Icons.shuffle),
-            onPressed: _togglePlatform,
-          ),
+            icon: Icon(Icons.assignment),
+            onPressed: _navigateToScriptMode,
+          )
         ],
       ),
       drawer: widget.androidDrawer,
