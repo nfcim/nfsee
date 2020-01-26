@@ -20,8 +20,9 @@ class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-  static _notInlinedMessages(_) => <String, Function>{
-        "scanTabTitle": MessageLookupByLibrary.simpleMessage("Scan"),
-        "scriptTabTitle": MessageLookupByLibrary.simpleMessage("Script Mode")
-      };
+  static _notInlinedMessages(_) => <String, Function> {
+    "aboutTabTitle" : MessageLookupByLibrary.simpleMessage("About"),
+    "scanTabTitle" : MessageLookupByLibrary.simpleMessage("Scan"),
+    "scriptTabTitle" : MessageLookupByLibrary.simpleMessage("Script Mode")
+  };
 }

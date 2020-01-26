@@ -1,4 +1,5 @@
 {
   "scriptTabTitle": "Script Mode",
-  "scanTabTitle": "Scan"
+  "scanTabTitle": "Scan",
+  "aboutTabTitle": "About"
 }
