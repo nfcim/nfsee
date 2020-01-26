@@ -9,7 +9,7 @@ class AboutTab extends StatefulWidget {
   static const androidIcon = Icon(Icons.info);
   static const iosIcon = Icon(Icons.info);
 
-  const AboutTab({Key key, this.androidDrawer}) : super(key: key);
+  const AboutTab({this.androidDrawer});
 
   final Widget androidDrawer;
 

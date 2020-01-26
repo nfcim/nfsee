@@ -22,7 +22,7 @@ class ScanTab extends StatefulWidget {
   static const androidIcon = Icon(Icons.nfc);
   static const iosIcon = Icon(Icons.nfc);
 
-  const ScanTab({Key key, this.androidDrawer}) : super(key: key);
+  const ScanTab({this.androidDrawer});
 
   final Widget androidDrawer;
 
@@ -95,23 +95,6 @@ class _ScanTabState extends State<ScanTab> {
     _webView.evalJavascript(script);
   }
 
-  void _togglePlatform() {
-    TargetPlatform _getOppositePlatform() {
-      if (defaultTargetPlatform == TargetPlatform.iOS) {
-        return TargetPlatform.android;
-      } else {
-        return TargetPlatform.iOS;
-      }
-    }
-
-    debugDefaultTargetPlatformOverride = _getOppositePlatform();
-    // This rebuilds the application. This should obviously never be
-    // done in a real app but it's done here since this app
-    // unrealistically toggles the current platform for demonstration
-    // purposes.
-    WidgetsBinding.instance.reassembleApplication();
-  }
-
   void _navigateToScriptMode() {
     _webViewListener.cancel();
     Navigator.of(context)
@@ -177,11 +160,6 @@ class _ScanTabState extends State<ScanTab> {
                 padding: EdgeInsets.zero,
                 child: Icon(CupertinoIcons.create),
                 onPressed: _readTag,
-              ),
-              CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: Icon(CupertinoIcons.shuffle),
-                onPressed: _togglePlatform,
               ),
             ],
           ),

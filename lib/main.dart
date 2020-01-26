@@ -73,22 +73,11 @@ class PlatformAdaptingHomePage extends StatefulWidget {
 }
 
 class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
-  // This app keeps a global key for the scan tab because it owns a bunch of
-  // data. Since changing platform re-parents those tabs into different
-  // scaffolds, keeping a global key to it lets this app keep that tab's data as
-  // the platform toggles.
-  //
-  // This isn't needed for apps that doesn't toggle platforms while running.
-  final scanTabKey = GlobalKey();
-  final scriptTabKey = GlobalKey();
-  final aboutTabKey = GlobalKey();
-
   // In Material, this app uses the hamburger menu paradigm and flatly lists
   // all 4 possible tabs. This drawer is injected into the scan tab which is
   // actually building the scaffold around the drawer.
   Widget _buildAndroidHomePage(BuildContext context) {
     return ScanTab(
-      key: scanTabKey,
       androidDrawer: _AndroidDrawer(),
     );
   }
@@ -118,17 +107,17 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           case 0:
             return CupertinoTabView(
               defaultTitle: ScanTab.title,
-              builder: (context) => ScanTab(key: scanTabKey),
+              builder: (context) => ScanTab(),
             );
           case 1:
             return CupertinoTabView(
               defaultTitle: ScriptTab.title,
-              builder: (context) => ScriptTab(key: scriptTabKey),
+              builder: (context) => ScriptTab(),
             );
           case 2:
             return CupertinoTabView(
               defaultTitle: AboutTab.title,
-              builder: (context) => AboutTab(key: aboutTabKey),
+              builder: (context) => AboutTab(),
             );
           default:
             assert(false, 'Unexpected tab');

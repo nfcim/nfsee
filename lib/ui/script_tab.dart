@@ -17,8 +17,6 @@ class ScriptTab extends StatefulWidget {
   static const androidIcon = Icon(Icons.code);
   static const iosIcon = Icon(Icons.code);
 
-  const ScriptTab({Key key}) : super(key: key);
-
   @override
   _ScriptTabState createState() => _ScriptTabState();
 }
