@@ -177,15 +177,23 @@ class _ScanTabState extends State<ScanTab> {
             sliver: SliverList(
               delegate:
                   SliverChildBuilderDelegate((BuildContext context, int index) {
-                int realIndex = index ~/ 2;
-                if (index.isEven) {
-                  return ReportRowItem(
-                    record: this._records[realIndex],
+                if (this._records.length == 0) {
+                  return Text(
+                    "Press button on the top right to scan a NFC tag",
+                    style: TextStyle(color: Colors.grey),
+                    textAlign: TextAlign.center,
                   );
                 } else {
-                  return Divider(height: 0, color: Colors.grey);
+                  int realIndex = index ~/ 2;
+                  if (index.isEven) {
+                    return ReportRowItem(
+                      record: this._records[realIndex],
+                    );
+                  } else {
+                    return Divider(height: 0, color: Colors.grey);
+                  }
                 }
-              }, childCount: math.max(0, this._records.length * 2 - 1)),
+              }, childCount: math.max(1, this._records.length * 2 - 1)),
             )),
       ],
     );
@@ -212,7 +220,8 @@ class ReportRowItem extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text('${record.id}: $title', style: Theme.of(context).textTheme.subtitle),
+        Text('${record.id}: $title',
+            style: Theme.of(context).textTheme.subtitle),
         Text(data.toString(), style: Theme.of(context).textTheme.body1)
       ],
     );
