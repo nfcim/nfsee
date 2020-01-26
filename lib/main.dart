@@ -78,51 +78,58 @@ class PlatformAdaptingHomePage extends StatefulWidget {
 }
 
 class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
-  // In Material, this app uses the hamburger menu paradigm and flatly lists
-  // all 4 possible tabs. This drawer is injected into the scan tab which is
-  // actually building the scaffold around the drawer.
+  int _currentIndex = 0;
+  final List<Widget> _children = [ScanTab(), ScriptTab(), AboutTab()];
+  void onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
+  List<BottomNavigationBarItem> _buildNavigationItem(BuildContext context) {
+    return [
+      BottomNavigationBarItem(
+          title: Text(S.of(context).scanTabTitle), icon: ScanTab.iosIcon),
+      BottomNavigationBarItem(
+          title: Text(S.of(context).scriptTabTitle), icon: ScriptTab.iosIcon),
+      BottomNavigationBarItem(
+          title: Text(S.of(context).aboutTabTitle), icon: AboutTab.iosIcon),
+    ];
+  }
+
   Widget _buildAndroidHomePage(BuildContext context) {
-    return ScanTab(
-      androidDrawer: _AndroidDrawer(),
+    return Scaffold(
+      body: _children[_currentIndex], // new
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: onTabTapped, // new
+        currentIndex: _currentIndex, // new
+        items: _buildNavigationItem(context),
+      ),
     );
   }
 
-  // On iOS, the app uses a bottom tab paradigm. Here, each tab view sits inside
-  // a tab in the tab scaffold. The tab scaffold also positions the tab bar
-  // in a row at the bottom.
-  //
-  // An important thing to note is that while a Material Drawer can display a
-  // large number of items, a tab bar cannot. To illustrate one way of adjusting
-  // for this, the app folds its fourth tab (the settings page) into the
-  // third tab. This is a common pattern on iOS.
+
   Widget _buildIosHomePage(BuildContext context) {
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
-        items: [
-          BottomNavigationBarItem(
-              title: Text(ScanTab.title), icon: ScanTab.iosIcon),
-          BottomNavigationBarItem(
-              title: Text(ScriptTab.title), icon: ScriptTab.iosIcon),
-          BottomNavigationBarItem(
-              title: Text(AboutTab.title), icon: AboutTab.iosIcon),
-        ],
+        items: _buildNavigationItem(context),
       ),
       tabBuilder: (context, index) {
         switch (index) {
           case 0:
             return CupertinoTabView(
-              defaultTitle: ScanTab.title,
-              builder: (context) => ScanTab(),
+              defaultTitle: S.of(context).scanTabTitle,
+              builder: (context) => _children[0],
             );
           case 1:
             return CupertinoTabView(
-              defaultTitle: ScriptTab.title,
-              builder: (context) => ScriptTab(),
+              defaultTitle: S.of(context).scriptTabTitle,
+              builder: (context) => _children[1],
             );
           case 2:
             return CupertinoTabView(
-              defaultTitle: AboutTab.title,
-              builder: (context) => AboutTab(),
+              defaultTitle: S.of(context).aboutTabTitle,
+              builder: (context) => _children[2],
             );
           default:
             assert(false, 'Unexpected tab');
