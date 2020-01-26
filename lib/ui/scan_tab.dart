@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
@@ -202,6 +201,14 @@ class ReportRowItem extends StatelessWidget {
 
   @override
   Widget build(context) {
-    return Text(record.toString());
+    var data = json.decode(record.data);
+    var title = data["title"];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text('${record.id}: $title', style: TextStyle(fontSize: 30)),
+        Text(data.toString())
+      ],
+    );
   }
 }
