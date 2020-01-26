@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -176,10 +177,15 @@ class _ScanTabState extends State<ScanTab> {
             sliver: SliverList(
               delegate:
                   SliverChildBuilderDelegate((BuildContext context, int index) {
-                return ReportRowItem(
-                  record: this._records[index],
-                );
-              }, childCount: this._records.length),
+                int realIndex = index ~/ 2;
+                if (index.isEven) {
+                  return ReportRowItem(
+                    record: this._records[realIndex],
+                  );
+                } else {
+                  return Divider(height: 0, color: Colors.grey);
+                }
+              }, childCount: math.max(0, this._records.length * 2 - 1)),
             )),
       ],
     );
@@ -206,8 +212,8 @@ class ReportRowItem extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text('${record.id}: $title', style: TextStyle(fontSize: 30)),
-        Text(data.toString())
+        Text('${record.id}: $title', style: Theme.of(context).textTheme.subtitle),
+        Text(data.toString(), style: Theme.of(context).textTheme.body1)
       ],
     );
   }

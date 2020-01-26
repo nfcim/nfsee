@@ -46,7 +46,12 @@ class _NFSeeAppState extends State<NFSeeApp> {
         ],
         supportedLocales: S.delegate.supportedLocales,
         title: 'NFSee',
-        theme: ThemeData(primarySwatch: Colors.deepOrange),
+        theme: ThemeData(
+          brightness: Brightness.light,
+          primarySwatch: Colors.deepOrange,
+        ),
+        darkTheme: ThemeData(
+            brightness: Brightness.dark, primarySwatch: Colors.deepOrange),
         builder: (context, child) {
           return CupertinoTheme(
             data: CupertinoThemeData(),
