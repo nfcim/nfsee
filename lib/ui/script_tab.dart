@@ -110,7 +110,11 @@ class _ScriptTabState extends State<ScriptTab> {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         middle: Text(S.of(context).scriptTabTitle),
-        previousPageTitle: 'Songs',
+        trailing: CupertinoButton(
+          padding: EdgeInsets.zero,
+          child: Icon(CupertinoIcons.play_arrow),
+          onPressed: _runScript,
+        ),
       ),
       child: _buildBody(),
     );

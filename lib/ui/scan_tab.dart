@@ -153,15 +153,10 @@ class _ScanTabState extends State<ScanTab> {
     return CustomScrollView(
       slivers: [
         CupertinoSliverNavigationBar(
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: Icon(CupertinoIcons.create),
-                onPressed: _readTag,
-              ),
-            ],
+          trailing: CupertinoButton(
+            padding: EdgeInsets.zero,
+            child: Icon(CupertinoIcons.create),
+            onPressed: _readTag,
           ),
         ),
         SliverPadding(
