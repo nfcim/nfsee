@@ -13,6 +13,12 @@ import '../models.dart';
 import 'widgets.dart';
 
 class ScriptTab extends StatefulWidget {
+  static const title = 'Script';
+  static const androidIcon = Icon(Icons.code);
+  static const iosIcon = Icon(Icons.code);
+
+  const ScriptTab({Key key}) : super(key: key);
+
   @override
   _ScriptTabState createState() => _ScriptTabState();
 }

@@ -70,7 +70,9 @@ class _ScanTabState extends State<ScanTab> {
         break;
 
       case 'transceive':
+        log('TX ${scriptModel.data}');
         final rapdu = await FlutterNfcKit.transceive(scriptModel.data);
+        log('RX $rapdu');
         _webView.evalJavascript("transceiveCallback('$rapdu')");
         break;
 

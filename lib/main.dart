@@ -6,6 +6,7 @@ import 'package:nfsee/data/blocs/provider.dart';
 
 import 'ui/about_tab.dart';
 import 'ui/scan_tab.dart';
+import 'ui/script_tab.dart';
 import 'ui/widgets.dart';
 
 import 'generated/l10n.dart';
@@ -79,6 +80,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   //
   // This isn't needed for apps that doesn't toggle platforms while running.
   final scanTabKey = GlobalKey();
+  final scriptTabKey = GlobalKey();
   final aboutTabKey = GlobalKey();
 
   // In Material, this app uses the hamburger menu paradigm and flatly lists
@@ -106,6 +108,8 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           BottomNavigationBarItem(
               title: Text(ScanTab.title), icon: ScanTab.iosIcon),
           BottomNavigationBarItem(
+              title: Text(ScriptTab.title), icon: ScriptTab.iosIcon),
+          BottomNavigationBarItem(
               title: Text(AboutTab.title), icon: AboutTab.iosIcon),
         ],
       ),
@@ -117,6 +121,11 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
               builder: (context) => ScanTab(key: scanTabKey),
             );
           case 1:
+            return CupertinoTabView(
+              defaultTitle: ScriptTab.title,
+              builder: (context) => ScriptTab(key: scriptTabKey),
+            );
+          case 2:
             return CupertinoTabView(
               defaultTitle: AboutTab.title,
               builder: (context) => AboutTab(key: aboutTabKey),
