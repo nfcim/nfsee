@@ -8,13 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:interactive_webview/interactive_webview.dart';
-import 'package:nfsee/data/blocs/bloc.dart';
-import 'package:nfsee/data/blocs/provider.dart';
-import 'package:nfsee/data/database/database.dart';
-import 'package:nfsee/ui/script_tab.dart';
 
+import '../data/blocs/bloc.dart';
+import '../data/blocs/provider.dart';
+import '../data/database/database.dart';
 import '../generated/l10n.dart';
 import '../models.dart';
+import '../ui/card_detail.dart';
+import '../ui/script_tab.dart';
 import 'widgets.dart';
 
 class ScanTab extends StatefulWidget {
@@ -77,11 +78,17 @@ class _ScanTabState extends State<ScanTab> {
         break;
 
       case 'report':
-        print(scriptModel.data.toString());
+//        print(scriptModel.data.toString());
         bloc.addDumpedRecord(scriptModel.data);
         await this._updateRecords();
-        this._records.forEach((el) => print(el.toString()));
+//        this._records.forEach((el) => print(el.toString()));
         await FlutterNfcKit.finish();
+        Navigator.of(context).push<void>(
+          MaterialPageRoute(
+            builder: (context) => CardDetailTab(
+                cardType: CardType.CityUnion, cardNumber: '123', data: null),
+          ),
+        );
         break;
 
       case 'log':
