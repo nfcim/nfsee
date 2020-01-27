@@ -101,20 +101,25 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     return Scaffold(
       bottomNavigationBar: BottomAppBar(
         color: Colors.orange[500],
-        child: Row(children: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.description),
-            onPressed: () {
-            },
-            color: Colors.black54,
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Row(
+            children: <Widget>[
+              IconButton(
+                icon: const Icon(Icons.description),
+                onPressed: () {
+                },
+                color: Colors.black54,
+              ),
+              IconButton(
+                icon: const Icon(Icons.settings),
+                onPressed: () {
+                },
+                color: Colors.black54,
+              )
+            ]
           ),
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-            },
-            color: Colors.black54,
-          )
-        ]),
+        ),
         shape: CircularNotchedRectangle()
       ),
       floatingActionButton: FloatingActionButton(
@@ -135,7 +140,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
                         style: TextStyle(fontSize: 18),
                       ),
                       SizedBox(height: 10),
-                      Image.asset('assets/read.gif', height: 200),
+                      Image.asset('assets/read.webp', height: 200),
                     ],
                   )
                 )
