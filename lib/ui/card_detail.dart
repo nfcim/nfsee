@@ -41,7 +41,7 @@ class CardDetailTab extends StatelessWidget {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         middle: Text('name'),
-        previousPageTitle: 'Songs',
+        previousPageTitle: 'Scan',
       ),
       child: _buildBody(),
     );

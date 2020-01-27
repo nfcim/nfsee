@@ -84,36 +84,36 @@ class _ScanTabState extends State<ScanTab> {
         await this._updateRecords();
         this._records.forEach((el) => print(el.toString()));
         await FlutterNfcKit.finish();
-        switch (defaultTargetPlatform) {
-          case TargetPlatform.android:
-            Navigator.of(context).push<void>(
-              MaterialPageRoute(
-                builder: (context) => CardDetailTab(
-                    cardType: CardType.CityUnion,
-                    cardNumber: '123',
-                    data: scriptModel.data),
-              ),
-            );
-            break;
-          case TargetPlatform.iOS:
-            Navigator.of(context).push<void>(
-              CupertinoPageRoute(
-                title: 'Card Detail',
-                builder: (context) => CardDetailTab(
-                    cardType: CardType.CityUnion,
-                    cardNumber: '123',
-                    data: null),
-              ),
-            );
-            break;
-          default:
-            assert(false, 'Unexpected platform $defaultTargetPlatform');
-        }
+        this._navigateToTag(scriptModel.data);
         break;
 
       case 'log':
         log(message.data.toString());
         break;
+    }
+  }
+
+  void _navigateToTag(dynamic data) {
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        Navigator.of(context).push<void>(
+          MaterialPageRoute(
+            builder: (context) => CardDetailTab(
+                cardType: CardType.CityUnion, cardNumber: '123', data: data),
+          ),
+        );
+        break;
+      case TargetPlatform.iOS:
+        Navigator.of(context).push<void>(
+          CupertinoPageRoute(
+            title: 'Card Detail',
+            builder: (context) => CardDetailTab(
+                cardType: CardType.CityUnion, cardNumber: '123', data: null),
+          ),
+        );
+        break;
+      default:
+        assert(false, 'Unexpected platform $defaultTargetPlatform');
     }
   }
 
@@ -208,9 +208,14 @@ class _ScanTabState extends State<ScanTab> {
                 } else {
                   int realIndex = index ~/ 2;
                   if (index.isEven) {
-                    return ReportRowItem(
-                      record: this._records[realIndex],
-                    );
+                    return GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          this._navigateToTag(this._records[realIndex].data);
+                        },
+                        child: ReportRowItem(
+                          record: this._records[realIndex],
+                        ));
                   } else {
                     return Divider(height: 0, color: Colors.grey);
                   }
