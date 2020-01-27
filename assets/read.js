@@ -86,7 +86,7 @@
         let ret = {};
         try {
             for (let i = 0; i < afl.length; i += 4) {
-                log(`Reading record ${afl[i+1]}~${afl[i+2]} of SFI ${afl[i]}`);
+                log(`Reading record ${afl[i + 1]}~${afl[i + 2]} of SFI ${afl[i]}`);
                 for (let j = afl[i + 1]; j <= afl[i + 2]; j++) {
                     const apdu = Uint8Array.from([0, 0xB2, j, 0x4 | afl[i], 0]);
                     const r = await transceive(buf2hex(apdu));
