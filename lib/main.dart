@@ -99,12 +99,54 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
   Widget _buildAndroidHomePage(BuildContext context) {
     return Scaffold(
-      body: _children[_currentIndex], // new
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: onTabTapped, // new
-        currentIndex: _currentIndex, // new
-        items: _buildNavigationItem(context),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.orange[500],
+        child: Row(children: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.description),
+            onPressed: () {
+            },
+            color: Colors.black54,
+          ),
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+            },
+            color: Colors.black54,
+          )
+        ]),
+        shape: CircularNotchedRectangle()
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return Container(
+                child:Padding(
+                  padding: const EdgeInsets.all(32),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        "Waiting for cards...",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      SizedBox(height: 10),
+                      Image.asset('assets/read.gif', height: 200),
+                    ],
+                  )
+                )
+              );
+            },
+          );
+        },
+        child: Icon(Icons.nfc),
+        backgroundColor: Colors.orange[900],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );
   }
 
@@ -144,42 +186,6 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     return PlatformWidget(
       androidBuilder: _buildAndroidHomePage,
       iosBuilder: _buildIosHomePage,
-    );
-  }
-}
-
-class _AndroidDrawer extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          DrawerHeader(
-            decoration: BoxDecoration(color: Colors.green),
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Icon(
-                Icons.account_circle,
-                color: Colors.green.shade800,
-                size: 96,
-              ),
-            ),
-          ),
-          ListTile(
-            leading: ScanTab.androidIcon,
-            title: Text(ScanTab.title),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          // Long drawer contents are often segmented.
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Divider(),
-          ),
-        ],
-      ),
     );
   }
 }
