@@ -109,7 +109,7 @@
         usage = usage || 2;
         const rapdu = await transceive(`805C000${usage}04`);
         if (rapdu.endsWith('9000'))
-            balance = parseInt(rapdu.slice(0, 8), 16) % 0x80000000 / 100 + '元';
+            balance = parseInt(rapdu.slice(0, 8), 16) % 0x80000000;
         for (let i = 1; i <= 10; i++) {
             const apdu = buf2hex(Uint8Array.from([0, 0xB2, i, 0xC4, 0]));
             const rapdu = await transceive(apdu);
@@ -117,7 +117,7 @@
                 break;
             trans.push({
                 'number': parseInt(rapdu.slice(0, 4), 16),
-                'amount': parseInt(rapdu.slice(10, 18), 16) % 0x80000000 / 100,
+                'amount': parseInt(rapdu.slice(10, 18), 16) % 0x80000000,
                 'type': PBOC_TTI2NAME[rapdu.slice(18, 20)] || '',
                 'terminal': rapdu.slice(20, 32),
                 'date': rapdu.slice(32, 40),
