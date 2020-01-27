@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';
+import 'package:nfsee/ui/settings.dart';
 
 import 'ui/about_tab.dart';
 import 'ui/scan_tab.dart';
@@ -48,10 +49,14 @@ class _NFSeeAppState extends State<NFSeeApp> {
         title: 'NFSee',
         theme: ThemeData(
           brightness: Brightness.light,
-          primarySwatch: Colors.deepOrange,
+          primarySwatch: Colors.orange,
+          accentColor: Colors.deepOrange,
         ),
         darkTheme: ThemeData(
-            brightness: Brightness.dark, primarySwatch: Colors.deepOrange),
+          brightness: Brightness.dark,
+          primarySwatch: Colors.orange,
+          accentColor: Colors.deepOrange,
+        ),
         builder: (context, child) {
           return CupertinoTheme(
             data: CupertinoThemeData(),
@@ -99,10 +104,10 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
   Widget _buildAndroidHomePage(BuildContext context) {
     return Scaffold(
+      primary: true,
       bottomNavigationBar: BottomAppBar(
         color: Colors.orange[500],
-        child: Padding(
-          padding: const EdgeInsets.all(8),
+        child: Padding( padding: const EdgeInsets.all(8),
           child: Row(
             children: <Widget>[
               IconButton(
@@ -114,6 +119,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
               IconButton(
                 icon: const Icon(Icons.settings),
                 onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsAct()));
                 },
                 color: Colors.black54,
               )
@@ -149,7 +155,6 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           );
         },
         child: Icon(Icons.nfc),
-        backgroundColor: Colors.orange[900],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );
