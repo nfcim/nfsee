@@ -106,15 +106,18 @@
     let ReadPBOCBalanceAndTrans = async (usage) => {
         let balance = 'N/A';
         let trans = [];
+        let purchase_atc = 0;
         usage = usage || 2;
-        const rapdu = await transceive(`805C000${usage}04`);
+        let rapdu = await transceive(`805C000${usage}04`);
         if (rapdu.endsWith('9000'))
             balance = parseInt(rapdu.slice(0, 8), 16) % 0x80000000;
         for (let i = 1; i <= 10; i++) {
             const apdu = buf2hex(Uint8Array.from([0, 0xB2, i, 0xC4, 0]));
-            const rapdu = await transceive(apdu);
+            rapdu = await transceive(apdu);
             if (!rapdu.endsWith('9000'))
                 break;
+            if (purchase_atc === 0)
+                purchase_atc = parseInt(rapdu.slice(0, 4), 16);
             trans.push({
                 'number': parseInt(rapdu.slice(0, 4), 16),
                 'amount': parseInt(rapdu.slice(10, 18), 16) % 0x80000000,
@@ -124,7 +127,11 @@
                 'time': rapdu.slice(40, 46),
             });
         }
-        return [balance, trans];
+        let load_atc = undefined;
+        rapdu = await transceive('805000020B0100000001000000000000');
+        if (rapdu.endsWith('9000'))
+            load_atc = parseInt(rapdu.slice(8, 12), 16);
+        return [balance, purchase_atc, load_atc, trans];
     };
 
     let BasicInfoFile = async (fci) => {
@@ -143,12 +150,14 @@
         const number = content04.slice(0, 16);
         const issue_date = content04.slice(48, 56);
         const expiry_date = content04.slice(56, 64);
-        const balance_trans = await ReadPBOCBalanceAndTrans();
+        const balance_atc_trans = await ReadPBOCBalanceAndTrans();
         return {
             'title': "北京一卡通（非互联互通版）",
             'card_number': number,
-            'balance': balance_trans[0],
-            'transactions': balance_trans[1],
+            'balance': balance_atc_trans[0],
+            'purchase_atc': balance_atc_trans[1],
+            'load_atc': balance_atc_trans[2],
+            'transactions': balance_atc_trans[3],
             'issue_date': issue_date,
             'expiry_date': expiry_date,
         };
