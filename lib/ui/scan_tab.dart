@@ -6,6 +6,7 @@ import 'dart:math' as math;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:interactive_webview/interactive_webview.dart';
 
@@ -78,17 +79,36 @@ class _ScanTabState extends State<ScanTab> {
         break;
 
       case 'report':
-//        print(scriptModel.data.toString());
+        //print(scriptModel.data.toString());
         bloc.addDumpedRecord(scriptModel.data);
         await this._updateRecords();
-//        this._records.forEach((el) => print(el.toString()));
+        //this._records.forEach((el) => print(el.toString()));
         await FlutterNfcKit.finish();
-        Navigator.of(context).push<void>(
-          MaterialPageRoute(
-            builder: (context) => CardDetailTab(
-                cardType: CardType.CityUnion, cardNumber: '123', data: null),
-          ),
-        );
+        switch (defaultTargetPlatform) {
+          case TargetPlatform.android:
+            Navigator.of(context).push<void>(
+              MaterialPageRoute(
+                builder: (context) => CardDetailTab(
+                    cardType: CardType.CityUnion,
+                    cardNumber: '123',
+                    data: null),
+              ),
+            );
+            break;
+          case TargetPlatform.iOS:
+            Navigator.of(context).push<void>(
+              CupertinoPageRoute(
+                title: 'Card Detail',
+                builder: (context) => CardDetailTab(
+                    cardType: CardType.CityUnion,
+                    cardNumber: '123',
+                    data: null),
+              ),
+            );
+            break;
+          default:
+            assert(false, 'Unexpected platform $defaultTargetPlatform');
+        }
         break;
 
       case 'log':
