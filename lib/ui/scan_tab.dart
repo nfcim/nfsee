@@ -79,10 +79,10 @@ class _ScanTabState extends State<ScanTab> {
         break;
 
       case 'report':
-        //print(scriptModel.data.toString());
+        print(scriptModel.data.toString());
         bloc.addDumpedRecord(scriptModel.data);
         await this._updateRecords();
-        //this._records.forEach((el) => print(el.toString()));
+        this._records.forEach((el) => print(el.toString()));
         await FlutterNfcKit.finish();
         switch (defaultTargetPlatform) {
           case TargetPlatform.android:
@@ -91,7 +91,7 @@ class _ScanTabState extends State<ScanTab> {
                 builder: (context) => CardDetailTab(
                     cardType: CardType.CityUnion,
                     cardNumber: '123',
-                    data: null),
+                    data: scriptModel.data),
               ),
             );
             break;

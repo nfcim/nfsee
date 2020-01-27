@@ -19,7 +19,8 @@ class CardDetailTab extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Image.asset('assets/cards/city_union.png')
+          Image.asset('assets/cards/city_union.png'),
+          Text(data.toString()),
         ],
       ),
     );
