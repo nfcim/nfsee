@@ -11,6 +11,13 @@
         ['A000000098', 'VISA USA'],
         ['A000000152', 'Discover'],
     ];
+    const PBOC_TTI2NAME = {
+        '01': '充值',
+        '02': '充值',
+        '05': '消费',
+        '06': '消费',
+        '09': '复合消费', // GB/T 31778
+    };
 
     let ParseGBKText = (hexStr) => {
         return GBKDecoder.decode(hex2buf(hexStr));
@@ -79,7 +86,7 @@
         let ret = {};
         try {
             for (let i = 0; i < afl.length; i += 4) {
-                log(`Reading record ${afl[i+1]}~${afl[i+2]} of SFI ${afl[0]}`);
+                log(`Reading record ${afl[i+1]}~${afl[i+2]} of SFI ${afl[i]}`);
                 for (let j = afl[i + 1]; j <= afl[i + 2]; j++) {
                     const apdu = Uint8Array.from([0, 0xB2, j, 0x4 | afl[i], 0]);
                     const r = await transceive(buf2hex(apdu));
@@ -96,12 +103,28 @@
         return ret;
     };
 
-    let ReadBalance = async (usage) => {
+    let ReadPBOCBalanceAndTrans = async (usage) => {
+        let balance = 'N/A';
+        let trans = [];
         usage = usage || 2;
         const rapdu = await transceive(`805C000${usage}04`);
-        if (!rapdu.endsWith('9000'))
-            return 'N/A';
-        return parseInt(rapdu.slice(0, 8), 16) % 0x80000000 / 100 + '元';
+        if (rapdu.endsWith('9000'))
+            balance = parseInt(rapdu.slice(0, 8), 16) % 0x80000000 / 100 + '元';
+        for (let i = 1; i <= 10; i++) {
+            const apdu = buf2hex(Uint8Array.from([0, 0xB2, i, 0xC4, 0]));
+            const rapdu = await transceive(apdu);
+            if (!rapdu.endsWith('9000'))
+                break;
+            trans.push({
+                'number': parseInt(rapdu.slice(0, 4), 16),
+                'amount': parseInt(rapdu.slice(10, 18), 16) % 0x80000000 / 100,
+                'type': PBOC_TTI2NAME[rapdu.slice(18, 20)] || '',
+                'terminal': rapdu.slice(20, 32),
+                'date': rapdu.slice(32, 40),
+                'time': rapdu.slice(40, 46),
+            });
+        }
+        return [balance, trans];
     };
 
     let BasicInfoFile = async (fci) => {
@@ -120,11 +143,12 @@
         const number = content04.slice(0, 16);
         const issue_date = content04.slice(48, 56);
         const expiry_date = content04.slice(56, 64);
-        const balance = await ReadBalance();
+        const balance_trans = await ReadPBOCBalanceAndTrans();
         return {
             'title': "北京一卡通（非互联互通版）",
             'card_number': number,
-            'balance': balance,
+            'balance': balance_trans[0],
+            'transactions': balance_trans[1],
             'issue_date': issue_date,
             'expiry_date': expiry_date,
         };
@@ -136,18 +160,19 @@
         const number = parseInt(r.slice(32, 40), 16);
         const issue_date = r.slice(40, 48);
         const expiry_date = r.slice(48, 56);
-        const balance = await ReadBalance();
+        const balance_trans = await ReadPBOCBalanceAndTrans();
         return {
             'title': "深圳通",
             'card_number': number,
-            'balance': balance,
+            'balance': balance_trans[0],
+            'transactions': balance_trans[1],
             'issue_date': issue_date,
             'expiry_date': expiry_date,
         };
     };
 
     let ReadTransWuhan = async (fci) => {
-        const balance = await ReadBalance();
+        const balance_trans = await ReadPBOCBalanceAndTrans();
         let mf = await transceive('00A40000023F00');
         if (!mf.endsWith('9000'))
             return {};
@@ -163,7 +188,8 @@
         return {
             'title': "武汉通",
             'card_number': number,
-            'balance': balance,
+            'balance': balance_trans[0],
+            'transactions': balance_trans[1],
             'issue_date': issue_date,
             'expiry_date': expiry_date,
         };
@@ -174,7 +200,7 @@
         let f15 = await BasicInfoFile(fci);
         if (f15 === '') return {};
         let city = f15.slice(4, 8);
-        const balance = await ReadBalance();
+        const balance_trans = await ReadPBOCBalanceAndTrans();
         let expiry_date = f15.slice(48, 56);
         if (city === '4000') { // special case for Chongqing
             expiry_date = f15.slice(16, 24);
@@ -191,7 +217,8 @@
         return {
             'title': `城市一卡通（${city}）`,
             'card_number': number,
-            'balance': balance,
+            'balance': balance_trans[0],
+            'transactions': balance_trans[1],
             'issue_date': issue_date,
             'expiry_date': expiry_date,
         };
@@ -203,7 +230,7 @@
             return {};
         const name = ParseGBKText(f16.slice(0, 40).replace(/(00)+$/, ''));
         const stuNum = ParseGBKText(f16.slice(56, 76));
-        const balance = await ReadBalance(1);
+        const balance_trans = await ReadPBOCBalanceAndTrans(1);
         let mf = await transceive('00A40000023F00');
         if (!mf.endsWith('9000'))
             return {};
@@ -220,7 +247,8 @@
             'display_expiry_date': writtenDueDate,
             'name': name,
             'number': stuNum,
-            'balance': balance
+            'balance': balance_trans[0],
+            'transactions': balance_trans[1],
         };
     };
 
@@ -230,7 +258,7 @@
         let f17 = await transceive('00B097000B');
         if (!f17.endsWith('9000'))
             return {};
-        const balance = await ReadBalance();
+        const balance_trans = await ReadPBOCBalanceAndTrans();
         const number = f15.slice(20, 40);
         const issue_date = f15.slice(40, 48);
         const expiry_date = f15.slice(48, 56);
@@ -242,7 +270,8 @@
         return {
             'title': "交通联合卡",
             'card_number': number,
-            'balance': balance,
+            'balance': balance_trans[0],
+            'transactions': balance_trans[1],
             'province_code': province,
             'city': city,
             'tu_type': type,
@@ -316,16 +345,18 @@
         if (!r.endsWith('9000'))
             return {};
         const number = f15.slice(22, 32);
-        const balance = await ReadBalance();
+        const balance_trans = await ReadPBOCBalanceAndTrans();
         return {
             'title': '岭南通',
             'card_number': number,
-            'balance': balance,
+            'balance': balance_trans[0],
+            'transactions': balance_trans[1],
         };
     };
 
     let ReadAnyCard = async () => {
         const tag = await poll();
+        log(tag);
         let r = await transceive('00B0840020');
         if (r.endsWith('9000') && r.startsWith('1000'))
             return await ReadTransBeijing(r.slice(0, -4));
