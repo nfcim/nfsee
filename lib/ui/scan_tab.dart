@@ -6,15 +6,16 @@ import 'dart:math' as math;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:interactive_webview/interactive_webview.dart';
-import 'package:nfsee/data/blocs/bloc.dart';
-import 'package:nfsee/data/blocs/provider.dart';
-import 'package:nfsee/data/database/database.dart';
-import 'package:nfsee/ui/script_tab.dart';
 
+import '../data/blocs/bloc.dart';
+import '../data/blocs/provider.dart';
+import '../data/database/database.dart';
 import '../generated/l10n.dart';
 import '../models.dart';
+import '../ui/card_detail.dart';
 import 'widgets.dart';
 
 class ScanTab extends StatefulWidget {
@@ -77,11 +78,15 @@ class _ScanTabState extends State<ScanTab> {
         break;
 
       case 'report':
-        print(scriptModel.data.toString());
+        // save result to database
         bloc.addDumpedRecord(scriptModel.data);
         await this._updateRecords();
+        // dump results to console
+        print(scriptModel.data.toString());
         this._records.forEach((el) => print(el.toString()));
+        // finish NFC communication
         await FlutterNfcKit.finish();
+        this._navigateToTag(scriptModel.data);
         break;
 
       case 'log':
@@ -90,21 +95,56 @@ class _ScanTabState extends State<ScanTab> {
     }
   }
 
+  void _navigateToTag(dynamic data) {
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        Navigator.of(context).push<void>(
+          MaterialPageRoute(
+            builder: (context) => CardDetailTab(
+                cardType: CardType.CityUnion, cardNumber: '123', data: data),
+          ),
+        );
+        break;
+      case TargetPlatform.iOS:
+        Navigator.of(context).push<void>(
+          CupertinoPageRoute(
+            title: 'Card Detail',
+            builder: (context) => CardDetailTab(
+                cardType: CardType.CityUnion, cardNumber: '123', data: null),
+          ),
+        );
+        break;
+      default:
+        assert(false, 'Unexpected platform $defaultTargetPlatform');
+    }
+  }
+
   void _readTag() async {
     final script = await rootBundle.loadString('assets/read.js');
     _webView.evalJavascript(script);
   }
 
-  void _navigateToScriptMode() {
-    _webViewListener.cancel();
-    Navigator.of(context)
-        .push<void>(
-      MaterialPageRoute(builder: (context) => ScriptTab()),
-    )
-        .then((_) {
-      _webViewListener =
-          _webView.didReceiveMessage.listen(this._onReceivedMessage);
-    });
+  Widget _buildList(BuildContext context) {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate((BuildContext _context, int index) {
+        if (this._records.length == 0) {
+          return Text(
+            "Press button on the top right to scan a NFC tag",
+            style: TextStyle(color: Colors.grey),
+            textAlign: TextAlign.center,
+          );
+        } else {
+          int realIndex = index ~/ 2;
+          if (index.isEven) {
+            return ReportRowItem(
+              record: this._records[realIndex],
+            );
+          } else {
+            return Divider(height: 0, color: Colors.grey);
+          }
+        }
+      }, childCount: math.max(1, this._records.length * 2 - 1)),
+    );
   }
 
   // ===========================================================================
@@ -119,33 +159,47 @@ class _ScanTabState extends State<ScanTab> {
   // answer.
   // ===========================================================================
   Widget _buildAndroid(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(S.of(context).scanTabTitle),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.assignment),
-            onPressed: _navigateToScriptMode,
-          )
-        ],
-      ),
-      drawer: widget.androidDrawer,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image.asset('assets/tap.png', height: 240),
-            Text(
-              'Current state:',
-            ),
-            FlatButton(
-              onPressed: _readTag,
-              child:
-                  Row(children: <Widget>[Icon(Icons.nfc), Text('Scan a card')]),
-            )
-          ],
+    // return Scaffold(
+    //   appBar: AppBar(
+    //     title: Text(S.of(context).scanTabTitle),
+    //     actions: [],
+    //   ),
+    //   drawer: widget.androidDrawer,
+    //   body: Center(
+    //     child: Column(
+    //       mainAxisAlignment: MainAxisAlignment.center,
+    //       children: <Widget>[
+    //         Image.asset('assets/tap.png', height: 240),
+    //         Text(
+    //           'Current state:',
+    //         ),
+    //         FlatButton(
+    //           onPressed: _readTag,
+    //           child:
+    //               Row(children: <Widget>[Icon(Icons.nfc), Text('Scan a card')]),
+    //         )
+    //       ],
+    //     ),
+    //   ),
+    // );
+    return CustomScrollView(
+      slivers: [
+        AppBar(
+          title: Text(S.of(context).scanTabTitle),
+          actions: [],
         ),
-      ),
+        SliverPadding(
+            // Top media padding consumed by CupertinoSliverNavigationBar.
+            // Left/Right media padding consumed by Tab1RowItem.
+            padding: MediaQuery.of(context)
+                .removePadding(
+                  removeTop: true,
+                  removeLeft: true,
+                  removeRight: true,
+                )
+                .padding,
+            sliver: _buildList(context)),
+      ],
     );
   }
 
@@ -169,27 +223,7 @@ class _ScanTabState extends State<ScanTab> {
                   removeRight: true,
                 )
                 .padding,
-            sliver: SliverList(
-              delegate:
-                  SliverChildBuilderDelegate((BuildContext context, int index) {
-                if (this._records.length == 0) {
-                  return Text(
-                    "Press button on the top right to scan a NFC tag",
-                    style: TextStyle(color: Colors.grey),
-                    textAlign: TextAlign.center,
-                  );
-                } else {
-                  int realIndex = index ~/ 2;
-                  if (index.isEven) {
-                    return ReportRowItem(
-                      record: this._records[realIndex],
-                    );
-                  } else {
-                    return Divider(height: 0, color: Colors.grey);
-                  }
-                }
-              }, childCount: math.max(1, this._records.length * 2 - 1)),
-            )),
+            sliver: _buildList(context)),
       ],
     );
   }

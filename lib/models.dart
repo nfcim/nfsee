@@ -8,3 +8,25 @@ class ScriptDataModel {
       : action = map['action'],
         data = map['data'];
 }
+
+enum CardType {
+  CityUnion,
+  TUnion,
+  BMAC,
+  LingnanPass,
+  ShenzhenTong,
+  WuhanTong,
+  TMoney,
+  Octopus,
+  UPCredit,
+  UPDebit,
+  VisaCredit,
+  VisaDebit,
+  VisaPrepaid,
+  MCCredit,
+  MCDebit,
+  MCPrepaid,
+  AMEXCredit,
+  AMEXDebit,
+  AMEXPrepaid,
+}

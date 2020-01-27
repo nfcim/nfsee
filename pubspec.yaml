@@ -11,7 +11,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  flutter_nfc_kit:
+  flutter_nfc_kit: 0.0.5
   interactive_webview:
   cupertino_icons:
   moor:
@@ -31,6 +31,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
+    - assets/cards/
 
 flutter_intl:
   enabled: true
