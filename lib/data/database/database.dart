@@ -12,14 +12,22 @@ class DumpedRecords extends Table {
   TextColumn get data => text()();
 }
 
+@DataClassName('SavedScript')
+class SavedScripts extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get name => text()();
+  TextColumn get source => text()();
+  DateTimeColumn get lastUsed => dateTime().nullable()();
+}
+
 @UseMoor(
-  tables: [DumpedRecords],
+  tables: [DumpedRecords, SavedScripts],
 )
 class Database extends _$Database {
   Database(QueryExecutor e) : super(e);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   Future<int> addDumpedRecord(DumpedRecordsCompanion entry) {
     return into(dumpedRecords).insert(entry);
@@ -27,6 +35,22 @@ class Database extends _$Database {
 
   Future<List<DumpedRecord>> listDumpedRecords() {
     return select(dumpedRecords).get();
+  }
+
+  Future<int> addScript(SavedScriptsCompanion entry) {
+    return into(savedScripts).insert(entry);
+  }
+
+  Future<bool> updateScript(SavedScriptsCompanion entry) {
+    return update(savedScripts).replace(entry);
+  }
+
+  Future<int> delScript(SavedScriptsCompanion entry) {
+    return delete(savedScripts).delete(entry);
+  }
+
+  Future<List<SavedScript>> listScripts() {
+    return select(savedScripts).get();
   }
 }
 

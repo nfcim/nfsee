@@ -202,13 +202,256 @@ class $DumpedRecordsTable extends DumpedRecords
   }
 }
 
+class SavedScript extends DataClass implements Insertable<SavedScript> {
+  final int id;
+  final String name;
+  final String source;
+  final DateTime lastUsed;
+  SavedScript(
+      {@required this.id,
+      @required this.name,
+      @required this.source,
+      this.lastUsed});
+  factory SavedScript.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
+    final stringType = db.typeSystem.forDartType<String>();
+    final dateTimeType = db.typeSystem.forDartType<DateTime>();
+    return SavedScript(
+      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
+      source:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}source']),
+      lastUsed: dateTimeType
+          .mapFromDatabaseResponse(data['${effectivePrefix}last_used']),
+    );
+  }
+  factory SavedScript.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return SavedScript(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      source: serializer.fromJson<String>(json['source']),
+      lastUsed: serializer.fromJson<DateTime>(json['lastUsed']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'source': serializer.toJson<String>(source),
+      'lastUsed': serializer.toJson<DateTime>(lastUsed),
+    };
+  }
+
+  @override
+  SavedScriptsCompanion createCompanion(bool nullToAbsent) {
+    return SavedScriptsCompanion(
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      source:
+          source == null && nullToAbsent ? const Value.absent() : Value(source),
+      lastUsed: lastUsed == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastUsed),
+    );
+  }
+
+  SavedScript copyWith(
+          {int id, String name, String source, DateTime lastUsed}) =>
+      SavedScript(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        source: source ?? this.source,
+        lastUsed: lastUsed ?? this.lastUsed,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('SavedScript(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('source: $source, ')
+          ..write('lastUsed: $lastUsed')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(id.hashCode,
+      $mrjc(name.hashCode, $mrjc(source.hashCode, lastUsed.hashCode))));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is SavedScript &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.source == this.source &&
+          other.lastUsed == this.lastUsed);
+}
+
+class SavedScriptsCompanion extends UpdateCompanion<SavedScript> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String> source;
+  final Value<DateTime> lastUsed;
+  const SavedScriptsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.source = const Value.absent(),
+    this.lastUsed = const Value.absent(),
+  });
+  SavedScriptsCompanion.insert({
+    this.id = const Value.absent(),
+    @required String name,
+    @required String source,
+    this.lastUsed = const Value.absent(),
+  })  : name = Value(name),
+        source = Value(source);
+  SavedScriptsCompanion copyWith(
+      {Value<int> id,
+      Value<String> name,
+      Value<String> source,
+      Value<DateTime> lastUsed}) {
+    return SavedScriptsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      source: source ?? this.source,
+      lastUsed: lastUsed ?? this.lastUsed,
+    );
+  }
+}
+
+class $SavedScriptsTable extends SavedScripts
+    with TableInfo<$SavedScriptsTable, SavedScript> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $SavedScriptsTable(this._db, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  GeneratedIntColumn _id;
+  @override
+  GeneratedIntColumn get id => _id ??= _constructId();
+  GeneratedIntColumn _constructId() {
+    return GeneratedIntColumn('id', $tableName, false,
+        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
+  final VerificationMeta _nameMeta = const VerificationMeta('name');
+  GeneratedTextColumn _name;
+  @override
+  GeneratedTextColumn get name => _name ??= _constructName();
+  GeneratedTextColumn _constructName() {
+    return GeneratedTextColumn(
+      'name',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _sourceMeta = const VerificationMeta('source');
+  GeneratedTextColumn _source;
+  @override
+  GeneratedTextColumn get source => _source ??= _constructSource();
+  GeneratedTextColumn _constructSource() {
+    return GeneratedTextColumn(
+      'source',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _lastUsedMeta = const VerificationMeta('lastUsed');
+  GeneratedDateTimeColumn _lastUsed;
+  @override
+  GeneratedDateTimeColumn get lastUsed => _lastUsed ??= _constructLastUsed();
+  GeneratedDateTimeColumn _constructLastUsed() {
+    return GeneratedDateTimeColumn(
+      'last_used',
+      $tableName,
+      true,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [id, name, source, lastUsed];
+  @override
+  $SavedScriptsTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'saved_scripts';
+  @override
+  final String actualTableName = 'saved_scripts';
+  @override
+  VerificationContext validateIntegrity(SavedScriptsCompanion d,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    if (d.id.present) {
+      context.handle(_idMeta, id.isAcceptableValue(d.id.value, _idMeta));
+    }
+    if (d.name.present) {
+      context.handle(
+          _nameMeta, name.isAcceptableValue(d.name.value, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (d.source.present) {
+      context.handle(
+          _sourceMeta, source.isAcceptableValue(d.source.value, _sourceMeta));
+    } else if (isInserting) {
+      context.missing(_sourceMeta);
+    }
+    if (d.lastUsed.present) {
+      context.handle(_lastUsedMeta,
+          lastUsed.isAcceptableValue(d.lastUsed.value, _lastUsedMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SavedScript map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return SavedScript.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  Map<String, Variable> entityToSql(SavedScriptsCompanion d) {
+    final map = <String, Variable>{};
+    if (d.id.present) {
+      map['id'] = Variable<int, IntType>(d.id.value);
+    }
+    if (d.name.present) {
+      map['name'] = Variable<String, StringType>(d.name.value);
+    }
+    if (d.source.present) {
+      map['source'] = Variable<String, StringType>(d.source.value);
+    }
+    if (d.lastUsed.present) {
+      map['last_used'] = Variable<DateTime, DateTimeType>(d.lastUsed.value);
+    }
+    return map;
+  }
+
+  @override
+  $SavedScriptsTable createAlias(String alias) {
+    return $SavedScriptsTable(_db, alias);
+  }
+}
+
 abstract class _$Database extends GeneratedDatabase {
   _$Database(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   $DumpedRecordsTable _dumpedRecords;
   $DumpedRecordsTable get dumpedRecords =>
       _dumpedRecords ??= $DumpedRecordsTable(this);
+  $SavedScriptsTable _savedScripts;
+  $SavedScriptsTable get savedScripts =>
+      _savedScripts ??= $SavedScriptsTable(this);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [dumpedRecords];
+  List<DatabaseSchemaEntity> get allSchemaEntities =>
+      [dumpedRecords, savedScripts];
 }

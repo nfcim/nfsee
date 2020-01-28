@@ -1,3 +1,5 @@
+import 'package:nfsee/data/database/database.dart';
+
 class ScriptDataModel {
   final String action;
   final dynamic data;
@@ -29,15 +31,4 @@ enum CardType {
   AMEXCredit,
   AMEXDebit,
   AMEXPrepaid,
-}
-
-class Script {
-  final String name;
-  final String source;
-  final DateTime lastExecuted;
-
-  Script.create({
-    this.name,
-    this.source,
-  }): lastExecuted = null;
 }

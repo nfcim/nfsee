@@ -7,6 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:interactive_webview/interactive_webview.dart';
+import 'package:nfsee/data/database/database.dart';
+
+import '../data/blocs/bloc.dart';
+import '../data/blocs/provider.dart';
 
 import '../generated/l10n.dart';
 import '../models.dart';
@@ -25,9 +29,10 @@ class _ScriptsActState extends State<ScriptsAct> {
   final _webView = InteractiveWebView();
   StreamSubscription _webViewListener;
 
+  NFSeeAppBloc get bloc => BlocProvider.provideBloc(context);
+
   /// All scripts
-  /// TODO(script): sync to database, hence make this one a non-state
-  var scripts = List<Script>();
+  var scripts = List<SavedScript>();
 
   /// Result from webkit
   var result = '';
@@ -43,6 +48,7 @@ class _ScriptsActState extends State<ScriptsAct> {
     super.initState();
     _webViewListener =
         _webView.didReceiveMessage.listen(this._onReceivedMessage);
+    this.updateScripts();
   }
 
   void _onReceivedMessage(WebkitMessage message) async {
@@ -122,8 +128,10 @@ class _ScriptsActState extends State<ScriptsAct> {
                         child: Text("Copy"),
                       ),
                       FlatButton(
-                        onPressed: () {
+                        onPressed: () async {
                           this._runScript(s.source);
+                          await this.bloc.useScript(s);
+                          this.updateScripts();
                         },
                         child: Text("Run"),
                       ),
@@ -140,10 +148,9 @@ class _ScriptsActState extends State<ScriptsAct> {
                   return SimpleDialog(
                     children: <Widget>[
                       SimpleDialogOption(
-                        onPressed: () {
-                          setState(() {
-                            this.scripts.remove(s);
-                          });
+                        onPressed: () async {
+                          await this.bloc.delScript(s);
+                          this.updateScripts();
                           Navigator.of(context).pop();
                         },
                         child: ListTile(
@@ -232,18 +239,15 @@ class _ScriptsActState extends State<ScriptsAct> {
                 actions: <Widget>[
                   FlatButton(
                     child: Text("Add"),
-                    onPressed: () {
+                    onPressed: () async {
                       log("Adding script: ${this.pendingName}");
 
-                      setState(() {
-                        this.scripts.add(Script.create(
-                          name: this.pendingName == '' ? "Script" : this.pendingName,
-                          source: this.pendingSrc,
-                        ));
-                      });
+                      await this.bloc.addScript(this.pendingName == '' ? 'Script' : this.pendingName, this.pendingSrc);
 
                       this.pendingName = '';
                       this.pendingSrc = '';
+
+                      this.updateScripts();
 
                       // Close alert dialog
                       Navigator.of(context).pop();
@@ -279,10 +283,21 @@ class _ScriptsActState extends State<ScriptsAct> {
       iosBuilder: _buildIos,
     );
   }
+
+  void updateScripts() async {
+    var scripts = await this.bloc.listScripts();
+    scripts.sort((a, b) =>
+      (b.lastUsed ?? DateTime.fromMicrosecondsSinceEpoch(0))
+        .compareTo(a.lastUsed ?? DateTime.fromMicrosecondsSinceEpoch(0))
+    );
+    setState(() {
+      this.scripts = scripts;
+    });
+  }
 }
 
 class ScriptEntry extends StatelessWidget {
-  final Script script;
+  final SavedScript script;
   final void Function() execute;
   final void Function() contextPop;
 
@@ -314,7 +329,7 @@ class ScriptEntry extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: Text(
-                  "Last executed: " + (script.lastExecuted != null ? script.lastExecuted.toString() : "Never"),
+                  "Last executed: " + (script.lastUsed != null ? script.lastUsed.toString() : "Never"),
                   style: Theme.of(context).textTheme.subhead.apply(
                     color: Colors.black38
                   ),
