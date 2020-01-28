@@ -82,8 +82,8 @@ class _ScriptsActState extends State<ScriptsAct> {
     super.dispose();
   }
 
-  Widget _buildBody() {
-    
+  Widget _buildBody(BuildContext context) {
+    var outer = context;
     return SafeArea(
       child: Scrollbar(
         child: ListView(
@@ -97,6 +97,39 @@ class _ScriptsActState extends State<ScriptsAct> {
             return ScriptEntry(
               script: s,
               execute: () {
+                showDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text("Script: ${s.name}"),
+                      actions: <Widget>[
+                        FlatButton(
+                          onPressed: () async {
+                            await Clipboard.setData(ClipboardData(text: s.source));
+                            Navigator.of(context).pop();
+                            var scaff = Scaffold.of(outer);
+                            scaff.hideCurrentSnackBar();
+                            scaff.showSnackBar(
+                              SnackBar(
+                                behavior: SnackBarBehavior.floating,
+                                content: Text("Copied!"),
+                                duration: Duration(seconds: 1),
+                              )
+                            );
+                          },
+                          child: Text("Copy"),
+                        ),
+                        FlatButton(
+                          onPressed: () {
+                            this._runScript(s.source);
+                          },
+                          child: Text("Run"),
+                        ),
+                      ],
+                    );
+                  }
+                );
               },
               contextPop: () {
                 showDialog(
@@ -153,10 +186,12 @@ class _ScriptsActState extends State<ScriptsAct> {
           ),
         ),
       ),
-      body: _buildBody(),
+      body: Builder(builder: _buildBody),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
+          this.pendingSrc = '';
+          this.pendingName = '';
           showDialog(
             context: context,
             barrierDismissible: true,
@@ -232,7 +267,7 @@ class _ScriptsActState extends State<ScriptsAct> {
           child: Icon(CupertinoIcons.play_arrow),
         ),
       ),
-      child: _buildBody(),
+      child: _buildBody(context),
     );
   }
 
