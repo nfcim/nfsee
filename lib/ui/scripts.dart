@@ -93,13 +93,7 @@ class _ScriptsActState extends State<ScriptsAct> {
     return Scrollbar(
       child: ListView(
         padding: EdgeInsets.only(bottom: 48),
-        children: <Widget>[
-          AppBar(
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            title: Text(S.of(context).scriptTabTitle),
-          ),
-        ]..addAll(this.scripts.map((s) {
+        children: this.scripts.map((s) {
           return ScriptEntry(
             script: s,
             execute: () {
@@ -164,7 +158,7 @@ class _ScriptsActState extends State<ScriptsAct> {
               );
             }
           );
-        })),
+        }).toList(),
       )
  ,
     );
@@ -176,6 +170,7 @@ class _ScriptsActState extends State<ScriptsAct> {
 
   Widget _buildAndroid(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text(S.of(context).scriptTabTitle)),
       bottomNavigationBar: BottomAppBar(
         color: Colors.orange[500],
         shape: CircularNotchedRectangle(),

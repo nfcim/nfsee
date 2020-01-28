@@ -22,6 +22,8 @@ import 'ui/widgets.dart';
 
 import 'generated/l10n.dart';
 
+const SAMPLE = '{"action":"report","data":{"card_number":12345678,"balance":123,"issue_date":20200101,"expiry_date":20300101,"purchase_atc":158,"title":"北京一卡通（非互联互通版）","transactions":[]}}';
+
 void main() => runApp(NFSeeApp());
 
 class NFSeeApp extends StatefulWidget {
@@ -128,6 +130,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     var scriptModel = ScriptDataModel.fromJson(message.data);
     switch (scriptModel.action) {
       case 'poll':
+        log('Poll');
         final tag = await FlutterNfcKit.poll();
         _webView.evalJavascript("pollCallback(${jsonEncode(tag)})");
         break;
@@ -188,31 +191,10 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   Widget _buildAndroidHomePage(BuildContext context) {
     return Scaffold(
       primary: true,
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.orange[500],
-        shape: CircularNotchedRectangle(),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Row(
-            children: <Widget>[
-              IconButton(
-                icon: const Icon(Icons.description),
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ScriptsAct()));
-                },
-                color: Colors.black54,
-              ),
-              IconButton(
-                icon: const Icon(Icons.settings),
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsAct()));
-                },
-                color: Colors.black54,
-              )
-            ]
-          ),
-        ),
+      appBar: AppBar(
+        title: Text("History"),
       ),
+      bottomNavigationBar: this._buildBottomAppbar(context),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           this._readTag(context);
@@ -221,6 +203,34 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       body: Scrollbar(child: Builder(builder: this._buildList))
+    );
+  }
+
+  Widget _buildBottomAppbar(BuildContext context) {
+    return BottomAppBar(
+      color: Colors.orange[500],
+      shape: CircularNotchedRectangle(),
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Row(
+          children: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.description),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ScriptsAct()));
+              },
+              color: Colors.black54,
+            ),
+            IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsAct()));
+              },
+              color: Colors.black54,
+            )
+          ]
+        ),
+      ),
     );
   }
 
@@ -237,6 +247,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   }
 
   Future<void> _readTag(BuildContext context) async {
+    // Because we are launching an modal bottom sheet, user shoule not be able to intereact with the app anymore
     assert(!_reading);
 
     _reading = true;
@@ -247,9 +258,16 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
     final script = await rootBundle.loadString('assets/read.js');
     _webView.evalJavascript(script);
+    // this.mockRead();
 
     await modal;
     _reading = false;
+  }
+
+  void mockRead() async {
+    log("Mock read start");
+    await Future.delayed(Duration(seconds: 1));
+    this._onReceivedMessage(WebkitMessage("", json.decode(SAMPLE)));
   }
 
   Widget _buildReadModal(BuildContext context) {
@@ -274,15 +292,18 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   }
 
   Widget _buildList(BuildContext context) {
-    return ListView(
-      children: this._records.map((r) {
-        return ReportRowItem(
-          record: r,
-          onTap: () {
-            this._navigateToTag(r);
-          }
-        );
-      }).toList()
+    return Scrollbar(
+      child: ListView(
+        padding: EdgeInsets.only(bottom: 48),
+        children: this._records.map((r) {
+          return ReportRowItem(
+            record: r,
+            onTap: () {
+              this._navigateToTag(r);
+            }
+          );
+        }).toList()
+      )
     );
   }
 }
@@ -298,8 +319,12 @@ class ReportRowItem extends StatelessWidget {
     var data = json.decode(record.data);
     var title = data["title"];
     return ListTile(
+      leading: Container(
+        height: double.infinity,
+        child: Icon(Icons.credit_card),
+      ),
       title: Text('${record.id}: $title'),
-      subtitle: Text(data.toString(), style: Theme.of(context).textTheme.body1),
+      subtitle: data["card_number"] != null ? Text(data["card_number"].toString()) : null,
       onTap: this.onTap,
     );
   }
