@@ -153,7 +153,8 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         // finish NFC communication
         await FlutterNfcKit.finish();
 
-        if (_reading && defaultTargetPlatform != TargetPlatform.iOS) Navigator.of(this.context).pop();
+        if (_reading && defaultTargetPlatform != TargetPlatform.iOS)
+          Navigator.of(this.context).pop();
 
         this._navigateToTag(scriptModel.data);
         break;
@@ -262,7 +263,11 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
                   } else {
                     int realIndex = index ~/ 2;
                     if (index.isEven) {
-                      return ReportRowItem(record: this._records[realIndex]);
+                      return ReportRowItem(
+                          record: this._records[realIndex],
+                          onTap: () {
+                            this._navigateToTag(this._records[realIndex]);
+                          });
                     } else {
                       return Divider(height: 0, color: Colors.grey);
                     }
