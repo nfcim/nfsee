@@ -1,13 +1,19 @@
 import 'dart:convert';
 
 import 'package:moor/moor.dart';
-import 'package:nfsee/data/database/database.dart';
-import 'package:nfsee/models.dart';
+
+import '../database/database.dart';
 
 class NFSeeAppBloc {
   final Database db;
 
-  NFSeeAppBloc() : db = constructDb();
+  Stream<List<DumpedRecord>> _dumpedRecords;
+
+  Stream<List<DumpedRecord>> get dumpedRecords => _dumpedRecords;
+
+  NFSeeAppBloc() : db = constructDb() {
+    _dumpedRecords = db.watchDumpedRecords();
+  }
 
   void addDumpedRecord(dynamic data) {
     db.addDumpedRecord(DumpedRecordsCompanion(

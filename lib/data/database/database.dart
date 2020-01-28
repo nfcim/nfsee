@@ -6,9 +6,7 @@ part 'database.g.dart';
 @DataClassName('DumpedRecord')
 class DumpedRecords extends Table {
   IntColumn get id => integer().autoIncrement()();
-
   DateTimeColumn get time => dateTime()();
-
   TextColumn get data => text()();
 }
 
@@ -31,6 +29,10 @@ class Database extends _$Database {
 
   Future<int> addDumpedRecord(DumpedRecordsCompanion entry) {
     return into(dumpedRecords).insert(entry);
+  }
+
+  Stream<List<DumpedRecord>> watchDumpedRecords() {
+    return select(dumpedRecords).watch();
   }
 
   Future<List<DumpedRecord>> listDumpedRecords() {

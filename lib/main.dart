@@ -107,7 +107,6 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   void initState() {
     super.initState();
     this._addWebViewHandler();
-    this._updateRecords();
   }
 
   void _addWebViewHandler() async {
@@ -215,7 +214,31 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           child: Icon(Icons.nfc),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-        body: Scrollbar(child: Builder(builder: this._buildList)));
+        body: Scrollbar(
+            child: StreamBuilder<List<DumpedRecord>>(
+          stream: bloc.dumpedRecords,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData || snapshot.data.length == 0) {
+              return const Align(
+                alignment: Alignment.center,
+                child: Text('No history found'),
+              );
+            }
+            final records = snapshot.data;
+            return ListView.builder(
+              padding: EdgeInsets.only(bottom: 48),
+              itemCount: records.length,
+              itemBuilder: (context, index) {
+                final r = records[index];
+                return ReportRowItem(
+                    record: r,
+                    onTap: () {
+                      _navigateToTag(r);
+                    });
+              },
+            );
+          },
+        )));
   }
 
   Widget _buildBottomAppbar(BuildContext context) {
@@ -386,19 +409,6 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
                 Image.asset('assets/read.webp', height: 200),
               ],
             )));
-  }
-
-  Widget _buildList(BuildContext context) {
-    return Scrollbar(
-        child: ListView(
-            padding: EdgeInsets.only(bottom: 48),
-            children: this._records.map((r) {
-              return ReportRowItem(
-                  record: r,
-                  onTap: () {
-                    this._navigateToTag(r);
-                  });
-            }).toList()));
   }
 }
 
