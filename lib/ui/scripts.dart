@@ -23,9 +23,20 @@ class ScriptsAct extends StatefulWidget {
 
 class _ScriptsActState extends State<ScriptsAct> {
   final _webView = InteractiveWebView();
-  final _scriptTextController = TextEditingController();
   StreamSubscription _webViewListener;
+
+  /// All scripts
+  /// TODO(script): sync to database, hence make this one a non-state
+  var scripts = List<Script>();
+
+  /// Result from webkit
   var result = '';
+
+  /// Name of new scripts
+  var pendingName = '';
+
+  /// Content of new scripts
+  var pendingSrc = '';
 
   @override
   void initState() {
@@ -60,19 +71,19 @@ class _ScriptsActState extends State<ScriptsAct> {
     }
   }
 
-  void _runScript() async {
+  void _runScript(String src) async {
     _webView.evalJavascript(
-        "(async function () {${_scriptTextController.text}})();");
+        "(async function () {$src})();");
   }
 
   @override
   void dispose() {
     _webViewListener.cancel();
-    _scriptTextController.dispose();
     super.dispose();
   }
 
   Widget _buildBody() {
+    
     return SafeArea(
       child: Scrollbar(
         child: ListView(
@@ -82,23 +93,37 @@ class _ScriptsActState extends State<ScriptsAct> {
               backgroundColor: Colors.transparent,
               title: Text(S.of(context).scriptTabTitle),
             ),
-            ScriptEntry(
+          ]..addAll(this.scripts.map((s) {
+            return ScriptEntry(
+              script: s,
               execute: () {
               },
-              script: Script.create(
-                name: "Test",
-                source: "WTF"
-              ),
-            ),
-            ScriptEntry(
-              execute: () {
-              },
-              script: Script.create(
-                name: "Test",
-                source: "WTF"
-              )
-            )
-          ],
+              contextPop: () {
+                showDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  builder: (context) {
+                    return SimpleDialog(
+                      children: <Widget>[
+                        SimpleDialogOption(
+                          onPressed: () {
+                            setState(() {
+                              this.scripts.remove(s);
+                            });
+                            Navigator.of(context).pop();
+                          },
+                          child: ListTile(
+                            leading: Icon(Icons.delete, color: Theme.of(context).disabledColor),
+                            title: const Text("Delete"),
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                );
+              }
+            );
+          })),
         ),
       ),
     );
@@ -131,7 +156,68 @@ class _ScriptsActState extends State<ScriptsAct> {
       body: _buildBody(),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: _runScript,
+        onPressed: () {
+          showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text("Add script"),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: "Name",
+                        ),
+                        maxLines: 1,
+
+                        onChanged: (cont) {
+                          this.pendingName = cont;
+                        },
+                      ),
+                      SizedBox(height: 10),
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: "Code"
+                        ),
+                        minLines: 3,
+                        maxLines: null,
+
+                        onChanged: (cont) {
+                          this.pendingSrc = cont;
+                        },
+                      )
+                    ]
+                  )
+                ),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text("Add"),
+                    onPressed: () {
+                      log("Adding script: ${this.pendingName}");
+
+                      setState(() {
+                        this.scripts.add(Script.create(
+                          name: this.pendingName == '' ? "Script" : this.pendingName,
+                          source: this.pendingSrc,
+                        ));
+                      });
+
+                      this.pendingName = '';
+                      this.pendingSrc = '';
+
+                      // Close alert dialog
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              );
+            }
+          );
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );
@@ -144,7 +230,6 @@ class _ScriptsActState extends State<ScriptsAct> {
         trailing: CupertinoButton(
           padding: EdgeInsets.zero,
           child: Icon(CupertinoIcons.play_arrow),
-          onPressed: _runScript,
         ),
       ),
       child: _buildBody(),
@@ -163,8 +248,9 @@ class _ScriptsActState extends State<ScriptsAct> {
 class ScriptEntry extends StatelessWidget {
   final Script script;
   final void Function() execute;
+  final void Function() contextPop;
 
-  const ScriptEntry({ this.script, this.execute });
+  const ScriptEntry({ this.script, this.execute, this.contextPop });
 
   // TODO: iOS
   @override
@@ -178,6 +264,7 @@ class ScriptEntry extends StatelessWidget {
       elevation: 2,
       child: InkWell(
         onTap: this.execute,
+        onLongPress: this.contextPop,
         child: Padding(
           padding: EdgeInsets.only(
             left: 20,

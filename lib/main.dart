@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';
-import 'package:nfsee/ui/settings.dart';
 
 import 'ui/about_tab.dart';
 import 'ui/scan_tab.dart';
-import 'ui/script_tab.dart';
+import 'ui/scripts.dart';
+import 'ui/settings.dart';
 import 'ui/widgets.dart';
 
 import 'generated/l10n.dart';
@@ -83,36 +83,20 @@ class PlatformAdaptingHomePage extends StatefulWidget {
 }
 
 class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
-  int _currentIndex = 0;
-  final List<Widget> _children = [ScanTab(), ScriptTab(), AboutTab()];
-  void onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
-
-  List<BottomNavigationBarItem> _buildNavigationItem(BuildContext context) {
-    return [
-      BottomNavigationBarItem(
-          title: Text(S.of(context).scanTabTitle), icon: ScanTab.iosIcon),
-      BottomNavigationBarItem(
-          title: Text(S.of(context).scriptTabTitle), icon: ScriptTab.iosIcon),
-      BottomNavigationBarItem(
-          title: Text(S.of(context).aboutTabTitle), icon: AboutTab.iosIcon),
-    ];
-  }
-
   Widget _buildAndroidHomePage(BuildContext context) {
     return Scaffold(
       primary: true,
       bottomNavigationBar: BottomAppBar(
         color: Colors.orange[500],
-        child: Padding( padding: const EdgeInsets.all(8),
+        shape: CircularNotchedRectangle(),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
           child: Row(
             children: <Widget>[
               IconButton(
                 icon: const Icon(Icons.description),
                 onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ScriptsAct()));
                 },
                 color: Colors.black54,
               ),
@@ -126,7 +110,6 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
             ]
           ),
         ),
-        shape: CircularNotchedRectangle()
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -161,33 +144,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   }
 
   Widget _buildIosHomePage(BuildContext context) {
-    return CupertinoTabScaffold(
-      tabBar: CupertinoTabBar(
-        items: _buildNavigationItem(context),
-      ),
-      tabBuilder: (context, index) {
-        switch (index) {
-          case 0:
-            return CupertinoTabView(
-              defaultTitle: S.of(context).scanTabTitle,
-              builder: (context) => _children[0],
-            );
-          case 1:
-            return CupertinoTabView(
-              defaultTitle: S.of(context).scriptTabTitle,
-              builder: (context) => _children[1],
-            );
-          case 2:
-            return CupertinoTabView(
-              defaultTitle: S.of(context).aboutTabTitle,
-              builder: (context) => _children[2],
-            );
-          default:
-            assert(false, 'Unexpected tab');
-            return null;
-        }
-      },
-    );
+    return CupertinoApp();
   }
 
   @override
