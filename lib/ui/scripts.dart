@@ -103,6 +103,7 @@ class _ScriptsActState extends State<ScriptsAct> {
                   builder: (context) {
                     return AlertDialog(
                       title: Text("Script: ${s.name}"),
+                      content: Text('Result:\n' + this.result),
                       actions: <Widget>[
                         FlatButton(
                           onPressed: () async {
