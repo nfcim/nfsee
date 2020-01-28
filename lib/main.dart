@@ -16,7 +16,6 @@ import 'package:nfsee/models.dart';
 import 'package:nfsee/ui/card_detail.dart';
 
 import 'ui/about_tab.dart';
-import 'ui/scan_tab.dart';
 import 'ui/scripts.dart';
 import 'ui/settings.dart';
 import 'ui/widgets.dart';
@@ -221,6 +220,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         child: Icon(Icons.nfc),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      body: Scrollbar(child: Builder(builder: this._buildList))
     );
   }
 
@@ -270,6 +270,37 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           ],
         )
       )
+    );
+  }
+
+  Widget _buildList(BuildContext context) {
+    return ListView(
+      children: this._records.map((r) {
+        return ReportRowItem(
+          record: r,
+          onTap: () {
+            this._navigateToTag(r);
+          }
+        );
+      }).toList()
+    );
+  }
+}
+
+class ReportRowItem extends StatelessWidget {
+  const ReportRowItem({ this.record, this.onTap });
+
+  final DumpedRecord record;
+  final void Function() onTap;
+
+  @override
+  Widget build(context) {
+    var data = json.decode(record.data);
+    var title = data["title"];
+    return ListTile(
+      title: Text('${record.id}: $title'),
+      subtitle: Text(data.toString(), style: Theme.of(context).textTheme.body1),
+      onTap: this.onTap,
     );
   }
 }
