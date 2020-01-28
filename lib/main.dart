@@ -116,8 +116,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     _webView.evalJavascript(await rootBundle.loadString('assets/crypto.js'));
     _webView.evalJavascript(await rootBundle.loadString('assets/reader.js'));
     _webView.evalJavascript(await rootBundle.loadString('assets/codes.js'));
-    _webViewListener =
-        _webView.didReceiveMessage.listen(this._onReceivedMessage);
+    _webViewListener = _webView.didReceiveMessage.listen(_onReceivedMessage);
   }
 
   _updateRecords() async {
@@ -137,10 +136,14 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         break;
 
       case 'transceive':
-        log('TX ${scriptModel.data}');
-        final rapdu = await FlutterNfcKit.transceive(scriptModel.data);
-        log('RX $rapdu');
-        _webView.evalJavascript("transceiveCallback('$rapdu')");
+        try {
+          final rapdu = await FlutterNfcKit.transceive(scriptModel.data);
+          log('RX $rapdu');
+          _webView.evalJavascript("transceiveCallback('$rapdu')");
+        } catch (e) {
+          log('RX error');
+          _webView.evalJavascript("transceiveCallback('0000')");
+        }
         break;
 
       case 'report':
@@ -163,6 +166,15 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         log(message.data.toString());
         break;
     }
+  }
+
+  void _navigateToScriptMode() {
+    _webViewListener.cancel();
+    Navigator.push(
+            context, MaterialPageRoute(builder: (context) => ScriptsAct()))
+        .then((_) {
+      _webViewListener = _webView.didReceiveMessage.listen(_onReceivedMessage);
+    });
   }
 
   void _navigateToTag(dynamic data) {
@@ -215,10 +227,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         child: Row(children: <Widget>[
           IconButton(
             icon: const Icon(Icons.description),
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ScriptsAct()));
-            },
+            onPressed: _navigateToScriptMode,
             color: Colors.black54,
           ),
           IconButton(
