@@ -265,6 +265,9 @@ class _ScriptsActState extends State<ScriptsAct> {
         trailing: CupertinoButton(
           padding: EdgeInsets.zero,
           child: Icon(CupertinoIcons.play_arrow),
+          onPressed: () {
+
+          },
         ),
       ),
       child: _buildBody(context),

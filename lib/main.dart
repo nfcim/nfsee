@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -15,14 +16,14 @@ import 'package:nfsee/data/database/database.dart';
 import 'package:nfsee/models.dart';
 import 'package:nfsee/ui/card_detail.dart';
 
-import 'ui/about_tab.dart';
 import 'ui/scripts.dart';
 import 'ui/settings.dart';
 import 'ui/widgets.dart';
 
 import 'generated/l10n.dart';
 
-const SAMPLE = '{"action":"report","data":{"card_number":12345678,"balance":123,"issue_date":20200101,"expiry_date":20300101,"purchase_atc":158,"title":"北京一卡通（非互联互通版）","transactions":[]}}';
+const SAMPLE =
+    '{"action":"report","data":{"card_number":12345678,"balance":123,"issue_date":20200101,"expiry_date":20300101,"purchase_atc":158,"title":"北京一卡通（非互联互通版）","transactions":[]}}';
 
 void main() => runApp(NFSeeApp());
 
@@ -152,8 +153,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         // finish NFC communication
         await FlutterNfcKit.finish();
 
-        if(_reading)
-          Navigator.of(this.context).pop();
+        if (_reading && defaultTargetPlatform != TargetPlatform.iOS) Navigator.of(this.context).pop();
 
         this._navigateToTag(scriptModel.data);
         break;
@@ -190,20 +190,19 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
   Widget _buildAndroidHomePage(BuildContext context) {
     return Scaffold(
-      primary: true,
-      appBar: AppBar(
-        title: Text("History"),
-      ),
-      bottomNavigationBar: this._buildBottomAppbar(context),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          this._readTag(context);
-        },
-        child: Icon(Icons.nfc),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      body: Scrollbar(child: Builder(builder: this._buildList))
-    );
+        primary: true,
+        appBar: AppBar(
+          title: Text("History"),
+        ),
+        bottomNavigationBar: this._buildBottomAppbar(context),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            this._readTag(context);
+          },
+          child: Icon(Icons.nfc),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+        body: Scrollbar(child: Builder(builder: this._buildList)));
   }
 
   Widget _buildBottomAppbar(BuildContext context) {
@@ -212,30 +211,111 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
       shape: CircularNotchedRectangle(),
       child: Padding(
         padding: const EdgeInsets.all(8),
-        child: Row(
-          children: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.description),
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => ScriptsAct()));
-              },
-              color: Colors.black54,
-            ),
-            IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsAct()));
-              },
-              color: Colors.black54,
-            )
-          ]
-        ),
+        child: Row(children: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.description),
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ScriptsAct()));
+            },
+            color: Colors.black54,
+          ),
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SettingsAct()));
+            },
+            color: Colors.black54,
+          )
+        ]),
       ),
     );
   }
 
+  Widget _buildIosHistoryPage(BuildContext context) {
+    return CustomScrollView(
+      slivers: <Widget>[
+        CupertinoSliverNavigationBar(
+          trailing: CupertinoButton(
+            padding: EdgeInsets.zero,
+            child: Icon(CupertinoIcons.create),
+            onPressed: () {
+              _readTag(context);
+            },
+          ),
+        ),
+        SliverPadding(
+            padding: MediaQuery.of(context)
+                .removePadding(
+                    removeTop: true, removeLeft: true, removeRight: true)
+                .padding,
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  if (this._records.length == 0) {
+                    return Text(
+                      "Press button on the top right to scan a NFC tag",
+                      style: TextStyle(color: Colors.grey),
+                      textAlign: TextAlign.center,
+                    );
+                  } else {
+                    int realIndex = index ~/ 2;
+                    if (index.isEven) {
+                      return ReportRowItem(record: this._records[realIndex]);
+                    } else {
+                      return Divider(height: 0, color: Colors.grey);
+                    }
+                  }
+                },
+                childCount: math.max(1, 2 * this._records.length - 1),
+              ),
+            ))
+      ],
+    );
+  }
+
   Widget _buildIosHomePage(BuildContext context) {
-    return CupertinoApp();
+    return CupertinoTabScaffold(
+      tabBar: CupertinoTabBar(
+        items: [
+          BottomNavigationBarItem(
+            title: Text("History"),
+            icon: Icon(Icons.nfc),
+          ),
+          BottomNavigationBarItem(
+            title: Text("Script"),
+            icon: Icon(Icons.play_arrow),
+          ),
+          BottomNavigationBarItem(
+            title: Text("Settings"),
+            icon: Icon(Icons.settings),
+          ),
+        ],
+      ),
+      tabBuilder: (context, index) {
+        switch (index) {
+          case 0:
+            return CupertinoTabView(
+              builder: (context) => _buildIosHistoryPage(context),
+              defaultTitle: "History",
+            );
+          case 1:
+            return CupertinoTabView(
+              builder: (context) => ScriptsAct(),
+              defaultTitle: "Script",
+            );
+          case 2:
+            return CupertinoTabView(
+              builder: (context) => SettingsAct(),
+              defaultTitle: "Settings",
+            );
+          default:
+            assert(false, 'Unexpected tab');
+            return null;
+        }
+      },
+    );
   }
 
   @override
@@ -247,7 +327,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   }
 
   Future<void> _readTag(BuildContext context) async {
-    // Because we are launching an modal bottom sheet, user shoule not be able to intereact with the app anymore
+    // Because we are launching an modal bottom sheet, user should not be able to intereact with the app anymore
     assert(!_reading);
 
     _reading = true;
@@ -272,44 +352,39 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
   Widget _buildReadModal(BuildContext context) {
     return Container(
-      child:Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(
-              "Waiting for cards...",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 10),
-            Image.asset('assets/read.webp', height: 200),
-          ],
-        )
-      )
-    );
+        child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  "Waiting for cards...",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 18),
+                ),
+                SizedBox(height: 10),
+                Image.asset('assets/read.webp', height: 200),
+              ],
+            )));
   }
 
   Widget _buildList(BuildContext context) {
     return Scrollbar(
-      child: ListView(
-        padding: EdgeInsets.only(bottom: 48),
-        children: this._records.map((r) {
-          return ReportRowItem(
-            record: r,
-            onTap: () {
-              this._navigateToTag(r);
-            }
-          );
-        }).toList()
-      )
-    );
+        child: ListView(
+            padding: EdgeInsets.only(bottom: 48),
+            children: this._records.map((r) {
+              return ReportRowItem(
+                  record: r,
+                  onTap: () {
+                    this._navigateToTag(r);
+                  });
+            }).toList()));
   }
 }
 
 class ReportRowItem extends StatelessWidget {
-  const ReportRowItem({ this.record, this.onTap });
+  const ReportRowItem({this.record, this.onTap});
 
   final DumpedRecord record;
   final void Function() onTap;
@@ -324,7 +399,9 @@ class ReportRowItem extends StatelessWidget {
         child: Icon(Icons.credit_card),
       ),
       title: Text('${record.id}: $title'),
-      subtitle: data["card_number"] != null ? Text(data["card_number"].toString()) : null,
+      subtitle: data["card_number"] != null
+          ? Text(data["card_number"].toString())
+          : null,
       onTap: this.onTap,
     );
   }
