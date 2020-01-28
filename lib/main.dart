@@ -336,10 +336,15 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     assert(!_reading);
 
     _reading = true;
-    var modal = showModalBottomSheet(
-      context: context,
-      builder: this._buildReadModal,
-    );
+    var modal;
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      modal = showModalBottomSheet(
+        context: context,
+        builder: this._buildReadModal,
+      );
+    } else {
+      modal = Future.value();
+    }
 
     final script = await rootBundle.loadString('assets/read.js');
     _webView.evalJavascript(script);
