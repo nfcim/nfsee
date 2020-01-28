@@ -18,8 +18,8 @@ const nativeCaller = new NativeCaller();
 let pendingPromise = null;
 
 const callNativeAndSetPendingPromise = (message, data) => {
-  const ret = new Promise((resolve) => {
-    pendingPromise = resolve;
+  const ret = new Promise((resolve, reject) => {
+    pendingPromise = [resolve, reject];
   });
 
   nativeCaller.postMessage(message, data);
@@ -28,7 +28,14 @@ const callNativeAndSetPendingPromise = (message, data) => {
 
 const returnDataToPendingPromise = (data) => {
   if (pendingPromise) {
-    pendingPromise(data);
+    pendingPromise[0](data);
+    pendingPromise = null;
+  }
+};
+
+const rejectPendingPromise = () => {
+  if (pendingPromise) {
+    pendingPromise[1]();
     pendingPromise = null;
   }
 };
@@ -40,6 +47,8 @@ const pollCallback = returnDataToPendingPromise;
 const transceive = (rapdu) => callNativeAndSetPendingPromise('transceive', rapdu);
 
 const transceiveCallback = returnDataToPendingPromise;
+
+const transceiveErrorCallback = rejectPendingPromise;
 
 function report(data) {
   nativeCaller.postMessage('report', data);

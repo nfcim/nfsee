@@ -100,6 +100,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   List<DumpedRecord> _records = new List<DumpedRecord>();
   StreamSubscription _webViewListener;
   var _reading = false;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   NFSeeAppBloc get bloc => BlocProvider.provideBloc(context);
 
@@ -130,8 +131,17 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     switch (scriptModel.action) {
       case 'poll':
         log('Poll');
-        final tag = await FlutterNfcKit.poll();
-        _webView.evalJavascript("pollCallback(${jsonEncode(tag)})");
+        try {
+          final tag = await FlutterNfcKit.poll();
+          _webView.evalJavascript("pollCallback(${jsonEncode(tag)})");
+        } catch (e) {
+          final errorMessage = 'Poll exception: ${e.toString()}';
+          log(errorMessage);
+          _closeReadModal(this.context);
+          _scaffoldKey.currentState.showSnackBar(SnackBar(
+            content: Text(errorMessage)
+          ));
+        }
         break;
 
       case 'transceive':
@@ -140,8 +150,13 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           log('RX $rapdu');
           _webView.evalJavascript("transceiveCallback('$rapdu')");
         } catch (e) {
-          log('RX error');
-          _webView.evalJavascript("transceiveCallback('0000')");
+          final errorMessage = 'Transceive exception: ${e.toString()}';
+          log(errorMessage);
+          _closeReadModal(this.context);
+          _scaffoldKey.currentState.showSnackBar(SnackBar(
+              content: Text(errorMessage)
+          ));
+          _webView.evalJavascript("transceiveErrorCallback()");
         }
         break;
 
@@ -155,8 +170,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         // finish NFC communication
         await FlutterNfcKit.finish();
 
-        if (_reading && defaultTargetPlatform != TargetPlatform.iOS)
-          Navigator.of(this.context).pop();
+        _closeReadModal(this.context);
 
         this._navigateToTag(scriptModel.data);
         break;
@@ -203,6 +217,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   Widget _buildAndroidHomePage(BuildContext context) {
     return Scaffold(
         primary: true,
+        key: _scaffoldKey,
         appBar: AppBar(
           title: Text("History"),
         ),
@@ -382,14 +397,24 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     _webView.evalJavascript(script);
     // this.mockRead();
 
-    await modal;
+    if ((await modal) != true) {
+      // closed by user, cancel polling
+      await FlutterNfcKit.finish();
+    }
+
     _reading = false;
   }
 
-  void mockRead() async {
+  void _mockRead() async {
     log("Mock read start");
     await Future.delayed(Duration(seconds: 1));
     this._onReceivedMessage(WebkitMessage("", json.decode(SAMPLE)));
+  }
+
+  void _closeReadModal(BuildContext context) {
+    if (_reading && defaultTargetPlatform != TargetPlatform.iOS){
+      Navigator.of(context).pop(true);
+    }
   }
 
   Widget _buildReadModal(BuildContext context) {
