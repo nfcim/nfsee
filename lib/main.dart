@@ -1,8 +1,19 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
+import 'package:interactive_webview/interactive_webview.dart';
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';
+import 'package:nfsee/data/database/database.dart';
+import 'package:nfsee/models.dart';
+import 'package:nfsee/ui/card_detail.dart';
 
 import 'ui/about_tab.dart';
 import 'ui/scan_tab.dart';
@@ -83,6 +94,98 @@ class PlatformAdaptingHomePage extends StatefulWidget {
 }
 
 class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
+  final _webView = InteractiveWebView();
+  List<DumpedRecord> _records = new List<DumpedRecord>();
+  StreamSubscription _webViewListener;
+  var _reading = false;
+
+  NFSeeAppBloc get bloc => BlocProvider.provideBloc(context);
+
+  @override
+  void initState() {
+    super.initState();
+    this._addWebViewHandler();
+    this._updateRecords();
+  }
+
+  void _addWebViewHandler() async {
+    _webView.evalJavascript(await rootBundle.loadString('assets/ber-tlv.js'));
+    _webView.evalJavascript(await rootBundle.loadString('assets/crypto-js.js'));
+    _webView.evalJavascript(await rootBundle.loadString('assets/crypto.js'));
+    _webView.evalJavascript(await rootBundle.loadString('assets/reader.js'));
+    _webView.evalJavascript(await rootBundle.loadString('assets/codes.js'));
+    _webViewListener =
+        _webView.didReceiveMessage.listen(this._onReceivedMessage);
+  }
+
+  _updateRecords() async {
+    var records = await bloc.listDumpedRecords();
+    setState(() {
+      this._records = records;
+    });
+  }
+
+  void _onReceivedMessage(WebkitMessage message) async {
+    var scriptModel = ScriptDataModel.fromJson(message.data);
+    switch (scriptModel.action) {
+      case 'poll':
+        final tag = await FlutterNfcKit.poll();
+        _webView.evalJavascript("pollCallback(${jsonEncode(tag)})");
+        break;
+
+      case 'transceive':
+        log('TX ${scriptModel.data}');
+        final rapdu = await FlutterNfcKit.transceive(scriptModel.data);
+        log('RX $rapdu');
+        _webView.evalJavascript("transceiveCallback('$rapdu')");
+        break;
+
+      case 'report':
+        // save result to database
+        bloc.addDumpedRecord(scriptModel.data);
+        await this._updateRecords();
+        // dump results to console
+        print(scriptModel.data.toString());
+        this._records.forEach((el) => print(el.toString()));
+        // finish NFC communication
+        await FlutterNfcKit.finish();
+
+        if(_reading)
+          Navigator.of(this.context).pop();
+
+        this._navigateToTag(scriptModel.data);
+        break;
+
+      case 'log':
+        log(message.data.toString());
+        break;
+    }
+  }
+
+  void _navigateToTag(dynamic data) {
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        Navigator.of(context).push<void>(
+          MaterialPageRoute(
+            builder: (context) => CardDetailTab(
+                cardType: CardType.CityUnion, cardNumber: '123', data: data),
+          ),
+        );
+        break;
+      case TargetPlatform.iOS:
+        Navigator.of(context).push<void>(
+          CupertinoPageRoute(
+            title: 'Card Detail',
+            builder: (context) => CardDetailTab(
+                cardType: CardType.CityUnion, cardNumber: '123', data: null),
+          ),
+        );
+        break;
+      default:
+        assert(false, 'Unexpected platform $defaultTargetPlatform');
+    }
+  }
+
   Widget _buildAndroidHomePage(BuildContext context) {
     return Scaffold(
       primary: true,
@@ -113,29 +216,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (context) {
-              return Container(
-                child:Padding(
-                  padding: const EdgeInsets.all(32),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Text(
-                        "Waiting for cards...",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      SizedBox(height: 10),
-                      Image.asset('assets/read.webp', height: 200),
-                    ],
-                  )
-                )
-              );
-            },
-          );
+          this._readTag(context);
         },
         child: Icon(Icons.nfc),
       ),
@@ -152,6 +233,43 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     return PlatformWidget(
       androidBuilder: _buildAndroidHomePage,
       iosBuilder: _buildIosHomePage,
+    );
+  }
+
+  Future<void> _readTag(BuildContext context) async {
+    assert(!_reading);
+
+    _reading = true;
+    var modal = showModalBottomSheet(
+      context: context,
+      builder: this._buildReadModal,
+    );
+
+    final script = await rootBundle.loadString('assets/read.js');
+    _webView.evalJavascript(script);
+
+    await modal;
+    _reading = false;
+  }
+
+  Widget _buildReadModal(BuildContext context) {
+    return Container(
+      child:Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              "Waiting for cards...",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 10),
+            Image.asset('assets/read.webp', height: 200),
+          ],
+        )
+      )
     );
   }
 }
