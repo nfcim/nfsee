@@ -84,82 +84,82 @@ class _ScriptsActState extends State<ScriptsAct> {
 
   Widget _buildBody(BuildContext context) {
     var outer = context;
-    return SafeArea(
-      child: Scrollbar(
-        child: ListView(
-          children: <Widget>[
-            AppBar(
-              elevation: 0,
-              backgroundColor: Colors.transparent,
-              title: Text(S.of(context).scriptTabTitle),
-            ),
-          ]..addAll(this.scripts.map((s) {
-            return ScriptEntry(
-              script: s,
-              execute: () {
-                showDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: Text("Script: ${s.name}"),
-                      content: Text('Result:\n' + this.result),
-                      actions: <Widget>[
-                        FlatButton(
-                          onPressed: () async {
-                            await Clipboard.setData(ClipboardData(text: s.source));
-                            Navigator.of(context).pop();
-                            var scaff = Scaffold.of(outer);
-                            scaff.hideCurrentSnackBar();
-                            scaff.showSnackBar(
-                              SnackBar(
-                                behavior: SnackBarBehavior.floating,
-                                content: Text("Copied!"),
-                                duration: Duration(seconds: 1),
-                              )
-                            );
-                          },
-                          child: Text("Copy"),
+    return Scrollbar(
+      child: ListView(
+        padding: EdgeInsets.only(bottom: 48),
+        children: <Widget>[
+          AppBar(
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            title: Text(S.of(context).scriptTabTitle),
+          ),
+        ]..addAll(this.scripts.map((s) {
+          return ScriptEntry(
+            script: s,
+            execute: () {
+              showDialog(
+                context: context,
+                barrierDismissible: true,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text("Script: ${s.name}"),
+                    content: Text('Result:\n' + this.result),
+                    actions: <Widget>[
+                      FlatButton(
+                        onPressed: () async {
+                          await Clipboard.setData(ClipboardData(text: s.source));
+                          Navigator.of(context).pop();
+                          var scaff = Scaffold.of(outer);
+                          scaff.hideCurrentSnackBar();
+                          scaff.showSnackBar(
+                            SnackBar(
+                              behavior: SnackBarBehavior.floating,
+                              content: Text("Copied!"),
+                              duration: Duration(seconds: 1),
+                            )
+                          );
+                        },
+                        child: Text("Copy"),
+                      ),
+                      FlatButton(
+                        onPressed: () {
+                          this._runScript(s.source);
+                        },
+                        child: Text("Run"),
+                      ),
+                    ],
+                  );
+                }
+              );
+            },
+            contextPop: () {
+              showDialog(
+                context: context,
+                barrierDismissible: true,
+                builder: (context) {
+                  return SimpleDialog(
+                    children: <Widget>[
+                      SimpleDialogOption(
+                        onPressed: () {
+                          setState(() {
+                            this.scripts.remove(s);
+                          });
+                          Navigator.of(context).pop();
+                        },
+                        child: ListTile(
+                          leading: Icon(Icons.delete, color: Theme.of(context).disabledColor),
+                          title: const Text("Delete"),
                         ),
-                        FlatButton(
-                          onPressed: () {
-                            this._runScript(s.source);
-                          },
-                          child: Text("Run"),
-                        ),
-                      ],
-                    );
-                  }
-                );
-              },
-              contextPop: () {
-                showDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  builder: (context) {
-                    return SimpleDialog(
-                      children: <Widget>[
-                        SimpleDialogOption(
-                          onPressed: () {
-                            setState(() {
-                              this.scripts.remove(s);
-                            });
-                            Navigator.of(context).pop();
-                          },
-                          child: ListTile(
-                            leading: Icon(Icons.delete, color: Theme.of(context).disabledColor),
-                            title: const Text("Delete"),
-                          ),
-                        ),
-                      ],
-                    );
-                  }
-                );
-              }
-            );
-          })),
-        ),
-      ),
+                      ),
+                    ],
+                  );
+                }
+              );
+            }
+          );
+        })),
+      )
+ ,
     );
   }
 
