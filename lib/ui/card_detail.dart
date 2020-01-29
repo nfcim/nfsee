@@ -1,49 +1,46 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../models.dart';
 import 'widgets.dart';
 
 class CardDetailTab extends StatelessWidget {
-  const CardDetailTab({this.cardType, this.cardNumber, this.data});
+  const CardDetailTab({this.data});
 
-  final CardType cardType;
-  final String cardNumber;
   final dynamic data;
 
   String _getFilename() {
-    switch (cardType) {
-      case CardType.UPCredit:
-      case CardType.UPDebit:
-      case CardType.UPSecuredCredit:
+    switch (data['card_type']) {
+      case 'UPCredit':
+      case 'UPDebit':
+      case 'UPSecuredCredit':
         return 'union_pay';
-      case CardType.MC:
+      case 'MC':
         return 'mc';
-      case CardType.Visa:
+      case 'Visa':
         return 'visa';
-      case CardType.AMEX:
+      case 'AMEX':
         return 'amex';
-      case CardType.JCB:
+      case 'JCB':
         return 'jcb';
-      case CardType.Discover:
+      case 'Discover':
         return 'discover';
-      case CardType.BMAC:
+      case 'BMAC':
         return 'bmac';
-      case CardType.ShenzhenTong:
+      case 'ShenzhenTong':
         return 'shenzhentong';
-      case CardType.LingnanPass:
+      case 'LingnanPass':
         return 'lingnanpass';
-      case CardType.WuhanTong:
+      case 'WuhanTong':
         return 'wuhantong';
-      case CardType.CityUnion:
+      case 'CityUnion':
         return 'city_union';
-      case CardType.TUnion:
+      case 'TUnion':
         return 't_union';
-      case CardType.Octopus:
+      case 'Octopus':
         return 'octopus';
-      case CardType.TMoney:
+      case 'TMoney':
         return 't_money';
-      case CardType.Tsinghua:
+      case 'Tsinghua':
         return 'tsinghua';
       default:
         return '';

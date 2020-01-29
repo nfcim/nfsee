@@ -159,18 +159,12 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         break;
 
       case 'report':
-        // save result to database
-        bloc.addDumpedRecord(scriptModel.data);
-        await this._updateRecords();
-        // dump results to console
-        print(scriptModel.data.toString());
-        this._records.forEach((el) => print(el.toString()));
-        // finish NFC communication
         await FlutterNfcKit.finish();
-
         _closeReadModal(this.context);
-
-        this._navigateToTag(scriptModel.data);
+        bloc.addDumpedRecord(scriptModel.data);
+        print(scriptModel.data.toString());
+        this._navigateToTag(DumpedRecord(
+            id: 0, time: DateTime.now(), data: jsonEncode(scriptModel.data)));
         break;
 
       case 'log':
@@ -188,17 +182,14 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     });
   }
 
-  void _navigateToTag(dynamic data) {
+  void _navigateToTag(DumpedRecord record) {
+    var data = jsonDecode(record.data);
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
+        log(data.toString());
         Navigator.of(context).push<void>(
           MaterialPageRoute(
-            builder: (context) => CardDetailTab(
-              cardType: CardType.values.firstWhere((it) =>
-                  it.toString() == "CardType.${data.card_type}"),
-              cardNumber: data['card_number'],
-              data: data,
-            ),
+            builder: (context) => CardDetailTab(data: data),
           ),
         );
         break;
@@ -206,12 +197,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         Navigator.of(context).push<void>(
           CupertinoPageRoute(
             title: 'Card Detail',
-            builder: (context) => CardDetailTab(
-              cardType: CardType.values.firstWhere((it) =>
-              it.toString() == "CardType.${data.card_type}"),
-              cardNumber: '123',
-              data: null,
-            ),
+            builder: (context) => CardDetailTab(data: data),
           ),
         );
         break;
