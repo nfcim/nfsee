@@ -405,7 +405,7 @@
 
     const tag = await poll();
     log(tag);
-    let result = await ReadAnyCard();
+    let result = await ReadAnyCard(tag);
     if (!('card_type' in result))
         result.card_type = 'Unknown';
     result.tag = tag;
