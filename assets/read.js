@@ -363,9 +363,7 @@
         };
     };
 
-    let ReadAnyCard = async () => {
-        const tag = await poll();
-        log(tag);
+    let ReadAnyCard = async (tag) => {
         let r = await transceive('00B0840020');
         if (r.endsWith('9000') && r.startsWith('1000'))
             return await ReadTransBeijing(r.slice(0, -4));
@@ -405,8 +403,11 @@
         return {};
     };
 
+    const tag = await poll();
+    log(tag);
     let result = await ReadAnyCard();
-    if (!('title' in result))
-        result.title = '未知卡片';
+    if (!('card_type' in result))
+        result.card_type = 'Unknown';
+    result.tag = tag;
     report(result);
 })();

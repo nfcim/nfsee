@@ -195,7 +195,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           MaterialPageRoute(
             builder: (context) => CardDetailTab(
               cardType: CardType.values.firstWhere((it) =>
-                  it.toString() == "CardType.${data['card_type']}"),
+                  it.toString() == "CardType.${data.card_type}"),
               cardNumber: data['card_number'],
               data: data,
             ),
@@ -208,7 +208,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
             title: 'Card Detail',
             builder: (context) => CardDetailTab(
               cardType: CardType.values.firstWhere((it) =>
-              it.toString() == "CardType.${data['card_type']}"),
+              it.toString() == "CardType.${data.card_type}"),
               cardNumber: '123',
               data: null,
             ),

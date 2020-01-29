@@ -29,4 +29,5 @@ enum CardType {
   TMoney,
   Octopus,
   Tsinghua,
+  Unknown,
 }
