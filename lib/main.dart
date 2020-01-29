@@ -138,9 +138,8 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           final errorMessage = 'Poll exception: ${e.toString()}';
           log(errorMessage);
           _closeReadModal(this.context);
-          _scaffoldKey.currentState.showSnackBar(SnackBar(
-            content: Text(errorMessage)
-          ));
+          _scaffoldKey.currentState
+              .showSnackBar(SnackBar(content: Text(errorMessage)));
         }
         break;
 
@@ -153,9 +152,8 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           final errorMessage = 'Transceive exception: ${e.toString()}';
           log(errorMessage);
           _closeReadModal(this.context);
-          _scaffoldKey.currentState.showSnackBar(SnackBar(
-              content: Text(errorMessage)
-          ));
+          _scaffoldKey.currentState
+              .showSnackBar(SnackBar(content: Text(errorMessage)));
           _webView.evalJavascript("transceiveErrorCallback()");
         }
         break;
@@ -196,7 +194,11 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         Navigator.of(context).push<void>(
           MaterialPageRoute(
             builder: (context) => CardDetailTab(
-                cardType: CardType.CityUnion, cardNumber: '123', data: data),
+              cardType: CardType.values.firstWhere((it) =>
+                  it.toString() == "CardType.${data['card_type']}"),
+              cardNumber: '123',
+              data: data,
+            ),
           ),
         );
         break;
@@ -205,7 +207,11 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           CupertinoPageRoute(
             title: 'Card Detail',
             builder: (context) => CardDetailTab(
-                cardType: CardType.CityUnion, cardNumber: '123', data: null),
+              cardType: CardType.values.firstWhere((it) =>
+              it.toString() == "CardType.${data['card_type']}"),
+              cardNumber: '123',
+              data: null,
+            ),
           ),
         );
         break;
@@ -412,7 +418,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   }
 
   void _closeReadModal(BuildContext context) {
-    if (_reading && defaultTargetPlatform != TargetPlatform.iOS){
+    if (_reading && defaultTargetPlatform != TargetPlatform.iOS) {
       Navigator.of(context).pop(true);
     }
   }

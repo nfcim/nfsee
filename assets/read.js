@@ -152,7 +152,7 @@
         const expiry_date = content04.slice(56, 64);
         const balance_atc_trans = await ReadPBOCBalanceAndTrans();
         return {
-            'title': "北京一卡通（非互联互通版）",
+            'card_type': 'BMAC',
             'card_number': number,
             'balance': balance_atc_trans[0],
             'purchase_atc': balance_atc_trans[1],
@@ -171,7 +171,7 @@
         const expiry_date = r.slice(48, 56);
         const balance_trans = await ReadPBOCBalanceAndTrans();
         return {
-            'title': "深圳通",
+            'card_type': 'ShenzhenTong',
             'card_number': number,
             'balance': balance_trans[0],
             'transactions': balance_trans[1],
@@ -195,7 +195,7 @@
         const issue_date = f15.slice(40, 48);
         const expiry_date = f15.slice(48, 56);
         return {
-            'title': "武汉通",
+            'card_type': 'WuhanTong',
             'card_number': number,
             'balance': balance_trans[0],
             'transactions': balance_trans[1],
@@ -224,7 +224,8 @@
         const issue_date = f15.slice(40, 48);
         city = (city in ChinaPostCode) ? ChinaPostCode[city] : `未知代码${city}`;
         return {
-            'title': `城市一卡通（${city}）`,
+            'card_type': 'CityUnion',
+            'city': city,
             'card_number': number,
             'balance': balance_trans[0],
             'transactions': balance_trans[1],
@@ -250,7 +251,7 @@
         const dueDate = '20' + f15.slice(24, 30);
         const writtenDueDate = '20' + f15.slice(30, 36);
         return {
-            'title': "清华大学校园卡",
+            'card_type': 'Tsinghua',
             'card_number': number,
             'expiry_date': dueDate,
             'display_expiry_date': writtenDueDate,
@@ -277,7 +278,7 @@
         type = (type in TUnionDF11Type) ? TUnionDF11Type[type] : `未知(${type})`;
         city = (city in UnionPayRegion) ? UnionPayRegion[city] : `未知代码${city}`;
         return {
-            'title': "交通联合卡",
+            'card_type': 'TUnion',
             'card_number': number,
             'balance': balance_trans[0],
             'transactions': balance_trans[1],
@@ -356,7 +357,7 @@
         const number = f15.slice(22, 32);
         const balance_trans = await ReadPBOCBalanceAndTrans();
         return {
-            'title': '岭南通',
+            'card_type': 'LingnanPass',
             'card_number': number,
             'balance': balance_trans[0],
             'transactions': balance_trans[1],

@@ -12,14 +12,6 @@ class ScriptDataModel {
 }
 
 enum CardType {
-  CityUnion,
-  TUnion,
-  BMAC,
-  LingnanPass,
-  ShenzhenTong,
-  WuhanTong,
-  TMoney,
-  Octopus,
   UPCredit,
   UPDebit,
   VisaCredit,
@@ -31,4 +23,13 @@ enum CardType {
   AMEXCredit,
   AMEXDebit,
   AMEXPrepaid,
+  CityUnion,
+  TUnion,
+  BMAC,
+  LingnanPass,
+  ShenzhenTong,
+  WuhanTong,
+  TMoney,
+  Octopus,
+  Tsinghua,
 }

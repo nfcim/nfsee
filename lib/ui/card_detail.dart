@@ -11,6 +11,46 @@ class CardDetailTab extends StatelessWidget {
   final String cardNumber;
   final dynamic data;
 
+  String _getFilename() {
+    switch (cardType) {
+      case CardType.UPCredit:
+      case CardType.UPDebit:
+        return 'union_pay';
+      case CardType.MCCredit:
+      case CardType.MCDebit:
+      case CardType.MCPrepaid:
+        return 'mc';
+      case CardType.VisaCredit:
+      case CardType.VisaDebit:
+      case CardType.VisaPrepaid:
+        return 'visa';
+      case CardType.AMEXCredit:
+      case CardType.AMEXDebit:
+      case CardType.AMEXPrepaid:
+        return 'amex';
+      case CardType.BMAC:
+        return 'bmac';
+      case CardType.ShenzhenTong:
+        return 'shenzhentong';
+      case CardType.LingnanPass:
+        return 'lingnanpass';
+      case CardType.WuhanTong:
+        return 'wuhantong';
+      case CardType.CityUnion:
+        return 'city_union';
+      case CardType.TUnion:
+        return 't_union';
+      case CardType.Octopus:
+        return 'octopus';
+      case CardType.TMoney:
+        return 't_money';
+      case CardType.Tsinghua:
+        return 'tsinghua';
+      default:
+        return '';
+    }
+  }
+
   Widget _buildBody() {
     return SafeArea(
       bottom: false,
@@ -20,7 +60,7 @@ class CardDetailTab extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Image.asset(
-            'assets/cards/city_union.png',
+            'assets/cards/${_getFilename()}.png',
             height: 150,
           ),
           Text(data.toString().substring(0, 200)),
