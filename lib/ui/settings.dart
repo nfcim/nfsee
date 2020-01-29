@@ -59,7 +59,17 @@ class _SettingsActState extends State<SettingsAct> {
   }
 
   Widget _buildIos(BuildContext context) {
-    return Center(child: Text(SettingsAct.title));
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: Text(SettingsAct.title),
+        trailing: CupertinoButton(
+          padding: EdgeInsets.zero,
+          child: Icon(CupertinoIcons.eye),
+          onPressed: _togglePlatform,
+        ),
+      ),
+      child: Text(""),
+    );
   }
 
   @override
