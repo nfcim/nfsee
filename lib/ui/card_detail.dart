@@ -79,7 +79,7 @@ class CardDetailTab extends StatelessWidget {
   Widget _buildIos(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: Text('name'),
+        middle: Text(data['card_type']),
         previousPageTitle: 'Scan',
       ),
       child: _buildBody(),

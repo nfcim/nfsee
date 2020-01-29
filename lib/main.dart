@@ -440,7 +440,7 @@ class ReportRowItem extends StatelessWidget {
   @override
   Widget build(context) {
     var data = json.decode(record.data);
-    var title = data["title"];
+    var title = data["card_type"];
     return ListTile(
       leading: Container(
         height: double.infinity,
