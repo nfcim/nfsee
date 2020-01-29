@@ -1,15 +1,14 @@
 (async function () {
     const GBKDecoder = new TextDecoder('gbk');
     const EMV_AID2NAME = [
-        ['A000000333010101', '银联借记卡'],
-        ['A000000333010102', '银联信用卡'],
-        ['A000000333010103', '银联准贷记卡'],
-        ['A000000003', 'VISA'],
-        ['A000000004', 'MasterCard'],
-        ['A000000025', 'American Express'],
+        ['A000000333010101', 'UPCredit'],
+        ['A000000333010102', 'UPCredit'],
+        ['A000000333010103', 'UPSecuredCredit'],
+        ['A000000003', 'Visa'],
+        ['A000000004', 'MC'],
+        ['A000000025', 'AMEX'],
         ['A000000065', 'JCB'],
-        ['A000000098', 'VISA USA'],
-        ['A000000152', 'Discover'],
+        ['A000000324', 'Discover'],
     ];
     const PBOC_TTI2NAME = {
         '01': '充值',
@@ -295,15 +294,15 @@
         if (!DFName) return {};
         const select = Uint8Array.from([DFName.length, ...DFName, 0]);
         DFName = buf2hex(DFName);
-        let name = null;
+        let cardType = null;
         for (const item of EMV_AID2NAME) {
             if (DFName.startsWith(item[0])) {
-                name = item[1];
+                cardType = item[1];
                 break;
             }
         }
-        log(`PPSE DF Name: ${DFName} (${name})`);
-        if (!name) return {};
+        log(`PPSE DF Name: ${DFName} (${cardType})`);
+        if (!cardType) return {};
         fci = await transceive('00A40400' + buf2hex(select));
         if (!fci.endsWith('9000')) return {};
         let pdol = ExtractFromTLV(fci, ['6F', 'A5', '9F38']);
@@ -340,7 +339,7 @@
             pin_retry = ExtractFromTLV(pin_retry, ['9F17'])[0];
         }
         return {
-            'title': name,
+            'card_type': cardType,
             'card_number': track2.slice(0, sep),
             'expiration': track2.slice(sep + 1, sep + 3) + '/' + track2.slice(sep + 3, sep + 5),
             'atc': atc,

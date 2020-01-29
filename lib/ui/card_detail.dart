@@ -15,19 +15,18 @@ class CardDetailTab extends StatelessWidget {
     switch (cardType) {
       case CardType.UPCredit:
       case CardType.UPDebit:
+      case CardType.UPSecuredCredit:
         return 'union_pay';
-      case CardType.MCCredit:
-      case CardType.MCDebit:
-      case CardType.MCPrepaid:
+      case CardType.MC:
         return 'mc';
-      case CardType.VisaCredit:
-      case CardType.VisaDebit:
-      case CardType.VisaPrepaid:
+      case CardType.Visa:
         return 'visa';
-      case CardType.AMEXCredit:
-      case CardType.AMEXDebit:
-      case CardType.AMEXPrepaid:
+      case CardType.AMEX:
         return 'amex';
+      case CardType.JCB:
+        return 'jcb';
+      case CardType.Discover:
+        return 'discover';
       case CardType.BMAC:
         return 'bmac';
       case CardType.ShenzhenTong:
@@ -63,7 +62,7 @@ class CardDetailTab extends StatelessWidget {
             'assets/cards/${_getFilename()}.png',
             height: 150,
           ),
-          Text(data.toString().substring(0, 200)),
+          Text(data.toString()),
         ],
       ),
     );

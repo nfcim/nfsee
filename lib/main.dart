@@ -196,7 +196,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
             builder: (context) => CardDetailTab(
               cardType: CardType.values.firstWhere((it) =>
                   it.toString() == "CardType.${data['card_type']}"),
-              cardNumber: '123',
+              cardNumber: data['card_number'],
               data: data,
             ),
           ),
