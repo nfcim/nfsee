@@ -138,7 +138,6 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
       case 'transceive':
         try {
           final rapdu = await FlutterNfcKit.transceive(scriptModel.data);
-          log('RX $rapdu');
           _webView.evalJavascript("transceiveCallback('$rapdu')");
         } catch (e) {
           final errorMessage = 'Transceive exception: ${e.toString()}';

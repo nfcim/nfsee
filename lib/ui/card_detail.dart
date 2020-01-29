@@ -71,7 +71,7 @@ class CardDetailTab extends StatelessWidget {
 
   Widget _buildAndroid(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('name')),
+      appBar: AppBar(title: Text(data['card_type'])),
       body: _buildBody(),
     );
   }

@@ -88,7 +88,7 @@
                 log(`Reading record ${afl[i + 1]}~${afl[i + 2]} of SFI ${afl[i]}`);
                 for (let j = afl[i + 1]; j <= afl[i + 2]; j++) {
                     const apdu = Uint8Array.from([0, 0xB2, j, 0x4 | afl[i], 0]);
-                    const r = await transceive(buf2hex(apdu));
+                    const r = await _transceive(buf2hex(apdu));
                     if (!r.endsWith('9000')) continue;
                     for (const tag of tag_list) {
                         const v = ExtractFromTLV(r, ['70', tag])
@@ -107,12 +107,12 @@
         let trans = [];
         let purchase_atc = 0;
         usage = usage || 2;
-        let rapdu = await transceive(`805C000${usage}04`);
+        let rapdu = await _transceive(`805C000${usage}04`);
         if (rapdu.endsWith('9000'))
             balance = parseInt(rapdu.slice(0, 8), 16) % 0x80000000;
         for (let i = 1; i <= 10; i++) {
             const apdu = buf2hex(Uint8Array.from([0, 0xB2, i, 0xC4, 0]));
-            rapdu = await transceive(apdu);
+            rapdu = await _transceive(apdu);
             if (!rapdu.endsWith('9000'))
                 break;
             if (purchase_atc === 0)
@@ -127,7 +127,7 @@
             });
         }
         let load_atc = undefined;
-        rapdu = await transceive('805000020B0100000001000000000000');
+        rapdu = await _transceive('805000020B0100000001000000000000');
         if (rapdu.endsWith('9000'))
             load_atc = parseInt(rapdu.slice(8, 12), 16);
         return [balance, purchase_atc, load_atc, trans];
@@ -136,14 +136,14 @@
     let BasicInfoFile = async (fci) => {
         let r = ExtractFromTLV(fci, ['6F', 'A5', '9F0C']);
         if (r) return buf2hex(r);
-        r = await transceive('00B095001E');
+        r = await _transceive('00B095001E');
         if (!r.endsWith('9000'))
             return '';
         return r.slice(0, -4);
     };
 
     let ReadTransBeijing = async (content04) => {
-        let r = await transceive('00A4000002100100');
+        let r = await _transceive('00A4000002100100');
         if (!r.endsWith('9000'))
             return {};
         const number = content04.slice(0, 16);
@@ -181,13 +181,13 @@
 
     let ReadTransWuhan = async (fci) => {
         const balance_trans = await ReadPBOCBalanceAndTrans();
-        let mf = await transceive('00A40000023F00');
+        let mf = await _transceive('00A40000023F00');
         if (!mf.endsWith('9000'))
             return {};
-        let f15 = await transceive('00B0950000');
+        let f15 = await _transceive('00B0950000');
         if (!f15.endsWith('9000'))
             return {};
-        let f0a = await transceive('00B08A0005');
+        let f0a = await _transceive('00B08A0005');
         if (!f0a.endsWith('9000'))
             return {};
         const number = f0a.slice(0, 10);
@@ -212,10 +212,10 @@
         let expiry_date = f15.slice(48, 56);
         if (city === '4000') { // special case for Chongqing
             expiry_date = f15.slice(16, 24);
-            let mf = await transceive('00A40000023F00');
+            let mf = await _transceive('00A40000023F00');
             if (!mf.endsWith('9000'))
                 return {};
-            f15 = await transceive('00B0850000');
+            f15 = await _transceive('00B0850000');
             if (!f15.endsWith('9000'))
                 return {};
         }
@@ -234,16 +234,16 @@
     };
 
     let ReadTHU = async (fci) => {
-        let f16 = await transceive('00B0960026');
+        let f16 = await _transceive('00B0960026');
         if (!f16.endsWith('9000'))
             return {};
         const name = ParseGBKText(f16.slice(0, 40).replace(/(00)+$/, ''));
         const stuNum = ParseGBKText(f16.slice(56, 76));
         const balance_trans = await ReadPBOCBalanceAndTrans(1);
-        let mf = await transceive('00A40000023F00');
+        let mf = await _transceive('00A40000023F00');
         if (!mf.endsWith('9000'))
             return {};
-        let f15 = await transceive('00B0950021');
+        let f15 = await _transceive('00B0950021');
         if (!f15.endsWith('9000'))
             return {};
         const number = f15.slice(12, 20);
@@ -264,7 +264,7 @@
     let ReadTUnion = async (fci) => {
         let f15 = await BasicInfoFile(fci);
         if (f15 === '') return {};
-        let f17 = await transceive('00B097000B');
+        let f17 = await _transceive('00B097000B');
         if (!f17.endsWith('9000'))
             return {};
         const balance_trans = await ReadPBOCBalanceAndTrans();
@@ -303,12 +303,12 @@
         }
         log(`PPSE DF Name: ${DFName} (${cardType})`);
         if (!cardType) return {};
-        fci = await transceive('00A40400' + buf2hex(select));
+        fci = await _transceive('00A40400' + buf2hex(select));
         if (!fci.endsWith('9000')) return {};
         let pdol = ExtractFromTLV(fci, ['6F', 'A5', '9F38']);
         pdol = pdol ? BuildRespOfPDOL(pdol) : '';
         pdol = buf2hex(new Uint8Array([pdol.length / 2 + 2, 0x83, pdol.length / 2])) + pdol
-        const gpo_resp = await transceive(`80A80000${pdol}00`);
+        const gpo_resp = await _transceive(`80A80000${pdol}00`);
         log("GPO: " + gpo_resp);
         if (!gpo_resp.endsWith('9000')) return {};
         let track2 = ExtractFromTLV(gpo_resp, ['77', '57']);
@@ -325,7 +325,7 @@
             track2 = elements['57'];
         }
         if (!atc) {
-            let r = await transceive("80CA9F3600");
+            let r = await _transceive("80CA9F3600");
             if (!r.endsWith('9000')) return {};
             atc = ExtractFromTLV(r, ['9F36']);
         }
@@ -333,7 +333,7 @@
         const sep = track2.indexOf('D');
         if (sep < 0) return {};
         atc = atc[0] << 8 | atc[1];
-        let pin_retry = await transceive("80CA9F1700");
+        let pin_retry = await _transceive("80CA9F1700");
         if (!pin_retry.endsWith('9000')) pin_retry = 'N/A';
         else {
             pin_retry = ExtractFromTLV(pin_retry, ['9F17'])[0];
@@ -350,7 +350,7 @@
     let ReadLingnanTong = async (fci) => {
         let f15 = await BasicInfoFile(fci);
         if (f15 === '') return {};
-        let r = await transceive('00A40400085041592E5449434C00');
+        let r = await _transceive('00A40400085041592E5449434C00');
         if (!r.endsWith('9000'))
             return {};
         const number = f15.slice(22, 32);
@@ -364,26 +364,26 @@
     };
 
     let ReadAnyCard = async (tag) => {
-        let r = await transceive('00B0840020');
+        let r = await _transceive('00B0840020');
         if (r.endsWith('9000') && r.startsWith('1000'))
             return await ReadTransBeijing(r.slice(0, -4));
-        r = await transceive('00A4040009A0000000038698070100');
+        r = await _transceive('00A4040009A0000000038698070100');
         if (r.endsWith('9000')) {
             if (tag.standard === "ISO 14443-4 (Type B)")
                 return await ReadTHU(r.slice(0, -4));
             return await ReadCityUnion(r.slice(0, -4));
         }
-        r = await transceive('00A4040008A00000063201010500');
+        r = await _transceive('00A4040008A00000063201010500');
         if (r.endsWith('9000')) {
             r = r.slice(0, -4);
             return await ReadTUnion(r);
         }
-        r = await transceive('00A404000E325041592E5359532E444446303100');
+        r = await _transceive('00A404000E325041592E5359532E444446303100');
         if (r.endsWith('9000')) {
             r = r.slice(0, -4);
             return await ReadPPSE(r);
         }
-        r = await transceive('00A4000002100100');
+        r = await _transceive('00A4000002100100');
         if (r.endsWith('9000')) {
             r = r.slice(0, -4);
             let DFName = ExtractFromTLV(r, ['6F', '84']);
@@ -395,7 +395,7 @@
                     return await ReadTransWuhan(r);
             }
         }
-        r = await transceive('00A40400085041592E4150505900');
+        r = await _transceive('00A40400085041592E4150505900');
         if (r.endsWith('9000')) {
             r = r.slice(0, -4);
             return await ReadLingnanTong(r);
@@ -405,9 +405,26 @@
 
     const tag = await poll();
     log(tag);
+    // record APDU history
+    let apduHistory = [];
+    const _transceive = async (apdu) => {
+        const result = await transceive(apdu);
+        let history = {
+            "tx": apdu,
+            "rx": result
+        };
+        log(history);
+        // append success history only
+        if (result.endsWith('9000')) {
+            apduHistory.push(history);
+        }
+        return result;
+    }
     let result = await ReadAnyCard(tag);
-    if (!('card_type' in result))
+    if (!('card_type' in result)) {
         result.card_type = 'Unknown';
+    }
     result.tag = tag;
+    result.apduHistory = apduHistory;
     report(result);
 })();
