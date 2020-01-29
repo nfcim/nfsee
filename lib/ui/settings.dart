@@ -52,9 +52,7 @@ class _SettingsActState extends State<SettingsAct> {
   Widget _buildAndroid(BuildContext context) {
     // TODO(ui): scrollbar
     return Scaffold(
-      appBar: new AppBar(
-        title: const Text(SettingsAct.title)
-      ),
+      appBar: new AppBar(title: const Text(SettingsAct.title)),
     );
   }
 

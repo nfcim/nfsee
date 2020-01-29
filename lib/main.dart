@@ -97,7 +97,6 @@ class PlatformAdaptingHomePage extends StatefulWidget {
 
 class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   final _webView = InteractiveWebView();
-  List<DumpedRecord> _records = new List<DumpedRecord>();
   StreamSubscription _webViewListener;
   var _reading = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -117,13 +116,6 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     _webView.evalJavascript(await rootBundle.loadString('assets/reader.js'));
     _webView.evalJavascript(await rootBundle.loadString('assets/codes.js'));
     _webViewListener = _webView.didReceiveMessage.listen(_onReceivedMessage);
-  }
-
-  _updateRecords() async {
-    var records = await bloc.listDumpedRecords();
-    setState(() {
-      this._records = records;
-    });
   }
 
   void _onReceivedMessage(WebkitMessage message) async {
@@ -286,35 +278,45 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           ),
         ),
         SliverPadding(
-            padding: MediaQuery.of(context)
-                .removePadding(
-                    removeTop: true, removeLeft: true, removeRight: true)
-                .padding,
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  if (this._records.length == 0) {
+          padding: MediaQuery.of(context)
+              .removePadding(
+                  removeTop: true, removeLeft: true, removeRight: true)
+              .padding,
+          sliver: StreamBuilder<List<DumpedRecord>>(
+            stream: bloc.dumpedRecords,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData || snapshot.data.length == 0) {
+                return SliverList(
+                  delegate: SliverChildBuilderDelegate((context, index) {
                     return Text(
                       "Press button on the top right to scan a NFC tag",
                       style: TextStyle(color: Colors.grey),
                       textAlign: TextAlign.center,
                     );
-                  } else {
+                  }, childCount: 1),
+                );
+              }
+              final records = snapshot.data;
+              return SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
                     int realIndex = index ~/ 2;
                     if (index.isEven) {
                       return ReportRowItem(
-                          record: this._records[realIndex],
+                          record: records[realIndex],
                           onTap: () {
-                            this._navigateToTag(this._records[realIndex]);
+                            this._navigateToTag(records[realIndex]);
                           });
                     } else {
                       return Divider(height: 0, color: Colors.grey);
                     }
-                  }
-                },
-                childCount: math.max(1, 2 * this._records.length - 1),
-              ),
-            ))
+                  },
+                  childCount: math.max(1, 2 * records.length - 1),
+                ),
+              );
+            },
+          ),
+        )
       ],
     );
   }
