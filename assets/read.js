@@ -424,6 +424,7 @@
     if (!('card_type' in result)) {
         result.card_type = 'Unknown';
     }
+    result = {'details': result};
     result.tag = tag;
     result.apduHistory = apduHistory;
     report(result);
