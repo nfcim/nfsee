@@ -222,7 +222,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
                 child: Text('No history found'),
               );
             }
-            final records = snapshot.data;
+            final records = snapshot.data.reversed.toList();
             return ListView.builder(
               padding: EdgeInsets.only(bottom: 48),
               itemCount: records.length,
@@ -295,7 +295,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
                   }, childCount: 1),
                 );
               }
-              final records = snapshot.data;
+              final records = snapshot.data.reversed.toList();
               return SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
@@ -445,7 +445,7 @@ class ReportRowItem extends StatelessWidget {
         height: double.infinity,
         child: Icon(Icons.credit_card),
       ),
-      title: Text('${record.id}: $title'),
+      title: Text('${record.time}: $title'),
       subtitle: data["detail"]["card_number"] != null
           ? Text(data["detail"]["card_number"].toString())
           : null,
