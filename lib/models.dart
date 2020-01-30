@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:nfsee/data/database/database.dart';
+
+import 'generated/l10n.dart';
 
 class ScriptDataModel {
   final String action;
@@ -30,4 +33,47 @@ enum CardType {
   Octopus,
   Tsinghua,
   Unknown,
+}
+
+extension CardTypeExtension on CardType {
+  String getName(BuildContext context) {
+    switch (this) {
+      case CardType.UPCredit:
+        return S.of(context).UPCredit;
+      case CardType.UPDebit:
+        return S.of(context).UPDebit;
+      case CardType.UPSecuredCredit:
+        return S.of(context).UPSecuredCredit;
+      case CardType.Visa:
+        return S.of(context).Visa;
+      case CardType.MC:
+        return S.of(context).MC;
+      case CardType.AMEX:
+        return S.of(context).AMEX;
+      case CardType.JCB:
+        return S.of(context).JCB;
+      case CardType.Discover:
+        return S.of(context).Discover;
+      case CardType.CityUnion:
+        return S.of(context).CityUnion;
+      case CardType.TUnion:
+        return S.of(context).TUnion;
+      case CardType.BMAC:
+        return S.of(context).BMAC;
+      case CardType.LingnanPass:
+        return S.of(context).LingnanPass;
+      case CardType.ShenzhenTong:
+        return S.of(context).ShenzhenTong;
+      case CardType.WuhanTong:
+        return S.of(context).WuhanTong;
+      case CardType.TMoney:
+        return S.of(context).TMoney;
+      case CardType.Octopus:
+        return S.of(context).Octopus;
+      case CardType.Tsinghua:
+        return S.of(context).Tsinghua;
+      case CardType.Unknown:
+        return S.of(context).Unknown;
+    }
+  }
 }

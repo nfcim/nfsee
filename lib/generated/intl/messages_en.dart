@@ -21,6 +21,24 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
+    "AMEX" : MessageLookupByLibrary.simpleMessage("American Express"),
+    "BMAC" : MessageLookupByLibrary.simpleMessage("Beijing Yikatong"),
+    "CityUnion" : MessageLookupByLibrary.simpleMessage("City Union"),
+    "Discover" : MessageLookupByLibrary.simpleMessage("Discover"),
+    "JCB" : MessageLookupByLibrary.simpleMessage("JCB"),
+    "LingnanPass" : MessageLookupByLibrary.simpleMessage("Lingnan Pass"),
+    "MC" : MessageLookupByLibrary.simpleMessage("MasterCard"),
+    "Octopus" : MessageLookupByLibrary.simpleMessage("Octopus"),
+    "ShenzhenTong" : MessageLookupByLibrary.simpleMessage("Shenzhen Tong"),
+    "TMoney" : MessageLookupByLibrary.simpleMessage("T-Money"),
+    "TUnion" : MessageLookupByLibrary.simpleMessage("T Union"),
+    "Tsinghua" : MessageLookupByLibrary.simpleMessage("Tsinghua University"),
+    "UPCredit" : MessageLookupByLibrary.simpleMessage("UnionPay Credit"),
+    "UPDebit" : MessageLookupByLibrary.simpleMessage("UnionPay Debit"),
+    "UPSecuredCredit" : MessageLookupByLibrary.simpleMessage("UnionPay Secured Credit"),
+    "Unknown" : MessageLookupByLibrary.simpleMessage("Unknown"),
+    "Visa" : MessageLookupByLibrary.simpleMessage("Visa"),
+    "WuhanTong" : MessageLookupByLibrary.simpleMessage("Wuhan Tong"),
     "aboutTabTitle" : MessageLookupByLibrary.simpleMessage("About"),
     "scanTabTitle" : MessageLookupByLibrary.simpleMessage("Scan"),
     "scriptTabTitle" : MessageLookupByLibrary.simpleMessage("Script Mode")

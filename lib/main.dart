@@ -175,6 +175,8 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
   void _navigateToTag(DumpedRecord record) {
     var data = jsonDecode(record.data);
+    data['card_type'] = CardType.values
+        .firstWhere((it) => it.toString() == "CardType.${data['card_type']}");
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         log(data.toString());
@@ -231,7 +233,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
                 )
               );
             }
-            final records = snapshot.data;
+            final records = snapshot.data.reversed.toList();
             return ListView.builder(
               padding: EdgeInsets.only(bottom: 48),
               itemCount: records.length,
@@ -304,7 +306,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
                   }, childCount: 1),
                 );
               }
-              final records = snapshot.data;
+              final records = snapshot.data.reversed.toList();
               return SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
@@ -454,7 +456,7 @@ class ReportRowItem extends StatelessWidget {
         height: double.infinity,
         child: Icon(Icons.credit_card),
       ),
-      title: Text('${record.id}: $title'),
+      title: Text('${record.time}: $title'),
       subtitle: data["detail"]["card_number"] != null
           ? Text(data["detail"]["card_number"].toString())
           : null,

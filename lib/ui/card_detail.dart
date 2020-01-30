@@ -3,7 +3,9 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nfsee/generated/l10n.dart';
 
+import '../models.dart';
 import 'widgets.dart';
 
 class CardDetailTab extends StatefulWidget {
@@ -22,38 +24,38 @@ class CardDetailTabState extends State<CardDetailTab> {
   List<bool> expanded = [false, false, false, false];
 
   String _getFilename() {
-    switch (data['card_type']) {
-      case 'UPCredit':
-      case 'UPDebit':
-      case 'UPSecuredCredit':
+    switch (data['card_type'] as CardType) {
+      case CardType.UPCredit:
+      case CardType.UPDebit:
+      case CardType.UPSecuredCredit:
         return 'union_pay';
-      case 'MC':
+      case CardType.MC:
         return 'mc';
-      case 'Visa':
+      case CardType.Visa:
         return 'visa';
-      case 'AMEX':
+      case CardType.AMEX:
         return 'amex';
-      case 'JCB':
+      case CardType.JCB:
         return 'jcb';
-      case 'Discover':
+      case CardType.Discover:
         return 'discover';
-      case 'BMAC':
+      case CardType.BMAC:
         return 'bmac';
-      case 'ShenzhenTong':
+      case CardType.ShenzhenTong:
         return 'shenzhentong';
-      case 'LingnanPass':
+      case CardType.LingnanPass:
         return 'lingnanpass';
-      case 'WuhanTong':
+      case CardType.WuhanTong:
         return 'wuhantong';
-      case 'CityUnion':
+      case CardType.CityUnion:
         return 'city_union';
-      case 'TUnion':
+      case CardType.TUnion:
         return 't_union';
-      case 'Octopus':
+      case CardType.Octopus:
         return 'octopus';
-      case 'TMoney':
+      case CardType.TMoney:
         return 't_money';
-      case 'Tsinghua':
+      case CardType.Tsinghua:
         return 'tsinghua';
       default:
         return '';
@@ -101,7 +103,7 @@ class CardDetailTabState extends State<CardDetailTab> {
 
           ListTile(
             title: Text("Unamed card"),
-            subtitle: Text("${data['card_type']} - ${data['detail']['card_number']}"),
+            subtitle: Text("${(data['card_type'] as CardType).getName(context)} - ${data['detail']['card_number']}"),
             trailing: IconButton(
               onPressed: () {},
               icon: Icon(Icons.edit),
@@ -215,7 +217,7 @@ class CardDetailTabState extends State<CardDetailTab> {
   Widget _buildAndroid(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(data['card_type']),
+        title: Text((data['card_type'] as CardType).getName(context)),
         backgroundColor: Color.fromARGB(0x30, 0, 0, 0),
         elevation: 0,
       ),
@@ -227,7 +229,7 @@ class CardDetailTabState extends State<CardDetailTab> {
   Widget _buildIos(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: Text(data['card_type']),
+        middle: Text((data['card_type'] as CardType).getName(context)),
         previousPageTitle: 'Scan',
       ),
       child: _buildBody(),
@@ -326,7 +328,7 @@ class Detail {
 List<Detail> parseDetails(dynamic data) {
   final cardType = data["card_type"];
 
-  if(cardType == "Tsinghua") {
+  if(cardType == CardType.Tsinghua) {
     return [
       Detail(
         name: "Card Number",

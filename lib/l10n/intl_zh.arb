@@ -1,5 +1,23 @@
 {
   "scriptTabTitle": "脚本模式",
   "scanTabTitle": "读卡",
-  "aboutTabTitle": "关于"
+  "aboutTabTitle": "关于",
+  "UPCredit": "银联信用卡",
+  "UPDebit": "银联借记卡",
+  "UPSecuredCredit": "银联准贷记卡",
+  "Visa": "维萨卡",
+  "MC": "万事达卡",
+  "AMEX": "美国运通卡",
+  "JCB": "JCB卡",
+  "Discover": "发现卡",
+  "CityUnion": "城市一卡通",
+  "TUnion": "交通联合卡",
+  "BMAC": "北京一卡通",
+  "LingnanPass": "岭南通",
+  "ShenzhenTong": "深圳通",
+  "WuhanTong": "武汉通",
+  "TMoney": "T-Money",
+  "Octopus": "八达通",
+  "Tsinghua": "清华大学校园卡",
+  "Unknown": "未知卡片"
 }
