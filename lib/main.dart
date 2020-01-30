@@ -448,15 +448,15 @@ class ReportRowItem extends StatelessWidget {
   @override
   Widget build(context) {
     var data = json.decode(record.data);
-    var title = data["details"]["card_type"];
+    var title = data["card_type"];
     return ListTile(
       leading: Container(
         height: double.infinity,
         child: Icon(Icons.credit_card),
       ),
       title: Text('${record.id}: $title'),
-      subtitle: data["details"]["card_number"] != null
-          ? Text(data["details"]["card_number"].toString())
+      subtitle: data["detail"]["card_number"] != null
+          ? Text(data["detail"]["card_number"].toString())
           : null,
       onTap: this.onTap,
     );

@@ -376,25 +376,31 @@
     };
 
     let ReadAnyCard = async (tag) => {
+        // TransBeijing
         let r = await _transceive('00B0840020');
-        if (r.endsWith('9000') && r.startsWith('1000'))
+        if (r.endsWith('9000') && r.startsWith('1000')) {
             return await ReadTransBeijing(r.slice(0, -4));
+        }
+        // THU / CityUnion
         r = await _transceive('00A4040009A0000000038698070100');
         if (r.endsWith('9000')) {
             if (tag.standard === "ISO 14443-4 (Type B)")
                 return await ReadTHU();
             return await ReadCityUnion(r.slice(0, -4));
         }
+        // TUnion
         r = await _transceive('00A4040008A00000063201010500');
         if (r.endsWith('9000')) {
             r = r.slice(0, -4);
             return await ReadTUnion(r);
         }
+        // PPSE
         r = await _transceive('00A404000E325041592E5359532E444446303100');
         if (r.endsWith('9000')) {
             r = r.slice(0, -4);
             return await ReadPPSE(r);
         }
+        // TransShenzhen / TransWuhan
         r = await _transceive('00A4000002100100');
         if (r.endsWith('9000')) {
             r = r.slice(0, -4);
@@ -407,37 +413,42 @@
                     return await ReadTransWuhan();
             }
         }
+        // LingnanTong
         r = await _transceive('00A40400085041592E4150505900');
         if (r.endsWith('9000')) {
             r = r.slice(0, -4);
             return await ReadLingnanTong(r);
         }
-        return {};
+        // unsupported
+        return {'card_type': 'Unknown'};
     };
 
+    // poll a tag
     const tag = await poll();
     log(tag);
     // record APDU history
-    let apduHistory = [];
+    let apdu_history = [];
     const _transceive = async (apdu) => {
         const result = await transceive(apdu);
         let history = {
-            "tx": apdu,
-            "rx": result
+            'tx': apdu,
+            'rx': result
         };
         log(history);
         // append success history only
         if (result.endsWith('9000')) {
-            apduHistory.push(history);
+            apdu_history.push(history);
         }
         return result;
     };
-    let result = await ReadAnyCard(tag);
-    if (!('card_type' in result)) {
-        result.card_type = 'Unknown';
-    }
-    result = {'details': result};
-    result.tag = tag;
-    result.apduHistory = apduHistory;
+    // read detailed information
+    let {card_type, ...detail} = await ReadAnyCard(tag);
+    // return to invoker
+    const result = {
+        tag,
+        card_type,
+        detail,
+        apdu_history
+    };
     report(result);
 })();
