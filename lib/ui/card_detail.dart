@@ -59,7 +59,11 @@ class CardDetailTab extends StatelessWidget {
             'assets/cards/${_getFilename()}.png',
             height: 150,
           ),
-          Text(data.toString()),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Text(data.toString()),
+            ),
+          )
         ],
       ),
     );
