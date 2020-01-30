@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nfsee/generated/l10n.dart';
 
+import '../models.dart';
 import 'widgets.dart';
 
 class CardDetailTab extends StatelessWidget {
@@ -9,38 +13,38 @@ class CardDetailTab extends StatelessWidget {
   final dynamic data;
 
   String _getFilename() {
-    switch (data['card_type']) {
-      case 'UPCredit':
-      case 'UPDebit':
-      case 'UPSecuredCredit':
+    switch (data['card_type'] as CardType) {
+      case CardType.UPCredit:
+      case CardType.UPDebit:
+      case CardType.UPSecuredCredit:
         return 'union_pay';
-      case 'MC':
+      case CardType.MC:
         return 'mc';
-      case 'Visa':
+      case CardType.Visa:
         return 'visa';
-      case 'AMEX':
+      case CardType.AMEX:
         return 'amex';
-      case 'JCB':
+      case CardType.JCB:
         return 'jcb';
-      case 'Discover':
+      case CardType.Discover:
         return 'discover';
-      case 'BMAC':
+      case CardType.BMAC:
         return 'bmac';
-      case 'ShenzhenTong':
+      case CardType.ShenzhenTong:
         return 'shenzhentong';
-      case 'LingnanPass':
+      case CardType.LingnanPass:
         return 'lingnanpass';
-      case 'WuhanTong':
+      case CardType.WuhanTong:
         return 'wuhantong';
-      case 'CityUnion':
+      case CardType.CityUnion:
         return 'city_union';
-      case 'TUnion':
+      case CardType.TUnion:
         return 't_union';
-      case 'Octopus':
+      case CardType.Octopus:
         return 'octopus';
-      case 'TMoney':
+      case CardType.TMoney:
         return 't_money';
-      case 'Tsinghua':
+      case CardType.Tsinghua:
         return 'tsinghua';
       default:
         return '';
@@ -75,7 +79,8 @@ class CardDetailTab extends StatelessWidget {
 
   Widget _buildAndroid(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(data['card_type'])),
+      appBar:
+          AppBar(title: Text((data['card_type'] as CardType).getName(context))),
       body: _buildBody(),
     );
   }
@@ -83,7 +88,7 @@ class CardDetailTab extends StatelessWidget {
   Widget _buildIos(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: Text(data['card_type']),
+        middle: Text((data['card_type'] as CardType).getName(context)),
         previousPageTitle: 'Scan',
       ),
       child: _buildBody(),

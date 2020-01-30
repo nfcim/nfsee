@@ -1,5 +1,23 @@
 {
   "scriptTabTitle": "Script Mode",
   "scanTabTitle": "Scan",
-  "aboutTabTitle": "About"
+  "aboutTabTitle": "About",
+  "UPCredit": "UnionPay Credit",
+  "UPDebit": "UnionPay Debit",
+  "UPSecuredCredit": "UnionPay Secured Credit",
+  "Visa": "Visa",
+  "MC": "MasterCard",
+  "AMEX": "American Express",
+  "JCB": "JCB",
+  "Discover": "Discover",
+  "CityUnion": "City Union",
+  "TUnion": "T Union",
+  "BMAC": "Beijing Yikatong",
+  "LingnanPass": "Lingnan Pass",
+  "ShenzhenTong": "Shenzhen Tong",
+  "WuhanTong": "Wuhan Tong",
+  "TMoney": "T-Money",
+  "Octopus": "Octopus",
+  "Tsinghua": "Tsinghua University",
+  "Unknown": "Unknown"
 }

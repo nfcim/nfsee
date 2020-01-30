@@ -55,6 +55,168 @@ class S {
       args: [],
     );
   }
+
+  String get UPCredit {
+    return Intl.message(
+      'UnionPay Credit',
+      name: 'UPCredit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get UPDebit {
+    return Intl.message(
+      'UnionPay Debit',
+      name: 'UPDebit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get UPSecuredCredit {
+    return Intl.message(
+      'UnionPay Secured Credit',
+      name: 'UPSecuredCredit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Visa {
+    return Intl.message(
+      'Visa',
+      name: 'Visa',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get MC {
+    return Intl.message(
+      'MasterCard',
+      name: 'MC',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get AMEX {
+    return Intl.message(
+      'American Express',
+      name: 'AMEX',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get JCB {
+    return Intl.message(
+      'JCB',
+      name: 'JCB',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Discover {
+    return Intl.message(
+      'Discover',
+      name: 'Discover',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get CityUnion {
+    return Intl.message(
+      'City Union',
+      name: 'CityUnion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get TUnion {
+    return Intl.message(
+      'T Union',
+      name: 'TUnion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get BMAC {
+    return Intl.message(
+      'Beijing Yikatong',
+      name: 'BMAC',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get LingnanPass {
+    return Intl.message(
+      'Lingnan Pass',
+      name: 'LingnanPass',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get ShenzhenTong {
+    return Intl.message(
+      'Shenzhen Tong',
+      name: 'ShenzhenTong',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get WuhanTong {
+    return Intl.message(
+      'Wuhan Tong',
+      name: 'WuhanTong',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get TMoney {
+    return Intl.message(
+      'T-Money',
+      name: 'TMoney',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Octopus {
+    return Intl.message(
+      'Octopus',
+      name: 'Octopus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Tsinghua {
+    return Intl.message(
+      'Tsinghua University',
+      name: 'Tsinghua',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Unknown {
+    return Intl.message(
+      'Unknown',
+      name: 'Unknown',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

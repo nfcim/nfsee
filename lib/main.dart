@@ -175,6 +175,8 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
   void _navigateToTag(DumpedRecord record) {
     var data = jsonDecode(record.data);
+    data['card_type'] = CardType.values
+        .firstWhere((it) => it.toString() == "CardType.${data['card_type']}");
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         log(data.toString());
