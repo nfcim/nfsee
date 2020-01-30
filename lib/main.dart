@@ -217,9 +217,18 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           stream: bloc.dumpedRecords,
           builder: (context, snapshot) {
             if (!snapshot.hasData || snapshot.data.length == 0) {
-              return const Align(
-                alignment: Alignment.center,
-                child: Text('No history found'),
+              return Container(
+                width: double.infinity,
+                height: double.infinity,
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Image.asset('assets/empty.png', height: 200),
+                    Text('No history found'),
+                  ],
+                )
               );
             }
             final records = snapshot.data;
@@ -388,7 +397,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
     final script = await rootBundle.loadString('assets/read.js');
     _webView.evalJavascript(script);
-    // this.mockRead();
+    // this._mockRead();
 
     if ((await modal) != true) {
       // closed by user, cancel polling
