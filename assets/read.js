@@ -91,7 +91,7 @@
                     const r = await _transceive(buf2hex(apdu));
                     if (!r.endsWith('9000')) continue;
                     for (const tag of tag_list) {
-                        const v = ExtractFromTLV(r, ['70', tag])
+                        const v = ExtractFromTLV(r, ['70', tag]);
                         if (v) ret[tag] = v;
                     }
                 }
@@ -102,7 +102,7 @@
         return ret;
     };
 
-    let ReadPBOCBalanceAndTrans = async (usage) => {
+    let ReadPBOCBalanceATCAndTrans = async (usage) => {
         let balance = 'N/A';
         let trans = [];
         let purchase_atc = 0;
@@ -127,7 +127,7 @@
             });
         }
         let load_atc = undefined;
-        rapdu = await _transceive('805000020B0100000001000000000000');
+        rapdu = await _transceive(`8050000${usage}0B0100000001000000000000`);
         if (rapdu.endsWith('9000'))
             load_atc = parseInt(rapdu.slice(8, 12), 16);
         return [balance, purchase_atc, load_atc, trans];
@@ -149,7 +149,7 @@
         const number = content04.slice(0, 16);
         const issue_date = content04.slice(48, 56);
         const expiry_date = content04.slice(56, 64);
-        const balance_atc_trans = await ReadPBOCBalanceAndTrans();
+        const balance_atc_trans = await ReadPBOCBalanceATCAndTrans();
         return {
             'card_type': 'BMAC',
             'card_number': number,
@@ -168,19 +168,21 @@
         const number = parseInt(r.slice(32, 40), 16);
         const issue_date = r.slice(40, 48);
         const expiry_date = r.slice(48, 56);
-        const balance_trans = await ReadPBOCBalanceAndTrans();
+        const balance_atc_trans = await ReadPBOCBalanceATCAndTrans();
         return {
             'card_type': 'ShenzhenTong',
             'card_number': number,
-            'balance': balance_trans[0],
-            'transactions': balance_trans[1],
+            'balance': balance_atc_trans[0],
+            'purchase_atc': balance_atc_trans[1],
+            'load_atc': balance_atc_trans[2],
+            'transactions': balance_atc_trans[3],
             'issue_date': issue_date,
             'expiry_date': expiry_date,
         };
     };
 
-    let ReadTransWuhan = async (fci) => {
-        const balance_trans = await ReadPBOCBalanceAndTrans();
+    let ReadTransWuhan = async () => {
+        const balance_atc_trans = await ReadPBOCBalanceATCAndTrans();
         let mf = await _transceive('00A40000023F00');
         if (!mf.endsWith('9000'))
             return {};
@@ -196,8 +198,10 @@
         return {
             'card_type': 'WuhanTong',
             'card_number': number,
-            'balance': balance_trans[0],
-            'transactions': balance_trans[1],
+            'balance': balance_atc_trans[0],
+            'purchase_atc': balance_atc_trans[1],
+            'load_atc': balance_atc_trans[2],
+            'transactions': balance_atc_trans[3],
             'issue_date': issue_date,
             'expiry_date': expiry_date,
         };
@@ -208,7 +212,7 @@
         let f15 = await BasicInfoFile(fci);
         if (f15 === '') return {};
         let city = f15.slice(4, 8);
-        const balance_trans = await ReadPBOCBalanceAndTrans();
+        const balance_atc_trans = await ReadPBOCBalanceATCAndTrans();
         let expiry_date = f15.slice(48, 56);
         if (city === '4000') { // special case for Chongqing
             expiry_date = f15.slice(16, 24);
@@ -226,20 +230,22 @@
             'card_type': 'CityUnion',
             'city': city,
             'card_number': number,
-            'balance': balance_trans[0],
-            'transactions': balance_trans[1],
+            'balance': balance_atc_trans[0],
+            'purchase_atc': balance_atc_trans[1],
+            'load_atc': balance_atc_trans[2],
+            'transactions': balance_atc_trans[3],
             'issue_date': issue_date,
             'expiry_date': expiry_date,
         };
     };
 
-    let ReadTHU = async (fci) => {
+    let ReadTHU = async () => {
         let f16 = await _transceive('00B0960026');
         if (!f16.endsWith('9000'))
             return {};
         const name = ParseGBKText(f16.slice(0, 40).replace(/(00)+$/, ''));
         const stuNum = ParseGBKText(f16.slice(56, 76));
-        const balance_trans = await ReadPBOCBalanceAndTrans(1);
+        const balance_atc_trans = await ReadPBOCBalanceATCAndTrans(1);
         let mf = await _transceive('00A40000023F00');
         if (!mf.endsWith('9000'))
             return {};
@@ -251,13 +257,15 @@
         const writtenDueDate = '20' + f15.slice(30, 36);
         return {
             'card_type': 'Tsinghua',
-            'card_number': number,
+            'name': name,
+            'card_number': stuNum,
+            'internal_number': number,
             'expiry_date': dueDate,
             'display_expiry_date': writtenDueDate,
-            'name': name,
-            'number': stuNum,
-            'balance': balance_trans[0],
-            'transactions': balance_trans[1],
+            'balance': balance_atc_trans[0],
+            'purchase_atc': balance_atc_trans[1],
+            'load_atc': balance_atc_trans[2],
+            'transactions': balance_atc_trans[3],
         };
     };
 
@@ -267,7 +275,7 @@
         let f17 = await _transceive('00B097000B');
         if (!f17.endsWith('9000'))
             return {};
-        const balance_trans = await ReadPBOCBalanceAndTrans();
+        const balance_atc_trans = await ReadPBOCBalanceATCAndTrans();
         const number = f15.slice(20, 40);
         const issue_date = f15.slice(40, 48);
         const expiry_date = f15.slice(48, 56);
@@ -279,8 +287,10 @@
         return {
             'card_type': 'TUnion',
             'card_number': number,
-            'balance': balance_trans[0],
-            'transactions': balance_trans[1],
+            'balance': balance_atc_trans[0],
+            'purchase_atc': balance_atc_trans[1],
+            'load_atc': balance_atc_trans[2],
+            'transactions': balance_atc_trans[3],
             'province_code': province,
             'city': city,
             'tu_type': type,
@@ -307,7 +317,7 @@
         if (!fci.endsWith('9000')) return {};
         let pdol = ExtractFromTLV(fci, ['6F', 'A5', '9F38']);
         pdol = pdol ? BuildRespOfPDOL(pdol) : '';
-        pdol = buf2hex(new Uint8Array([pdol.length / 2 + 2, 0x83, pdol.length / 2])) + pdol
+        pdol = buf2hex(new Uint8Array([pdol.length / 2 + 2, 0x83, pdol.length / 2])) + pdol;
         const gpo_resp = await _transceive(`80A80000${pdol}00`);
         log("GPO: " + gpo_resp);
         if (!gpo_resp.endsWith('9000')) return {};
@@ -354,12 +364,14 @@
         if (!r.endsWith('9000'))
             return {};
         const number = f15.slice(22, 32);
-        const balance_trans = await ReadPBOCBalanceAndTrans();
+        const balance_atc_trans = await ReadPBOCBalanceATCAndTrans();
         return {
             'card_type': 'LingnanPass',
             'card_number': number,
-            'balance': balance_trans[0],
-            'transactions': balance_trans[1],
+            'balance': balance_atc_trans[0],
+            'purchase_atc': balance_atc_trans[1],
+            'load_atc': balance_atc_trans[2],
+            'transactions': balance_atc_trans[3],
         };
     };
 
@@ -370,7 +382,7 @@
         r = await _transceive('00A4040009A0000000038698070100');
         if (r.endsWith('9000')) {
             if (tag.standard === "ISO 14443-4 (Type B)")
-                return await ReadTHU(r.slice(0, -4));
+                return await ReadTHU();
             return await ReadCityUnion(r.slice(0, -4));
         }
         r = await _transceive('00A4040008A00000063201010500');
@@ -392,7 +404,7 @@
                 if (DFName.startsWith('PAY.SZT'))
                     return await ReadTransShenzhen(r);
                 else if (DFName.startsWith('AP1.WHCTC'))
-                    return await ReadTransWuhan(r);
+                    return await ReadTransWuhan();
             }
         }
         r = await _transceive('00A40400085041592E4150505900');
@@ -419,7 +431,7 @@
             apduHistory.push(history);
         }
         return result;
-    }
+    };
     let result = await ReadAnyCard(tag);
     if (!('card_type' in result)) {
         result.card_type = 'Unknown';

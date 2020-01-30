@@ -9,7 +9,7 @@ class CardDetailTab extends StatelessWidget {
   final dynamic data;
 
   String _getFilename() {
-    switch (data['card_type']) {
+    switch (data['details']['card_type']) {
       case 'UPCredit':
       case 'UPDebit':
       case 'UPSecuredCredit':
@@ -71,7 +71,7 @@ class CardDetailTab extends StatelessWidget {
 
   Widget _buildAndroid(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(data['card_type'])),
+      appBar: AppBar(title: Text(data['details']['card_type'])),
       body: _buildBody(),
     );
   }
@@ -79,7 +79,7 @@ class CardDetailTab extends StatelessWidget {
   Widget _buildIos(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: Text(data['card_type']),
+        middle: Text(data['details']['card_type']),
         previousPageTitle: 'Scan',
       ),
       child: _buildBody(),
