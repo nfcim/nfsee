@@ -11,11 +11,11 @@
         ['A000000324', 'Discover'],
     ];
     const PBOC_TTI2NAME = {
-        '01': 'Recharge',
-        '02': 'Recharge',
-        '05': 'Consumption',
-        '06': 'Consumption',
-        '09': 'CompoundConsumption', // GB/T 31778
+        '01': 'Load',
+        '02': 'Load',
+        '05': 'Purchase',
+        '06': 'Purchase',
+        '09': 'CompoundPurchase', // GB/T 31778
     };
     const ISO8583_ProcessingCode2Name = {
         '00': 'Authorization',

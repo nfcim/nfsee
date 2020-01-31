@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nfsee/generated/l10n.dart';
@@ -99,7 +96,7 @@ class CardDetailTabState extends State<CardDetailTab> {
             ),
           ),
           ListTile(
-            title: Text("Unnamed card"),
+            title: Text(S.of(context).unnamedCard),
             subtitle: Text(
                 "${(data['card_type'] as CardType).getName(context)} - ${data['detail']['card_number']}"),
             trailing: IconButton(
@@ -111,13 +108,11 @@ class CardDetailTabState extends State<CardDetailTab> {
   }
 
   Widget _buildDetail() {
-    final details = _parseCardDetails(data["detail"]);
-
     return Card(
         margin: EdgeInsets.only(bottom: 20),
         elevation: 2,
         child: Column(
-            children: details
+            children: _parseCardDetails(data["detail"], context)
                 .map((d) => ListTile(
                       dense: true,
                       title: Text(d.name),
@@ -158,10 +153,10 @@ class CardDetailTabState extends State<CardDetailTab> {
               leading: CircleAvatar(
                 child: Icon(Icons.payment),
               ),
-              title: Text("Transaction history"),
+              title: Text(S.of(context).transactionHistory),
               subtitle: transferTiles == null
-                  ? Text('Not supported')
-                  : Text("${transferTiles.length} transfers"),
+                  ? Text(S.of(context).notSupported)
+                  : Text("${transferTiles.length}${S.of(context).recordCount}"),
             );
           },
           body: Column(
@@ -175,7 +170,7 @@ class CardDetailTabState extends State<CardDetailTab> {
               leading: CircleAvatar(
                 child: Icon(Icons.nfc),
               ),
-              title: Text("Technological details"),
+              title: Text(S.of(context).technologicalDetails),
               subtitle: Text(data['tag']['standard']),
             );
           },
@@ -190,8 +185,9 @@ class CardDetailTabState extends State<CardDetailTab> {
               leading: CircleAvatar(
                 child: Icon(Icons.history),
               ),
-              title: Text("APDU backlog"),
-              subtitle: Text("${data["apdu_history"].length} communications"),
+              title: Text(S.of(context).apduLogs),
+              subtitle: Text(
+                  "${data["apdu_history"].length}${S.of(context).recordCount}"),
             );
           },
           body: Container(
@@ -306,7 +302,6 @@ class APDUTile extends StatelessWidget {
   }
 }
 
-// TODO: i18n
 class TransferTile extends StatelessWidget {
   const TransferTile({this.data});
 
@@ -314,16 +309,20 @@ class TransferTile extends StatelessWidget {
 
   @override
   Widget build(context) {
+    final typePBOC = getEnumFromString<PBOCTransactionType>(
+        PBOCTransactionType.values, data["type"]);
+    final typePPSE =
+        getEnumFromString<ProcessingCode>(ProcessingCode.values, data["type"]);
+
     return ExpansionTile(
-      leading: Icon(getEnumFromString<PBOCTransactionType>(
-                  PBOCTransactionType.values, data["type"]) ==
-              PBOCTransactionType.Recharge
+      leading: Icon(typePBOC == PBOCTransactionType.Load
           ? Icons.attach_money
           : Icons.money_off),
-      title: Text("${formatTransactionBalance(data["amount"])} - ${data["type"]}"),
+      title: Text(
+          "${formatTransactionBalance(data["amount"])} - ${typePBOC == null ? typePPSE.getName(context) : typePBOC.getName(context)}"),
       subtitle: Text(
           "${formatTransactionDate(data["date"])} ${formatTransactionTime(data["time"])}"),
-      children: _parseTransactionDetails(data)
+      children: _parseTransactionDetails(data, context)
           .map((d) => ListTile(
                 dense: true,
                 title: Text(d.name),
@@ -376,10 +375,9 @@ void _addDetail(Map<dynamic, dynamic> data, List<Detail> details,
   }
 }
 
-
-
 // TODO: i18n
-List<Detail> _parseCardDetails(Map<String, dynamic> _data) {
+List<Detail> _parseCardDetails(
+    Map<String, dynamic> _data, BuildContext context) {
   // make a copy and remove transactions, the remaining fields are all details
   var data = {}..addAll(_data);
   data.remove('transactions');
@@ -392,47 +390,49 @@ List<Detail> _parseCardDetails(Map<String, dynamic> _data) {
   }
 
   // all cards
-  addDetail('card_number', 'Card Number', Icons.credit_card);
+  addDetail('card_number', S.of(context).cardNumber, Icons.credit_card);
   // THU
-  addDetail('internal_number', 'Internal Number', Icons.credit_card);
+  addDetail('internal_number', S.of(context).internalNumber, Icons.credit_card);
   // PBOC
-  addDetail('name', 'Holder Name', Icons.person);
+  addDetail('name', S.of(context).holderName, Icons.person);
   // PBOC
-  addDetail('balance', 'Balance', Icons.account_balance, formatTransactionBalance);
+  addDetail(
+      'balance', S.of(context).balance, Icons.account_balance, formatTransactionBalance);
   // City Union
-  addDetail('city', 'City', Icons.home);
+  addDetail('city', S.of(context).city, Icons.home);
   // City Union
-  addDetail('issue_date', 'Issue Date', Icons.calendar_today, formatTransactionDate);
+  addDetail(
+      'issue_date', S.of(context).issueDate, Icons.calendar_today, formatTransactionDate);
   // PBOC
-  addDetail('expiry_date', 'Expiry Date', Icons.calendar_today, formatTransactionDate);
+  addDetail('expiry_date', S.of(context).expiryDate, Icons.calendar_today,
+      formatTransactionDate);
   // THU
-  addDetail('display_expiry_date', 'Display Expiry Date', Icons.calendar_today,
+  addDetail('display_expiry_date', S.of(context).displayExpiryDate, Icons.calendar_today,
       formatTransactionDate);
   // PPSE
-  addDetail('expiration', 'Valid Until', Icons.calendar_today);
+  addDetail('expiration', S.of(context).validUntil, Icons.calendar_today);
   // PBOC
-  addDetail('purchase_atc', 'Purchase Application Transaction Counter',
+  addDetail('purchase_atc', '${S.of(context).ATC} (${S.of(context).Purchase})',
       Icons.exposure_neg_1);
   // PBOC
-  addDetail('load_atc', 'Load Application Transaction Counter',
+  addDetail('load_atc', '${S.of(context).ATC} (${S.of(context).Load})',
       Icons.exposure_plus_1);
   // PPSE
-  addDetail('atc', 'Application Transaction Counter', Icons.exposure_plus_1);
+  addDetail('atc', S.of(context).ATC, Icons.exposure_plus_1);
   // PPSE
-  addDetail('pin_retry', 'Remaining PIN Retry Counter', Icons.lock);
+  addDetail('pin_retry', S.of(context).pinRetry, Icons.lock);
   // all remaining data, clone to avoid concurrent modification
   final remain = {}..addAll(data);
-  remain.forEach((k, _) => addDetail(k, 'Raw data: $k', Icons.error));
+  remain.forEach((k, _) => addDetail(k, '${S.of(context).rawData}: $k', Icons.error));
 
   return details;
 }
 
-
-List<Detail> _parseTransactionDetails(Map<String, dynamic> _data) {
+List<Detail> _parseTransactionDetails(
+    Map<String, dynamic> _data, BuildContext context) {
   // make a copy
   var data = {}..addAll(_data);
   data.remove('amount');
-  data.remove('type');
   data.remove('date');
   data.remove('time');
 
@@ -442,24 +442,21 @@ List<Detail> _parseTransactionDetails(Map<String, dynamic> _data) {
       [IconData icon, transformer]) {
     _addDetail(data, details, fieldName, parsedName, icon, transformer);
   }
-  
-  addDetail('number', 'ID', Icons.bookmark);
-  addDetail('terminal', 'Terminal', Icons.place);
-  addDetail('country_code', 'Country Code', Icons.map);
-  addDetail('currency_code', 'Currency Code', Icons.local_atm);
-  addDetail('amount_other', 'Amount in Other Currency', Icons.attach_money);
 
-
+  addDetail('number', S.of(context).transactionNumber, Icons.bookmark);
+  addDetail('terminal', S.of(context).terminal, Icons.place);
+  addDetail('type', S.of(context).type);
+  addDetail('country_code', S.of(context).countryCode, Icons.map);
+  addDetail('currency_code', S.of(context).currencyCode, Icons.local_atm);
+  addDetail('amount_other', S.of(context).amountOther, Icons.attach_money);
 
   // all remaining data, clone to avoid concurrent modification
   final remain = {}..addAll(data);
-  remain.forEach((k, _) => addDetail(k, 'Raw data: $k', Icons.error));
+  remain.forEach((k, _) => addDetail(k, '${S.of(context).rawData}: $k', Icons.error));
 
   return details;
 }
 
-
-// TODO: i18n
 String _parseTechnologicalDetailKey(String key) {
   switch (key) {
     case 'standard':

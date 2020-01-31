@@ -107,20 +107,20 @@ extension ProcessingCodeExtension on ProcessingCode {
 }
 
 enum PBOCTransactionType {
-  Recharge,
-  Consumption,
-  CompoundConsumption
+  Load,
+  Purchase,
+  CompoundPurchase
 }
 
 extension PBOCTransactionTypeExtension on PBOCTransactionType {
   String getName(BuildContext context) {
     switch (this) {
-      case PBOCTransactionType.Recharge:
-        return S.of(context).Recharge;
-      case PBOCTransactionType.Consumption:
-        return S.of(context).Consumption;
-      case PBOCTransactionType.CompoundConsumption:
-        return S.of(context).CompoundConsumption;
+      case PBOCTransactionType.Load:
+        return S.of(context).Load;
+      case PBOCTransactionType.Purchase:
+        return S.of(context).Purchase;
+      case PBOCTransactionType.CompoundPurchase:
+        return S.of(context).CompoundPurchase;
       default:
         return S.of(context).Unknown;
     }

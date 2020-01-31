@@ -281,28 +281,244 @@ class S {
     );
   }
 
-  String get Recharge {
+  String get Load {
     return Intl.message(
-      'Recharge',
-      name: 'Recharge',
+      'Load',
+      name: 'Load',
       desc: '',
       args: [],
     );
   }
 
-  String get Consumption {
+  String get Purchase {
     return Intl.message(
-      'Consumption',
-      name: 'Consumption',
+      'Purchase',
+      name: 'Purchase',
       desc: '',
       args: [],
     );
   }
 
-  String get CompoundConsumption {
+  String get CompoundPurchase {
     return Intl.message(
-      'Compound Consumption',
-      name: 'CompoundConsumption',
+      'Compound Purchase',
+      name: 'CompoundPurchase',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get unnamedCard {
+    return Intl.message(
+      'Unnamed Card',
+      name: 'unnamedCard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get transactionHistory {
+    return Intl.message(
+      'Transaction History',
+      name: 'transactionHistory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get recordCount {
+    return Intl.message(
+      ' record(s)',
+      name: 'recordCount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get technologicalDetails {
+    return Intl.message(
+      'Technological Details',
+      name: 'technologicalDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get apduLogs {
+    return Intl.message(
+      'APDU Logs',
+      name: 'apduLogs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get notSupported {
+    return Intl.message(
+      'Not supported',
+      name: 'notSupported',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get cardNumber {
+    return Intl.message(
+      'Card Number',
+      name: 'cardNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get internalNumber {
+    return Intl.message(
+      'Internal Number',
+      name: 'internalNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get holderName {
+    return Intl.message(
+      'Holder Name',
+      name: 'holderName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get balance {
+    return Intl.message(
+      'Balance',
+      name: 'balance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get city {
+    return Intl.message(
+      'City',
+      name: 'city',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get issueDate {
+    return Intl.message(
+      'Issue Date',
+      name: 'issueDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get expiryDate {
+    return Intl.message(
+      'Expiry Date',
+      name: 'expiryDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get displayExpiryDate {
+    return Intl.message(
+      'Expiry Date on Card',
+      name: 'displayExpiryDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get validUntil {
+    return Intl.message(
+      'Valid Until',
+      name: 'validUntil',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get ATC {
+    return Intl.message(
+      'Application Transaction Counter',
+      name: 'ATC',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get pinRetry {
+    return Intl.message(
+      'Remaining PIN Retry Counter',
+      name: 'pinRetry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get rawData {
+    return Intl.message(
+      ' Raw data',
+      name: 'rawData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get transactionNumber {
+    return Intl.message(
+      'Transaction Number',
+      name: 'transactionNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get terminal {
+    return Intl.message(
+      'Terminal',
+      name: 'terminal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get type {
+    return Intl.message(
+      'Type',
+      name: 'type',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get countryCode {
+    return Intl.message(
+      'Country Code',
+      name: 'countryCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get currencyCode {
+    return Intl.message(
+      'Currency Code',
+      name: 'currencyCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get amountOther {
+    return Intl.message(
+      'Amount in Other Currency',
+      name: 'amountOther',
       desc: '',
       args: [],
     );
