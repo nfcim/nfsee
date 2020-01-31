@@ -315,7 +315,7 @@ class TransferTile extends StatelessWidget {
   Widget build(context) {
     return ExpansionTile(
       title: Text(
-          "${_getPBOCSign(data["type"])}${_formatPBOCBalance(data["amount"])} - ${data["type"]}"),
+          "${_formatPBOCBalance(data["amount"])} - ${data["type"]}"),
       subtitle: Text(
           "${_formatPBOCDate(data["date"])} ${_formatPOOCTime(data["time"])}"),
       children: <Widget>[
@@ -426,11 +426,6 @@ String _formatPBOCBalance(int raw) {
     return "${(raw / 100).floor()}.${(raw % 100).toString().padLeft(2, "0")}";
   else
     return "-" + _formatPBOCBalance(-raw);
-}
-
-String _getPBOCSign(String type) {
-  if (type == "充值") return "+";
-  return "-";
 }
 
 // TODO: i18n

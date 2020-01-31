@@ -17,9 +17,13 @@
         '06': '消费',
         '09': '复合消费', // GB/T 31778
     };
-    // const ISO8583_ProcessingCode2Name = {
-    //     ''
-    // };
+    const ISO8583_ProcessingCode2Name = {
+        '00': 'Authorization',
+        '31': 'Balance inquiry',
+        '01': 'Cash',
+        '02': 'Void',
+        '57': 'Mobile topup',
+    };
 
     let ParseGBKText = (hexStr) => {
         return GBKDecoder.decode(hex2buf(hexStr));
@@ -105,14 +109,14 @@
         return ret;
     };
 
-    let ReadPPSETransactions = async (log_entry, log_format) =>{
+    let ReadPPSETransactions = async (log_entry, log_format) => {
         log_format = ExtractFromTLV(log_format, ['9F4F']);
         const sfi = log_entry[0];
         const total = log_entry[1];
         let trans = [];
         try {
             for (let n = 1; n <= total; n++) {
-                const apdu = buf2hex(Uint8Array.from([0, 0xB2, n, sfi<<3|4, 0]));
+                const apdu = buf2hex(Uint8Array.from([0, 0xB2, n, sfi << 3 | 4, 0]));
                 rapdu = await _transceive(apdu);
                 if (!rapdu.endsWith('9000'))
                     break;
@@ -124,7 +128,7 @@
                         tag = (tag << 8) | log_format[++i];
                     let len = log_format[++i];
                     let extractField = () => {
-                        return rapdu.slice(2*off, 2*(off+len));
+                        return rapdu.slice(2 * off, 2 * (off + len));
                     };
                     switch (tag) {
                         case 0x9A:
@@ -155,12 +159,12 @@
                             item['terminal'] = extractField();
                             break;
                         case 0x9C:
-                            item['type'] = extractField();
+                            item['type'] = ISO8583_ProcessingCode2Name[extractField()];
                             break;
                         case 0x9F36:
                             item['number'] = parseInt(extractField(), 16);
                             break;
-                    
+
                         default:
                             log(`Unknown tag ${tag} in log format`);
                     }
@@ -499,7 +503,7 @@
             return await ReadLingnanTong(r);
         }
         // unsupported
-        return {'card_type': 'Unknown'};
+        return { 'card_type': 'Unknown' };
     };
 
     // poll a tag
@@ -521,7 +525,7 @@
         return result;
     };
     // read detailed information
-    let {card_type, ...detail} = await ReadAnyCard(tag);
+    let { card_type, ...detail } = await ReadAnyCard(tag);
     // return to invoker
     const result = {
         tag,
