@@ -11,18 +11,18 @@
         ['A000000324', 'Discover'],
     ];
     const PBOC_TTI2NAME = {
-        '01': '充值',
-        '02': '充值',
-        '05': '消费',
-        '06': '消费',
-        '09': '复合消费', // GB/T 31778
+        '01': 'Recharge',
+        '02': 'Recharge',
+        '05': 'Consumption',
+        '06': 'Consumption',
+        '09': 'CompoundConsumption', // GB/T 31778
     };
     const ISO8583_ProcessingCode2Name = {
         '00': 'Authorization',
-        '31': 'Balance inquiry',
+        '31': 'BalanceInquiry',
         '01': 'Cash',
         '02': 'Void',
-        '57': 'Mobile topup',
+        '57': 'MobileTopup',
     };
 
     let ParseGBKText = (hexStr) => {

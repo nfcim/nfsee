@@ -1,5 +1,5 @@
 {
-  "scriptTabTitle": "脚本模式",
+  "scriptTabTitle": "执行脚本",
   "scanTabTitle": "读卡",
   "aboutTabTitle": "关于",
   "homeScreenTitle": "NFSee",
@@ -21,5 +21,13 @@
   "TMoney": "T-Money",
   "Octopus": "八达通",
   "Tsinghua": "清华大学校园卡",
-  "Unknown": "未知卡片"
+  "Unknown": "未知",
+  "Authorization": "授权",
+  "BalanceInquiry": "查询余额",
+  "Cash": "现金",
+  "Void": "无",
+  "MobileTopup": "手机充值",
+  "Recharge": "充值",
+  "Consumption": "消费",
+  "CompoundConsumption": "复合消费"
 }

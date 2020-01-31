@@ -7,6 +7,7 @@ import 'package:nfsee/generated/l10n.dart';
 
 import '../models.dart';
 import 'widgets.dart';
+import "../utilities.dart";
 
 class CardDetailTab extends StatefulWidget {
   const CardDetailTab({this.data});
@@ -110,7 +111,7 @@ class CardDetailTabState extends State<CardDetailTab> {
   }
 
   Widget _buildDetail() {
-    final details = _parseCardDetails(data["card_type"], data["detail"]);
+    final details = _parseCardDetails(data["detail"]);
 
     return Card(
         margin: EdgeInsets.only(bottom: 20),
@@ -309,24 +310,27 @@ class APDUTile extends StatelessWidget {
 class TransferTile extends StatelessWidget {
   const TransferTile({this.data});
 
-  final dynamic data;
+  final Map<String, dynamic> data;
 
   @override
   Widget build(context) {
     return ExpansionTile(
-      title: Text("${_formatPBOCBalance(data["amount"])} - ${data["type"]}"),
+      leading: Icon(getEnumFromString<PBOCTransactionType>(
+                  PBOCTransactionType.values, data["type"]) ==
+              PBOCTransactionType.Recharge
+          ? Icons.attach_money
+          : Icons.money_off),
+      title: Text("${formatTransactionBalance(data["amount"])} - ${data["type"]}"),
       subtitle: Text(
-          "${_formatPBOCDate(data["date"])} ${_formatPOOCTime(data["time"])}"),
-      children: <Widget>[
-        ListTile(
-          dense: true,
-          title: Text("ID: ${data["number"]}"),
-        ),
-        ListTile(
-          dense: true,
-          title: Text("Terminal: ${data["terminal"]}"),
-        ),
-      ],
+          "${formatTransactionDate(data["date"])} ${formatTransactionTime(data["time"])}"),
+      children: _parseTransactionDetails(data)
+          .map((d) => ListTile(
+                dense: true,
+                title: Text(d.name),
+                subtitle: Text(d.value),
+                leading: Icon(d.icon ?? Icons.info),
+              ))
+          .toList(),
     );
   }
 }
@@ -356,8 +360,26 @@ class Detail {
   final IconData icon;
 }
 
+void _addDetail(Map<dynamic, dynamic> data, List<Detail> details,
+    String fieldName, String parsedName,
+    [IconData icon, transformer]) {
+  // optional parameters
+  if (icon == null) icon = Icons.list;
+  if (transformer == null) {
+    transformer = (s) => "$s";
+  }
+  // check existence and add to list
+  if (data[fieldName] != null) {
+    details.add(Detail(
+        name: parsedName, value: transformer(data[fieldName]), icon: icon));
+    data.remove(fieldName);
+  }
+}
+
+
+
 // TODO: i18n
-List<Detail> _parseCardDetails(CardType cardType, Map<String, dynamic> _data) {
+List<Detail> _parseCardDetails(Map<String, dynamic> _data) {
   // make a copy and remove transactions, the remaining fields are all details
   var data = {}..addAll(_data);
   data.remove('transactions');
@@ -366,17 +388,7 @@ List<Detail> _parseCardDetails(CardType cardType, Map<String, dynamic> _data) {
 
   void addDetail(String fieldName, String parsedName,
       [IconData icon, transformer]) {
-    // optional parameters
-    if (icon == null) icon = Icons.list;
-    if (transformer == null) {
-      transformer = (s) => "$s";
-    }
-    // check existence and add to list
-    if (data[fieldName] != null) {
-      details.add(Detail(
-          name: parsedName, value: transformer(data[fieldName]), icon: icon));
-      data.remove(fieldName);
-    }
+    _addDetail(data, details, fieldName, parsedName, icon, transformer);
   }
 
   // all cards
@@ -386,15 +398,18 @@ List<Detail> _parseCardDetails(CardType cardType, Map<String, dynamic> _data) {
   // PBOC
   addDetail('name', 'Holder Name', Icons.person);
   // PBOC
-  addDetail('balance', 'Balance', Icons.account_balance, _formatPBOCBalance);
-  // PPSE
-  addDetail('expiration', 'Valid Until', Icons.calendar_today);
+  addDetail('balance', 'Balance', Icons.account_balance, formatTransactionBalance);
+  // City Union
+  addDetail('city', 'City', Icons.home);
+  // City Union
+  addDetail('issue_date', 'Issue Date', Icons.calendar_today, formatTransactionDate);
   // PBOC
-  addDetail(
-      'expiry_date', 'Expiry Date', Icons.calendar_today, _formatPBOCDate);
+  addDetail('expiry_date', 'Expiry Date', Icons.calendar_today, formatTransactionDate);
   // THU
   addDetail('display_expiry_date', 'Display Expiry Date', Icons.calendar_today,
-      _formatPBOCDate);
+      formatTransactionDate);
+  // PPSE
+  addDetail('expiration', 'Valid Until', Icons.calendar_today);
   // PBOC
   addDetail('purchase_atc', 'Purchase Application Transaction Counter',
       Icons.exposure_neg_1);
@@ -412,22 +427,37 @@ List<Detail> _parseCardDetails(CardType cardType, Map<String, dynamic> _data) {
   return details;
 }
 
-String _formatPBOCDate(String raw) {
-  return "${raw.substring(0, 4)}-${raw.substring(4, 6)}-${raw.substring(6, 8)}";
+
+List<Detail> _parseTransactionDetails(Map<String, dynamic> _data) {
+  // make a copy
+  var data = {}..addAll(_data);
+  data.remove('amount');
+  data.remove('type');
+  data.remove('date');
+  data.remove('time');
+
+  var details = <Detail>[];
+
+  void addDetail(String fieldName, String parsedName,
+      [IconData icon, transformer]) {
+    _addDetail(data, details, fieldName, parsedName, icon, transformer);
+  }
+  
+  addDetail('number', 'ID', Icons.bookmark);
+  addDetail('terminal', 'Terminal', Icons.place);
+  addDetail('country_code', 'Country Code', Icons.map);
+  addDetail('currency_code', 'Currency Code', Icons.local_atm);
+  addDetail('amount_other', 'Amount in Other Currency', Icons.attach_money);
+
+
+
+  // all remaining data, clone to avoid concurrent modification
+  final remain = {}..addAll(data);
+  remain.forEach((k, _) => addDetail(k, 'Raw data: $k', Icons.error));
+
+  return details;
 }
 
-String _formatPOOCTime(String raw) {
-  return "${raw.substring(0, 2)}:${raw.substring(2, 4)}:${raw.substring(4, 6)}";
-}
-
-String _formatPBOCBalance(int raw) {
-  if (raw == 0)
-    return "0.00";
-  else if (raw > 0)
-    return "${(raw / 100).floor()}.${(raw % 100).toString().padLeft(2, "0")}";
-  else
-    return "-" + _formatPBOCBalance(-raw);
-}
 
 // TODO: i18n
 String _parseTechnologicalDetailKey(String key) {

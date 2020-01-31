@@ -31,7 +31,7 @@ class S {
 
   String get scriptTabTitle {
     return Intl.message(
-      'Script Mode',
+      'Run Script',
       name: 'scriptTabTitle',
       desc: '',
       args: [],
@@ -231,6 +231,78 @@ class S {
     return Intl.message(
       'Unknown',
       name: 'Unknown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Authorization {
+    return Intl.message(
+      'Authorization',
+      name: 'Authorization',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get BalanceInquiry {
+    return Intl.message(
+      'Balance Inquiry',
+      name: 'BalanceInquiry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Cash {
+    return Intl.message(
+      'Cash',
+      name: 'Cash',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Void {
+    return Intl.message(
+      'Void',
+      name: 'Void',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get MobileTopup {
+    return Intl.message(
+      'Mobile Topup',
+      name: 'MobileTopup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Recharge {
+    return Intl.message(
+      'Recharge',
+      name: 'Recharge',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Consumption {
+    return Intl.message(
+      'Consumption',
+      name: 'Consumption',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get CompoundConsumption {
+    return Intl.message(
+      'Compound Consumption',
+      name: 'CompoundConsumption',
       desc: '',
       args: [],
     );

@@ -78,3 +78,52 @@ extension CardTypeExtension on CardType {
     }
   }
 }
+
+enum ProcessingCode {
+  Authorization,
+  BalanceInquiry,
+  Cash,
+  Void,
+  MobileTopup
+}
+
+extension ProcessingCodeExtension on ProcessingCode {
+  String getName(BuildContext context) {
+    switch (this) {
+      case ProcessingCode.Authorization:
+        return S.of(context).Authorization;
+      case ProcessingCode.BalanceInquiry:
+        return S.of(context).BalanceInquiry;
+      case ProcessingCode.Cash:
+        return S.of(context).Cash;
+      case ProcessingCode.MobileTopup:
+        return S.of(context).MobileTopup;
+      case ProcessingCode.Void:
+        return S.of(context).Void;
+      default:
+        return S.of(context).Unknown;
+    }
+  }
+}
+
+enum PBOCTransactionType {
+  Recharge,
+  Consumption,
+  CompoundConsumption
+}
+
+extension PBOCTransactionTypeExtension on PBOCTransactionType {
+  String getName(BuildContext context) {
+    switch (this) {
+      case PBOCTransactionType.Recharge:
+        return S.of(context).Recharge;
+      case PBOCTransactionType.Consumption:
+        return S.of(context).Consumption;
+      case PBOCTransactionType.CompoundConsumption:
+        return S.of(context).CompoundConsumption;
+      default:
+        return S.of(context).Unknown;
+    }
+  }
+}
+

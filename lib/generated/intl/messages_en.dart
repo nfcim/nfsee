@@ -22,13 +22,20 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "AMEX" : MessageLookupByLibrary.simpleMessage("American Express"),
+    "Authorization" : MessageLookupByLibrary.simpleMessage("Authorization"),
     "BMAC" : MessageLookupByLibrary.simpleMessage("Beijing Yikatong"),
+    "BalanceInquiry" : MessageLookupByLibrary.simpleMessage("Balance Inquiry"),
+    "Cash" : MessageLookupByLibrary.simpleMessage("Cash"),
     "CityUnion" : MessageLookupByLibrary.simpleMessage("City Union"),
+    "CompoundConsumption" : MessageLookupByLibrary.simpleMessage("Compound Consumption"),
+    "Consumption" : MessageLookupByLibrary.simpleMessage("Consumption"),
     "Discover" : MessageLookupByLibrary.simpleMessage("Discover"),
     "JCB" : MessageLookupByLibrary.simpleMessage("JCB"),
     "LingnanPass" : MessageLookupByLibrary.simpleMessage("Lingnan Pass"),
     "MC" : MessageLookupByLibrary.simpleMessage("MasterCard"),
+    "MobileTopup" : MessageLookupByLibrary.simpleMessage("Mobile Topup"),
     "Octopus" : MessageLookupByLibrary.simpleMessage("Octopus"),
+    "Recharge" : MessageLookupByLibrary.simpleMessage("Recharge"),
     "ShenzhenTong" : MessageLookupByLibrary.simpleMessage("Shenzhen Tong"),
     "TMoney" : MessageLookupByLibrary.simpleMessage("T-Money"),
     "TUnion" : MessageLookupByLibrary.simpleMessage("T Union"),
@@ -38,11 +45,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "UPSecuredCredit" : MessageLookupByLibrary.simpleMessage("UnionPay Secured Credit"),
     "Unknown" : MessageLookupByLibrary.simpleMessage("Unknown"),
     "Visa" : MessageLookupByLibrary.simpleMessage("Visa"),
+    "Void" : MessageLookupByLibrary.simpleMessage("Void"),
     "WuhanTong" : MessageLookupByLibrary.simpleMessage("Wuhan Tong"),
     "aboutTabTitle" : MessageLookupByLibrary.simpleMessage("About"),
     "homeScreenTitle" : MessageLookupByLibrary.simpleMessage("NFSee"),
     "noHistoryFound" : MessageLookupByLibrary.simpleMessage("No history found"),
     "scanTabTitle" : MessageLookupByLibrary.simpleMessage("Scan"),
-    "scriptTabTitle" : MessageLookupByLibrary.simpleMessage("Script Mode")
+    "scriptTabTitle" : MessageLookupByLibrary.simpleMessage("Run Script")
   };
 }
