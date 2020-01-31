@@ -9,7 +9,7 @@ import '../models.dart';
 import 'widgets.dart';
 
 class CardDetailTab extends StatefulWidget {
-  const CardDetailTab({ this.data });
+  const CardDetailTab({this.data});
 
   final dynamic data;
 
@@ -64,81 +64,86 @@ class CardDetailTabState extends State<CardDetailTab> {
 
   Widget _buildCard() {
     return Card(
-      margin: EdgeInsets.only(bottom: 20),
-      elevation: 2,
-      child: Column(
-        children: <Widget>[
+        margin: EdgeInsets.only(bottom: 20),
+        elevation: 2,
+        child: Column(children: <Widget>[
           AspectRatio(
-            aspectRatio: 16/9,
+            aspectRatio: 16 / 9,
             child: Container(
               width: double.infinity,
               height: double.infinity,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomLeft,
-                  end: Alignment.topRight,
-                  colors: [
+                  gradient: LinearGradient(
+                      begin: Alignment.bottomLeft,
+                      end: Alignment.topRight,
+                      colors: [
                     const Color(0xFFFFF6B7),
                     const Color(0xFFF6416C),
-                  ]
-                )
-              ),
+                  ])),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
-                    Image.asset(
-                      'assets/cards/${_getFilename()}.png',
-                      width: 150,
-                    ),
-                    Text(
-                      data["detail"]["card_number"],
-                      style: TextStyle(fontSize: 14, color: Colors.black38),
-                    )
+                  Image.asset(
+                    'assets/cards/${_getFilename()}.png',
+                    width: 150,
+                  ),
+                  Text(
+                    data["detail"]["card_number"],
+                    style: TextStyle(fontSize: 14, color: Colors.black38),
+                  )
                 ],
               ),
             ),
           ),
-
           ListTile(
             title: Text("Unamed card"),
-            subtitle: Text("${(data['card_type'] as CardType).getName(context)} - ${data['detail']['card_number']}"),
+            subtitle: Text(
+                "${(data['card_type'] as CardType).getName(context)} - ${data['detail']['card_number']}"),
             trailing: IconButton(
               onPressed: () {},
               icon: Icon(Icons.edit),
             ),
           ),
-        ]
-      )
-    );
+        ]));
   }
 
   Widget _buildDetail() {
     final details = _parseCardDetails(data["card_type"], data["detail"]);
 
     return Card(
-      margin: EdgeInsets.only(bottom: 20),
-      elevation: 2,
-      child: Column(
-        children: details.map((d) => ListTile(
-          dense: true,
-          title: Text(d.name),
-          subtitle: Text(d.value),
-          leading: Icon(d.icon ?? Icons.info),
-        )).toList()
-      )
-    );
+        margin: EdgeInsets.only(bottom: 20),
+        elevation: 2,
+        child: Column(
+            children: details
+                .map((d) => ListTile(
+                      dense: true,
+                      title: Text(d.name),
+                      subtitle: Text(d.value),
+                      leading: Icon(d.icon ?? Icons.info),
+                    ))
+                .toList()));
   }
 
-
   Widget _buildMisc() {
-    final apduTiles = (data["apdu_history"] as List<dynamic>).asMap().entries.map((t) => APDUTile(data: t.value, index: t.key)).toList();
-    final transferTiles = data["detail"]["transactions"] != null ? (data["detail"]["transactions"] as List<dynamic>).map((t) => TransferTile(data: t)).toList() : null;
+    final apduTiles = (data["apdu_history"] as List<dynamic>)
+        .asMap()
+        .entries
+        .map((t) => APDUTile(data: t.value, index: t.key))
+        .toList();
+    final transferTiles = data["detail"]["transactions"] != null
+        ? (data["detail"]["transactions"] as List<dynamic>)
+            .map((t) => TransferTile(data: t))
+            .toList()
+        : null;
 
     return ExpansionPanelList(
       expansionCallback: (int idx, bool original) {
-        setState(() { this.expanded[idx] = !original; });
+        if (transferTiles == null && idx == 0) return;
+        setState(() {
+          this.expanded[idx] = !original;
+        });
       },
       children: <ExpansionPanel>[
         ExpansionPanel(
@@ -148,7 +153,9 @@ class CardDetailTabState extends State<CardDetailTab> {
                 child: Icon(Icons.payment),
               ),
               title: Text("Transaction history"),
-              subtitle: transferTiles == null ? Text('Not supported') : Text("${transferTiles.length} transfers"),
+              subtitle: transferTiles == null
+                  ? Text('Not supported')
+                  : Text("${transferTiles.length} transfers"),
             );
           },
           body: Column(
@@ -167,10 +174,9 @@ class CardDetailTabState extends State<CardDetailTab> {
             );
           },
           body: Container(
-            child: Column(
-              children: apduTiles,
-            )
-          ),
+              child: Column(
+            children: apduTiles,
+          )),
           isExpanded: this.expanded[1],
         )
       ],
@@ -179,20 +185,19 @@ class CardDetailTabState extends State<CardDetailTab> {
 
   Widget _buildBody() {
     return SingleChildScrollView(
-      child: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              this._buildCard(),
-              this._buildDetail(),
-              this._buildMisc(),
-            ],
-          ),
+        child: SafeArea(
+      child: Padding(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            this._buildCard(),
+            this._buildDetail(),
+            this._buildMisc(),
+          ],
         ),
-      )
-    );
+      ),
+    ));
   }
 
   // ===========================================================================
@@ -231,7 +236,7 @@ class CardDetailTabState extends State<CardDetailTab> {
 }
 
 class APDUTile extends StatelessWidget {
-  const APDUTile({ this.data, this.index });
+  const APDUTile({this.data, this.index});
 
   final dynamic data;
   final int index;
@@ -247,32 +252,32 @@ class APDUTile extends StatelessWidget {
       ),
       padding: EdgeInsets.all(16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Text("#${this.index} > TX", style: Theme.of(context).textTheme.caption),
-          this.hexView(data["tx"], context, Colors.green),
-          SizedBox(height: 16),
-          Text("#${this.index} > RX", style: Theme.of(context).textTheme.caption),
-          this.hexView(data["rx"], context, Colors.orange),
-        ]
-      ),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            Text("#${this.index} > TX",
+                style: Theme.of(context).textTheme.caption),
+            this.hexView(data["tx"], context, Colors.green),
+            SizedBox(height: 16),
+            Text("#${this.index} > RX",
+                style: Theme.of(context).textTheme.caption),
+            this.hexView(data["rx"], context, Colors.orange),
+          ]),
     );
   }
 
   Widget hexView(String str, BuildContext context, Color color) {
     var segs = List<Widget>();
 
-    for(int i = 0; i<str.length; i+=2) {
-      final slice = str.substring(i, i+2);
+    for (int i = 0; i < str.length; i += 2) {
+      final slice = str.substring(i, i + 2);
       final seg = Container(
-        width: 20,
-        margin: EdgeInsets.only(right: 5),
-        child: Text(
-          slice,
-          style: Theme.of(context).textTheme.body1.apply(color: color),
-        )
-      );
+          width: 20,
+          margin: EdgeInsets.only(right: 5),
+          child: Text(
+            slice,
+            style: Theme.of(context).textTheme.body1.apply(color: color),
+          ));
       segs.add(seg);
     }
 
@@ -281,15 +286,17 @@ class APDUTile extends StatelessWidget {
 }
 
 class TransferTile extends StatelessWidget {
-  const TransferTile({ this.data });
+  const TransferTile({this.data});
 
   final dynamic data;
 
   @override
   Widget build(context) {
     return ExpansionTile(
-      title: Text("${_getPBOCSign(data["type"])}${_formatPBOCBalance(data["amount"])} - ${data["type"]}"),
-      subtitle: Text("${_formatPBOCDate(data["date"])} ${_formatPOOCTime(data["time"])}"),
+      title: Text(
+          "${_getPBOCSign(data["type"])}${_formatPBOCBalance(data["amount"])} - ${data["type"]}"),
+      subtitle: Text(
+          "${_formatPBOCDate(data["date"])} ${_formatPOOCTime(data["time"])}"),
       children: <Widget>[
         ListTile(
           title: Text("ID: ${data["number"]}"),
@@ -303,21 +310,22 @@ class TransferTile extends StatelessWidget {
 }
 
 class Detail {
-  const Detail({ this.name, this.value, this.icon });
+  const Detail({this.name, this.value, this.icon});
 
   final String name;
   final String value;
   final IconData icon;
 }
 
-List<Detail> _parseCardDetails(CardType cardType, dynamic _data) {
-
-  // make a copy
+List<Detail> _parseCardDetails(CardType cardType, Map<String, dynamic> _data) {
+  // make a copy and remove transactions, the remaining fields are all details
   var data = {}..addAll(_data);
+  data.remove('transactions');
 
   var details = <Detail>[];
 
-  void addDetail(String fieldName, String parsedName, [IconData icon, transformer]) {
+  void addDetail(String fieldName, String parsedName,
+      [IconData icon, transformer]) {
     // optional parameters
     if (icon == null) icon = Icons.list;
     if (transformer == null) {
@@ -325,13 +333,8 @@ List<Detail> _parseCardDetails(CardType cardType, dynamic _data) {
     }
     // check existence and add to list
     if (data[fieldName] != null) {
-      details.add(
-          Detail(
-            name: parsedName,
-            value: transformer(data[fieldName]),
-            icon: icon
-          )
-      );
+      details.add(Detail(
+          name: parsedName, value: transformer(data[fieldName]), icon: icon));
       data.remove(fieldName);
     }
   }
@@ -347,9 +350,11 @@ List<Detail> _parseCardDetails(CardType cardType, dynamic _data) {
   // PPSE
   addDetail('expiration', 'Valid Until', Icons.calendar_today);
   // PBOC
-  addDetail('expiry_date', 'Expiry Date', Icons.calendar_today, _formatPBOCDate);
+  addDetail(
+      'expiry_date', 'Expiry Date', Icons.calendar_today, _formatPBOCDate);
   // THU
-  addDetail('display_expiry_date', 'Display Expiry Date', Icons.calendar_today, _formatPBOCDate);
+  addDetail('display_expiry_date', 'Display Expiry Date', Icons.calendar_today,
+      _formatPBOCDate);
   // PBOC
   addDetail('purchase_atc', 'Purchase ATC', Icons.exposure_neg_1);
   // PBOC
@@ -358,9 +363,11 @@ List<Detail> _parseCardDetails(CardType cardType, dynamic _data) {
   addDetail('atc', 'ATC', Icons.exposure_plus_1);
   // PPSE
   addDetail('pin_retry', 'PIN Retry', Icons.lock);
+  // all remaining data, clone to avoid concurrent modification
+  final remain = {}..addAll(data);
+  remain.forEach((k, _) => addDetail(k, 'Raw data: $k', Icons.error));
 
   return details;
-
 }
 
 String _formatPBOCDate(String raw) {
@@ -372,14 +379,15 @@ String _formatPOOCTime(String raw) {
 }
 
 String _formatPBOCBalance(int raw) {
-  if(raw == 0) return "0.00";
-  else if(raw > 0)
+  if (raw == 0)
+    return "0.00";
+  else if (raw > 0)
     return "${(raw / 100).floor()}.${(raw % 100).toString().padLeft(2, "0")}";
   else
     return "-" + _formatPBOCBalance(-raw);
 }
 
 String _getPBOCSign(String type) {
-  if(type == "充值") return "+";
+  if (type == "充值") return "+";
   return "-";
 }
