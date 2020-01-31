@@ -24,6 +24,29 @@
         '02': 'Void',
         '57': 'MobileTopup',
     };
+    const BJ_Subway_ID2NAME = {
+        '01': '1',
+        '02': '2',
+        '04': '4',
+        '05': '5',
+        '06': '6',
+        '07': '7',
+        '08': '8',
+        '09': '9',
+        '10': '10',
+        '13': '13',
+        '14': '14',
+        '15': '15',
+        '16': '16',
+        '18': 'Xijiao',
+        '88': 'Daxing Airport',
+        '93': 'Daxing',
+        '94': 'Changping',
+        '95': 'Fangshan',
+        '96': 'Yizhuang',
+        '97': 'Batong',
+        '98': 'Capital Airport',
+    };
 
     let ParseGBKText = (hexStr) => {
         return GBKDecoder.decode(hex2buf(hexStr));
@@ -226,7 +249,11 @@
         const number = content04.slice(0, 16);
         const issue_date = content04.slice(48, 56);
         const expiry_date = content04.slice(56, 64);
-        const balance_atc_trans = await ReadPBOCBalanceATCAndTrans();
+        let balance_atc_trans = await ReadPBOCBalanceATCAndTrans();
+        for (let item of balance_atc_trans[3]) {
+            if (item.terminal.startsWith('300') && item.terminal.slice(3, 5) in BJ_Subway_ID2NAME)
+                item['subway_exit'] = BJ_Subway_ID2NAME[item.terminal.slice(3, 5)];
+        }
         return {
             'card_type': 'BMAC',
             'card_number': number,
