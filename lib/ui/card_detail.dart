@@ -445,7 +445,12 @@ List<Detail> _parseTransactionDetails(
 
   addDetail('number', S.of(context).transactionNumber, Icons.bookmark);
   addDetail('terminal', S.of(context).terminal, Icons.place);
-  addDetail('subway_exit', S.of(context).subwayExit, Icons.subway, (s) => (s as BeijingSubway).getName(context));
+  addDetail(
+      'subway_exit',
+      S.of(context).subwayExit,
+      Icons.subway,
+      (s) => (getEnumFromString<BeijingSubway>(BeijingSubway.values, s))
+          .getName(context));
   addDetail('type', S.of(context).type);
   addDetail('country_code', S.of(context).countryCode, Icons.map);
   addDetail('currency', S.of(context).currency, Icons.local_atm);
