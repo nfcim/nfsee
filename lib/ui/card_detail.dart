@@ -184,7 +184,7 @@ class CardDetailTabState extends State<CardDetailTab> {
           body: Container(
             width: double.infinity,
             padding: EdgeInsets.all(20),
-            child: Text(jsonEncode(data), style: Theme.of(context).textTheme.caption),
+            child: Text(data.toString(), style: Theme.of(context).textTheme.caption),
           ),
           isExpanded: this.expanded[2],
         )
@@ -266,10 +266,10 @@ class APDUTile extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           Text("#${this.index} > TX", style: Theme.of(context).textTheme.caption),
-          this.hexView(data["rx"], context, Colors.green),
+          this.hexView(data["tx"], context, Colors.green),
           SizedBox(height: 16),
           Text("#${this.index} > RX", style: Theme.of(context).textTheme.caption),
-          this.hexView(data["tx"], context, Colors.orange),
+          this.hexView(data["rx"], context, Colors.orange),
         ]
       ),
     );
@@ -336,7 +336,7 @@ List<Detail> parseDetails(dynamic data) {
         icon: Icons.credit_card,
       ),
       Detail(
-        name: "Holder", 
+        name: "Holder",
         value: data["detail"]["name"],
         icon: Icons.person,
       ),
@@ -346,7 +346,7 @@ List<Detail> parseDetails(dynamic data) {
         icon: Icons.calendar_view_day,
       ),
       Detail(
-        name: "Balance", 
+        name: "Balance",
         value: formatMoney(data["detail"]["balance"]),
         icon: Icons.account_balance,
       ),
