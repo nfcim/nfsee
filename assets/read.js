@@ -122,6 +122,7 @@
                     break;
                 let off = 0;
                 let item = {};
+                const century = (new Date).getFullYear().toFixed().slice(2);
                 for (let i = 0; i < log_format.length; i++) {
                     let tag = log_format[i];
                     if ((tag & 0x1F) === 0x1F)
@@ -132,7 +133,7 @@
                     };
                     switch (tag) {
                         case 0x9A:
-                            item['date'] = extractField();
+                            item['date'] = century + extractField();
                             break;
                         case 0x9F21:
                             item['time'] = extractField();
