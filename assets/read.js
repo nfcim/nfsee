@@ -17,6 +17,9 @@
         '06': '消费',
         '09': '复合消费', // GB/T 31778
     };
+    // const ISO8583_ProcessingCode2Name = {
+    //     ''
+    // };
 
     let ParseGBKText = (hexStr) => {
         return GBKDecoder.decode(hex2buf(hexStr));
@@ -100,6 +103,75 @@
             log("error: " + error);
         }
         return ret;
+    };
+
+    let ReadPPSETransactions = async (log_entry, log_format) =>{
+        log_format = ExtractFromTLV(log_format, ['9F4F']);
+        const sfi = log_entry[0];
+        const total = log_entry[1];
+        let trans = [];
+        try {
+            for (let n = 1; n <= total; n++) {
+                const apdu = buf2hex(Uint8Array.from([0, 0xB2, n, sfi<<3|4, 0]));
+                rapdu = await _transceive(apdu);
+                if (!rapdu.endsWith('9000'))
+                    break;
+                let off = 0;
+                let item = {};
+                for (let i = 0; i < log_format.length; i++) {
+                    let tag = log_format[i];
+                    if ((tag & 0x1F) === 0x1F)
+                        tag = (tag << 8) | log_format[++i];
+                    let len = log_format[++i];
+                    let extractField = () => {
+                        return rapdu.slice(2*off, 2*(off+len));
+                    };
+                    switch (tag) {
+                        case 0x9A:
+                            item['date'] = extractField();
+                            break;
+                        case 0x9F21:
+                            item['time'] = extractField();
+                            break;
+                        case 0x81:
+                            item['amount'] = parseInt(extractField(), 16);
+                            break;
+                        case 0x9F02:
+                            item['amount'] = parseInt(extractField(), 10);
+                            break;
+                        case 0x9F04:
+                            item['amount_other'] = parseInt(extractField(), 16);
+                            break;
+                        case 0x9F03:
+                            item['amount_other'] = parseInt(extractField(), 10);
+                            break;
+                        case 0x9F1A:
+                            item['country_code'] = extractField().slice(1);
+                            break;
+                        case 0x5F2A:
+                            item['currency_code'] = extractField().slice(1);
+                            break;
+                        case 0x9F4E:
+                            item['terminal'] = extractField();
+                            break;
+                        case 0x9C:
+                            item['type'] = extractField();
+                            break;
+                        case 0x9F36:
+                            item['number'] = parseInt(extractField(), 16);
+                            break;
+                    
+                        default:
+                            log(`Unknown tag ${tag} in log format`);
+                    }
+                    off += len;
+                }
+                trans.push(item);
+            }
+        } catch (error) {
+            log("error: " + error);
+        }
+        return trans;
     };
 
     let ReadPBOCBalanceATCAndTrans = async (usage) => {
@@ -315,6 +387,7 @@
         if (!cardType) return {};
         fci = await _transceive('00A40400' + buf2hex(select));
         if (!fci.endsWith('9000')) return {};
+        const log_entry = ExtractFromTLV(fci, ['6F', 'A5', 'BF0C', '9F4D']);
         let pdol = ExtractFromTLV(fci, ['6F', 'A5', '9F38']);
         pdol = pdol ? BuildRespOfPDOL(pdol) : '';
         pdol = buf2hex(new Uint8Array([pdol.length / 2 + 2, 0x83, pdol.length / 2])) + pdol;
@@ -348,11 +421,17 @@
         else {
             pin_retry = ExtractFromTLV(pin_retry, ['9F17'])[0];
         }
+        let transactions = [];
+        let log_format = await _transceive("80CA9F4F00");
+        if (log_format.endsWith('9000') && log_entry) {
+            transactions = await ReadPPSETransactions(log_entry, log_format);
+        }
         return {
             'card_type': cardType,
             'card_number': track2.slice(0, sep),
             'expiration': track2.slice(sep + 1, sep + 3) + '/' + track2.slice(sep + 3, sep + 5),
             'atc': atc,
+            'transactions': transactions,
             'pin_retry': pin_retry,
         }
     };
