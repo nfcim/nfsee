@@ -47,10 +47,10 @@ class S {
     );
   }
 
-  String get aboutTabTitle {
+  String get settingsTabTitle {
     return Intl.message(
-      'About',
-      name: 'aboutTabTitle',
+      'Settings',
+      name: 'settingsTabTitle',
       desc: '',
       args: [],
     );
@@ -60,6 +60,15 @@ class S {
     return Intl.message(
       'NFSee',
       name: 'homeScreenTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get waitForCard {
+    return Intl.message(
+      'Waiting for card...',
+      name: 'waitForCard',
       desc: '',
       args: [],
     );
@@ -328,7 +337,7 @@ class S {
 
   String get recordCount {
     return Intl.message(
-      ' record(s)',
+      'record(s)',
       name: 'recordCount',
       desc: '',
       args: [],
@@ -393,6 +402,24 @@ class S {
     return Intl.message(
       'Balance',
       name: 'balance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get provinceCode {
+    return Intl.message(
+      'Province Code',
+      name: 'provinceCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get tuType {
+    return Intl.message(
+      'TUnion Card Type',
+      name: 'tuType',
       desc: '',
       args: [],
     );

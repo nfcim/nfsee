@@ -15,15 +15,13 @@ import 'package:nfsee/data/blocs/provider.dart';
 import 'package:nfsee/data/database/database.dart';
 import 'package:nfsee/models.dart';
 import 'package:nfsee/ui/card_detail.dart';
+import 'package:nfsee/utilities.dart';
 
 import 'ui/scripts.dart';
 import 'ui/settings.dart';
 import 'ui/widgets.dart';
 
 import 'generated/l10n.dart';
-
-const SAMPLE =
-    '{"action":"report","data":{"card_number":12345678,"balance":123,"issue_date":20200101,"expiry_date":20300101,"purchase_atc":158,"title":"北京一卡通（非互联互通版）","transactions":[]}}';
 
 void main() => runApp(NFSeeApp());
 
@@ -340,11 +338,11 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
             icon: Icon(Icons.nfc),
           ),
           BottomNavigationBarItem(
-            title: Text("Script"),
+            title: Text(S.of(context).scriptTabTitle),
             icon: Icon(Icons.play_arrow),
           ),
           BottomNavigationBarItem(
-            title: Text("Settings"),
+            title: Text(S.of(context).settingsTabTitle),
             icon: Icon(Icons.settings),
           ),
         ],
@@ -359,12 +357,12 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           case 1:
             return CupertinoTabView(
               builder: (context) => ScriptsAct(),
-              defaultTitle: "Script",
+              defaultTitle: S.of(context).scriptTabTitle,
             );
           case 2:
             return CupertinoTabView(
               builder: (context) => SettingsAct(),
-              defaultTitle: "Settings",
+              defaultTitle: S.of(context).settingsTabTitle,
             );
           default:
             assert(false, 'Unexpected tab');
@@ -409,12 +407,6 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     _reading = false;
   }
 
-  void _mockRead() async {
-    log("Mock read start");
-    await Future.delayed(Duration(seconds: 1));
-    this._onReceivedMessage(WebkitMessage("", json.decode(SAMPLE)));
-  }
-
   void _closeReadModal(BuildContext context) {
     if (_reading && defaultTargetPlatform != TargetPlatform.iOS) {
       Navigator.of(context).pop(true);
@@ -430,7 +422,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
-                  "Waiting for cards...",
+                  S.of(context).waitForCard,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 18),
                 ),
@@ -450,16 +442,18 @@ class ReportRowItem extends StatelessWidget {
   @override
   Widget build(context) {
     var data = json.decode(record.data);
-    var title = data["card_type"];
+    final type = getEnumFromString<CardType>(CardType.values, data["card_type"]);
+    var title = '${type.getName(context)}';
+    if (type == CardType.Unknown) {
+      title += ' (${data["tag"]["standard"]})';
+    }
     return ListTile(
       leading: Container(
         height: double.infinity,
         child: Icon(Icons.credit_card),
       ),
-      title: Text('${record.time}: $title'),
-      subtitle: data["detail"]["card_number"] != null
-          ? Text(data["detail"]["card_number"].toString())
-          : null,
+      title: Text(title),
+      subtitle: data["detail"]["card_number"] != null ? Text(data["detail"]["card_number"]) : null,
       onTap: this.onTap,
     );
   }

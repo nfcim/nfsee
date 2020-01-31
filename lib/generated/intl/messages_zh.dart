@@ -69,7 +69,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "WuhanTong" : MessageLookupByLibrary.simpleMessage("武汉通"),
     "Xijiao" : MessageLookupByLibrary.simpleMessage("西郊线"),
     "Yizhuang" : MessageLookupByLibrary.simpleMessage("亦庄线"),
-    "aboutTabTitle" : MessageLookupByLibrary.simpleMessage("关于"),
     "amountOther" : MessageLookupByLibrary.simpleMessage("其他货币表示的金额"),
     "apduLogs" : MessageLookupByLibrary.simpleMessage("APDU 日志"),
     "balance" : MessageLookupByLibrary.simpleMessage("余额"),
@@ -86,17 +85,21 @@ class MessageLookup extends MessageLookupByLibrary {
     "noHistoryFound" : MessageLookupByLibrary.simpleMessage("暂无历史记录"),
     "notSupported" : MessageLookupByLibrary.simpleMessage("不支持"),
     "pinRetry" : MessageLookupByLibrary.simpleMessage("剩余 PIN 重试次数"),
+    "provinceCode" : MessageLookupByLibrary.simpleMessage("省市代码"),
     "rawData" : MessageLookupByLibrary.simpleMessage("其他数据"),
     "recordCount" : MessageLookupByLibrary.simpleMessage("条记录"),
     "scanTabTitle" : MessageLookupByLibrary.simpleMessage("读卡"),
     "scriptTabTitle" : MessageLookupByLibrary.simpleMessage("执行脚本"),
+    "settingsTabTitle" : MessageLookupByLibrary.simpleMessage("设置"),
     "subwayExit" : MessageLookupByLibrary.simpleMessage("地铁出站线路"),
     "technologicalDetails" : MessageLookupByLibrary.simpleMessage("技术细节"),
     "terminal" : MessageLookupByLibrary.simpleMessage("终端"),
     "transactionHistory" : MessageLookupByLibrary.simpleMessage("交易历史"),
     "transactionNumber" : MessageLookupByLibrary.simpleMessage("交易序号"),
+    "tuType" : MessageLookupByLibrary.simpleMessage("交通联合卡类型"),
     "type" : MessageLookupByLibrary.simpleMessage("类型"),
     "unnamedCard" : MessageLookupByLibrary.simpleMessage("未命名卡片"),
-    "validUntil" : MessageLookupByLibrary.simpleMessage("有效期")
+    "validUntil" : MessageLookupByLibrary.simpleMessage("有效期"),
+    "waitForCard" : MessageLookupByLibrary.simpleMessage("等待读卡...")
   };
 }

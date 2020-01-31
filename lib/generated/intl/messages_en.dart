@@ -69,7 +69,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "WuhanTong" : MessageLookupByLibrary.simpleMessage("Wuhan Tong"),
     "Xijiao" : MessageLookupByLibrary.simpleMessage("Xijiao Line"),
     "Yizhuang" : MessageLookupByLibrary.simpleMessage("Yizhuang Line"),
-    "aboutTabTitle" : MessageLookupByLibrary.simpleMessage("About"),
     "amountOther" : MessageLookupByLibrary.simpleMessage("Amount in Other Currency"),
     "apduLogs" : MessageLookupByLibrary.simpleMessage("APDU Logs"),
     "balance" : MessageLookupByLibrary.simpleMessage("Balance"),
@@ -86,17 +85,21 @@ class MessageLookup extends MessageLookupByLibrary {
     "noHistoryFound" : MessageLookupByLibrary.simpleMessage("No history found"),
     "notSupported" : MessageLookupByLibrary.simpleMessage("Not supported"),
     "pinRetry" : MessageLookupByLibrary.simpleMessage("Remaining PIN Retry Counter"),
+    "provinceCode" : MessageLookupByLibrary.simpleMessage("Province Code"),
     "rawData" : MessageLookupByLibrary.simpleMessage(" Raw data"),
-    "recordCount" : MessageLookupByLibrary.simpleMessage(" record(s)"),
+    "recordCount" : MessageLookupByLibrary.simpleMessage("record(s)"),
     "scanTabTitle" : MessageLookupByLibrary.simpleMessage("Scan"),
     "scriptTabTitle" : MessageLookupByLibrary.simpleMessage("Run Script"),
+    "settingsTabTitle" : MessageLookupByLibrary.simpleMessage("Settings"),
     "subwayExit" : MessageLookupByLibrary.simpleMessage("Subway Exit"),
     "technologicalDetails" : MessageLookupByLibrary.simpleMessage("Technological Details"),
     "terminal" : MessageLookupByLibrary.simpleMessage("Terminal"),
     "transactionHistory" : MessageLookupByLibrary.simpleMessage("Transaction History"),
     "transactionNumber" : MessageLookupByLibrary.simpleMessage("Transaction Number"),
+    "tuType" : MessageLookupByLibrary.simpleMessage("TUnion Card Type"),
     "type" : MessageLookupByLibrary.simpleMessage("Type"),
     "unnamedCard" : MessageLookupByLibrary.simpleMessage("Unnamed Card"),
-    "validUntil" : MessageLookupByLibrary.simpleMessage("Valid Until")
+    "validUntil" : MessageLookupByLibrary.simpleMessage("Valid Until"),
+    "waitForCard" : MessageLookupByLibrary.simpleMessage("Waiting for card...")
   };
 }

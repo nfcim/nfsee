@@ -88,7 +88,7 @@ class CardDetailTabState extends State<CardDetailTab> {
                     width: 150,
                   ),
                   Text(
-                    data["detail"]["card_number"],
+                    data["detail"]["card_number"] ?? '',
                     style: TextStyle(fontSize: 14, color: Colors.black38),
                   )
                 ],
@@ -97,8 +97,6 @@ class CardDetailTabState extends State<CardDetailTab> {
           ),
           ListTile(
             title: Text(S.of(context).unnamedCard),
-            subtitle: Text(
-                "${(data['card_type'] as CardType).getName(context)} - ${data['detail']['card_number']}"),
             trailing: IconButton(
               onPressed: () {},
               icon: Icon(Icons.edit),
@@ -156,7 +154,7 @@ class CardDetailTabState extends State<CardDetailTab> {
               title: Text(S.of(context).transactionHistory),
               subtitle: transferTiles == null
                   ? Text(S.of(context).notSupported)
-                  : Text("${transferTiles.length}${S.of(context).recordCount}"),
+                  : Text("${transferTiles.length} ${S.of(context).recordCount}"),
             );
           },
           body: Column(
@@ -187,7 +185,7 @@ class CardDetailTabState extends State<CardDetailTab> {
               ),
               title: Text(S.of(context).apduLogs),
               subtitle: Text(
-                  "${data["apdu_history"].length}${S.of(context).recordCount}"),
+                  "${data["apdu_history"].length} ${S.of(context).recordCount}"),
             );
           },
           body: Container(
@@ -225,8 +223,6 @@ class CardDetailTabState extends State<CardDetailTab> {
     return Scaffold(
       appBar: AppBar(
         title: Text((data['card_type'] as CardType).getName(context)),
-        backgroundColor: Color.fromARGB(0x30, 0, 0, 0),
-        elevation: 0,
       ),
       extendBodyBehindAppBar: true,
       body: _buildBody(),
@@ -237,7 +233,7 @@ class CardDetailTabState extends State<CardDetailTab> {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         middle: Text((data['card_type'] as CardType).getName(context)),
-        previousPageTitle: 'Scan',
+        previousPageTitle: S.of(context).scanTabTitle,
       ),
       child: _buildBody(),
     );
@@ -398,7 +394,11 @@ List<Detail> _parseCardDetails(
   // PBOC
   addDetail(
       'balance', S.of(context).balance, Icons.account_balance, formatTransactionBalance);
-  // City Union
+  // T Union
+  addDetail('province_code', S.of(context).provinceCode, Icons.home);
+  // T Union
+  addDetail('tu_type', S.of(context).tuType, Icons.person);
+  // City Union / TUnion
   addDetail('city', S.of(context).city, Icons.home);
   // City Union
   addDetail(
