@@ -40,6 +40,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "Visa" : MessageLookupByLibrary.simpleMessage("维萨卡"),
     "WuhanTong" : MessageLookupByLibrary.simpleMessage("武汉通"),
     "aboutTabTitle" : MessageLookupByLibrary.simpleMessage("关于"),
+    "homeScreenTitle" : MessageLookupByLibrary.simpleMessage("NFSee"),
+    "noHistoryFound" : MessageLookupByLibrary.simpleMessage("暂无历史记录"),
     "scanTabTitle" : MessageLookupByLibrary.simpleMessage("读卡"),
     "scriptTabTitle" : MessageLookupByLibrary.simpleMessage("脚本模式")
   };

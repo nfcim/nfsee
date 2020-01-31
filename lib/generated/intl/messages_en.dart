@@ -40,6 +40,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "Visa" : MessageLookupByLibrary.simpleMessage("Visa"),
     "WuhanTong" : MessageLookupByLibrary.simpleMessage("Wuhan Tong"),
     "aboutTabTitle" : MessageLookupByLibrary.simpleMessage("About"),
+    "homeScreenTitle" : MessageLookupByLibrary.simpleMessage("NFSee"),
+    "noHistoryFound" : MessageLookupByLibrary.simpleMessage("No history found"),
     "scanTabTitle" : MessageLookupByLibrary.simpleMessage("Scan"),
     "scriptTabTitle" : MessageLookupByLibrary.simpleMessage("Script Mode")
   };

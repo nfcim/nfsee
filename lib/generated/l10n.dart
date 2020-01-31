@@ -56,6 +56,24 @@ class S {
     );
   }
 
+  String get homeScreenTitle {
+    return Intl.message(
+      'NFSee',
+      name: 'homeScreenTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get noHistoryFound {
+    return Intl.message(
+      'No history found',
+      name: 'noHistoryFound',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get UPCredit {
     return Intl.message(
       'UnionPay Credit',

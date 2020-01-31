@@ -2,6 +2,8 @@
   "scriptTabTitle": "脚本模式",
   "scanTabTitle": "读卡",
   "aboutTabTitle": "关于",
+  "homeScreenTitle": "NFSee",
+  "noHistoryFound": "暂无历史记录",
   "UPCredit": "银联信用卡",
   "UPDebit": "银联借记卡",
   "UPSecuredCredit": "银联准贷记卡",

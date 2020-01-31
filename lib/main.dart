@@ -204,7 +204,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         primary: true,
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text("History"),
+          title: Text(S.of(context).homeScreenTitle),
         ),
         bottomNavigationBar: this._buildBottomAppbar(context),
         floatingActionButton: FloatingActionButton(
@@ -228,7 +228,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Image.asset('assets/empty.png', height: 200),
-                    Text('No history found'),
+                    Text(S.of(context).noHistoryFound),
                   ],
                 )
               );
@@ -336,7 +336,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
       tabBar: CupertinoTabBar(
         items: [
           BottomNavigationBarItem(
-            title: Text("History"),
+            title: Text(S.of(context).homeScreenTitle),
             icon: Icon(Icons.nfc),
           ),
           BottomNavigationBarItem(
@@ -354,7 +354,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           case 0:
             return CupertinoTabView(
               builder: (context) => _buildIosHistoryPage(context),
-              defaultTitle: "History",
+              defaultTitle: S.of(context).homeScreenTitle,
             );
           case 1:
             return CupertinoTabView(
