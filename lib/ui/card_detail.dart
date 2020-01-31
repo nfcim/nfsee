@@ -448,7 +448,7 @@ List<Detail> _parseTransactionDetails(
   addDetail('subway_exit', S.of(context).subwayExit, Icons.subway, (s) => (s as BeijingSubway).getName(context));
   addDetail('type', S.of(context).type);
   addDetail('country_code', S.of(context).countryCode, Icons.map);
-  addDetail('currency_code', S.of(context).currencyCode, Icons.local_atm);
+  addDetail('currency', S.of(context).currency, Icons.local_atm);
   addDetail('amount_other', S.of(context).amountOther, Icons.attach_money);
 
   // all remaining data, clone to avoid concurrent modificationL

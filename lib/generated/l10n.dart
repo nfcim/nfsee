@@ -533,10 +533,10 @@ class S {
     );
   }
 
-  String get currencyCode {
+  String get currency {
     return Intl.message(
-      'Currency Code',
-      name: 'currencyCode',
+      'Currency',
+      name: 'currency',
       desc: '',
       args: [],
     );
@@ -544,7 +544,7 @@ class S {
 
   String get amountOther {
     return Intl.message(
-      'Amount in Other Currency',
+      'Amount, Other',
       name: 'amountOther',
       desc: '',
       args: [],

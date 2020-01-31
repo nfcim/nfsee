@@ -177,7 +177,7 @@
                             item['country_code'] = extractField().slice(1);
                             break;
                         case 0x5F2A:
-                            item['currency_code'] = extractField().slice(1);
+                            item['currency'] = ISO4217CurrencyCode[extractField().slice(1)];
                             break;
                         case 0x9F4E:
                             item['terminal'] = extractField();
