@@ -1,7 +1,7 @@
 (async function () {
     const GBKDecoder = new TextDecoder('gbk');
     const EMV_AID2NAME = [
-        ['A000000333010101', 'UPCredit'],
+        ['A000000333010101', 'UPDebit'],
         ['A000000333010102', 'UPCredit'],
         ['A000000333010103', 'UPSecuredCredit'],
         ['A000000003', 'Visa'],
