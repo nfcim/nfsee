@@ -98,7 +98,7 @@ class CardDetailTabState extends State<CardDetailTab> {
             ),
           ),
           ListTile(
-            title: Text("Unamed card"),
+            title: Text("Unnamed card"),
             subtitle: Text(
                 "${(data['card_type'] as CardType).getName(context)} - ${data['detail']['card_number']}"),
             trailing: IconButton(
@@ -314,8 +314,7 @@ class TransferTile extends StatelessWidget {
   @override
   Widget build(context) {
     return ExpansionTile(
-      title: Text(
-          "${_formatPBOCBalance(data["amount"])} - ${data["type"]}"),
+      title: Text("${_formatPBOCBalance(data["amount"])} - ${data["type"]}"),
       subtitle: Text(
           "${_formatPBOCDate(data["date"])} ${_formatPOOCTime(data["time"])}"),
       children: <Widget>[
@@ -397,9 +396,11 @@ List<Detail> _parseCardDetails(CardType cardType, Map<String, dynamic> _data) {
   addDetail('display_expiry_date', 'Display Expiry Date', Icons.calendar_today,
       _formatPBOCDate);
   // PBOC
-  addDetail('purchase_atc', 'Purchase Application Transaction Counter', Icons.exposure_neg_1);
+  addDetail('purchase_atc', 'Purchase Application Transaction Counter',
+      Icons.exposure_neg_1);
   // PBOC
-  addDetail('load_atc', 'Load Application Transaction Counter', Icons.exposure_plus_1);
+  addDetail('load_atc', 'Load Application Transaction Counter',
+      Icons.exposure_plus_1);
   // PPSE
   addDetail('atc', 'Application Transaction Counter', Icons.exposure_plus_1);
   // PPSE
@@ -431,18 +432,31 @@ String _formatPBOCBalance(int raw) {
 // TODO: i18n
 String _parseTechnologicalDetailKey(String key) {
   switch (key) {
-    case 'standard': return 'Standard';
-    case 'protocolInfo': return 'Protocol Infomation';
-    case 'id': return 'Unique ID';
-    case 'dsfId': return 'DSF ID';
-    case 'systemCode': return 'System Code';
-    case 'applicationData': return 'Application Data';
-    case 'type': return 'Type';
-    case 'sak': return 'SAK';
-    case 'hiLayerResponse': return 'Higher Layer Response';
-    case 'historicalBytes': return 'Historical Bytes';
-    case 'atqa': return 'ATQA';
-    case 'manufacturer': return 'Manufacturer';
-    default: return key;
+    case 'standard':
+      return 'Standard';
+    case 'protocolInfo':
+      return 'Protocol Infomation';
+    case 'id':
+      return 'Unique ID';
+    case 'dsfId':
+      return 'DSF ID';
+    case 'systemCode':
+      return 'System Code';
+    case 'applicationData':
+      return 'Application Data';
+    case 'type':
+      return 'Type';
+    case 'sak':
+      return 'SAK';
+    case 'hiLayerResponse':
+      return 'Higher Layer Response';
+    case 'historicalBytes':
+      return 'Historical Bytes';
+    case 'atqa':
+      return 'ATQA';
+    case 'manufacturer':
+      return 'Manufacturer';
+    default:
+      return key;
   }
 }
