@@ -137,6 +137,11 @@ class CardDetailTabState extends State<CardDetailTab> {
             .map((t) => TransferTile(data: t))
             .toList()
         : null;
+    final technologyDetailTiles = (data["tag"] as Map<String, dynamic>)
+        .entries
+        .where((t) => t.value != '') // filter empty values
+        .map((t) => TechnologicalDetailTile(name: t.key, value: t.value))
+        .toList();
 
     return ExpansionPanelList(
       expansionCallback: (int idx, bool original) {
@@ -169,6 +174,21 @@ class CardDetailTabState extends State<CardDetailTab> {
               leading: CircleAvatar(
                 child: Icon(Icons.nfc),
               ),
+              title: Text("Technological details"),
+              subtitle: Text(data['tag']['standard']),
+            );
+          },
+          body: Column(
+            children: technologyDetailTiles,
+          ),
+          isExpanded: this.expanded[1],
+        ),
+        ExpansionPanel(
+          headerBuilder: (ctx, isExp) {
+            return ListTile(
+              leading: CircleAvatar(
+                child: Icon(Icons.history),
+              ),
               title: Text("APDU backlog"),
               subtitle: Text("${data["apdu_history"].length} communications"),
             );
@@ -177,7 +197,7 @@ class CardDetailTabState extends State<CardDetailTab> {
               child: Column(
             children: apduTiles,
           )),
-          isExpanded: this.expanded[1],
+          isExpanded: this.expanded[2],
         )
       ],
     );
@@ -285,6 +305,7 @@ class APDUTile extends StatelessWidget {
   }
 }
 
+// TODO: i18n
 class TransferTile extends StatelessWidget {
   const TransferTile({this.data});
 
@@ -299,12 +320,31 @@ class TransferTile extends StatelessWidget {
           "${_formatPBOCDate(data["date"])} ${_formatPOOCTime(data["time"])}"),
       children: <Widget>[
         ListTile(
+          dense: true,
           title: Text("ID: ${data["number"]}"),
         ),
         ListTile(
+          dense: true,
           title: Text("Terminal: ${data["terminal"]}"),
         ),
       ],
+    );
+  }
+}
+
+class TechnologicalDetailTile extends StatelessWidget {
+  const TechnologicalDetailTile({this.name, this.value});
+
+  final String name;
+  final String value;
+
+  @override
+  Widget build(context) {
+    return ListTile(
+      dense: true,
+      title: Text(_parseTechnologicalDetailKey(name)),
+      subtitle: Text(value),
+      leading: Icon(Icons.info),
     );
   }
 }
@@ -317,6 +357,7 @@ class Detail {
   final IconData icon;
 }
 
+// TODO: i18n
 List<Detail> _parseCardDetails(CardType cardType, Map<String, dynamic> _data) {
   // make a copy and remove transactions, the remaining fields are all details
   var data = {}..addAll(_data);
@@ -356,13 +397,13 @@ List<Detail> _parseCardDetails(CardType cardType, Map<String, dynamic> _data) {
   addDetail('display_expiry_date', 'Display Expiry Date', Icons.calendar_today,
       _formatPBOCDate);
   // PBOC
-  addDetail('purchase_atc', 'Purchase ATC', Icons.exposure_neg_1);
+  addDetail('purchase_atc', 'Purchase Application Transaction Counter', Icons.exposure_neg_1);
   // PBOC
-  addDetail('load_atc', 'Load ATC', Icons.exposure_plus_1);
+  addDetail('load_atc', 'Load Application Transaction Counter', Icons.exposure_plus_1);
   // PPSE
-  addDetail('atc', 'ATC', Icons.exposure_plus_1);
+  addDetail('atc', 'Application Transaction Counter', Icons.exposure_plus_1);
   // PPSE
-  addDetail('pin_retry', 'PIN Retry', Icons.lock);
+  addDetail('pin_retry', 'Remaining PIN Retry Counter', Icons.lock);
   // all remaining data, clone to avoid concurrent modification
   final remain = {}..addAll(data);
   remain.forEach((k, _) => addDetail(k, 'Raw data: $k', Icons.error));
@@ -390,4 +431,23 @@ String _formatPBOCBalance(int raw) {
 String _getPBOCSign(String type) {
   if (type == "充值") return "+";
   return "-";
+}
+
+// TODO: i18n
+String _parseTechnologicalDetailKey(String key) {
+  switch (key) {
+    case 'standard': return 'Standard';
+    case 'protocolInfo': return 'Protocol Infomation';
+    case 'id': return 'Unique ID';
+    case 'dsfId': return 'DSF ID';
+    case 'systemCode': return 'System Code';
+    case 'applicationData': return 'Application Data';
+    case 'type': return 'Type';
+    case 'sak': return 'SAK';
+    case 'hiLayerResponse': return 'Higher Layer Response';
+    case 'historicalBytes': return 'Historical Bytes';
+    case 'atqa': return 'ATQA';
+    case 'manufacturer': return 'Manufacturer';
+    default: return key;
+  }
 }
