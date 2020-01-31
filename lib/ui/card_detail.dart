@@ -115,7 +115,7 @@ class CardDetailTabState extends State<CardDetailTab> {
   }
 
   Widget _buildDetail() {
-    final details = parseDetails(data);
+    final details = _parseCardDetails(data["card_type"], data["detail"]);
 
     return Card(
       margin: EdgeInsets.only(bottom: 20),
@@ -131,9 +131,10 @@ class CardDetailTabState extends State<CardDetailTab> {
     );
   }
 
+
   Widget _buildMisc() {
     final apduTiles = (data["apdu_history"] as List<dynamic>).asMap().entries.map((t) => APDUTile(data: t.value, index: t.key)).toList();
-    final transferTiles = (data["detail"]["transactions"] as List<dynamic>).map((t) => TransferTile(data: t)).toList();
+    final transferTiles = data["detail"]["transactions"] != null ? (data["detail"]["transactions"] as List<dynamic>).map((t) => TransferTile(data: t)).toList() : null;
 
     return ExpansionPanelList(
       expansionCallback: (int idx, bool original) {
@@ -146,12 +147,12 @@ class CardDetailTabState extends State<CardDetailTab> {
               leading: CircleAvatar(
                 child: Icon(Icons.payment),
               ),
-              title: Text("Transactions"),
-              subtitle: Text("${transferTiles.length} transfers"),
+              title: Text("Transaction history"),
+              subtitle: transferTiles == null ? Text('Not supported') : Text("${transferTiles.length} transfers"),
             );
           },
           body: Column(
-            children: transferTiles,
+            children: transferTiles ?? [],
           ),
           isExpanded: this.expanded[0],
         ),
@@ -171,22 +172,6 @@ class CardDetailTabState extends State<CardDetailTab> {
             )
           ),
           isExpanded: this.expanded[1],
-        ),
-        ExpansionPanel(
-          headerBuilder: (ctx, isExp) {
-            return ListTile(
-              leading: CircleAvatar(
-                child: Icon(Icons.search),
-              ),
-              title: Text("Raw data"),
-            );
-          },
-          body: Container(
-            width: double.infinity,
-            padding: EdgeInsets.all(20),
-            child: Text(data.toString(), style: Theme.of(context).textTheme.caption),
-          ),
-          isExpanded: this.expanded[2],
         )
       ],
     );
@@ -303,14 +288,14 @@ class TransferTile extends StatelessWidget {
   @override
   Widget build(context) {
     return ExpansionTile(
-      title: Text("${getSign(data["type"])}${formatMoney(data["amount"])}"),
-      subtitle: Text("${formatDate(data["date"])} - ${data["type"]}"),
+      title: Text("${_getPBOCSign(data["type"])}${_formatPBOCBalance(data["amount"])} - ${data["type"]}"),
+      subtitle: Text("${_formatPBOCDate(data["date"])} ${_formatPOOCTime(data["time"])}"),
       children: <Widget>[
         ListTile(
-          title: Text("这里再放一点"),
+          title: Text("ID: ${data["number"]}"),
         ),
         ListTile(
-          title: Text("其他信息？"),
+          title: Text("Terminal: ${data["terminal"]}"),
         ),
       ],
     );
@@ -325,50 +310,76 @@ class Detail {
   final IconData icon;
 }
 
-List<Detail> parseDetails(dynamic data) {
-  final cardType = data["card_type"];
+List<Detail> _parseCardDetails(CardType cardType, dynamic _data) {
 
-  if(cardType == CardType.Tsinghua) {
-    return [
-      Detail(
-        name: "Card Number",
-        value: data["detail"]["card_number"],
-        icon: Icons.credit_card,
-      ),
-      Detail(
-        name: "Holder",
-        value: data["detail"]["name"],
-        icon: Icons.person,
-      ),
-      Detail(
-        name: "Expiry Date",
-        value: formatDate(data["detail"]["expiry_date"]),
-        icon: Icons.calendar_view_day,
-      ),
-      Detail(
-        name: "Balance",
-        value: formatMoney(data["detail"]["balance"]),
-        icon: Icons.account_balance,
-      ),
-    ].toList();
-  } else {
-    return List();
+  // make a copy
+  var data = {}..addAll(_data);
+
+  var details = <Detail>[];
+
+  void addDetail(String fieldName, String parsedName, [IconData icon, transformer]) {
+    // optional parameters
+    if (icon == null) icon = Icons.list;
+    if (transformer == null) {
+      transformer = (s) => "$s";
+    }
+    // check existence and add to list
+    if (data[fieldName] != null) {
+      details.add(
+          Detail(
+            name: parsedName,
+            value: transformer(data[fieldName]),
+            icon: icon
+          )
+      );
+      data.remove(fieldName);
+    }
   }
+
+  // all cards
+  addDetail('card_number', 'Card Number', Icons.credit_card);
+  // THU
+  addDetail('internal_number', 'Internal Number', Icons.credit_card);
+  // PBOC
+  addDetail('name', 'Holder Name', Icons.person);
+  // PBOC
+  addDetail('balance', 'Balance', Icons.account_balance, _formatPBOCBalance);
+  // PPSE
+  addDetail('expiration', 'Valid Until', Icons.calendar_today);
+  // PBOC
+  addDetail('expiry_date', 'Expiry Date', Icons.calendar_today, _formatPBOCDate);
+  // THU
+  addDetail('display_expiry_date', 'Display Expiry Date', Icons.calendar_today, _formatPBOCDate);
+  // PBOC
+  addDetail('purchase_atc', 'Purchase ATC', Icons.exposure_neg_1);
+  // PBOC
+  addDetail('load_atc', 'Load ATC', Icons.exposure_plus_1);
+  // PPSE
+  addDetail('atc', 'ATC', Icons.exposure_plus_1);
+  // PPSE
+  addDetail('pin_retry', 'PIN Retry', Icons.lock);
+
+  return details;
+
 }
 
-String formatDate(String raw) {
-  return "${raw.substring(0, 4)}-${raw.substring(4,6)}-${raw.substring(6, 8)}";
+String _formatPBOCDate(String raw) {
+  return "${raw.substring(0, 4)}-${raw.substring(4, 6)}-${raw.substring(6, 8)}";
 }
 
-String formatMoney(int raw) {
+String _formatPOOCTime(String raw) {
+  return "${raw.substring(0, 2)}:${raw.substring(2, 4)}:${raw.substring(4, 6)}";
+}
+
+String _formatPBOCBalance(int raw) {
   if(raw == 0) return "0.00";
   else if(raw > 0)
     return "${(raw / 100).floor()}.${(raw % 100).toString().padLeft(2, "0")}";
   else
-    return "-" + formatMoney(-raw);
+    return "-" + _formatPBOCBalance(-raw);
 }
 
-String getSign(String type) {
+String _getPBOCSign(String type) {
   if(type == "充值") return "+";
   return "-";
 }

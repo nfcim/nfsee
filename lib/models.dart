@@ -73,6 +73,7 @@ extension CardTypeExtension on CardType {
       case CardType.Tsinghua:
         return S.of(context).Tsinghua;
       case CardType.Unknown:
+      default:
         return S.of(context).Unknown;
     }
   }
