@@ -445,12 +445,13 @@ List<Detail> _parseTransactionDetails(
 
   addDetail('number', S.of(context).transactionNumber, Icons.bookmark);
   addDetail('terminal', S.of(context).terminal, Icons.place);
+  addDetail('subway_exit', S.of(context).subwayExit, Icons.subway, (s) => (s as BeijingSubway).getName(context));
   addDetail('type', S.of(context).type);
   addDetail('country_code', S.of(context).countryCode, Icons.map);
   addDetail('currency_code', S.of(context).currencyCode, Icons.local_atm);
   addDetail('amount_other', S.of(context).amountOther, Icons.attach_money);
 
-  // all remaining data, clone to avoid concurrent modification
+  // all remaining data, clone to avoid concurrent modificationL
   final remain = {}..addAll(data);
   remain.forEach((k, _) => addDetail(k, '${S.of(context).rawData}: $k', Icons.error));
 

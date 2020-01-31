@@ -127,3 +127,54 @@ extension PBOCTransactionTypeExtension on PBOCTransactionType {
   }
 }
 
+enum BeijingSubway {
+  Line1,
+  Line2,
+  Line4,
+  Line5,
+  Line6,
+  Line7,
+  Line8,
+  Line9,
+  Line10,
+  Line13,
+  Line14,
+  Line15,
+  Line16,
+  Xijiao,
+  DaxingAirport,
+  Daxing,
+  Changping,
+  Fangshan,
+  Yizhuang,
+  Batong,
+  CapitalAirport
+}
+
+extension BeijingSubwayExtension on BeijingSubway {
+  String getName(BuildContext context) {
+    switch (this) {
+      case BeijingSubway.Line1: return S.of(context).Line1;
+      case BeijingSubway.Line2: return S.of(context).Line2;
+      case BeijingSubway.Line4: return S.of(context).Line4;
+      case BeijingSubway.Line5: return S.of(context).Line5;
+      case BeijingSubway.Line6: return S.of(context).Line6;
+      case BeijingSubway.Line7: return S.of(context).Line7;
+      case BeijingSubway.Line8: return S.of(context).Line8;
+      case BeijingSubway.Line9: return S.of(context).Line9;
+      case BeijingSubway.Line10: return S.of(context).Line10;
+      case BeijingSubway.Line13: return S.of(context).Line13;
+      case BeijingSubway.Line14: return S.of(context).Line14;
+      case BeijingSubway.Line15: return S.of(context).Line15;
+      case BeijingSubway.Line16: return S.of(context).Line16;
+      case BeijingSubway.Xijiao: return S.of(context).Xijiao;
+      case BeijingSubway.DaxingAirport: return S.of(context).DaxingAirport;
+      case BeijingSubway.Daxing: return S.of(context).Daxing;
+      case BeijingSubway.Changping: return S.of(context).Changping;
+      case BeijingSubway.Fangshan: return S.of(context).Fangshan;
+      case BeijingSubway.Yizhuang: return S.of(context).Yizhuang;
+      case BeijingSubway.Batong: return S.of(context).Batong;
+      case BeijingSubway.CapitalAirport: return S.of(context).CapitalAirport;
+    }
+  }
+}

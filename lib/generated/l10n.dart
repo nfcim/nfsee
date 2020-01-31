@@ -523,6 +523,204 @@ class S {
       args: [],
     );
   }
+
+  String get subwayExit {
+    return Intl.message(
+      'Subway Exit',
+      name: 'subwayExit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Line1 {
+    return Intl.message(
+      'Line 1',
+      name: 'Line1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Line2 {
+    return Intl.message(
+      'Line 2',
+      name: 'Line2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Line4 {
+    return Intl.message(
+      'Line 4',
+      name: 'Line4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Line5 {
+    return Intl.message(
+      'Line 5',
+      name: 'Line5',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Line6 {
+    return Intl.message(
+      'Line 6',
+      name: 'Line6',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Line7 {
+    return Intl.message(
+      'Line 7',
+      name: 'Line7',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Line8 {
+    return Intl.message(
+      'Line 8',
+      name: 'Line8',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Line9 {
+    return Intl.message(
+      'Line 9',
+      name: 'Line9',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Line10 {
+    return Intl.message(
+      'Line 10',
+      name: 'Line10',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Line13 {
+    return Intl.message(
+      'Line 13',
+      name: 'Line13',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Line14 {
+    return Intl.message(
+      'Line 14',
+      name: 'Line14',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Line15 {
+    return Intl.message(
+      'Line 15',
+      name: 'Line15',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Line16 {
+    return Intl.message(
+      'Line 16',
+      name: 'Line16',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Xijiao {
+    return Intl.message(
+      'Xijiao Line',
+      name: 'Xijiao',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get DaxingAirport {
+    return Intl.message(
+      'Daxing Airport Line',
+      name: 'DaxingAirport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Daxing {
+    return Intl.message(
+      'Daxing Line',
+      name: 'Daxing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Changping {
+    return Intl.message(
+      'Changping Line',
+      name: 'Changping',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Fangshan {
+    return Intl.message(
+      'Fangshan Line',
+      name: 'Fangshan',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Yizhuang {
+    return Intl.message(
+      'Yizhuang Line',
+      name: 'Yizhuang',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Batong {
+    return Intl.message(
+      'Batong Line',
+      name: 'Batong',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get CapitalAirport {
+    return Intl.message(
+      'Capital Airport Line',
+      name: 'CapitalAirport',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
