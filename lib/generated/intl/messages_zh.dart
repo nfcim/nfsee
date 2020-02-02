@@ -69,7 +69,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "WuhanTong" : MessageLookupByLibrary.simpleMessage("武汉通"),
     "Xijiao" : MessageLookupByLibrary.simpleMessage("西郊线"),
     "Yizhuang" : MessageLookupByLibrary.simpleMessage("亦庄线"),
-    "amountOther" : MessageLookupByLibrary.simpleMessage("其它金额"),
+    "amountOther" : MessageLookupByLibrary.simpleMessage("其他金额"),
     "apduLogs" : MessageLookupByLibrary.simpleMessage("APDU 日志"),
     "balance" : MessageLookupByLibrary.simpleMessage("余额"),
     "cardNumber" : MessageLookupByLibrary.simpleMessage("卡号"),
