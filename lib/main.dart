@@ -448,18 +448,30 @@ class ReportRowItem extends StatelessWidget {
   @override
   Widget build(context) {
     var data = json.decode(record.data);
+    var config = json.decode(record.config ?? DEFAULT_CONFIG);
+
     final type = getEnumFromString<CardType>(CardType.values, data["card_type"]);
-    var title = '${type.getName(context)}';
+
+    var typestr = '${type.getName(context)}';
     if (type == CardType.Unknown) {
-      title += ' (${data["tag"]["standard"]})';
+      typestr += ' (${data["tag"]["standard"]})';
     }
+
+    var title = typestr;
+    var subtitle = data["detail"]["card_number"];
+    if(config["name"] != null && config["name"] != "") {
+      if(subtitle == null) subtitle = typestr;
+      else subtitle = typestr + " - " + subtitle;
+      title = config["name"];
+    }
+
     return ListTile(
       leading: Container(
         height: double.infinity,
         child: Icon(Icons.credit_card),
       ),
       title: Text(title),
-      subtitle: data["detail"]["card_number"] != null ? Text(data["detail"]["card_number"]) : null,
+      subtitle: subtitle != null ? Text(subtitle) : null,
       onTap: this.onTap,
     );
   }

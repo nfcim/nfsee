@@ -87,8 +87,8 @@ class CardDetailTabState extends State<CardDetailTab> {
                       begin: Alignment.bottomLeft,
                       end: Alignment.topRight,
                       colors: [
-                    const Color(0xFFFFF6B7),
-                    const Color(0xFFF6416C),
+                    Color(0xFF000000 + int.parse(config["from"], radix: 16)),
+                    Color(0xFF000000 + int.parse(config["to"], radix: 16)),
                   ])),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
