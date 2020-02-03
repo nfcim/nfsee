@@ -10,8 +10,13 @@ part of 'database.dart';
 class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
   final int id;
   final DateTime time;
+  final String config;
   final String data;
-  DumpedRecord({@required this.id, @required this.time, @required this.data});
+  DumpedRecord(
+      {@required this.id,
+      @required this.time,
+      @required this.config,
+      @required this.data});
   factory DumpedRecord.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -22,6 +27,8 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       time:
           dateTimeType.mapFromDatabaseResponse(data['${effectivePrefix}time']),
+      config:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}config']),
       data: stringType.mapFromDatabaseResponse(data['${effectivePrefix}data']),
     );
   }
@@ -31,6 +38,7 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
     return DumpedRecord(
       id: serializer.fromJson<int>(json['id']),
       time: serializer.fromJson<DateTime>(json['time']),
+      config: serializer.fromJson<String>(json['config']),
       data: serializer.fromJson<String>(json['data']),
     );
   }
@@ -40,6 +48,7 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'time': serializer.toJson<DateTime>(time),
+      'config': serializer.toJson<String>(config),
       'data': serializer.toJson<String>(data),
     };
   }
@@ -49,13 +58,17 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
     return DumpedRecordsCompanion(
       id: id == null && nullToAbsent ? const Value.absent() : Value(id),
       time: time == null && nullToAbsent ? const Value.absent() : Value(time),
+      config:
+          config == null && nullToAbsent ? const Value.absent() : Value(config),
       data: data == null && nullToAbsent ? const Value.absent() : Value(data),
     );
   }
 
-  DumpedRecord copyWith({int id, DateTime time, String data}) => DumpedRecord(
+  DumpedRecord copyWith({int id, DateTime time, String config, String data}) =>
+      DumpedRecord(
         id: id ?? this.id,
         time: time ?? this.time,
+        config: config ?? this.config,
         data: data ?? this.data,
       );
   @override
@@ -63,43 +76,52 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
     return (StringBuffer('DumpedRecord(')
           ..write('id: $id, ')
           ..write('time: $time, ')
+          ..write('config: $config, ')
           ..write('data: $data')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      $mrjf($mrjc(id.hashCode, $mrjc(time.hashCode, data.hashCode)));
+  int get hashCode => $mrjf($mrjc(id.hashCode,
+      $mrjc(time.hashCode, $mrjc(config.hashCode, data.hashCode))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is DumpedRecord &&
           other.id == this.id &&
           other.time == this.time &&
+          other.config == this.config &&
           other.data == this.data);
 }
 
 class DumpedRecordsCompanion extends UpdateCompanion<DumpedRecord> {
   final Value<int> id;
   final Value<DateTime> time;
+  final Value<String> config;
   final Value<String> data;
   const DumpedRecordsCompanion({
     this.id = const Value.absent(),
     this.time = const Value.absent(),
+    this.config = const Value.absent(),
     this.data = const Value.absent(),
   });
   DumpedRecordsCompanion.insert({
     this.id = const Value.absent(),
     @required DateTime time,
+    this.config = const Value.absent(),
     @required String data,
   })  : time = Value(time),
         data = Value(data);
   DumpedRecordsCompanion copyWith(
-      {Value<int> id, Value<DateTime> time, Value<String> data}) {
+      {Value<int> id,
+      Value<DateTime> time,
+      Value<String> config,
+      Value<String> data}) {
     return DumpedRecordsCompanion(
       id: id ?? this.id,
       time: time ?? this.time,
+      config: config ?? this.config,
       data: data ?? this.data,
     );
   }
@@ -131,6 +153,15 @@ class $DumpedRecordsTable extends DumpedRecords
     );
   }
 
+  final VerificationMeta _configMeta = const VerificationMeta('config');
+  GeneratedTextColumn _config;
+  @override
+  GeneratedTextColumn get config => _config ??= _constructConfig();
+  GeneratedTextColumn _constructConfig() {
+    return GeneratedTextColumn('config', $tableName, false,
+        defaultValue: const Constant(DEFAULT_CONFIG));
+  }
+
   final VerificationMeta _dataMeta = const VerificationMeta('data');
   GeneratedTextColumn _data;
   @override
@@ -144,7 +175,7 @@ class $DumpedRecordsTable extends DumpedRecords
   }
 
   @override
-  List<GeneratedColumn> get $columns => [id, time, data];
+  List<GeneratedColumn> get $columns => [id, time, config, data];
   @override
   $DumpedRecordsTable get asDslTable => this;
   @override
@@ -163,6 +194,10 @@ class $DumpedRecordsTable extends DumpedRecords
           _timeMeta, time.isAcceptableValue(d.time.value, _timeMeta));
     } else if (isInserting) {
       context.missing(_timeMeta);
+    }
+    if (d.config.present) {
+      context.handle(
+          _configMeta, config.isAcceptableValue(d.config.value, _configMeta));
     }
     if (d.data.present) {
       context.handle(
@@ -189,6 +224,9 @@ class $DumpedRecordsTable extends DumpedRecords
     }
     if (d.time.present) {
       map['time'] = Variable<DateTime, DateTimeType>(d.time.value);
+    }
+    if (d.config.present) {
+      map['config'] = Variable<String, StringType>(d.config.value);
     }
     if (d.data.present) {
       map['data'] = Variable<String, StringType>(d.data.value);

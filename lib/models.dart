@@ -178,3 +178,5 @@ extension BeijingSubwayExtension on BeijingSubway {
     }
   }
 }
+
+const String DEFAULT_CONFIG = '{"from":"FFF6B7","to":"F6416C"}';

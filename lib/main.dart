@@ -153,7 +153,11 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         bloc.addDumpedRecord(scriptModel.data);
         print(scriptModel.data.toString());
         this._navigateToTag(DumpedRecord(
-            id: 0, time: DateTime.now(), data: jsonEncode(scriptModel.data)));
+          id: 0,
+          time: DateTime.now(),
+          data: jsonEncode(scriptModel.data),
+          config: DEFAULT_CONFIG,
+        ));
         break;
 
       case 'log':
@@ -173,6 +177,8 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
   void _navigateToTag(DumpedRecord record) {
     var data = jsonDecode(record.data);
+    var config = jsonDecode(record.config ?? DEFAULT_CONFIG);
+
     data['card_type'] = CardType.values
         .firstWhere((it) => it.toString() == "CardType.${data['card_type']}");
     switch (defaultTargetPlatform) {
@@ -180,7 +186,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         log(data.toString());
         Navigator.of(context).push<void>(
           MaterialPageRoute(
-            builder: (context) => CardDetailTab(data: data),
+            builder: (context) => CardDetailTab(data: data, config: config, id: record.id),
           ),
         );
         break;
@@ -188,7 +194,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         Navigator.of(context).push<void>(
           CupertinoPageRoute(
             title: 'Card Detail',
-            builder: (context) => CardDetailTab(data: data),
+            builder: (context) => CardDetailTab(data: data, config: config, id: record.id),
           ),
         );
         break;

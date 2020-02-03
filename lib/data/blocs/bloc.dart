@@ -22,6 +22,12 @@ class NFSeeAppBloc {
     ));
   }
 
+  void updateDumpedRecordConfig(int id, dynamic config) {
+    db.writeDumpedRecord(id, DumpedRecordsCompanion(
+      config: Value(jsonEncode(config)),
+    ));
+  }
+
   Future<List<DumpedRecord>> listDumpedRecords() {
     return db.listDumpedRecords();
   }

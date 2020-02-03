@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nfsee/data/blocs/bloc.dart';
+import 'package:nfsee/data/blocs/provider.dart';
 import 'package:nfsee/generated/l10n.dart';
 
 import '../models.dart';
@@ -7,19 +11,27 @@ import 'widgets.dart';
 import "../utilities.dart";
 
 class CardDetailTab extends StatefulWidget {
-  const CardDetailTab({this.data});
+  const CardDetailTab({this.data, this.config, this.id});
 
   final dynamic data;
+  final dynamic config;
+  final int id;
 
   @override
-  CardDetailTabState createState() => CardDetailTabState(data: this.data);
+  CardDetailTabState createState() => CardDetailTabState(data: this.data, config: this.config, id: this.id);
 }
 
 class CardDetailTabState extends State<CardDetailTab> {
-  CardDetailTabState({this.data});
+  CardDetailTabState({ this.data, this.config, this.id });
 
   final dynamic data;
+  final dynamic config;
+  final int id;
+  String pendingName = "";
+
   List<bool> expanded = [false, false, false, false];
+
+  NFSeeAppBloc get bloc => BlocProvider.provideBloc(context);
 
   String _getFilename() {
     switch (data['card_type'] as CardType) {
@@ -96,9 +108,57 @@ class CardDetailTabState extends State<CardDetailTab> {
             ),
           ),
           ListTile(
-            title: Text(S.of(context).unnamedCard),
+            title: Text(config["name"] ?? S.of(context).unnamedCard),
             trailing: IconButton(
-              onPressed: () {},
+              onPressed: () {
+                this.pendingName = config["name"] ?? "";
+
+                showDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  builder: (context) => AlertDialog(
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        TextFormField(
+                          decoration: InputDecoration(
+                            filled: true,
+                            labelText: "Card name", // TODO: l10n
+                          ),
+                          maxLines: 1,
+                          initialValue: config["name"] ?? "",
+
+                          onChanged: (cont) {
+                            this.pendingName = cont;
+                          },
+                        ),
+                      ],
+                    ),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text("CANCEL"), // TODO: l10n
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      FlatButton(
+                        child: Text("SAVE"), // TODO: l10n
+                        onPressed: () {
+                          setState(() {
+                            if(this.pendingName == "") {
+                              this.config["name"] = null;
+                            } else {
+                              this.config["name"] = this.pendingName;
+                            }
+                            bloc.updateDumpedRecordConfig(this.id, config);
+                            Navigator.of(context).pop();
+                          });
+                        },
+                      )
+                    ],
+                  ),
+                );
+              },
               icon: Icon(Icons.edit),
             ),
           ),

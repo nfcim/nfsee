@@ -1,7 +1,9 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:moor/moor.dart';
 import 'package:moor_ffi/moor_ffi.dart';
+import 'package:nfsee/models.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 
@@ -11,7 +13,7 @@ part 'database.g.dart';
 class DumpedRecords extends Table {
   IntColumn get id => integer().autoIncrement()();
   DateTimeColumn get time => dateTime()();
-  TextColumn get config => text()(); // Name, color, etc...
+  TextColumn get config => text().withDefault(const Constant(DEFAULT_CONFIG))(); // Name, color, etc...
   TextColumn get data => text()();
 }
 
@@ -30,7 +32,18 @@ class Database extends _$Database {
   Database(QueryExecutor e) : super(e);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 5;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (Migrator m) => m.createAll(),
+    onUpgrade: (Migrator m, int from, int to) async {
+      log("Migrate db from $from to $to");
+      if(from < 5) {
+        await m.addColumn(dumpedRecords, dumpedRecords.config);
+      }
+    }
+  );
 
   Future<int> addDumpedRecord(DumpedRecordsCompanion entry) {
     return into(dumpedRecords).insert(entry);
@@ -42,6 +55,10 @@ class Database extends _$Database {
 
   Future<List<DumpedRecord>> listDumpedRecords() {
     return select(dumpedRecords).get();
+  }
+
+  Future<bool> writeDumpedRecord(int id, DumpedRecordsCompanion entry) {
+    return (update(dumpedRecords)..where((u) => u.id.equals(id))).write(entry).then((count) => count > 0);
   }
 
   Future<int> addScript(SavedScriptsCompanion entry) {
