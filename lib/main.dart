@@ -186,7 +186,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         log(data.toString());
         Navigator.of(context).push<void>(
           MaterialPageRoute(
-            builder: (context) => CardDetailTab(data: data, config: config, id: record.id),
+            builder: (context) => CardDetailTab(data: data, config: config, id: record.id, time: record.time),
           ),
         );
         break;
@@ -194,7 +194,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         Navigator.of(context).push<void>(
           CupertinoPageRoute(
             title: 'Card Detail',
-            builder: (context) => CardDetailTab(data: data, config: config, id: record.id),
+            builder: (context) => CardDetailTab(data: data, config: config, id: record.id, time: record.time),
           ),
         );
         break;

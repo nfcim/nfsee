@@ -11,22 +11,30 @@ import 'widgets.dart';
 import "../utilities.dart";
 
 class CardDetailTab extends StatefulWidget {
-  const CardDetailTab({this.data, this.config, this.id});
+  const CardDetailTab({this.data, this.config, this.id, this.time});
 
   final dynamic data;
   final dynamic config;
   final int id;
+  final DateTime time;
 
   @override
-  CardDetailTabState createState() => CardDetailTabState(data: this.data, config: this.config, id: this.id);
+  CardDetailTabState createState() => CardDetailTabState(
+    data: this.data,
+    config: this.config,
+    id: this.id,
+    time: this.time,
+  );
 }
 
 class CardDetailTabState extends State<CardDetailTab> {
-  CardDetailTabState({ this.data, this.config, this.id });
+  CardDetailTabState({ this.data, this.config, this.id, this.time });
 
   final dynamic data;
   final dynamic config;
   final int id;
+  final DateTime time;
+
   String pendingName = "";
 
   List<bool> expanded = [false, false, false, false];
@@ -109,6 +117,7 @@ class CardDetailTabState extends State<CardDetailTab> {
           ),
           ListTile(
             title: Text(config["name"] ?? S.of(context).unnamedCard),
+            subtitle: Text(time.toString()),
             trailing: IconButton(
               onPressed: () {
                 this.pendingName = config["name"] ?? "";
