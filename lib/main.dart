@@ -40,12 +40,6 @@ class _NFSeeAppState extends State<NFSeeApp> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    bloc.dispose();
-  }
-
-  @override
   Widget build(context) {
     return BlocProvider(
       bloc: bloc,

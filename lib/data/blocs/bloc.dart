@@ -8,11 +8,14 @@ class NFSeeAppBloc {
   final Database db;
 
   Stream<List<DumpedRecord>> _dumpedRecords;
+  Stream<List<SavedScript>> _savedScripts;
 
   Stream<List<DumpedRecord>> get dumpedRecords => _dumpedRecords;
+  Stream<List<SavedScript>> get savedScripts => _savedScripts;
 
   NFSeeAppBloc() : db = constructDb() {
     _dumpedRecords = db.watchDumpedRecords();
+    _savedScripts = db.watchSavedScripts();
   }
 
   void addDumpedRecord(dynamic data) {
@@ -26,10 +29,6 @@ class NFSeeAppBloc {
     db.writeDumpedRecord(id, DumpedRecordsCompanion(
       config: Value(jsonEncode(config)),
     ));
-  }
-
-  Future<List<DumpedRecord>> listDumpedRecords() {
-    return db.listDumpedRecords();
   }
 
   Future<void> addScript(String name, String source) async {
@@ -56,10 +55,4 @@ class NFSeeAppBloc {
       lastUsed: Value(script.lastUsed),
     ));
   }
-
-  Future<List<SavedScript>> listScripts() {
-    return db.listScripts();
-  }
-
-  void dispose() {}
 }
