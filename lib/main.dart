@@ -51,7 +51,9 @@ class _NFSeeAppState extends State<NFSeeApp> {
           GlobalMaterialLocalizations.delegate,
         ],
         supportedLocales: S.delegate.supportedLocales,
-        title: S.of(context).homeScreenTitle,
+        onGenerateTitle: (context) {
+          return S.of(context).homeScreenTitle;
+        },
         theme: ThemeData(
           brightness: Brightness.light,
           primarySwatch: Colors.orange,
