@@ -413,7 +413,7 @@ class TechnologicalDetailTile extends StatelessWidget {
     return ListTile(
       dense: true,
       title: Text(_parseTechnologicalDetailKey(name)),
-      subtitle: Text(value),
+      subtitle: Text(value ?? "null"),
       leading: Icon(Icons.info),
     );
   }
