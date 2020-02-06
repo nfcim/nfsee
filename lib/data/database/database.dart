@@ -63,6 +63,10 @@ class Database extends _$Database {
     return delete(dumpedRecords).delete(entry);
   }
 
+  Future<int> delAllDumpedRecord() {
+    return delete(dumpedRecords).go();
+  }
+
   Stream<List<SavedScript>> watchSavedScripts() {
     return select(savedScripts).watch();
   }

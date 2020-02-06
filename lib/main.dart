@@ -311,12 +311,24 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     return CustomScrollView(
       slivers: <Widget>[
         CupertinoSliverNavigationBar(
-          trailing: CupertinoButton(
-            padding: EdgeInsets.zero,
-            child: Icon(CupertinoIcons.create),
-            onPressed: () {
-              _readTag(context);
-            },
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              CupertinoButton(
+                padding: EdgeInsets.zero,
+                child: Icon(CupertinoIcons.delete),
+                onPressed: () {
+                  _deleteAll(context);
+                },
+              ),
+              CupertinoButton(
+                padding: EdgeInsets.zero,
+                child: Icon(CupertinoIcons.create),
+                onPressed: () {
+                  _readTag(context);
+                },
+              )
+            ],
           ),
         ),
         SliverPadding(
@@ -439,6 +451,10 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     }
 
     _reading = false;
+  }
+
+  void _deleteAll(BuildContext context) {
+    bloc.delAllDumpedRecord();
   }
 
   void _closeReadModal(BuildContext context) {

@@ -51,6 +51,10 @@ class NFSeeAppBloc {
     ));
   }
 
+  Future<void> delAllDumpedRecord() async {
+    await db.delAllDumpedRecord();
+  }
+
   Future<void> addScript(String name, String source) async {
     await db.addScript(SavedScriptsCompanion.insert(
       name: name,
