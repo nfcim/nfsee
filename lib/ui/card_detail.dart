@@ -355,7 +355,7 @@ class APDUTile extends StatelessWidget {
     var segs = List<Widget>();
 
     for (int i = 0; i < str.length; i += 2) {
-      final slice = str.substring(i, i + 2);
+      final slice = str.substring(i, i + 2).toUpperCase();
       final seg = Container(
           width: 20,
           margin: EdgeInsets.only(right: 5),
