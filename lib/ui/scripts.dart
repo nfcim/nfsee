@@ -64,6 +64,7 @@ class _ScriptsActState extends State<ScriptsAct> {
         } catch (e) {
           final errorMessage = 'Poll exception: ${e.toString()}';
           log(errorMessage);
+          _webView.evalJavascript("pollErrorCallback()");
         }
         break;
 
@@ -137,15 +138,16 @@ class _ScriptsActState extends State<ScriptsAct> {
     } else {
       showCupertinoDialog(
           context: context,
-          useRootNavigator: false,
           builder: (context) {
             return CupertinoAlertDialog(
               title: Text(message),
               actions: <Widget>[
-                CupertinoButton(child: Text("OK"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },)
+                CupertinoButton(
+                  child: Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
               ],
             );
           });
@@ -277,7 +279,7 @@ class _ScriptsActState extends State<ScriptsAct> {
     this.pendingSrc = '';
 
     // Close alert dialog
-    Navigator.of(context).pop();
+    Navigator.of(context, rootNavigator: true).pop();
   }
 
   Widget _buildAddScriptDialog() {
