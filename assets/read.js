@@ -269,7 +269,7 @@
     let ReadTransShenzhen = async (fci) => {
         let r = await BasicInfoFile(fci);
         if (!r) return {};
-        const number = parseInt(r.slice(32, 40), 16);
+        const number = parseInt(r.slice(32, 40), 16).toString();
         const issue_date = r.slice(40, 48);
         const expiry_date = r.slice(48, 56);
         const balance_atc_trans = await ReadPBOCBalanceATCAndTrans();
