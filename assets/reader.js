@@ -57,3 +57,7 @@ function report(data) {
 function log(data) {
   nativeCaller.postMessage('log', data);
 }
+
+function scriptEnd(data) {
+  nativeCaller.postMessage('scriptEnd', data);
+}

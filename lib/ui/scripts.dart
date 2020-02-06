@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
@@ -31,7 +32,14 @@ class _ScriptsActState extends State<ScriptsAct> {
   NFSeeAppBloc get bloc => BlocProvider.provideBloc(context);
 
   /// Result from webkit
-  var result = '';
+  Map<int, String> results = Map();
+
+  /// Running script
+  int running = -1;
+
+  /// Last running script
+  /// Used to resolve a race between report and scriptEnd
+  int lastRunning = -1;
 
   /// Name of new scripts
   var pendingName = '';
@@ -72,9 +80,21 @@ class _ScriptsActState extends State<ScriptsAct> {
         break;
 
       case 'report':
+        log("Report");
         await FlutterNfcKit.finish();
         setState(() {
-          result += scriptModel.data.toString() + '\n';
+          if (this.running != -1)
+            this.results[this.running] += scriptModel.data.toString() + '\n';
+          else if (this.lastRunning != -1)
+            this.results[this.lastRunning] += scriptModel.data.toString() + '\n';
+        });
+        break;
+
+      case 'scriptEnd':
+        log("End");
+        setState(() {
+          this.lastRunning = this.running;
+          this.running = -1;
         });
         break;
 
@@ -84,8 +104,16 @@ class _ScriptsActState extends State<ScriptsAct> {
     }
   }
 
-  void _runScript(String src) async {
-    _webView.evalJavascript("(async function () {$src})();");
+  void _runScript(SavedScript script) async {
+    this.setState(() {
+      this.results[script.id] = "";
+      this.running = script.id;
+    });
+
+    log(script.source);
+
+    _webView.evalJavascript(
+        "(async function () {${script.source}})().then(scriptEnd).catch(scriptEnd);");
   }
 
   @override
@@ -96,47 +124,96 @@ class _ScriptsActState extends State<ScriptsAct> {
 
   Widget _buildBody(BuildContext context) {
     var outer = context;
-    return Scrollbar(
-        child: StreamBuilder<List<SavedScript>>(
-            stream: bloc.savedScripts,
-            builder: (context, snapshot) {
-              log(snapshot.data.toString());
-              if (!snapshot.hasData || snapshot.data.length == 0) {
-                return Container(
-                    width: double.infinity,
-                    height: double.infinity,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Image.asset('assets/empty.png', height: 200),
-                        Text(S.of(context).noHistoryFound),
-                      ],
-                    ));
-              }
-              final scripts = snapshot.data.reversed.toList();
-              return ListView.builder(
-                padding: EdgeInsets.only(bottom: 48),
-                itemCount: scripts.length,
-                itemBuilder: (context, index) {
-                  final s = scripts[index];
-                  return ScriptEntry(
-                      script: s,
-                      execute: () {
-                        showDialog(
-                            context: context,
-                            barrierDismissible: true,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: Text("Script: ${s.name}"),
-                                content: Text('Result:\n' + this.result),
-                                actions: <Widget>[
-                                  FlatButton(
+    return StreamBuilder<List<SavedScript>>(
+      stream: bloc.savedScripts,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData || snapshot.data.length == 0) {
+          return Container(
+              width: double.infinity,
+              height: double.infinity,
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Image.asset('assets/empty.png', height: 200),
+                  Text(S.of(context).noHistoryFound),
+                ],
+              ));
+        }
+        final scripts = snapshot.data.reversed.toList();
+        return SingleChildScrollView(
+            padding: EdgeInsets.only(bottom: 40),
+            child: ExpansionPanelList.radio(
+              children: scripts
+                  .map((script) => ExpansionPanelRadio(
+                        value: script.id,
+                        canTapOnHeader: true,
+                        headerBuilder: (context, open) => ListTile(
+                          subtitle: Text("Last executed: " +
+                              (script.lastUsed != null
+                                  ? script.lastUsed.toString()
+                                  : "Never")),
+                          title: Text(script.name),
+                          trailing: this.running == script.id ? SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(strokeWidth: 3),
+                          ) : null,
+                        ),
+                        body: Container(
+                          padding: EdgeInsets.only(
+                            bottom: 10,
+                            left: 20,
+                            right: 20,
+                          ),
+                          child: Column(
+                            children: <Widget>[
+                              this._getScriptResult(script),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  FlatButton.icon(
+                                    // Disable run button if there is a script running in background
+                                    onPressed: this.running == -1
+                                        ? () async {
+                                            this._runScript(script);
+                                            await this.bloc.useScript(script);
+                                          }
+                                        : null,
+                                    textTheme: ButtonTextTheme.primary,
+                                    // icon:
+                                    icon: this.running == script.id
+                                        ? Padding(
+                                            padding: EdgeInsets.all(4),
+                                            child: SizedBox(
+                                              width: 16,
+                                              height: 16,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                                valueColor:
+                                                    new AlwaysStoppedAnimation(
+                                                  Theme.of(context)
+                                                      .disabledColor,
+                                                ),
+                                              ),
+                                            ))
+                                        : Icon(Icons.play_arrow),
+                                    label: Text("RUN"),
+                                  ),
+                                  Expanded(child: Container()),
+                                  IconButton(
+                                    onPressed: () async {
+                                      await this.bloc.delScript(script);
+                                      // TODO: undo
+                                    },
+                                    color: Colors.black54,
+                                    icon: Icon(Icons.delete),
+                                  ),
+                                  IconButton(
                                     onPressed: () async {
                                       await Clipboard.setData(
-                                          ClipboardData(text: s.source));
-                                      Navigator.of(context).pop();
+                                          ClipboardData(text: script.source));
                                       var scaff = Scaffold.of(outer);
                                       scaff.hideCurrentSnackBar();
                                       scaff.showSnackBar(SnackBar(
@@ -145,45 +222,19 @@ class _ScriptsActState extends State<ScriptsAct> {
                                         duration: Duration(seconds: 1),
                                       ));
                                     },
-                                    child: Text("Copy"),
-                                  ),
-                                  FlatButton(
-                                    onPressed: () async {
-                                      this._runScript(s.source);
-                                      await this.bloc.useScript(s);
-                                    },
-                                    child: Text("Run"),
+                                    color: Colors.black54,
+                                    icon: Icon(Icons.content_copy),
                                   ),
                                 ],
-                              );
-                            });
-                      },
-                      contextPop: () {
-                        showDialog(
-                            context: context,
-                            barrierDismissible: true,
-                            builder: (context) {
-                              return SimpleDialog(
-                                children: <Widget>[
-                                  SimpleDialogOption(
-                                    onPressed: () async {
-                                      await this.bloc.delScript(s);
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: ListTile(
-                                      leading: Icon(Icons.delete,
-                                          color:
-                                              Theme.of(context).disabledColor),
-                                      title: const Text("Delete"),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            });
-                      });
-                },
-              );
-            }));
+                              ),
+                            ],
+                          ),
+                        ),
+                      ))
+                  .toList(),
+            ));
+      },
+    );
   }
 
   // ===========================================================================
@@ -293,61 +344,28 @@ class _ScriptsActState extends State<ScriptsAct> {
       iosBuilder: _buildIos,
     );
   }
-}
 
-class ScriptEntry extends StatelessWidget {
-  final SavedScript script;
-  final void Function() execute;
-  final void Function() contextPop;
+  Widget _getScriptResult(SavedScript script) {
+    final result = this.results[script.id];
 
-  const ScriptEntry({this.script, this.execute, this.contextPop});
+    if (result != null && result != "") {
+      return Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(20),
+        margin: EdgeInsets.only(bottom: 10),
+        color: Color.fromARGB(10, 0, 0, 0),
+        child: Text(result),
+      );
+    }
 
-  // TODO: iOS
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-        margin: EdgeInsets.only(
-          left: 10,
-          top: 10,
-          right: 10,
-        ),
-        elevation: 2,
-        child: InkWell(
-          onTap: this.execute,
-          onLongPress: this.contextPop,
-          child: Padding(
-            padding: EdgeInsets.only(
-              left: 20,
-              top: 16,
-              right: 20,
-              bottom: 16,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                SizedBox(
-                    width: double.infinity,
-                    child: Text(
-                      "Last executed: " +
-                          (script.lastUsed != null
-                              ? script.lastUsed.toString()
-                              : "Never"),
-                      style: Theme.of(context)
-                          .textTheme
-                          .subhead
-                          .apply(color: Colors.black38),
-                      textAlign: TextAlign.left,
-                    )),
-                SizedBox(
-                    width: double.infinity,
-                    child: Text(
-                      this.script.name,
-                      style: Theme.of(context).textTheme.headline,
-                      textAlign: TextAlign.left,
-                    ))
-              ],
-            ),
-          ),
-        ));
+    return Container(
+      padding: EdgeInsets.all(20),
+      margin: EdgeInsets.only(bottom: 10),
+      child: Center(
+          child: Text(
+        "Press RUN on the bottom left",
+        style: TextStyle(color: Theme.of(context).disabledColor),
+      )),
+    );
   }
 }
