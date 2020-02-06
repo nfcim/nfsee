@@ -86,7 +86,8 @@ class _ScriptsActState extends State<ScriptsAct> {
           if (this.running != -1)
             this.results[this.running] += scriptModel.data.toString() + '\n';
           else if (this.lastRunning != -1)
-            this.results[this.lastRunning] += scriptModel.data.toString() + '\n';
+            this.results[this.lastRunning] +=
+                scriptModel.data.toString() + '\n';
         });
         break;
 
@@ -155,11 +156,14 @@ class _ScriptsActState extends State<ScriptsAct> {
                                   ? script.lastUsed.toString()
                                   : "Never")),
                           title: Text(script.name),
-                          trailing: this.running == script.id ? SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(strokeWidth: 3),
-                          ) : null,
+                          trailing: this.running == script.id
+                              ? SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child:
+                                      CircularProgressIndicator(strokeWidth: 3),
+                                )
+                              : null,
                         ),
                         body: Container(
                           padding: EdgeInsets.only(

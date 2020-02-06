@@ -13,7 +13,8 @@ part 'database.g.dart';
 class DumpedRecords extends Table {
   IntColumn get id => integer().autoIncrement()();
   DateTimeColumn get time => dateTime()();
-  TextColumn get config => text().withDefault(const Constant(DEFAULT_CONFIG))(); // Name, color, etc...
+  TextColumn get config => text()
+      .withDefault(const Constant(DEFAULT_CONFIG))(); // Name, color, etc...
   TextColumn get data => text()();
 }
 
@@ -36,14 +37,13 @@ class Database extends _$Database {
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-    onCreate: (Migrator m) => m.createAll(),
-    onUpgrade: (Migrator m, int from, int to) async {
-      log("Migrate db from $from to $to");
-      if(from < 5) {
-        await m.addColumn(dumpedRecords, dumpedRecords.config);
-      }
-    }
-  );
+      onCreate: (Migrator m) => m.createAll(),
+      onUpgrade: (Migrator m, int from, int to) async {
+        log("Migrate db from $from to $to");
+        if (from < 5) {
+          await m.addColumn(dumpedRecords, dumpedRecords.config);
+        }
+      });
 
   Future<int> addDumpedRecord(DumpedRecordsCompanion entry) {
     return into(dumpedRecords).insert(entry);
@@ -54,7 +54,9 @@ class Database extends _$Database {
   }
 
   Future<bool> writeDumpedRecord(int id, DumpedRecordsCompanion entry) {
-    return (update(dumpedRecords)..where((u) => u.id.equals(id))).write(entry).then((count) => count > 0);
+    return (update(dumpedRecords)..where((u) => u.id.equals(id)))
+        .write(entry)
+        .then((count) => count > 0);
   }
 
   Future<int> delDumpedRecord(DumpedRecordsCompanion entry) {

@@ -35,9 +35,11 @@ class NFSeeAppBloc {
   }
 
   void updateDumpedRecordConfig(int id, dynamic config) {
-    db.writeDumpedRecord(id, DumpedRecordsCompanion(
-      config: Value(jsonEncode(config)),
-    ));
+    db.writeDumpedRecord(
+        id,
+        DumpedRecordsCompanion(
+          config: Value(jsonEncode(config)),
+        ));
   }
 
   Future<void> delDumpedRecord(DumpedRecord record) async {

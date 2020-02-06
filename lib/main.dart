@@ -180,7 +180,8 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         log(data.toString());
         Navigator.of(context).push<void>(
           MaterialPageRoute(
-            builder: (context) => CardDetailTab(data: data, config: config, id: record.id, time: record.time),
+            builder: (context) => CardDetailTab(
+                data: data, config: config, id: record.id, time: record.time),
           ),
         );
         break;
@@ -188,7 +189,8 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         Navigator.of(context).push<void>(
           CupertinoPageRoute(
             title: 'Card Detail',
-            builder: (context) => CardDetailTab(data: data, config: config, id: record.id, time: record.time),
+            builder: (context) => CardDetailTab(
+                data: data, config: config, id: record.id, time: record.time),
           ),
         );
         break;
@@ -218,20 +220,20 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           builder: (context, snapshot) {
             if (!snapshot.hasData || snapshot.data.length == 0) {
               return Container(
-                width: double.infinity,
-                height: double.infinity,
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Image.asset('assets/empty.png', height: 200),
-                    Text(S.of(context).noHistoryFound),
-                  ],
-                )
-              );
+                  width: double.infinity,
+                  height: double.infinity,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Image.asset('assets/empty.png', height: 200),
+                      Text(S.of(context).noHistoryFound),
+                    ],
+                  ));
             }
-            final records = snapshot.data.reversed.toList()..sort((a, b) => a.time.compareTo(b.time));
+            final records = snapshot.data.reversed.toList()
+              ..sort((a, b) => a.time.compareTo(b.time));
             return ListView.builder(
               padding: EdgeInsets.only(bottom: 48),
               itemCount: records.length,
@@ -242,34 +244,31 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
                   onDismissed: (direction) async {
                     await bloc.delDumpedRecord(r);
                     Scaffold.of(context).showSnackBar(SnackBar(
-                      behavior: SnackBarBehavior.floating,
-                      content: Text("History deleted"),
-                      duration: Duration(seconds: 5),
-                      action: SnackBarAction(
-                        label: "UNDO",
-                        onPressed: () {
-                          bloc.restoreDumpedRecord(r);
-                        },
-                      )
-                    ));
+                        behavior: SnackBarBehavior.floating,
+                        content: Text("History deleted"),
+                        duration: Duration(seconds: 5),
+                        action: SnackBarAction(
+                          label: "UNDO",
+                          onPressed: () {
+                            bloc.restoreDumpedRecord(r);
+                          },
+                        )));
                   },
                   key: Key(r.id.toString()),
                   background: Container(
-                    width: double.infinity,
-                    height: double.infinity,
-                    color: Colors.red,
-                    padding: EdgeInsets.all(18),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Icon(Icons.delete, color: Colors.white30),
-                    )
-                  ),
+                      width: double.infinity,
+                      height: double.infinity,
+                      color: Colors.red,
+                      padding: EdgeInsets.all(18),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Icon(Icons.delete, color: Colors.white30),
+                      )),
                   child: ReportRowItem(
-                    record: r,
-                    onTap: () {
-                      _navigateToTag(r);
-                    }
-                  ),
+                      record: r,
+                      onTap: () {
+                        _navigateToTag(r);
+                      }),
                 );
               },
             );
@@ -473,7 +472,8 @@ class ReportRowItem extends StatelessWidget {
     var data = json.decode(record.data);
     var config = json.decode(record.config ?? DEFAULT_CONFIG);
 
-    final type = getEnumFromString<CardType>(CardType.values, data["card_type"]);
+    final type =
+        getEnumFromString<CardType>(CardType.values, data["card_type"]);
 
     var typestr = '${type.getName(context)}';
     if (type == CardType.Unknown) {
@@ -482,9 +482,11 @@ class ReportRowItem extends StatelessWidget {
 
     var title = typestr;
     var subtitle = data["detail"]["card_number"];
-    if(config["name"] != null && config["name"] != "") {
-      if(subtitle == null) subtitle = typestr;
-      else subtitle = typestr + " - " + subtitle;
+    if (config["name"] != null && config["name"] != "") {
+      if (subtitle == null)
+        subtitle = typestr;
+      else
+        subtitle = typestr + " - " + subtitle;
       title = config["name"];
     }
 
