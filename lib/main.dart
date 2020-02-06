@@ -503,7 +503,10 @@ class ReportRowItem extends StatelessWidget {
     }
 
     var title = typestr;
-    var subtitle = data["detail"]["card_number"];
+    var subtitle = "Unknown";
+    if (data["detail"] != null && data["detail"]["card_number"] != null) {
+      subtitle = data["detail"]["card_number"];
+    }
     if (config["name"] != null && config["name"] != "") {
       if (subtitle == null)
         subtitle = typestr;
