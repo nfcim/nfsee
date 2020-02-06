@@ -64,7 +64,6 @@ class _ScriptsActState extends State<ScriptsAct> {
         } catch (e) {
           final errorMessage = 'Poll exception: ${e.toString()}';
           log(errorMessage);
-          // TODO: report error to user, stop execution
         }
         break;
 
@@ -81,11 +80,12 @@ class _ScriptsActState extends State<ScriptsAct> {
 
       case 'report':
         setState(() {
-          if (this.running != -1)
+          if (this.running != -1) {
             this.results[this.running] += scriptModel.data.toString() + '\n';
-          else if (this.lastRunning != -1)
+          } else if (this.lastRunning != -1) {
             this.results[this.lastRunning] +=
                 scriptModel.data.toString() + '\n';
+          }
         });
         break;
 
@@ -116,7 +116,7 @@ class _ScriptsActState extends State<ScriptsAct> {
     log(script.source);
 
     _webView.evalJavascript(
-        "(async function () {${script.source}})().then(scriptEnd).catch(scriptEnd);");
+        "(async function () {${script.source}})().then(finish).catch((e) => {report(e);finish();});");
   }
 
   @override
