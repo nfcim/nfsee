@@ -83,6 +83,87 @@ class S {
     );
   }
 
+  String get lastExecutionTime {
+    return Intl.message(
+      'Last execution time',
+      name: 'lastExecutionTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get never {
+    return Intl.message(
+      'Never',
+      name: 'never',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get run {
+    return Intl.message(
+      'Run',
+      name: 'run',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get addScript {
+    return Intl.message(
+      'Add script',
+      name: 'addScript',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get name {
+    return Intl.message(
+      'Name',
+      name: 'name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get code {
+    return Intl.message(
+      'Code',
+      name: 'code',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get add {
+    return Intl.message(
+      'Add',
+      name: 'add',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get scriptCopied {
+    return Intl.message(
+      'Script copied',
+      name: 'scriptCopied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get pressRun {
+    return Intl.message(
+      'Press Run to get result',
+      name: 'pressRun',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get UPCredit {
     return Intl.message(
       'UnionPay Credit',
@@ -229,7 +310,7 @@ class S {
 
   String get Tsinghua {
     return Intl.message(
-      'Tsinghua University',
+      'Tsinghua University Campus Card',
       name: 'Tsinghua',
       desc: '',
       args: [],

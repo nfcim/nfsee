@@ -17,7 +17,6 @@ import '../models.dart';
 import 'widgets.dart';
 
 class ScriptsAct extends StatefulWidget {
-  static const title = 'Script';
   static const androidIcon = Icon(Icons.code);
   static const iosIcon = Icon(Icons.code);
 
@@ -151,10 +150,10 @@ class _ScriptsActState extends State<ScriptsAct> {
                         value: script.id,
                         canTapOnHeader: true,
                         headerBuilder: (context, open) => ListTile(
-                          subtitle: Text("Last executed: " +
+                          subtitle: Text(S.of(context).lastExecutionTime + ': ' +
                               (script.lastUsed != null
-                                  ? script.lastUsed.toString()
-                                  : "Never")),
+                                  ? script.lastUsed.toString().split('.')[0] // remove part before ms
+                                  : S.of(context).never)),
                           title: Text(script.name),
                           trailing: this.running == script.id
                               ? SizedBox(
@@ -173,7 +172,7 @@ class _ScriptsActState extends State<ScriptsAct> {
                           ),
                           child: Column(
                             children: <Widget>[
-                              this._getScriptResult(script),
+                              this._getScriptResult(context, script),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
@@ -203,7 +202,7 @@ class _ScriptsActState extends State<ScriptsAct> {
                                               ),
                                             ))
                                         : Icon(Icons.play_arrow),
-                                    label: Text("RUN"),
+                                    label: Text(S.of(context).run)
                                   ),
                                   Expanded(child: Container()),
                                   IconButton(
@@ -222,7 +221,7 @@ class _ScriptsActState extends State<ScriptsAct> {
                                       scaff.hideCurrentSnackBar();
                                       scaff.showSnackBar(SnackBar(
                                         behavior: SnackBarBehavior.floating,
-                                        content: Text("Source copied!"),
+                                        content: Text(S.of(context).scriptCopied),
                                         duration: Duration(seconds: 1),
                                       ));
                                     },
@@ -275,13 +274,13 @@ class _ScriptsActState extends State<ScriptsAct> {
               barrierDismissible: true,
               builder: (context) {
                 return AlertDialog(
-                  title: const Text("Add script"),
+                  title: Text(S.of(context).addScript),
                   content: SingleChildScrollView(
                       child: ListBody(children: <Widget>[
                     TextField(
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
-                        hintText: "Name",
+                        hintText: S.of(context).name,
                       ),
                       maxLines: 1,
                       onChanged: (cont) {
@@ -291,7 +290,7 @@ class _ScriptsActState extends State<ScriptsAct> {
                     SizedBox(height: 10),
                     TextField(
                       decoration: InputDecoration(
-                          border: OutlineInputBorder(), hintText: "Code"),
+                          border: OutlineInputBorder(), hintText: S.of(context).code),
                       minLines: 3,
                       maxLines: null,
                       onChanged: (cont) {
@@ -301,7 +300,7 @@ class _ScriptsActState extends State<ScriptsAct> {
                   ])),
                   actions: <Widget>[
                     FlatButton(
-                      child: Text("Add"),
+                      child: Text(S.of(context).add),
                       onPressed: () async {
                         log("Adding script: ${this.pendingName}");
 
@@ -349,7 +348,7 @@ class _ScriptsActState extends State<ScriptsAct> {
     );
   }
 
-  Widget _getScriptResult(SavedScript script) {
+  Widget _getScriptResult(BuildContext context, SavedScript script) {
     final result = this.results[script.id];
 
     if (result != null && result != "") {
@@ -367,7 +366,7 @@ class _ScriptsActState extends State<ScriptsAct> {
       margin: EdgeInsets.only(bottom: 10),
       child: Center(
           child: Text(
-        "Press RUN on the bottom left",
+        S.of(context).pressRun,
         style: TextStyle(color: Theme.of(context).disabledColor),
       )),
     );
