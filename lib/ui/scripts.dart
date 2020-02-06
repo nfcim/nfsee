@@ -222,7 +222,7 @@ class _ScriptsActState extends State<ScriptsAct> {
                                       scaff.hideCurrentSnackBar();
                                       scaff.showSnackBar(SnackBar(
                                         behavior: SnackBarBehavior.floating,
-                                        content: Text("Copied!"),
+                                        content: Text("Source copied!"),
                                         duration: Duration(seconds: 1),
                                       ));
                                     },
@@ -358,7 +358,7 @@ class _ScriptsActState extends State<ScriptsAct> {
         padding: EdgeInsets.all(20),
         margin: EdgeInsets.only(bottom: 10),
         color: Color.fromARGB(10, 0, 0, 0),
-        child: Text(result),
+        child: SelectableText(result),
       );
     }
 
