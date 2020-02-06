@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
@@ -125,6 +125,33 @@ class _ScriptsActState extends State<ScriptsAct> {
     super.dispose();
   }
 
+  void _showMessage(String message) {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      var scaff = Scaffold.of(context);
+      scaff.hideCurrentSnackBar();
+      scaff.showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        content: Text(message),
+        duration: Duration(seconds: 1),
+      ));
+    } else {
+      showCupertinoDialog(
+          context: context,
+          useRootNavigator: false,
+          builder: (context) {
+            return CupertinoAlertDialog(
+              title: Text(message),
+              actions: <Widget>[
+                CupertinoButton(child: Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },)
+              ],
+            );
+          });
+    }
+  }
+
   Widget _buildBody(BuildContext context) {
     var outer = context;
     return StreamBuilder<List<SavedScript>>(
@@ -223,14 +250,7 @@ class _ScriptsActState extends State<ScriptsAct> {
                                     onPressed: () async {
                                       await Clipboard.setData(
                                           ClipboardData(text: script.source));
-                                      var scaff = Scaffold.of(outer);
-                                      scaff.hideCurrentSnackBar();
-                                      scaff.showSnackBar(SnackBar(
-                                        behavior: SnackBarBehavior.floating,
-                                        content:
-                                            Text(S.of(context).scriptCopied),
-                                        duration: Duration(seconds: 1),
-                                      ));
+                                      _showMessage(S.of(context).scriptCopied);
                                     },
                                     color: Colors.black54,
                                     icon: Icon(Icons.content_copy),
