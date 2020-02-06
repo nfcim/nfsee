@@ -25,9 +25,27 @@ class NFSeeAppBloc {
     ));
   }
 
+  void restoreDumpedRecord(DumpedRecord record) {
+    db.addDumpedRecord(DumpedRecordsCompanion(
+      // Let id regenerate, or Dismissible will complain about duplicate id
+      config: Value(record.config),
+      time: Value(record.time),
+      data: Value(record.data),
+    ));
+  }
+
   void updateDumpedRecordConfig(int id, dynamic config) {
     db.writeDumpedRecord(id, DumpedRecordsCompanion(
       config: Value(jsonEncode(config)),
+    ));
+  }
+
+  Future<void> delDumpedRecord(DumpedRecord record) async {
+    await db.delDumpedRecord(DumpedRecordsCompanion(
+      id: Value(record.id),
+      config: Value(record.config),
+      time: Value(record.time),
+      data: Value(record.data),
     ));
   }
 

@@ -231,17 +231,46 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
                 )
               );
             }
-            final records = snapshot.data.reversed.toList();
+            final records = snapshot.data.reversed.toList()..sort((a, b) => a.time.compareTo(b.time));
             return ListView.builder(
               padding: EdgeInsets.only(bottom: 48),
               itemCount: records.length,
               itemBuilder: (context, index) {
                 final r = records[index];
-                return ReportRowItem(
+                return Dismissible(
+                  direction: DismissDirection.startToEnd,
+                  onDismissed: (direction) async {
+                    await bloc.delDumpedRecord(r);
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      behavior: SnackBarBehavior.floating,
+                      content: Text("History deleted"),
+                      duration: Duration(seconds: 5),
+                      action: SnackBarAction(
+                        label: "UNDO",
+                        onPressed: () {
+                          bloc.restoreDumpedRecord(r);
+                        },
+                      )
+                    ));
+                  },
+                  key: Key(r.id.toString()),
+                  background: Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    color: Colors.red,
+                    padding: EdgeInsets.all(18),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Icon(Icons.delete, color: Colors.white30),
+                    )
+                  ),
+                  child: ReportRowItem(
                     record: r,
                     onTap: () {
                       _navigateToTag(r);
-                    });
+                    }
+                  ),
+                );
               },
             );
           },

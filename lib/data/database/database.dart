@@ -57,6 +57,10 @@ class Database extends _$Database {
     return (update(dumpedRecords)..where((u) => u.id.equals(id))).write(entry).then((count) => count > 0);
   }
 
+  Future<int> delDumpedRecord(DumpedRecordsCompanion entry) {
+    return delete(dumpedRecords).delete(entry);
+  }
+
   Stream<List<SavedScript>> watchSavedScripts() {
     return select(savedScripts).watch();
   }
