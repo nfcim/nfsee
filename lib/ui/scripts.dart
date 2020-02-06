@@ -247,7 +247,20 @@ class _ScriptsActState extends State<ScriptsAct> {
     );
   }
 
-  void _addScript() {
+  void _addScript() async {
+    log("Adding script: ${this.pendingName}");
+
+    await this.bloc.addScript(
+        this.pendingName == '' ? 'Script' : this.pendingName, this.pendingSrc);
+
+    this.pendingName = '';
+    this.pendingSrc = '';
+
+    // Close alert dialog
+    Navigator.of(context).pop();
+  }
+
+  void _addScriptAndroid() {
     this.pendingSrc = '';
     this.pendingName = '';
     showDialog(
@@ -282,19 +295,49 @@ class _ScriptsActState extends State<ScriptsAct> {
             actions: <Widget>[
               FlatButton(
                 child: Text(S.of(context).add),
-                onPressed: () async {
-                  log("Adding script: ${this.pendingName}");
+                onPressed: _addScript,
+              )
+            ],
+          );
+        });
+  }
 
-                  await this.bloc.addScript(
-                      this.pendingName == '' ? 'Script' : this.pendingName,
-                      this.pendingSrc);
-
-                  this.pendingName = '';
-                  this.pendingSrc = '';
-
-                  // Close alert dialog
-                  Navigator.of(context).pop();
+  void _addScriptIos() {
+    this.pendingSrc = '';
+    this.pendingName = '';
+    showCupertinoDialog(
+        context: context,
+        useRootNavigator: false,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            title: Text(S.of(context).addScript),
+            content: SingleChildScrollView(
+                child: ListBody(children: <Widget>[
+              TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: S.of(context).name,
+                ),
+                maxLines: 1,
+                onChanged: (cont) {
+                  this.pendingName = cont;
                 },
+              ),
+              SizedBox(height: 10),
+              TextField(
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(), hintText: S.of(context).code),
+                minLines: 3,
+                maxLines: null,
+                onChanged: (cont) {
+                  this.pendingSrc = cont;
+                },
+              )
+            ])),
+            actions: <Widget>[
+              CupertinoButton(
+                child: Text(S.of(context).add),
+                onPressed: _addScript,
               )
             ],
           );
@@ -327,7 +370,7 @@ class _ScriptsActState extends State<ScriptsAct> {
       body: Builder(builder: _buildBody),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: _addScript,
+        onPressed: _addScriptAndroid,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );
@@ -339,8 +382,8 @@ class _ScriptsActState extends State<ScriptsAct> {
         middle: Text(S.of(context).scriptTabTitle),
         trailing: CupertinoButton(
           padding: EdgeInsets.zero,
-          child: Icon(CupertinoIcons.play_arrow),
-          onPressed: () {},
+          child: Icon(CupertinoIcons.create),
+          onPressed: _addScriptIos,
         ),
       ),
       child: _buildBody(context),
