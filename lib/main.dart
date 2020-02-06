@@ -392,6 +392,26 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
             icon: Icon(Icons.settings),
           ),
         ],
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              if (_webViewListener == null) {
+                _webViewListener =
+                    _webView.didReceiveMessage.listen(_onReceivedMessage);
+              }
+              break;
+            case 1:
+              if (_webViewListener != null) {
+                _webViewListener.cancel();
+                _webViewListener = null;
+              }
+              break;
+            case 2:
+              break;
+            default:
+              assert(false, 'Unexpected tab');
+          }
+        },
       ),
       tabBuilder: (context, index) {
         switch (index) {
