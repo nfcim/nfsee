@@ -260,6 +260,32 @@ class _ScriptsActState extends State<ScriptsAct> {
     Navigator.of(context).pop();
   }
 
+  Widget _buildAddScriptDialog() {
+    return SingleChildScrollView(
+        child: ListBody(children: <Widget>[
+      TextField(
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          hintText: S.of(context).name,
+        ),
+        maxLines: 1,
+        onChanged: (cont) {
+          this.pendingName = cont;
+        },
+      ),
+      SizedBox(height: 10),
+      TextField(
+        decoration: InputDecoration(
+            border: OutlineInputBorder(), hintText: S.of(context).code),
+        minLines: 3,
+        maxLines: null,
+        onChanged: (cont) {
+          this.pendingSrc = cont;
+        },
+      )
+    ]));
+  }
+
   void _addScriptAndroid() {
     this.pendingSrc = '';
     this.pendingName = '';
@@ -269,34 +295,12 @@ class _ScriptsActState extends State<ScriptsAct> {
         builder: (context) {
           return AlertDialog(
             title: Text(S.of(context).addScript),
-            content: SingleChildScrollView(
-                child: ListBody(children: <Widget>[
-              TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: S.of(context).name,
-                ),
-                maxLines: 1,
-                onChanged: (cont) {
-                  this.pendingName = cont;
-                },
-              ),
-              SizedBox(height: 10),
-              TextField(
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(), hintText: S.of(context).code),
-                minLines: 3,
-                maxLines: null,
-                onChanged: (cont) {
-                  this.pendingSrc = cont;
-                },
-              )
-            ])),
+            content: _buildAddScriptDialog(),
             actions: <Widget>[
               FlatButton(
                 child: Text(S.of(context).add),
                 onPressed: _addScript,
-              )
+              ),
             ],
           );
         });
@@ -311,34 +315,18 @@ class _ScriptsActState extends State<ScriptsAct> {
         builder: (context) {
           return CupertinoAlertDialog(
             title: Text(S.of(context).addScript),
-            content: SingleChildScrollView(
-                child: ListBody(children: <Widget>[
-              TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: S.of(context).name,
-                ),
-                maxLines: 1,
-                onChanged: (cont) {
-                  this.pendingName = cont;
-                },
-              ),
-              SizedBox(height: 10),
-              TextField(
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(), hintText: S.of(context).code),
-                minLines: 3,
-                maxLines: null,
-                onChanged: (cont) {
-                  this.pendingSrc = cont;
-                },
-              )
-            ])),
+            content: _buildAddScriptDialog(),
             actions: <Widget>[
               CupertinoButton(
                 child: Text(S.of(context).add),
                 onPressed: _addScript,
-              )
+              ),
+              CupertinoButton(
+                child: Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
             ],
           );
         });
