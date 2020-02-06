@@ -331,7 +331,6 @@ class _ScriptsActState extends State<ScriptsAct> {
     this.pendingName = '';
     showCupertinoDialog(
         context: context,
-        useRootNavigator: false,
         builder: (context) {
           return CupertinoAlertDialog(
             title: Text(S.of(context).addScript),
@@ -344,7 +343,7 @@ class _ScriptsActState extends State<ScriptsAct> {
               CupertinoButton(
                 child: Text("Cancel"),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context, rootNavigator: true).pop();
                 },
               ),
             ],
