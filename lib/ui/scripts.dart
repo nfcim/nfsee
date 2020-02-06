@@ -247,6 +247,60 @@ class _ScriptsActState extends State<ScriptsAct> {
     );
   }
 
+  void _addScript() {
+    this.pendingSrc = '';
+    this.pendingName = '';
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(S.of(context).addScript),
+            content: SingleChildScrollView(
+                child: ListBody(children: <Widget>[
+              TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: S.of(context).name,
+                ),
+                maxLines: 1,
+                onChanged: (cont) {
+                  this.pendingName = cont;
+                },
+              ),
+              SizedBox(height: 10),
+              TextField(
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(), hintText: S.of(context).code),
+                minLines: 3,
+                maxLines: null,
+                onChanged: (cont) {
+                  this.pendingSrc = cont;
+                },
+              )
+            ])),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(S.of(context).add),
+                onPressed: () async {
+                  log("Adding script: ${this.pendingName}");
+
+                  await this.bloc.addScript(
+                      this.pendingName == '' ? 'Script' : this.pendingName,
+                      this.pendingSrc);
+
+                  this.pendingName = '';
+                  this.pendingSrc = '';
+
+                  // Close alert dialog
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
+  }
+
   // ===========================================================================
   // Non-shared code below because we're using different scaffolds.
   // ===========================================================================
@@ -273,62 +327,7 @@ class _ScriptsActState extends State<ScriptsAct> {
       body: Builder(builder: _buildBody),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () {
-          this.pendingSrc = '';
-          this.pendingName = '';
-          showDialog(
-              context: context,
-              barrierDismissible: true,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text(S.of(context).addScript),
-                  content: SingleChildScrollView(
-                      child: ListBody(children: <Widget>[
-                    TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: S.of(context).name,
-                      ),
-                      maxLines: 1,
-                      onChanged: (cont) {
-                        this.pendingName = cont;
-                      },
-                    ),
-                    SizedBox(height: 10),
-                    TextField(
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: S.of(context).code),
-                      minLines: 3,
-                      maxLines: null,
-                      onChanged: (cont) {
-                        this.pendingSrc = cont;
-                      },
-                    )
-                  ])),
-                  actions: <Widget>[
-                    FlatButton(
-                      child: Text(S.of(context).add),
-                      onPressed: () async {
-                        log("Adding script: ${this.pendingName}");
-
-                        await this.bloc.addScript(
-                            this.pendingName == ''
-                                ? 'Script'
-                                : this.pendingName,
-                            this.pendingSrc);
-
-                        this.pendingName = '';
-                        this.pendingSrc = '';
-
-                        // Close alert dialog
-                        Navigator.of(context).pop();
-                      },
-                    )
-                  ],
-                );
-              });
-        },
+        onPressed: _addScript,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );
