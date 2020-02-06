@@ -561,5 +561,5 @@
         detail,
         apdu_history
     };
-    report(result);
+    finish(result);
 })();

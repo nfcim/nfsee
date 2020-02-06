@@ -55,15 +55,16 @@ class _ScriptsActState extends State<ScriptsAct> {
 
   void _onReceivedMessage(WebkitMessage message) async {
     var scriptModel = ScriptDataModel.fromJson(message.data);
+    log('Received action ${scriptModel.action} from script');
     switch (scriptModel.action) {
       case 'poll':
-        log('Poll');
         try {
           final tag = await FlutterNfcKit.poll();
           _webView.evalJavascript("pollCallback(${jsonEncode(tag)})");
         } catch (e) {
           final errorMessage = 'Poll exception: ${e.toString()}';
           log(errorMessage);
+          // TODO: report error to user, stop execution
         }
         break;
 
@@ -79,8 +80,6 @@ class _ScriptsActState extends State<ScriptsAct> {
         break;
 
       case 'report':
-        log("Report");
-        await FlutterNfcKit.finish();
         setState(() {
           if (this.running != -1)
             this.results[this.running] += scriptModel.data.toString() + '\n';
@@ -90,8 +89,8 @@ class _ScriptsActState extends State<ScriptsAct> {
         });
         break;
 
-      case 'scriptEnd':
-        log("End");
+      case 'finish':
+        await FlutterNfcKit.finish();
         setState(() {
           this.lastRunning = this.running;
           this.running = -1;
@@ -99,7 +98,11 @@ class _ScriptsActState extends State<ScriptsAct> {
         break;
 
       case 'log':
-        log(message.data.toString());
+        log('Log from script: ${message.data.toString()}');
+        break;
+
+      default:
+        assert(false, 'Unknown action ${scriptModel.action}');
         break;
     }
   }
@@ -150,9 +153,12 @@ class _ScriptsActState extends State<ScriptsAct> {
                         value: script.id,
                         canTapOnHeader: true,
                         headerBuilder: (context, open) => ListTile(
-                          subtitle: Text(S.of(context).lastExecutionTime + ': ' +
+                          subtitle: Text(S.of(context).lastExecutionTime +
+                              ': ' +
                               (script.lastUsed != null
-                                  ? script.lastUsed.toString().split('.')[0] // remove part before ms
+                                  ? script.lastUsed
+                                      .toString()
+                                      .split('.')[0] // remove part before ms
                                   : S.of(context).never)),
                           title: Text(script.name),
                           trailing: this.running == script.id
@@ -177,33 +183,33 @@ class _ScriptsActState extends State<ScriptsAct> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
                                   FlatButton.icon(
-                                    // Disable run button if there is a script running in background
-                                    onPressed: this.running == -1
-                                        ? () async {
-                                            this._runScript(script);
-                                            await this.bloc.useScript(script);
-                                          }
-                                        : null,
-                                    textTheme: ButtonTextTheme.primary,
-                                    // icon:
-                                    icon: this.running == script.id
-                                        ? Padding(
-                                            padding: EdgeInsets.all(4),
-                                            child: SizedBox(
-                                              width: 16,
-                                              height: 16,
-                                              child: CircularProgressIndicator(
-                                                strokeWidth: 2,
-                                                valueColor:
-                                                    new AlwaysStoppedAnimation(
-                                                  Theme.of(context)
-                                                      .disabledColor,
+                                      // Disable run button if there is a script running in background
+                                      onPressed: this.running == -1
+                                          ? () async {
+                                              this._runScript(script);
+                                              await this.bloc.useScript(script);
+                                            }
+                                          : null,
+                                      textTheme: ButtonTextTheme.primary,
+                                      // icon:
+                                      icon: this.running == script.id
+                                          ? Padding(
+                                              padding: EdgeInsets.all(4),
+                                              child: SizedBox(
+                                                width: 16,
+                                                height: 16,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                  valueColor:
+                                                      new AlwaysStoppedAnimation(
+                                                    Theme.of(context)
+                                                        .disabledColor,
+                                                  ),
                                                 ),
-                                              ),
-                                            ))
-                                        : Icon(Icons.play_arrow),
-                                    label: Text(S.of(context).run)
-                                  ),
+                                              ))
+                                          : Icon(Icons.play_arrow),
+                                      label: Text(S.of(context).run)),
                                   Expanded(child: Container()),
                                   IconButton(
                                     onPressed: () async {
@@ -221,7 +227,8 @@ class _ScriptsActState extends State<ScriptsAct> {
                                       scaff.hideCurrentSnackBar();
                                       scaff.showSnackBar(SnackBar(
                                         behavior: SnackBarBehavior.floating,
-                                        content: Text(S.of(context).scriptCopied),
+                                        content:
+                                            Text(S.of(context).scriptCopied),
                                         duration: Duration(seconds: 1),
                                       ));
                                     },
@@ -290,7 +297,8 @@ class _ScriptsActState extends State<ScriptsAct> {
                     SizedBox(height: 10),
                     TextField(
                       decoration: InputDecoration(
-                          border: OutlineInputBorder(), hintText: S.of(context).code),
+                          border: OutlineInputBorder(),
+                          hintText: S.of(context).code),
                       minLines: 3,
                       maxLines: null,
                       onChanged: (cont) {

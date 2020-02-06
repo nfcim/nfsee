@@ -51,7 +51,7 @@ class _NFSeeAppState extends State<NFSeeApp> {
           GlobalMaterialLocalizations.delegate,
         ],
         supportedLocales: S.delegate.supportedLocales,
-        title: 'NFSee',
+        title: S.of(context).homeScreenTitle,
         theme: ThemeData(
           brightness: Brightness.light,
           primarySwatch: Colors.orange,
@@ -112,9 +112,9 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
   void _onReceivedMessage(WebkitMessage message) async {
     var scriptModel = ScriptDataModel.fromJson(message.data);
+    log('Received action ${scriptModel.action} from script');
     switch (scriptModel.action) {
       case 'poll':
-        log('Poll');
         try {
           final tag = await FlutterNfcKit.poll();
           _webView.evalJavascript("pollCallback(${jsonEncode(tag)})");
@@ -141,7 +141,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         }
         break;
 
-      case 'report':
+      case 'finish':
         await FlutterNfcKit.finish();
         _closeReadModal(this.context);
         bloc.addDumpedRecord(scriptModel.data);
@@ -155,7 +155,11 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         break;
 
       case 'log':
-        log(message.data.toString());
+        log('Log from script: ${message.data.toString()}');
+        break;
+
+      default:
+        assert(false, 'Unknown action ${scriptModel.action}');
         break;
     }
   }

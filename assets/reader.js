@@ -58,6 +58,6 @@ function log(data) {
   nativeCaller.postMessage('log', data);
 }
 
-function scriptEnd(data) {
-  nativeCaller.postMessage('scriptEnd', data);
+function finish(data) {
+  nativeCaller.postMessage('finish', data);
 }
