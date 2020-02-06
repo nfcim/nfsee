@@ -374,7 +374,7 @@ class _ScriptsActState extends State<ScriptsAct> {
           onPressed: _addScriptIos,
         ),
       ),
-      child: _buildBody(context),
+      child: SafeArea(child: _buildBody(context)),
     );
   }
 
