@@ -44,6 +44,8 @@ const poll = () => callNativeAndSetPendingPromise('poll');
 
 const pollCallback = returnDataToPendingPromise;
 
+const pollErrorCallback = rejectPendingPromise;
+
 const transceive = (rapdu) => callNativeAndSetPendingPromise('transceive', rapdu);
 
 const transceiveCallback = returnDataToPendingPromise;

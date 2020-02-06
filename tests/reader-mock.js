@@ -102,6 +102,10 @@ function report(data) {
     console.log('report', data);
 }
 
+function finish(data) {
+    console.log('finish', data);
+}
+
 function log(data) {
     console.log(data);
 }
