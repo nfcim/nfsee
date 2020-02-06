@@ -215,6 +215,7 @@ class CardDetailTabState extends State<CardDetailTab> {
       },
       children: <ExpansionPanel>[
         ExpansionPanel(
+          canTapOnHeader: true,
           headerBuilder: (ctx, isExp) {
             return ListTile(
               leading: CircleAvatar(
@@ -232,6 +233,7 @@ class CardDetailTabState extends State<CardDetailTab> {
           isExpanded: this.expanded[0],
         ),
         ExpansionPanel(
+          canTapOnHeader: true,
           headerBuilder: (ctx, isExp) {
             return ListTile(
               leading: CircleAvatar(
@@ -247,6 +249,7 @@ class CardDetailTabState extends State<CardDetailTab> {
           isExpanded: this.expanded[1],
         ),
         ExpansionPanel(
+          canTapOnHeader: true,
           headerBuilder: (ctx, isExp) {
             return ListTile(
               leading: CircleAvatar(
@@ -337,11 +340,11 @@ class APDUTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            Text("#${this.index} > TX",
+            Text("#${this.index} - TX",
                 style: Theme.of(context).textTheme.caption),
             this.hexView(data["tx"], context, Colors.green),
             SizedBox(height: 16),
-            Text("#${this.index} > RX",
+            Text("#${this.index} - RX",
                 style: Theme.of(context).textTheme.caption),
             this.hexView(data["rx"], context, Colors.orange),
           ]),
