@@ -580,7 +580,10 @@ class _ScriptsActState extends State<ScriptsAct> {
         color: Color.fromARGB(10, 0, 0, 0),
         child: SelectableText(
           result,
-          style: TextStyle(color: error ? Colors.red : Colors.white70),
+          style: TextStyle(
+            color: error
+            ? Colors.red
+            : Theme.of(context).colorScheme.onSurface),
         ),
       );
     }
