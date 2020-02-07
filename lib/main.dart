@@ -179,8 +179,9 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     var data = jsonDecode(record.data);
     var config = jsonDecode(record.config ?? DEFAULT_CONFIG);
 
-    data['card_type'] = CardType.values
-        .firstWhere((it) => it.toString() == "CardType.${data['card_type']}");
+    // convert card_type to Type CardType
+    data['card_type'] = getEnumFromString<CardType>(CardType.values, data['card_type']);
+
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         log(data.toString());
@@ -248,7 +249,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
                 return Dismissible(
                   direction: DismissDirection.startToEnd,
                   onDismissed: (direction) async {
-                    final message = "History deleted";
+                    final message = '${S.of(context).record} ${r.id} ${S.of(context).deleted}';
                     log('Record ${r.id} changed to hidden');
                     await bloc.changeDumpedRecordVisibility(r.id, false);
                     Scaffold.of(context).hideCurrentSnackBar();
@@ -257,7 +258,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
                         content: Text(message),
                         duration: Duration(seconds: 5),
                         action: SnackBarAction(
-                          label: "Undo",
+                          label: S.of(context).undo,
                           onPressed: () { },
                         ))).closed.then((reason) async {
                       switch (reason) {

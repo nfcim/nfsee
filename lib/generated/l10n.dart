@@ -103,7 +103,7 @@ class S {
 
   String get run {
     return Intl.message(
-      'Run',
+      'RUN',
       name: 'run',
       desc: '',
       args: [],
@@ -146,10 +146,46 @@ class S {
     );
   }
 
-  String get scriptCopied {
+  String get undo {
     return Intl.message(
-      'Script copied',
-      name: 'scriptCopied',
+      'UNDO',
+      name: 'undo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get record {
+    return Intl.message(
+      'Record',
+      name: 'record',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get script {
+    return Intl.message(
+      'Script',
+      name: 'script',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get deleted {
+    return Intl.message(
+      'deleted',
+      name: 'deleted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get copied {
+    return Intl.message(
+      'copied',
+      name: 'copied',
       desc: '',
       args: [],
     );
@@ -157,7 +193,7 @@ class S {
 
   String get pressRun {
     return Intl.message(
-      'Press Run to get result',
+      'Press RUN to get result',
       name: 'pressRun',
       desc: '',
       args: [],

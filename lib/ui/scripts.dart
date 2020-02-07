@@ -158,7 +158,7 @@ class _ScriptsActState extends State<ScriptsAct> {
     // first hide the script
     await this.bloc.changeScriptVisibility(script.id, false);
     log('Script ${script.name} changed to hidden');
-    final message = 'Script ${script.name} deleted';
+    final message = '${S.of(context).script} ${script.name} ${S.of(context).deleted}';
 
     if (defaultTargetPlatform == TargetPlatform.android) {
       var scaffold = Scaffold.of(context);
@@ -169,7 +169,7 @@ class _ScriptsActState extends State<ScriptsAct> {
             content: Text(message),
             duration: Duration(seconds: 5),
             action: SnackBarAction(
-              label: 'Undo',
+              label: S.of(context).undo,
               onPressed: () {},
             ),
           ))
@@ -308,7 +308,8 @@ class _ScriptsActState extends State<ScriptsAct> {
                                       await Clipboard.setData(
                                           ClipboardData(text: script.source));
                                       _showMessage(
-                                          context, S.of(context).scriptCopied);
+                                          context, '${S.of(context).script} ${script.name} ${S.of(context).deleted}'
+                                      );
                                     },
                                     color: Colors.black54,
                                     icon: Icon(Icons.content_copy),

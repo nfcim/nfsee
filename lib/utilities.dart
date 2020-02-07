@@ -1,4 +1,3 @@
-import 'models.dart';
 
 String formatTransactionDate(String raw) {
   return "${raw.substring(0, 4)}-${raw.substring(4, 6)}-${raw.substring(6, 8)}";
