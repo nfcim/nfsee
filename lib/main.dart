@@ -238,7 +238,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
                     ],
                   ));
             }
-            final records = snapshot.data.reversed.toList()
+            final records = snapshot.data.reversed.where((c) => c.visible).toList()
               ..sort((a, b) => a.time.compareTo(b.time));
             return ListView.builder(
               padding: EdgeInsets.only(bottom: 48),
@@ -248,17 +248,30 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
                 return Dismissible(
                   direction: DismissDirection.startToEnd,
                   onDismissed: (direction) async {
-                    await bloc.delDumpedRecord(r);
+                    final message = "History deleted";
+                    log('Record ${r.id} changed to hidden');
+                    await bloc.changeDumpedRecordVisibility(r.id, false);
+                    Scaffold.of(context).hideCurrentSnackBar();
                     Scaffold.of(context).showSnackBar(SnackBar(
                         behavior: SnackBarBehavior.floating,
-                        content: Text("History deleted"),
+                        content: Text(message),
                         duration: Duration(seconds: 5),
                         action: SnackBarAction(
-                          label: "UNDO",
-                          onPressed: () {
-                            bloc.restoreDumpedRecord(r);
-                          },
-                        )));
+                          label: "Undo",
+                          onPressed: () { },
+                        ))).closed.then((reason) async {
+                      switch (reason) {
+                        case SnackBarClosedReason.action:
+                        // user cancelled deletion
+                          await this.bloc.changeDumpedRecordVisibility(r.id, true);
+                          log('Record ${r.id} changed to visible');
+                          break;
+                        default:
+                          await this.bloc.delDumpedRecord(r.id);
+                          log('Record ${r.id} actually deleted');
+                          break;
+                      }
+                    });
                   },
                   key: Key(r.id.toString()),
                   background: Container(

@@ -25,15 +25,6 @@ class NFSeeAppBloc {
     ));
   }
 
-  void restoreDumpedRecord(DumpedRecord record) {
-    db.addDumpedRecord(DumpedRecordsCompanion(
-      // Let id regenerate, or Dismissible will complain about duplicate id
-      config: Value(record.config),
-      time: Value(record.time),
-      data: Value(record.data),
-    ));
-  }
-
   void updateDumpedRecordConfig(int id, dynamic config) {
     db.writeDumpedRecord(
         id,
@@ -42,41 +33,48 @@ class NFSeeAppBloc {
         ));
   }
 
-  Future<void> delDumpedRecord(DumpedRecord record) async {
-    await db.delDumpedRecord(DumpedRecordsCompanion(
-      id: Value(record.id),
-      config: Value(record.config),
-      time: Value(record.time),
-      data: Value(record.data),
-    ));
+  Future<void> changeDumpedRecordVisibility(int id, bool visible) async {
+    db.writeDumpedRecord(
+        id,
+        DumpedRecordsCompanion(
+          visible: Value(visible)
+        ));
+  }
+
+  Future<void> delDumpedRecord(int id) async {
+    await db.deleteDumpedRecord(id);
   }
 
   Future<void> delAllDumpedRecord() async {
-    await db.delAllDumpedRecord();
+    await db.deleteAllDumpedRecords();
   }
 
   Future<void> addScript(String name, String source) async {
-    await db.addScript(SavedScriptsCompanion.insert(
+    await db.addSavedScript(SavedScriptsCompanion.insert(
       name: name,
       source: source,
     ));
   }
 
-  Future<void> useScript(SavedScript script) async {
-    await db.updateScript(SavedScriptsCompanion(
-      id: Value(script.id),
-      name: Value(script.name),
-      source: Value(script.source),
+  Future<void> updateScriptUseTime(int id) async {
+    await db.writeSavedScripts(SavedScriptsCompanion(
+      id: Value(id),
       lastUsed: Value(DateTime.now()),
     ));
   }
 
-  Future<void> delScript(SavedScript script) async {
-    await db.delScript(SavedScriptsCompanion(
-      id: Value(script.id),
-      name: Value(script.name),
-      source: Value(script.source),
-      lastUsed: Value(script.lastUsed),
+  Future<void> changeScriptVisibility(int id, bool visible) async {
+    await db.writeSavedScripts(SavedScriptsCompanion(
+      id: Value(id),
+      visible: Value(visible),
     ));
+  }
+
+  Future<void> delScript(int id) async {
+    await db.deleteSavedScript(id);
+  }
+
+  Future<void> delAllScripts() async {
+    await db.deleteAllSavedScripts();
   }
 }

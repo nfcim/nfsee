@@ -126,15 +126,67 @@ class _ScriptsActState extends State<ScriptsAct> {
     super.dispose();
   }
 
-  void _showMessage(String message) {
+  void _showMessage(BuildContext context, String message) {
     if (defaultTargetPlatform == TargetPlatform.android) {
-      var scaff = Scaffold.of(context);
-      scaff.hideCurrentSnackBar();
-      scaff.showSnackBar(SnackBar(
+      var scaffold = Scaffold.of(context);
+      scaffold.hideCurrentSnackBar();
+      scaffold.showSnackBar(SnackBar(
         behavior: SnackBarBehavior.floating,
         content: Text(message),
         duration: Duration(seconds: 1),
       ));
+    } else {
+      showCupertinoDialog(
+          context: context,
+          builder: (context) {
+            return CupertinoAlertDialog(
+              title: Text(message),
+              actions: <Widget>[
+                CupertinoButton(
+                  child: Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          });
+    }
+  }
+
+  void _deleteScript(BuildContext context, SavedScript script) async {
+    // first hide the script
+    await this.bloc.changeScriptVisibility(script.id, false);
+    log('Script ${script.name} changed to hidden');
+    final message = 'Script ${script.name} deleted';
+
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      var scaffold = Scaffold.of(context);
+      scaffold.hideCurrentSnackBar();
+      scaffold
+          .showSnackBar(SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: Text(message),
+            duration: Duration(seconds: 5),
+            action: SnackBarAction(
+              label: 'Undo',
+              onPressed: () {},
+            ),
+          ))
+          .closed
+          .then((reason) async {
+        switch (reason) {
+          case SnackBarClosedReason.action:
+            // user cancelled deletion
+            await this.bloc.changeScriptVisibility(script.id, true);
+            log('Script ${script.name} changed to visible');
+            break;
+          default:
+            await this.bloc.delScript(script.id);
+            log('Script ${script.name} actually deleted');
+            break;
+        }
+      });
     } else {
       showCupertinoDialog(
           context: context,
@@ -173,7 +225,9 @@ class _ScriptsActState extends State<ScriptsAct> {
                 ],
               ));
         }
-        final scripts = snapshot.data.reversed.toList();
+        // filter only visible scripts
+        final scripts = snapshot.data.reversed.where((s) => s.visible).toList();
+
         return SingleChildScrollView(
             padding: EdgeInsets.only(bottom: 40),
             child: ExpansionPanelList.radio(
@@ -216,7 +270,10 @@ class _ScriptsActState extends State<ScriptsAct> {
                                       onPressed: this.running == -1
                                           ? () async {
                                               this._runScript(script);
-                                              await this.bloc.useScript(script);
+                                              await this
+                                                  .bloc
+                                                  .updateScriptUseTime(
+                                                      script.id);
                                             }
                                           : null,
                                       textTheme: ButtonTextTheme.primary,
@@ -241,10 +298,8 @@ class _ScriptsActState extends State<ScriptsAct> {
                                       label: Text(S.of(context).run)),
                                   Expanded(child: Container()),
                                   IconButton(
-                                    onPressed: () async {
-                                      await this.bloc.delScript(script);
-                                      // TODO: undo
-                                    },
+                                    onPressed: () async =>
+                                        _deleteScript(context, script),
                                     color: Colors.black54,
                                     icon: Icon(Icons.delete),
                                   ),
@@ -252,7 +307,8 @@ class _ScriptsActState extends State<ScriptsAct> {
                                     onPressed: () async {
                                       await Clipboard.setData(
                                           ClipboardData(text: script.source));
-                                      _showMessage(S.of(context).scriptCopied);
+                                      _showMessage(
+                                          context, S.of(context).scriptCopied);
                                     },
                                     color: Colors.black54,
                                     icon: Icon(Icons.content_copy),

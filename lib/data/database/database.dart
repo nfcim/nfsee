@@ -12,17 +12,26 @@ part 'database.g.dart';
 @DataClassName('DumpedRecord')
 class DumpedRecords extends Table {
   IntColumn get id => integer().autoIncrement()();
+
   DateTimeColumn get time => dateTime()();
+
   TextColumn get config => text()
       .withDefault(const Constant(DEFAULT_CONFIG))(); // Name, color, etc...
+  BoolColumn get visible =>
+      boolean().withDefault(const Constant(true))(); // for delete and undo
   TextColumn get data => text()();
 }
 
 @DataClassName('SavedScript')
 class SavedScripts extends Table {
   IntColumn get id => integer().autoIncrement()();
+
   TextColumn get name => text()();
+
   TextColumn get source => text()();
+
+  BoolColumn get visible =>
+      boolean().withDefault(const Constant(true))(); // for delete and undo
   DateTimeColumn get lastUsed => dateTime().nullable()();
 }
 
@@ -33,7 +42,7 @@ class Database extends _$Database {
   Database(QueryExecutor e) : super(e);
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -42,6 +51,10 @@ class Database extends _$Database {
         log("Migrate db from $from to $to");
         if (from < 5) {
           await m.addColumn(dumpedRecords, dumpedRecords.config);
+        }
+        if (from < 6) {
+          await m.addColumn(dumpedRecords, dumpedRecords.visible);
+          await m.addColumn(savedScripts, savedScripts.visible);
         }
       });
 
@@ -59,11 +72,11 @@ class Database extends _$Database {
         .then((count) => count > 0);
   }
 
-  Future<int> delDumpedRecord(DumpedRecordsCompanion entry) {
-    return delete(dumpedRecords).delete(entry);
+  Future<int> deleteDumpedRecord(int id) {
+    return (delete(dumpedRecords)..where((t) => t.id.equals(id))).go();
   }
 
-  Future<int> delAllDumpedRecord() {
+  Future<int> deleteAllDumpedRecords() {
     return delete(dumpedRecords).go();
   }
 
@@ -71,16 +84,22 @@ class Database extends _$Database {
     return select(savedScripts).watch();
   }
 
-  Future<int> addScript(SavedScriptsCompanion entry) {
+  Future<int> addSavedScript(SavedScriptsCompanion entry) {
     return into(savedScripts).insert(entry);
   }
 
-  Future<bool> updateScript(SavedScriptsCompanion entry) {
-    return update(savedScripts).replace(entry);
+  Future<bool> writeSavedScripts(SavedScriptsCompanion entry) {
+    return (update(savedScripts)..where((t) => t.id.equals(entry.id.value)))
+        .write(entry)
+        .then((count) => count > 0);
   }
 
-  Future<int> delScript(SavedScriptsCompanion entry) {
-    return delete(savedScripts).delete(entry);
+  Future<int> deleteSavedScript(int id) {
+    return (delete(savedScripts)..where((t) => t.id.equals(id))).go();
+  }
+
+  Future<int> deleteAllSavedScripts() {
+    return delete(savedScripts).go();
   }
 }
 
