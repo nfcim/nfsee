@@ -26,12 +26,19 @@ dev_dependencies:
     sdk: flutter
   moor_generator: "^2.3.1"
   build_runner: "^1.7.4"
+  flutter_launcher_icons: "^0.7.3"
 
 flutter:
   uses-material-design: true
   assets:
     - assets/
     - assets/cards/
+    - assets/icons/
 
 flutter_intl:
   enabled: true
+
+flutter_icons:
+  android: false
+  ios: true
+  image_path_ios: "assets/icons/icon_full.png"
