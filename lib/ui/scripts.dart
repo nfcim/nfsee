@@ -14,6 +14,7 @@ import '../data/blocs/provider.dart';
 import '../data/database/database.dart';
 import '../generated/l10n.dart';
 import '../models.dart';
+import '../utilities.dart';
 import 'widgets.dart';
 
 class ScriptsAct extends StatefulWidget {
