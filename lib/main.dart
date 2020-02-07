@@ -219,6 +219,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
             this._readTag(context);
           },
           child: Icon(Icons.nfc),
+          tooltip: S.of(context).scanTabTitle,
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
         body: Scrollbar(
@@ -309,11 +310,13 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         child: Row(children: <Widget>[
           IconButton(
             icon: const Icon(Icons.description),
+            tooltip: S.of(context).scriptTabTitle,
             onPressed: _navigateToScriptMode,
             color: Colors.black54,
           ),
           IconButton(
             icon: const Icon(Icons.settings),
+            tooltip: S.of(context).settingsTabTitle,
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => SettingsAct()));

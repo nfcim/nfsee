@@ -339,12 +339,14 @@ class _ScriptsActState extends State<ScriptsAct> {
                                 },
                                 color: Colors.black54,
                                 icon: Icon(Icons.edit),
+                                tooltip: S.of(context).edit,
                               ),
                               IconButton(
                                 onPressed: () async =>
                                     _deleteScript(context, script),
                                 color: Colors.black54,
                                 icon: Icon(Icons.delete),
+                                tooltip: S.of(context).delete,
                               ),
                               IconButton(
                                 onPressed: () async {
@@ -355,10 +357,11 @@ class _ScriptsActState extends State<ScriptsAct> {
                                           .of(context)
                                           .script} ${script.name} ${S
                                           .of(context)
-                                          .deleted}');
+                                          .copied}');
                                 },
                                 color: Colors.black54,
                                 icon: Icon(Icons.content_copy),
+                                tooltip: S.of(context).copy
                               ),
                             ],
                           ),
@@ -535,6 +538,7 @@ class _ScriptsActState extends State<ScriptsAct> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: _showScriptDialog,
+        tooltip: S.of(context).addScript,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );

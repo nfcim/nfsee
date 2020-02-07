@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nfsee/data/blocs/bloc.dart';
@@ -169,6 +167,7 @@ class CardDetailTabState extends State<CardDetailTab> {
                 );
               },
               icon: Icon(Icons.edit),
+              tooltip: S.of(context).edit,
             ),
           ),
         ]));
