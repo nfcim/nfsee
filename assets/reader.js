@@ -56,6 +56,10 @@ function report(data) {
   nativeCaller.postMessage('report', data);
 }
 
+function error(data) {
+  nativeCaller.postMessage('error', data);
+}
+
 function log(data) {
   nativeCaller.postMessage('log', data);
 }

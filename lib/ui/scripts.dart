@@ -33,6 +33,9 @@ class _ScriptsActState extends State<ScriptsAct> {
   /// Result from webkit
   Map<int, String> results = Map();
 
+  /// Whether last run has error
+  Map<int, bool> errors = Map();
+
   /// Running script
   int running = -1;
 
@@ -79,6 +82,16 @@ class _ScriptsActState extends State<ScriptsAct> {
         }
         break;
 
+      case 'error':
+        setState(() {
+          if (this.running != -1) {
+            this.errors[this.running] = true;
+          } else if (this.lastRunning != -1) {
+            this.errors[this.lastRunning] = true;
+          }
+        });
+        continue report;
+      report:
       case 'report':
         setState(() {
           if (this.running != -1) {
@@ -110,14 +123,15 @@ class _ScriptsActState extends State<ScriptsAct> {
 
   void _runScript(SavedScript script) async {
     this.setState(() {
+      this.errors[script.id] = false;
       this.results[script.id] = "";
       this.running = script.id;
     });
 
-    log(script.source);
+    log('Run script: ${script.source}');
 
     _webView.evalJavascript(
-        "(async function () {${script.source}})().then(finish).catch((e) => {report(e);finish();});");
+        "(async function () {${script.source}})().then(finish).catch((e) => {error(e);finish();});");
   }
 
   @override
@@ -158,7 +172,8 @@ class _ScriptsActState extends State<ScriptsAct> {
     // first hide the script
     await this.bloc.changeScriptVisibility(script.id, false);
     log('Script ${script.name} changed to hidden');
-    final message = '${S.of(context).script} ${script.name} ${S.of(context).deleted}';
+    final message =
+        '${S.of(context).script} ${script.name} ${S.of(context).deleted}';
 
     if (defaultTargetPlatform == TargetPlatform.android) {
       var scaffold = Scaffold.of(context);
@@ -226,7 +241,7 @@ class _ScriptsActState extends State<ScriptsAct> {
               ));
         }
         // filter only visible scripts
-        final scripts = snapshot.data.reversed.where((s) => s.visible).toList();
+        final scripts = snapshot.data.where((s) => s.visible).toList();
 
         return SingleChildScrollView(
             padding: EdgeInsets.only(bottom: 40),
@@ -307,9 +322,8 @@ class _ScriptsActState extends State<ScriptsAct> {
                                     onPressed: () async {
                                       await Clipboard.setData(
                                           ClipboardData(text: script.source));
-                                      _showMessage(
-                                          context, '${S.of(context).script} ${script.name} ${S.of(context).deleted}'
-                                      );
+                                      _showMessage(context,
+                                          '${S.of(context).script} ${script.name} ${S.of(context).deleted}');
                                     },
                                     color: Colors.black54,
                                     icon: Icon(Icons.content_copy),
@@ -466,6 +480,7 @@ class _ScriptsActState extends State<ScriptsAct> {
 
   Widget _getScriptResult(BuildContext context, SavedScript script) {
     final result = this.results[script.id];
+    final error = this.errors[script.id];
 
     if (result != null && result != "") {
       return Container(
@@ -473,7 +488,10 @@ class _ScriptsActState extends State<ScriptsAct> {
         padding: EdgeInsets.all(20),
         margin: EdgeInsets.only(bottom: 10),
         color: Color.fromARGB(10, 0, 0, 0),
-        child: SelectableText(result),
+        child: SelectableText(
+          result,
+          style: TextStyle(color: error ? Colors.red : Colors.white70),
+        ),
       );
     }
 
