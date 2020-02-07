@@ -117,7 +117,7 @@ class CardDetailTabState extends State<CardDetailTab> {
           ),
           ListTile(
             title: Text(config["name"] ?? S.of(context).unnamedCard),
-            subtitle: Text(time.toString()),
+            subtitle: Text(time.toString().split('.')[0]),
             trailing: IconButton(
               onPressed: () {
                 this.pendingName = config["name"] ?? "";
@@ -132,7 +132,7 @@ class CardDetailTabState extends State<CardDetailTab> {
                         TextFormField(
                           decoration: InputDecoration(
                             filled: true,
-                            labelText: "Card name", // TODO: l10n
+                            labelText: S.of(context).cardName,
                           ),
                           maxLines: 1,
                           initialValue: config["name"] ?? "",
@@ -145,13 +145,7 @@ class CardDetailTabState extends State<CardDetailTab> {
                     ),
                     actions: <Widget>[
                       FlatButton(
-                        child: Text("CANCEL"), // TODO: l10n
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      FlatButton(
-                        child: Text("SAVE"), // TODO: l10n
+                        child: Text(S.of(context).ok),
                         onPressed: () {
                           setState(() {
                             if(this.pendingName == "") {
@@ -162,6 +156,12 @@ class CardDetailTabState extends State<CardDetailTab> {
                             bloc.updateDumpedRecordConfig(this.id, config);
                             Navigator.of(context).pop();
                           });
+                        },
+                      ),
+                      FlatButton(
+                        child: Text(S.of(context).cancel),
+                        onPressed: () {
+                          Navigator.of(context).pop();
                         },
                       )
                     ],

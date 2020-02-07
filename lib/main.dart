@@ -146,10 +146,9 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
       case 'finish':
         await FlutterNfcKit.finish();
         _closeReadModal(this.context);
-        bloc.addDumpedRecord(jsonEncode(scriptModel.data));
-        print(scriptModel.data.toString());
+        final id = await bloc.addDumpedRecord(jsonEncode(scriptModel.data));
         this._navigateToTag(DumpedRecord(
-          id: 0,
+          id: id,
           time: DateTime.now(),
           data: jsonEncode(scriptModel.data),
           config: DEFAULT_CONFIG,

@@ -83,6 +83,15 @@ class S {
     );
   }
 
+  String get cardName {
+    return Intl.message(
+      'Card name',
+      name: 'cardName',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get lastExecutionTime {
     return Intl.message(
       'Last execution time',

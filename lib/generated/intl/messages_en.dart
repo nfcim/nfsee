@@ -74,6 +74,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "apduLogs" : MessageLookupByLibrary.simpleMessage("APDU Logs"),
     "balance" : MessageLookupByLibrary.simpleMessage("Balance"),
     "cancel" : MessageLookupByLibrary.simpleMessage("Cancel"),
+    "cardName" : MessageLookupByLibrary.simpleMessage("Card name"),
     "cardNumber" : MessageLookupByLibrary.simpleMessage("Card Number"),
     "city" : MessageLookupByLibrary.simpleMessage("City"),
     "code" : MessageLookupByLibrary.simpleMessage("Code"),

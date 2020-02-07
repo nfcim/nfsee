@@ -5,6 +5,7 @@
   "homeScreenTitle": "NFSee",
   "waitForCard": "Waiting for card...",
   "noHistoryFound": "No history found",
+  "cardName": "Card name",
   "lastExecutionTime": "Last execution time",
   "never": "Never",
   "run": "RUN",

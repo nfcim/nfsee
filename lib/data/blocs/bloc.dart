@@ -20,9 +20,9 @@ class NFSeeAppBloc {
     _savedScripts = db.watchSavedScripts();
   }
 
-  Future<void> addDumpedRecord(String data,
+  Future<int> addDumpedRecord(String data,
       [DateTime time, String config]) async {
-    await db.addDumpedRecord(DumpedRecordsCompanion().copyWith(
+    return await db.addDumpedRecord(DumpedRecordsCompanion().copyWith(
         data: Value(data),
         time: Value(time ?? DateTime.now()),
         config: Value(config ?? DEFAULT_CONFIG)

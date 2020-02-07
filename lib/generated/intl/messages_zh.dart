@@ -74,6 +74,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "apduLogs" : MessageLookupByLibrary.simpleMessage("APDU 日志"),
     "balance" : MessageLookupByLibrary.simpleMessage("余额"),
     "cancel" : MessageLookupByLibrary.simpleMessage("取消"),
+    "cardName" : MessageLookupByLibrary.simpleMessage("卡片名称"),
     "cardNumber" : MessageLookupByLibrary.simpleMessage("卡号"),
     "city" : MessageLookupByLibrary.simpleMessage("城市"),
     "code" : MessageLookupByLibrary.simpleMessage("代码"),

@@ -5,6 +5,7 @@
   "homeScreenTitle": "NFSee",
   "waitForCard": "等待读卡...",
   "noHistoryFound": "暂无历史记录",
+  "cardName": "卡片名称",
   "lastExecutionTime": "上次执行时间",
   "never": "从未",
   "run": "运行",
