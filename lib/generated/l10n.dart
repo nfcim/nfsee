@@ -919,6 +919,51 @@ class S {
       args: [],
     );
   }
+
+  String get deletedHint {
+    return Intl.message(
+      'Data deleted',
+      name: 'deletedHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get deleteDataDialog {
+    return Intl.message(
+      'Delete Data',
+      name: 'deleteDataDialog',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get dataCount {
+    return Intl.message(
+      'Count',
+      name: 'dataCount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get about {
+    return Intl.message(
+      'About',
+      name: 'about',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get deleteData {
+    return Intl.message(
+      'Delete records & scripts',
+      name: 'deleteData',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -97,5 +97,10 @@
   "Fangshan": "房山线",
   "Yizhuang": "亦庄线",
   "Batong": "八通线",
-  "CapitalAirport": "首都机场线"
+  "CapitalAirport": "首都机场线",
+  "deletedHint": "数据已删除",
+  "deleteDataDialog": "删除数据",
+  "dataCount": "共计",
+  "about": "关于",
+  "deleteData": "删除记录及脚本"
 }

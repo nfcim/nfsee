@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';
+import 'package:nfsee/generated/l10n.dart';
 import 'package:nfsee/ui/about.dart';
 
 import 'widgets.dart';
@@ -65,7 +66,7 @@ class _SettingsActState extends State<SettingsAct> {
                   children: <Widget>[
                     ListTile(
                       leading: Icon(Icons.delete_sweep),
-                      title: Text("Delete all records/scripts"),
+                      title: Text(S.of(context).deleteData),
                       onTap: () async {
                         bool delRecords = false;
                         bool delScripts = false;
@@ -76,7 +77,7 @@ class _SettingsActState extends State<SettingsAct> {
                         showDialog(
                             context: context,
                             builder: (context) => AlertDialog(
-                                  title: Text("Delete"),
+                                  title: Text(S.of(context).deleteDataDialog),
                                   content: StatefulBuilder(
                                     builder: (context, setState) => Column(
                                       mainAxisSize: MainAxisSize.min,
@@ -88,8 +89,8 @@ class _SettingsActState extends State<SettingsAct> {
                                             });
                                           },
                                           value: delRecords,
-                                          title: Text("Records"),
-                                          subtitle: Text("Count: $recordCount"),
+                                          title: Text(S.of(context).record),
+                                          subtitle: Text("${S.of(context).dataCount}: $recordCount"),
                                         ),
                                         CheckboxListTile(
                                           onChanged: (v) {
@@ -98,8 +99,8 @@ class _SettingsActState extends State<SettingsAct> {
                                             });
                                           },
                                           value: delScripts,
-                                          title: Text("Scripts"),
-                                          subtitle: Text("Count: $scriptCount"),
+                                          title: Text(S.of(context).script),
+                                          subtitle: Text("${S.of(context).dataCount}: $scriptCount"),
                                         ),
                                       ],
                                     ),
@@ -109,7 +110,7 @@ class _SettingsActState extends State<SettingsAct> {
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
-                                      child: Text("CANCEL"),
+                                      child: Text(S.of(context).cancel.toUpperCase()),
                                     ),
                                     FlatButton(
                                       onPressed: () {
@@ -120,11 +121,11 @@ class _SettingsActState extends State<SettingsAct> {
                                         Scaffold.of(outerCtx)
                                             .showSnackBar(SnackBar(
                                           behavior: SnackBarBehavior.floating,
-                                          content: Text("Data deleted"),
+                                          content: Text(S.of(context).deletedHint),
                                           duration: Duration(seconds: 1),
                                         ));
                                       },
-                                      child: Text("DELETE"),
+                                      child: Text(S.of(context).delete.toUpperCase()),
                                     ),
                                   ],
                                 ));
@@ -133,7 +134,7 @@ class _SettingsActState extends State<SettingsAct> {
                     Divider(height: 0),
                     ListTile(
                       leading: Icon(Icons.info_outline),
-                      title: Text("About"),
+                      title: Text(S.of(context).about),
                       onTap: () {
                         Navigator.push(
                             context,

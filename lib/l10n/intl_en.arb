@@ -97,5 +97,10 @@
   "Fangshan": "Fangshan Line",
   "Yizhuang": "Yizhuang Line",
   "Batong": "Batong Line",
-  "CapitalAirport": "Capital Airport Line"
+  "CapitalAirport": "Capital Airport Line",
+  "deletedHint": "Data deleted",
+  "deleteDataDialog": "Delete Data",
+  "dataCount": "Count",
+  "about": "About",
+  "deleteData": "Delete records & scripts"
 }
