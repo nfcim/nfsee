@@ -244,7 +244,6 @@ class _ScriptsActState extends State<ScriptsAct> {
   }
 
   Widget _buildBody(BuildContext context) {
-    var outer = context;
     return StreamBuilder<List<SavedScript>>(
       stream: bloc.savedScripts,
       builder: (context, snapshot) {

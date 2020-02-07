@@ -191,9 +191,9 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     data['card_type'] =
         getEnumFromString<CardType>(CardType.values, data['card_type']);
 
+    log(data.toString());
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        log(data.toString());
         Navigator.of(context).push<void>(
           MaterialPageRoute(
             builder: (context) => CardDetailTab(
@@ -337,7 +337,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     );
   }
 
-  Widget _buildIosHistoryPage(BuildContext context) {
+  Widget _buildHistoryPageIos(BuildContext context) {
     return CustomScrollView(
       slivers: <Widget>[
         CupertinoSliverNavigationBar(
@@ -405,7 +405,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     );
   }
 
-  Widget _buildIosHomePage(BuildContext context) {
+  Widget _buildHomePageIos(BuildContext context) {
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
         items: [
@@ -441,7 +441,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         switch (index) {
           case 0:
             return CupertinoTabView(
-              builder: (context) => _buildIosHistoryPage(context),
+              builder: (context) => _buildHistoryPageIos(context),
               defaultTitle: S.of(context).homeScreenTitle,
             );
           case 1:
@@ -466,7 +466,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   Widget build(context) {
     return PlatformWidget(
       androidBuilder: _buildAndroidHomePage,
-      iosBuilder: _buildIosHomePage,
+      iosBuilder: _buildHomePageIos,
     );
   }
 
