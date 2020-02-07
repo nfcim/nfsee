@@ -1,23 +1,106 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'package:package_info/package_info.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:nfsee/generated/l10n.dart';
 
 import 'widgets.dart';
 
 class AboutAct extends StatefulWidget {
-  const AboutAct({this.androidDrawer});
-
-  final Widget androidDrawer;
 
   @override
   _AboutActState createState() => _AboutActState();
 }
 
 class _AboutActState extends State<AboutAct> {
+
+  var _projectVersion = "";
+  var _projectCode = "";
+  var _appId = "";
+  var _appName = "";
+
   @override
   void initState() {
     super.initState();
+  }
+
+  void initVersions() async {
+    var packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      _projectVersion = packageInfo.version;
+      _projectCode = packageInfo.buildNumber;
+      _appId = packageInfo.packageName;
+      _appName = packageInfo.appName;
+    });
+  }
+
+  Widget _buildAboutBody() {
+    initVersions();
+    return Builder(
+      builder: (outerContext) => SafeArea(
+        child: Padding(
+          padding: EdgeInsets.only(top: 24, bottom: 24),
+          child: Center(
+              child: Column(
+              children: <Widget>[
+                Image.asset(
+                    'assets/icons/icon_square.png',
+                    width: 100
+                ),
+                Text(
+                    _appName,
+                  style: Theme.of(context).textTheme.title,
+                ),
+                Text(
+                  _appId,
+                  style: Theme.of(context).textTheme.body1,
+                ),
+                Text(
+                  '$_projectVersion ($_projectCode)',
+                  style: Theme.of(context).textTheme.body1,
+                ),
+                ListTile(
+                  title: Text(S.of(context).homepage),
+                  onTap: () => launch('https://nfsee.nfc.im'),
+                ),
+                Divider(
+                  height: 0,
+                ),
+                ListTile(
+                  title: Text(S.of(context).sourceCode),
+                  onTap: () => launch('https://github.com/nfcim/nfsee'),
+                ),
+                Divider(
+                  height: 0,
+                ),
+                ListTile(
+                  title: Text(S.of(context).privacyPolicy),
+                  onTap: () => launch('https://nfsee.nfc.im/privacy'),
+                ),
+                Divider(
+                  height: 0,
+                ),
+                ListTile(
+                  title: Text(S.of(context).thirdPartyLicense),
+                  onTap: () => launch('https://nfsee.nfc.im/open-source'),
+                ),
+                Divider(
+                  height: 0,
+                ),
+                ListTile(
+                  title: Text(S.of(context).contactUs),
+                  onTap: () => launch('mailto:nfsee@nfc.im'),
+                )
+              ],
+            )
+          ),
+        )
+      ),
+    );
   }
 
   // ===========================================================================
@@ -36,17 +119,7 @@ class _AboutActState extends State<AboutAct> {
       appBar: AppBar(
         title: Text(S.of(context).about),
       ),
-      drawer: widget.androidDrawer,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              S.of(context).about,
-            ),
-          ],
-        ),
-      ),
+      body: _buildAboutBody(),
     );
   }
 
@@ -56,7 +129,7 @@ class _AboutActState extends State<AboutAct> {
         middle: Text(S.of(context).about),
         previousPageTitle: S.of(context).settingsTabTitle,
       ),
-      child: Text(S.of(context).about),
+      child: _buildAboutBody(),
     );
   }
 

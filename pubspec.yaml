@@ -20,6 +20,8 @@ dependencies:
   path: "^1.6.4"
   intl: "^0.16.0"
   intl_translation: "^0.17.9"
+  package_info: "^0.4.0+13"
+  url_launcher: "^5.4.1"
 
 dev_dependencies:
   flutter_test:

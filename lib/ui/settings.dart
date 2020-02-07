@@ -92,7 +92,7 @@ class _SettingsActState extends State<SettingsAct> {
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text(S.of(context).cancel.toUpperCase()),
+                              child: Text(MaterialLocalizations.of(context).cancelButtonLabel.toUpperCase()),
                             ),
                             FlatButton(
                               onPressed: () {

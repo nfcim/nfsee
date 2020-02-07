@@ -227,7 +227,9 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           onPressed: () {
             this._readTag(context);
           },
-          child: Icon(Icons.nfc),
+          child: Icon(
+              Icons.nfc,
+          ),
           tooltip: S.of(context).scanTabTitle,
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
@@ -321,7 +323,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
             icon: const Icon(Icons.description),
             tooltip: S.of(context).scriptTabTitle,
             onPressed: _navigateToScriptMode,
-            color: Colors.black54,
+            color: Theme.of(context).colorScheme.onPrimary,
           ),
           IconButton(
             icon: const Icon(Icons.settings),
@@ -330,7 +332,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => SettingsAct()));
             },
-            color: Colors.black54,
+            color: Theme.of(context).colorScheme.onPrimary,
           )
         ]),
       ),

@@ -13,8 +13,6 @@
   "modifyScript": "修改脚本",
   "name": "名称",
   "code": "代码",
-  "ok": "确定",
-  "cancel": "取消",
   "undo": "撤销",
   "record": "记录",
   "script": "脚本",
@@ -103,5 +101,10 @@
   "deleteDataDialog": "删除数据",
   "dataCount": "共计",
   "about": "关于",
-  "deleteData": "删除记录及脚本"
+  "deleteData": "删除记录及脚本",
+  "privacyPolicy": "隐私政策",
+  "homepage": "主页",
+  "sourceCode": "源代码",
+  "thirdPartyLicense": "第三方开源许可协议",
+  "contactUs": "联系我们"
 }

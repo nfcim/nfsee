@@ -155,24 +155,6 @@ class S {
     );
   }
 
-  String get ok {
-    return Intl.message(
-      'OK',
-      name: 'ok',
-      desc: '',
-      args: [],
-    );
-  }
-
-  String get cancel {
-    return Intl.message(
-      'Cancel',
-      name: 'cancel',
-      desc: '',
-      args: [],
-    );
-  }
-
   String get undo {
     return Intl.message(
       'UNDO',
@@ -969,6 +951,60 @@ class S {
     return Intl.message(
       'Delete records & scripts',
       name: 'deleteData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get privacyPolicy {
+    return Intl.message(
+      'Privacy Policy',
+      name: 'privacyPolicy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get homepage {
+    return Intl.message(
+      'Home Page',
+      name: 'homepage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get sourceCode {
+    return Intl.message(
+      'Source Code',
+      name: 'sourceCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get thirdPartyLicense {
+    return Intl.message(
+      'Third-Party Open Source License',
+      name: 'thirdPartyLicense',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get contactUs {
+    return Intl.message(
+      'Contact Us',
+      name: 'contactUs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get privacyPolicyContent {
+    return Intl.message(
+      '',
+      name: 'privacyPolicyContent',
       desc: '',
       args: [],
     );

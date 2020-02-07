@@ -13,8 +13,6 @@
   "modifyScript": "Modify script",
   "name": "Name",
   "code": "Code",
-  "ok": "OK",
-  "cancel": "Cancel",
   "undo": "UNDO",
   "record": "Record",
   "script": "Script",
@@ -103,5 +101,11 @@
   "deleteDataDialog": "Delete Data",
   "dataCount": "Count",
   "about": "About",
-  "deleteData": "Delete records & scripts"
+  "deleteData": "Delete records & scripts",
+  "privacyPolicy": "Privacy Policy",
+  "homepage": "Home Page",
+  "sourceCode": "Source Code",
+  "thirdPartyLicense": "Third-Party Open Source License",
+  "contactUs": "Contact Us",
+  "privacyPolicyContent": ""
 }

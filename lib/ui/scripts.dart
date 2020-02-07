@@ -174,7 +174,7 @@ class _ScriptsActState extends State<ScriptsAct> {
               title: Text(message),
               actions: <Widget>[
                 CupertinoButton(
-                  child: Text("OK"),
+                  child: Text(MaterialLocalizations.of(context).okButtonLabel),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -232,7 +232,7 @@ class _ScriptsActState extends State<ScriptsAct> {
               title: Text(message),
               actions: <Widget>[
                 CupertinoButton(
-                  child: Text(S.of(context).ok),
+                  child: Text(MaterialLocalizations.of(context).okButtonLabel),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -349,14 +349,14 @@ class _ScriptsActState extends State<ScriptsAct> {
                                 onPressed: () {
                                   _showScriptDialog(script);
                                 },
-                                color: Colors.black54,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 icon: Icon(Icons.edit),
                                 tooltip: S.of(context).edit,
                               ),
                               IconButton(
                                 onPressed: () async =>
                                     _deleteScript(context, script),
-                                color: Colors.black54,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 icon: Icon(Icons.delete),
                                 tooltip: S.of(context).delete,
                               ),
@@ -371,7 +371,7 @@ class _ScriptsActState extends State<ScriptsAct> {
                                           .of(context)
                                           .copied}');
                                 },
-                                color: Colors.black54,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 icon: Icon(Icons.content_copy),
                                 tooltip: S.of(context).copy
                               ),
@@ -474,15 +474,11 @@ class _ScriptsActState extends State<ScriptsAct> {
             content: _buildAddScriptDialogContent(),
             actions: <Widget>[
               FlatButton(
-                child: Text(S
-                    .of(context)
-                    .ok),
+                child: Text(MaterialLocalizations.of(context).okButtonLabel),
                 onPressed: _addOrModifyScript,
               ),
               FlatButton(
-                child: Text(S
-                    .of(context)
-                    .cancel),
+                child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop();
                 },
@@ -507,15 +503,11 @@ class _ScriptsActState extends State<ScriptsAct> {
             content: _buildAddScriptDialogContent(),
             actions: <Widget>[
               CupertinoButton(
-                child: Text(S
-                    .of(context)
-                    .ok),
+                child: Text(MaterialLocalizations.of(context).okButtonLabel),
                 onPressed: _addOrModifyScript,
               ),
               CupertinoButton(
-                child: Text(S
-                    .of(context)
-                    .cancel),
+                child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop();
                 },

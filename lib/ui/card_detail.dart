@@ -104,7 +104,7 @@ class CardDetailTabState extends State<CardDetailTab> {
         ),
         actions: <Widget>[
           FlatButton(
-            child: Text(S.of(context).ok),
+            child: Text(MaterialLocalizations.of(context).okButtonLabel),
             onPressed: () {
               setState(() {
                 if(this.pendingName == "") {
@@ -118,7 +118,7 @@ class CardDetailTabState extends State<CardDetailTab> {
             },
           ),
           FlatButton(
-            child: Text(S.of(context).cancel),
+            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
             onPressed: () {
               Navigator.of(context).pop();
             },
