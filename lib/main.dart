@@ -113,6 +113,9 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   }
 
   void _onReceivedMessage(WebkitMessage message) async {
+    if (webviewOwner != WebViewOwner.Main) {
+      return;
+    }
     var scriptModel = ScriptDataModel.fromJson(message.data);
     log('Received action ${scriptModel.action} from script');
     switch (scriptModel.action) {
@@ -166,12 +169,11 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   }
 
   void _navigateToScriptMode() {
-    if(_webViewListener != null)
-      _webViewListener.cancel();
+    webviewOwner = WebViewOwner.Script;
     Navigator.push(
             context, MaterialPageRoute(builder: (context) => ScriptsAct()))
         .then((_) {
-      _webViewListener = _webView.didReceiveMessage.listen(_onReceivedMessage);
+      webviewOwner = WebViewOwner.Main;
     });
   }
 
@@ -417,16 +419,10 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         onTap: (index) {
           switch (index) {
             case 0:
-              if (_webViewListener == null) {
-                _webViewListener =
-                    _webView.didReceiveMessage.listen(_onReceivedMessage);
-              }
+              webviewOwner = WebViewOwner.Main;
               break;
             case 1:
-              if (_webViewListener != null) {
-                _webViewListener.cancel();
-                _webViewListener = null;
-              }
+              webviewOwner = WebViewOwner.Script;
               break;
             case 2:
               break;

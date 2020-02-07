@@ -60,6 +60,9 @@ class _ScriptsActState extends State<ScriptsAct> {
   }
 
   void _onReceivedMessage(WebkitMessage message) async {
+    if (webviewOwner != WebViewOwner.Script) {
+      return;
+    }
     var scriptModel = ScriptDataModel.fromJson(message.data);
     log('Received action ${scriptModel.action} from script');
     switch (scriptModel.action) {

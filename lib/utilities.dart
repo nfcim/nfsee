@@ -1,4 +1,3 @@
-
 String formatTransactionDate(String raw) {
   return "${raw.substring(0, 4)}-${raw.substring(4, 6)}-${raw.substring(6, 8)}";
 }
@@ -20,3 +19,7 @@ T getEnumFromString<T>(Iterable<T> values, String value) {
   return values.firstWhere((type) => type.toString().split(".").last == value,
       orElse: () => null);
 }
+
+enum WebViewOwner { Main, Script }
+
+WebViewOwner webviewOwner = WebViewOwner.Main;
