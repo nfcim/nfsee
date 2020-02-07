@@ -135,7 +135,7 @@ class _ScriptsActState extends State<ScriptsAct> {
 
     _webView.evalJavascript(
         "(async function () {${script
-            .source}})().then(finish).catch((e) => {error(e);finish();});");
+            .source}})().then(finish).catch((e) => {error(e.toString());finish();});");
   }
 
   @override
