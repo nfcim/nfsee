@@ -56,6 +56,15 @@ class NFSeeAppBloc {
     ));
   }
 
+  Future<void> updateScriptContent(int id, String name, String source) async {
+    await db.writeSavedScripts(SavedScriptsCompanion(
+      id: Value(id),
+      name: Value(name),
+      source: Value(source),
+      lastUsed: Value(null),
+    ));
+  }
+
   Future<void> updateScriptUseTime(int id) async {
     await db.writeSavedScripts(SavedScriptsCompanion(
       id: Value(id),

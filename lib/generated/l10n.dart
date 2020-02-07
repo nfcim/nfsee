@@ -119,6 +119,15 @@ class S {
     );
   }
 
+  String get modifyScript {
+    return Intl.message(
+      'Modify script',
+      name: 'modifyScript',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get name {
     return Intl.message(
       'Name',
@@ -137,10 +146,19 @@ class S {
     );
   }
 
-  String get add {
+  String get ok {
     return Intl.message(
-      'Add',
-      name: 'add',
+      'OK',
+      name: 'ok',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'cancel',
       desc: '',
       args: [],
     );
