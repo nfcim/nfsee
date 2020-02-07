@@ -527,29 +527,29 @@ class _ScriptsActState extends State<ScriptsAct> {
       appBar: AppBar(title: Text(S
           .of(context)
           .scriptTabTitle)),
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.orange[500],
-        shape: CircularNotchedRectangle(),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Row(children: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.file_download),
-              onPressed: () {
-                // TODO(script): download from gist
-              },
-              color: Colors.black54,
-            ),
-          ]),
-        ),
-      ),
+//      bottomNavigationBar: BottomAppBar(
+//        color: Colors.orange[500],
+//        shape: CircularNotchedRectangle(),
+//        child: Padding(
+//          padding: const EdgeInsets.all(8),
+//          child: Row(children: <Widget>[
+//            IconButton(
+//              icon: const Icon(Icons.file_download),
+//              onPressed: () {
+//                // TODO(script): download from gist
+//              },
+//              color: Colors.black54,
+//            ),
+//          ]),
+//        ),
+//      ),
       body: Builder(builder: _buildBody),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: _showScriptDialog,
         tooltip: S.of(context).addScript,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
