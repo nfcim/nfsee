@@ -3,6 +3,14 @@ import 'package:nfsee/data/database/database.dart';
 
 import 'generated/l10n.dart';
 
+class Detail {
+  const Detail({this.name, this.value, this.icon});
+
+  final String name;
+  final String value;
+  final IconData icon;
+}
+
 class ScriptDataModel {
   final String action;
   final dynamic data;

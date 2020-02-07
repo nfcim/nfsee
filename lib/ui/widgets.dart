@@ -1,6 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nfsee/data/database/database.dart';
+
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter/services.dart';
+
+import '../models.dart';
+import '../utilities.dart';
 
 /// A simple widget that builds different things on different platforms.
 class PlatformWidget extends StatelessWidget {
@@ -26,5 +35,192 @@ class PlatformWidget extends StatelessWidget {
         assert(false, 'Unexpected platform $defaultTargetPlatform');
         return null;
     }
+  }
+}
+
+class WebViewTab extends StatefulWidget {
+  final String title;
+  final String assetUrl;
+  const WebViewTab({this.title, this.assetUrl});
+  @override
+  WebViewTabState createState() {
+    return WebViewTabState();
+  }
+}
+
+class WebViewTabState extends State<WebViewTab> {
+
+  WebViewController _controller;
+  final String title;
+  final String assetUrl;
+  WebViewTabState({this.title, this.assetUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    _loadHtmlFromAssets();
+    return Scaffold(
+      appBar: AppBar(title: Text(title)),
+      body: WebView(
+        initialUrl: 'about:blank',
+        onWebViewCreated: (WebViewController webViewController) {
+          _controller = webViewController;
+        },
+      ),
+    );
+  }
+
+  _loadHtmlFromAssets() async {
+    String fileText = await rootBundle.loadString(assetUrl);
+    _controller.loadUrl( Uri.dataFromString(
+        fileText,
+        mimeType: 'text/html',
+        encoding: Encoding.getByName('utf-8')
+    ).toString());
+  }
+}
+
+
+class ReportRowItem extends StatelessWidget {
+  const ReportRowItem({this.record, this.onTap});
+
+  final DumpedRecord record;
+  final void Function() onTap;
+
+  @override
+  Widget build(context) {
+    var data = json.decode(record.data);
+    var config = json.decode(record.config ?? DEFAULT_CONFIG);
+
+    final type =
+    getEnumFromString<CardType>(CardType.values, data["card_type"]);
+
+    var typestr = '${type.getName(context)}';
+    if (type == CardType.Unknown) {
+      typestr += ' (${data["tag"]["standard"]})';
+    }
+
+    var title = typestr;
+    var subtitle = "Unknown";
+    if (data["detail"] != null && data["detail"]["card_number"] != null) {
+      subtitle = data["detail"]["card_number"];
+    }
+    if (config["name"] != null && config["name"] != "") {
+      if (subtitle == null)
+        subtitle = typestr;
+      else
+        subtitle = typestr + " - " + subtitle;
+      title = config["name"];
+    }
+
+    return ListTile(
+      leading: Container(
+        height: double.infinity,
+        child: Icon(Icons.credit_card),
+      ),
+      title: Text(title),
+      subtitle: subtitle != null ? Text(subtitle) : null,
+      onTap: this.onTap,
+      trailing: Icon(CupertinoIcons.right_chevron),
+    );
+  }
+}
+
+
+class APDUTile extends StatelessWidget {
+  const APDUTile({this.data, this.index});
+
+  final dynamic data;
+  final int index;
+
+  @override
+  Widget build(context) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        border: Border(
+          top: Divider.createBorderSide(context),
+        ),
+      ),
+      padding: EdgeInsets.all(16),
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            Text("#${this.index} - TX",
+                style: Theme.of(context).textTheme.caption),
+            this.hexView(data["tx"], context, Colors.green),
+            SizedBox(height: 16),
+            Text("#${this.index} - RX",
+                style: Theme.of(context).textTheme.caption),
+            this.hexView(data["rx"], context, Colors.orange),
+          ]),
+    );
+  }
+
+  Widget hexView(String str, BuildContext context, Color color) {
+    var segs = List<Widget>();
+
+    for (int i = 0; i < str.length; i += 2) {
+      final slice = str.substring(i, i + 2).toUpperCase();
+      final seg = Container(
+          width: 20,
+          margin: EdgeInsets.only(right: 5),
+          child: Text(
+            slice,
+            style: Theme.of(context).textTheme.body1.apply(color: color),
+          ));
+      segs.add(seg);
+    }
+
+    return Wrap(children: segs);
+  }
+}
+
+class TransferTile extends StatelessWidget {
+  const TransferTile({this.data});
+
+  final Map<String, dynamic> data;
+
+  @override
+  Widget build(context) {
+    final typePBOC = getEnumFromString<PBOCTransactionType>(
+        PBOCTransactionType.values, data["type"]);
+    final typePPSE =
+    getEnumFromString<ProcessingCode>(ProcessingCode.values, data["type"]);
+
+    return ExpansionTile(
+      leading: Icon(typePBOC == PBOCTransactionType.Load
+          ? Icons.attach_money
+          : Icons.money_off),
+      title: Text(
+          "${formatTransactionBalance(data["amount"])} - ${typePBOC == null ? typePPSE.getName(context) : typePBOC.getName(context)}"),
+      subtitle: Text(
+          "${formatTransactionDate(data["date"])} ${formatTransactionTime(data["time"])}"),
+      children: parseTransactionDetails(data, context)
+          .map((d) => ListTile(
+        dense: true,
+        title: Text(d.name),
+        subtitle: Text(d.value),
+        leading: Icon(d.icon ?? Icons.info),
+      ))
+          .toList(),
+    );
+  }
+}
+
+class TechnologicalDetailTile extends StatelessWidget {
+  const TechnologicalDetailTile({this.name, this.value});
+
+  final String name;
+  final String value;
+
+  @override
+  Widget build(context) {
+    return ListTile(
+      dense: true,
+      title: Text(parseTechnologicalDetailKey(name)),
+      subtitle: Text(value ?? "null"),
+      leading: Icon(Icons.info),
+    );
   }
 }
