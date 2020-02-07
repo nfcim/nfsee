@@ -133,9 +133,18 @@ class _ScriptsActState extends State<ScriptsAct> {
 
     log('Run script: ${script.source}');
 
-    _webView.evalJavascript(
-        "(async function () {${script
-            .source}})().then(finish).catch((e) => {error(e.toString());finish();});");
+    try {
+      final wrapped = "(async function() {${script.source}})()";
+      final encoded = json.encode(wrapped);
+      await _webView.evalJavascript('''
+          (async function() {
+            let source = $encoded;
+            await eval(source);
+          })().catch((e) => error(e.toString())).finally(finish);
+      ''');
+    } catch(e) {
+      log(e);
+    }
   }
 
   @override
