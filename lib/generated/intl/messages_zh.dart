@@ -117,6 +117,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "subwayExit" : MessageLookupByLibrary.simpleMessage("地铁出站线路"),
     "technologicalDetails" : MessageLookupByLibrary.simpleMessage("技术细节"),
     "terminal" : MessageLookupByLibrary.simpleMessage("终端"),
+    "togglePlatform" : MessageLookupByLibrary.simpleMessage("切换 UI 平台（仅用于调试）"),
     "transactionHistory" : MessageLookupByLibrary.simpleMessage("交易历史"),
     "transactionNumber" : MessageLookupByLibrary.simpleMessage("交易序号"),
     "tuType" : MessageLookupByLibrary.simpleMessage("交通联合卡类型"),

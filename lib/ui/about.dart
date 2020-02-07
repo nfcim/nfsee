@@ -2,12 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'package:nfsee/generated/l10n.dart';
+
 import 'widgets.dart';
 
 class AboutAct extends StatefulWidget {
-  static const title = 'About';
-  static const androidIcon = Icon(Icons.info);
-  static const iosIcon = Icon(Icons.info);
 
   const AboutAct({this.androidDrawer});
 
@@ -21,23 +20,6 @@ class _AboutActState extends State<AboutAct> {
   @override
   void initState() {
     super.initState();
-  }
-
-  void _togglePlatform() {
-    TargetPlatform _getOppositePlatform() {
-      if (defaultTargetPlatform == TargetPlatform.iOS) {
-        return TargetPlatform.android;
-      } else {
-        return TargetPlatform.iOS;
-      }
-    }
-
-    debugDefaultTargetPlatformOverride = _getOppositePlatform();
-    // This rebuilds the application. This should obviously never be
-    // done in a real app but it's done here since this app
-    // unrealistically toggles the current platform for demonstration
-    // purposes.
-    WidgetsBinding.instance.reassembleApplication();
   }
 
   // ===========================================================================
@@ -54,13 +36,7 @@ class _AboutActState extends State<AboutAct> {
   Widget _buildAndroid(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AboutAct.title),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.shuffle),
-            onPressed: _togglePlatform,
-          ),
-        ],
+        title: Text(S.of(context).about),
       ),
       drawer: widget.androidDrawer,
       body: Center(
@@ -68,7 +44,7 @@ class _AboutActState extends State<AboutAct> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'About',
+              S.of(context).about,
             ),
           ],
         ),
@@ -77,7 +53,7 @@ class _AboutActState extends State<AboutAct> {
   }
 
   Widget _buildIos(BuildContext context) {
-    return Center(child: Text('About'));
+    return Center(child: Text(S.of(context).about));
   }
 
   @override

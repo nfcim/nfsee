@@ -24,6 +24,7 @@
   "delete": "Delete",
   "copy": "Copy",
   "pressRun": "Press RUN to get result",
+  "togglePlatform": "Toggle UI Platform (debug only)",
   "UPCredit": "UnionPay Credit",
   "UPDebit": "UnionPay Debit",
   "UPSecuredCredit": "UnionPay Secured Credit",

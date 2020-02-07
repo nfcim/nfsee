@@ -24,6 +24,7 @@
   "delete": "删除",
   "copy": "复制",
   "pressRun": "点击运行以获得结果",
+  "togglePlatform": "切换 UI 平台（仅用于调试）",
   "UPCredit": "银联信用卡",
   "UPDebit": "银联借记卡",
   "UPSecuredCredit": "银联准贷记卡",

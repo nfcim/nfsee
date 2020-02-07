@@ -254,6 +254,15 @@ class S {
     );
   }
 
+  String get togglePlatform {
+    return Intl.message(
+      'Toggle UI Platform (debug only)',
+      name: 'togglePlatform',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get UPCredit {
     return Intl.message(
       'UnionPay Credit',

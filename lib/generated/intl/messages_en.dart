@@ -117,6 +117,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "subwayExit" : MessageLookupByLibrary.simpleMessage("Subway Exit"),
     "technologicalDetails" : MessageLookupByLibrary.simpleMessage("Technological Details"),
     "terminal" : MessageLookupByLibrary.simpleMessage("Terminal"),
+    "togglePlatform" : MessageLookupByLibrary.simpleMessage("Toggle UI Platform (debug only)"),
     "transactionHistory" : MessageLookupByLibrary.simpleMessage("Transaction History"),
     "transactionNumber" : MessageLookupByLibrary.simpleMessage("Transaction Number"),
     "tuType" : MessageLookupByLibrary.simpleMessage("TUnion Card Type"),
