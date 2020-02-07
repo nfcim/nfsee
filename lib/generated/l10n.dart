@@ -155,24 +155,6 @@ class S {
     );
   }
 
-  String get ok {
-    return Intl.message(
-      'OK',
-      name: 'ok',
-      desc: '',
-      args: [],
-    );
-  }
-
-  String get cancel {
-    return Intl.message(
-      'Cancel',
-      name: 'cancel',
-      desc: '',
-      args: [],
-    );
-  }
-
   String get undo {
     return Intl.message(
       'UNDO',
@@ -249,6 +231,15 @@ class S {
     return Intl.message(
       'Press RUN to get result',
       name: 'pressRun',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get togglePlatform {
+    return Intl.message(
+      'Toggle UI Platform (debug only)',
+      name: 'togglePlatform',
       desc: '',
       args: [],
     );
@@ -942,6 +933,114 @@ class S {
     return Intl.message(
       'Capital Airport Line',
       name: 'CapitalAirport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get deletedHint {
+    return Intl.message(
+      'Data deleted',
+      name: 'deletedHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get deleteDataDialog {
+    return Intl.message(
+      'Delete Data',
+      name: 'deleteDataDialog',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get dataCount {
+    return Intl.message(
+      'Count',
+      name: 'dataCount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get about {
+    return Intl.message(
+      'About',
+      name: 'about',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get deleteData {
+    return Intl.message(
+      'Delete records & scripts',
+      name: 'deleteData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get privacyPolicy {
+    return Intl.message(
+      'Privacy Policy',
+      name: 'privacyPolicy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get homepage {
+    return Intl.message(
+      'Home Page',
+      name: 'homepage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get sourceCode {
+    return Intl.message(
+      'Source Code',
+      name: 'sourceCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get thirdPartyLicense {
+    return Intl.message(
+      'Third-Party Open Source License',
+      name: 'thirdPartyLicense',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get contactUs {
+    return Intl.message(
+      'Contact Us',
+      name: 'contactUs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get privacyPolicyContent {
+    return Intl.message(
+      'assets/html/privacy_policy.en.html',
+      name: 'privacyPolicyContent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get thirdPartyLicenseContent {
+    return Intl.message(
+      'assets/html/third_party_license.html',
+      name: 'thirdPartyLicenseContent',
       desc: '',
       args: [],
     );

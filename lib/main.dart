@@ -103,6 +103,12 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     this._addWebViewHandler();
   }
 
+  @override
+  void dispose() {
+    _webViewListener.cancel();
+    super.dispose();
+  }
+
   void _addWebViewHandler() async {
     _webView.evalJavascript(await rootBundle.loadString('assets/ber-tlv.js'));
     _webView.evalJavascript(await rootBundle.loadString('assets/crypto-js.js'));
@@ -113,6 +119,9 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   }
 
   void _onReceivedMessage(WebkitMessage message) async {
+    if (webviewOwner != WebViewOwner.Main) {
+      return;
+    }
     var scriptModel = ScriptDataModel.fromJson(message.data);
     log('Received action ${scriptModel.action} from script');
     switch (scriptModel.action) {
@@ -166,11 +175,11 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   }
 
   void _navigateToScriptMode() {
-    _webViewListener.cancel();
+    webviewOwner = WebViewOwner.Script;
     Navigator.push(
             context, MaterialPageRoute(builder: (context) => ScriptsAct()))
         .then((_) {
-      _webViewListener = _webView.didReceiveMessage.listen(_onReceivedMessage);
+      webviewOwner = WebViewOwner.Main;
     });
   }
 
@@ -182,9 +191,9 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     data['card_type'] =
         getEnumFromString<CardType>(CardType.values, data['card_type']);
 
+    log(data.toString());
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        log(data.toString());
         Navigator.of(context).push<void>(
           MaterialPageRoute(
             builder: (context) => CardDetailTab(
@@ -206,7 +215,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     }
   }
 
-  Widget _buildAndroidHomePage(BuildContext context) {
+  Widget _buildHomePageAndroid(BuildContext context) {
     return Scaffold(
         primary: true,
         key: _scaffoldKey,
@@ -218,7 +227,9 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           onPressed: () {
             this._readTag(context);
           },
-          child: Icon(Icons.nfc),
+          child: Icon(
+              Icons.nfc,
+          ),
           tooltip: S.of(context).scanTabTitle,
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
@@ -312,7 +323,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
             icon: const Icon(Icons.description),
             tooltip: S.of(context).scriptTabTitle,
             onPressed: _navigateToScriptMode,
-            color: Colors.black54,
+            color: Theme.of(context).colorScheme.onPrimary,
           ),
           IconButton(
             icon: const Icon(Icons.settings),
@@ -321,14 +332,14 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => SettingsAct()));
             },
-            color: Colors.black54,
+            color: Theme.of(context).colorScheme.onPrimary,
           )
         ]),
       ),
     );
   }
 
-  Widget _buildIosHistoryPage(BuildContext context) {
+  Widget _buildHistoryPageIos(BuildContext context) {
     return CustomScrollView(
       slivers: <Widget>[
         CupertinoSliverNavigationBar(
@@ -344,7 +355,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
               ),
               CupertinoButton(
                 padding: EdgeInsets.zero,
-                child: Icon(CupertinoIcons.create),
+                child: Icon(CupertinoIcons.plus_circled),
                 onPressed: () {
                   _readTag(context);
                 },
@@ -383,7 +394,12 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
                             this._navigateToTag(records[realIndex]);
                           });
                     } else {
-                      return Divider(height: 0, color: Colors.grey);
+                      return Divider(
+                        height: 0,
+                        color: Colors.grey,
+                        indent: 10,
+                        endIndent: 10,
+                      );
                     }
                   },
                   childCount: math.max(1, 2 * records.length - 1),
@@ -396,12 +412,12 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     );
   }
 
-  Widget _buildIosHomePage(BuildContext context) {
+  Widget _buildHomePageIos(BuildContext context) {
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
         items: [
           BottomNavigationBarItem(
-            title: Text(S.of(context).homeScreenTitle),
+            title: Text(S.of(context).scanTabTitle),
             icon: Icon(Icons.nfc),
           ),
           BottomNavigationBarItem(
@@ -416,16 +432,10 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         onTap: (index) {
           switch (index) {
             case 0:
-              if (_webViewListener == null) {
-                _webViewListener =
-                    _webView.didReceiveMessage.listen(_onReceivedMessage);
-              }
+              webviewOwner = WebViewOwner.Main;
               break;
             case 1:
-              if (_webViewListener != null) {
-                _webViewListener.cancel();
-                _webViewListener = null;
-              }
+              webviewOwner = WebViewOwner.Script;
               break;
             case 2:
               break;
@@ -438,7 +448,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         switch (index) {
           case 0:
             return CupertinoTabView(
-              builder: (context) => _buildIosHistoryPage(context),
+              builder: (context) => _buildHistoryPageIos(context),
               defaultTitle: S.of(context).homeScreenTitle,
             );
           case 1:
@@ -462,8 +472,8 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   @override
   Widget build(context) {
     return PlatformWidget(
-      androidBuilder: _buildAndroidHomePage,
-      iosBuilder: _buildIosHomePage,
+      androidBuilder: _buildHomePageAndroid,
+      iosBuilder: _buildHomePageIos,
     );
   }
 
@@ -524,46 +534,3 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   }
 }
 
-class ReportRowItem extends StatelessWidget {
-  const ReportRowItem({this.record, this.onTap});
-
-  final DumpedRecord record;
-  final void Function() onTap;
-
-  @override
-  Widget build(context) {
-    var data = json.decode(record.data);
-    var config = json.decode(record.config ?? DEFAULT_CONFIG);
-
-    final type =
-        getEnumFromString<CardType>(CardType.values, data["card_type"]);
-
-    var typestr = '${type.getName(context)}';
-    if (type == CardType.Unknown) {
-      typestr += ' (${data["tag"]["standard"]})';
-    }
-
-    var title = typestr;
-    var subtitle = "Unknown";
-    if (data["detail"] != null && data["detail"]["card_number"] != null) {
-      subtitle = data["detail"]["card_number"];
-    }
-    if (config["name"] != null && config["name"] != "") {
-      if (subtitle == null)
-        subtitle = typestr;
-      else
-        subtitle = typestr + " - " + subtitle;
-      title = config["name"];
-    }
-
-    return ListTile(
-      leading: Container(
-        height: double.infinity,
-        child: Icon(Icons.credit_card),
-      ),
-      title: Text(title),
-      subtitle: subtitle != null ? Text(subtitle) : null,
-      onTap: this.onTap,
-    );
-  }
-}

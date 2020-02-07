@@ -62,6 +62,10 @@ class Database extends _$Database {
     return select(dumpedRecords).watch();
   }
 
+  Future<int> countDumpedRecords() {
+    return select(dumpedRecords).get().then((l) => l.length);
+  }
+
   Future<bool> writeDumpedRecord(int id, DumpedRecordsCompanion entry) {
     return (update(dumpedRecords)..where((u) => u.id.equals(id)))
         .write(entry)
@@ -78,6 +82,10 @@ class Database extends _$Database {
 
   Stream<List<SavedScript>> watchSavedScripts() {
     return select(savedScripts).watch();
+  }
+
+  Future<int> countSavedScripts() {
+    return select(savedScripts).get().then((l) => l.length);
   }
 
   Future<int> addSavedScript(SavedScriptsCompanion entry) {

@@ -14,6 +14,7 @@ import '../data/blocs/provider.dart';
 import '../data/database/database.dart';
 import '../generated/l10n.dart';
 import '../models.dart';
+import '../utilities.dart';
 import 'widgets.dart';
 
 class ScriptsAct extends StatefulWidget {
@@ -59,7 +60,16 @@ class _ScriptsActState extends State<ScriptsAct> {
         _webView.didReceiveMessage.listen(this._onReceivedMessage);
   }
 
+  @override
+  void dispose() {
+    _webViewListener.cancel();
+    super.dispose();
+  }
+
   void _onReceivedMessage(WebkitMessage message) async {
+    if (webviewOwner != WebViewOwner.Script) {
+      return;
+    }
     var scriptModel = ScriptDataModel.fromJson(message.data);
     log('Received action ${scriptModel.action} from script');
     switch (scriptModel.action) {
@@ -133,15 +143,18 @@ class _ScriptsActState extends State<ScriptsAct> {
 
     log('Run script: ${script.source}');
 
-    _webView.evalJavascript(
-        "(async function () {${script
-            .source}})().then(finish).catch((e) => {error(e);finish();});");
-  }
-
-  @override
-  void dispose() {
-    _webViewListener.cancel();
-    super.dispose();
+    try {
+      final wrapped = "(async function() {${script.source}})()";
+      final encoded = json.encode(wrapped);
+      await _webView.evalJavascript('''
+          (async function() {
+            let source = $encoded;
+            await eval(source);
+          })().catch((e) => error(e.toString())).finally(finish);
+      ''');
+    } catch(e) {
+      log(e);
+    }
   }
 
   void _showMessage(BuildContext context, String message) {
@@ -161,7 +174,7 @@ class _ScriptsActState extends State<ScriptsAct> {
               title: Text(message),
               actions: <Widget>[
                 CupertinoButton(
-                  child: Text("OK"),
+                  child: Text(MaterialLocalizations.of(context).okButtonLabel),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -219,7 +232,7 @@ class _ScriptsActState extends State<ScriptsAct> {
               title: Text(message),
               actions: <Widget>[
                 CupertinoButton(
-                  child: Text(S.of(context).ok),
+                  child: Text(MaterialLocalizations.of(context).okButtonLabel),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -231,7 +244,6 @@ class _ScriptsActState extends State<ScriptsAct> {
   }
 
   Widget _buildBody(BuildContext context) {
-    var outer = context;
     return StreamBuilder<List<SavedScript>>(
       stream: bloc.savedScripts,
       builder: (context, snapshot) {
@@ -337,14 +349,14 @@ class _ScriptsActState extends State<ScriptsAct> {
                                 onPressed: () {
                                   _showScriptDialog(script);
                                 },
-                                color: Colors.black54,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 icon: Icon(Icons.edit),
                                 tooltip: S.of(context).edit,
                               ),
                               IconButton(
                                 onPressed: () async =>
                                     _deleteScript(context, script),
-                                color: Colors.black54,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 icon: Icon(Icons.delete),
                                 tooltip: S.of(context).delete,
                               ),
@@ -359,7 +371,7 @@ class _ScriptsActState extends State<ScriptsAct> {
                                           .of(context)
                                           .copied}');
                                 },
-                                color: Colors.black54,
+                                color: Theme.of(context).colorScheme.onSurface,
                                 icon: Icon(Icons.content_copy),
                                 tooltip: S.of(context).copy
                               ),
@@ -462,15 +474,11 @@ class _ScriptsActState extends State<ScriptsAct> {
             content: _buildAddScriptDialogContent(),
             actions: <Widget>[
               FlatButton(
-                child: Text(S
-                    .of(context)
-                    .ok),
+                child: Text(MaterialLocalizations.of(context).okButtonLabel),
                 onPressed: _addOrModifyScript,
               ),
               FlatButton(
-                child: Text(S
-                    .of(context)
-                    .cancel),
+                child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop();
                 },
@@ -495,15 +503,11 @@ class _ScriptsActState extends State<ScriptsAct> {
             content: _buildAddScriptDialogContent(),
             actions: <Widget>[
               CupertinoButton(
-                child: Text(S
-                    .of(context)
-                    .ok),
+                child: Text(MaterialLocalizations.of(context).okButtonLabel),
                 onPressed: _addOrModifyScript,
               ),
               CupertinoButton(
-                child: Text(S
-                    .of(context)
-                    .cancel),
+                child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop();
                 },
@@ -518,29 +522,29 @@ class _ScriptsActState extends State<ScriptsAct> {
       appBar: AppBar(title: Text(S
           .of(context)
           .scriptTabTitle)),
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.orange[500],
-        shape: CircularNotchedRectangle(),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Row(children: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.file_download),
-              onPressed: () {
-                // TODO(script): download from gist
-              },
-              color: Colors.black54,
-            ),
-          ]),
-        ),
-      ),
+//      bottomNavigationBar: BottomAppBar(
+//        color: Colors.orange[500],
+//        shape: CircularNotchedRectangle(),
+//        child: Padding(
+//          padding: const EdgeInsets.all(8),
+//          child: Row(children: <Widget>[
+//            IconButton(
+//              icon: const Icon(Icons.file_download),
+//              onPressed: () {
+//                // TODO(script): download from gist
+//              },
+//              color: Colors.black54,
+//            ),
+//          ]),
+//        ),
+//      ),
       body: Builder(builder: _buildBody),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: _showScriptDialog,
         tooltip: S.of(context).addScript,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
@@ -580,7 +584,10 @@ class _ScriptsActState extends State<ScriptsAct> {
         color: Color.fromARGB(10, 0, 0, 0),
         child: SelectableText(
           result,
-          style: TextStyle(color: error ? Colors.red : Colors.white70),
+          style: TextStyle(
+            color: error
+            ? Colors.red
+            : Theme.of(context).colorScheme.onSurface),
         ),
       );
     }
