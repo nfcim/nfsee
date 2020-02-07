@@ -392,7 +392,12 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
                             this._navigateToTag(records[realIndex]);
                           });
                     } else {
-                      return Divider(height: 0, color: Colors.grey);
+                      return Divider(
+                        height: 0,
+                        color: Colors.grey,
+                        indent: 10,
+                        endIndent: 10,
+                      );
                     }
                   },
                   childCount: math.max(1, 2 * records.length - 1),
