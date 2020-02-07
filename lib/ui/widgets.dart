@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nfsee/data/database/database.dart';
+import 'package:nfsee/generated/l10n.dart';
 
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter/services.dart';
@@ -38,44 +40,51 @@ class PlatformWidget extends StatelessWidget {
   }
 }
 
-class WebViewTab extends StatefulWidget {
+class WebViewTab extends StatelessWidget {
+
   final String title;
   final String assetUrl;
   const WebViewTab({this.title, this.assetUrl});
-  @override
-  WebViewTabState createState() {
-    return WebViewTabState();
-  }
-}
 
-class WebViewTabState extends State<WebViewTab> {
-
-  WebViewController _controller;
-  final String title;
-  final String assetUrl;
-  WebViewTabState({this.title, this.assetUrl});
-
-  @override
-  Widget build(BuildContext context) {
-    _loadHtmlFromAssets();
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: WebView(
-        initialUrl: 'about:blank',
-        onWebViewCreated: (WebViewController webViewController) {
-          _controller = webViewController;
-        },
-      ),
+  Widget _buildWebView() {
+    return WebView(
+      initialUrl: 'about:blank',
+      onWebViewCreated: (WebViewController webViewController) async {
+        String fileText = await rootBundle.loadString(assetUrl);
+        webViewController.loadUrl(Uri.dataFromString(
+            fileText,
+            mimeType: 'text/html',
+            encoding: Encoding.getByName('utf-8')
+        ).toString());
+      },
     );
   }
 
-  _loadHtmlFromAssets() async {
-    String fileText = await rootBundle.loadString(assetUrl);
-    _controller.loadUrl( Uri.dataFromString(
-        fileText,
-        mimeType: 'text/html',
-        encoding: Encoding.getByName('utf-8')
-    ).toString());
+  Widget _buildAndroid(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: _buildWebView(),
+    );
+  }
+
+  Widget _buildIos(BuildContext context) {
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: Text(title),
+        previousPageTitle: S.of(context).about,
+      ),
+      child: _buildWebView(),
+    );
+  }
+
+  @override
+  Widget build(context) {
+    return PlatformWidget(
+      androidBuilder: _buildAndroid,
+      iosBuilder: _buildIos,
+    );
   }
 }
 

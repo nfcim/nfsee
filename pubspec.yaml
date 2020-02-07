@@ -37,6 +37,7 @@ flutter:
     - assets/
     - assets/cards/
     - assets/icons/
+    - assets/html/
 
 flutter_intl:
   enabled: true

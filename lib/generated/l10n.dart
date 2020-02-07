@@ -1003,8 +1003,17 @@ class S {
 
   String get privacyPolicyContent {
     return Intl.message(
-      '',
+      'assets/html/privacy_policy.en.html',
       name: 'privacyPolicyContent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get thirdPartyLicenseContent {
+    return Intl.message(
+      'assets/html/third_party_license.html',
+      name: 'thirdPartyLicenseContent',
       desc: '',
       args: [],
     );

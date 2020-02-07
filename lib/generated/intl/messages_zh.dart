@@ -106,6 +106,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "pinRetry" : MessageLookupByLibrary.simpleMessage("剩余 PIN 重试次数"),
     "pressRun" : MessageLookupByLibrary.simpleMessage("点击运行以获得结果"),
     "privacyPolicy" : MessageLookupByLibrary.simpleMessage("隐私政策"),
+    "privacyPolicyContent" : MessageLookupByLibrary.simpleMessage("assets/html/privacy_policy.zh.html"),
     "provinceCode" : MessageLookupByLibrary.simpleMessage("省市代码"),
     "rawData" : MessageLookupByLibrary.simpleMessage("其他数据"),
     "record" : MessageLookupByLibrary.simpleMessage("记录"),

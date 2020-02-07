@@ -106,5 +106,6 @@
   "homepage": "主页",
   "sourceCode": "源代码",
   "thirdPartyLicense": "第三方开源许可协议",
-  "contactUs": "联系我们"
+  "contactUs": "联系我们",
+  "privacyPolicyContent": "assets/html/privacy_policy.zh.html"
 }

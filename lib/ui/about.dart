@@ -38,6 +38,16 @@ class _AboutActState extends State<AboutAct> {
     });
   }
 
+  void launchAssetPage(String title, String url) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => WebViewTab(
+              title: title,
+              assetUrl: url,
+            )));
+  }
+
   Widget _buildAboutBody() {
     initVersions();
     return Builder(
@@ -79,14 +89,14 @@ class _AboutActState extends State<AboutAct> {
                 ),
                 ListTile(
                   title: Text(S.of(context).privacyPolicy),
-                  onTap: () => launch('https://nfsee.nfc.im/privacy'),
+                  onTap: () => launchAssetPage(S.of(context).privacyPolicy, S.of(context).privacyPolicyContent),
                 ),
                 Divider(
                   height: 0,
                 ),
                 ListTile(
                   title: Text(S.of(context).thirdPartyLicense),
-                  onTap: () => launch('https://nfsee.nfc.im/open-source'),
+                  onTap: () => launchAssetPage(S.of(context).thirdPartyLicense, S.of(context).thirdPartyLicenseContent),
                 ),
                 Divider(
                   height: 0,
