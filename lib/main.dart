@@ -567,6 +567,7 @@ class ReportRowItem extends StatelessWidget {
       title: Text(title),
       subtitle: subtitle != null ? Text(subtitle) : null,
       onTap: this.onTap,
+      trailing: Icon(CupertinoIcons.right_chevron),
     );
   }
 }
