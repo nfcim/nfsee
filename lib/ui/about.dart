@@ -7,7 +7,6 @@ import 'package:nfsee/generated/l10n.dart';
 import 'widgets.dart';
 
 class AboutAct extends StatefulWidget {
-
   const AboutAct({this.androidDrawer});
 
   final Widget androidDrawer;
@@ -53,7 +52,12 @@ class _AboutActState extends State<AboutAct> {
   }
 
   Widget _buildIos(BuildContext context) {
-    return Center(child: Text(S.of(context).about));
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: Text(S.of(context).about),
+      ),
+      child: Text(S.of(context).about),
+    );
   }
 
   @override
