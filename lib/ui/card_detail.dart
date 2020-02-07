@@ -78,6 +78,56 @@ class CardDetailTabState extends State<CardDetailTab> {
     }
   }
 
+  void _editCardName() {
+    this.pendingName = config["name"] ?? "";
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => AlertDialog(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            TextFormField(
+              decoration: InputDecoration(
+                filled: true,
+                labelText: S.of(context).cardName,
+              ),
+              maxLines: 1,
+              initialValue: config["name"] ?? "",
+
+              onChanged: (cont) {
+                this.pendingName = cont;
+              },
+            ),
+          ],
+        ),
+        actions: <Widget>[
+          FlatButton(
+            child: Text(S.of(context).ok),
+            onPressed: () {
+              setState(() {
+                if(this.pendingName == "") {
+                  this.config["name"] = null;
+                } else {
+                  this.config["name"] = this.pendingName;
+                }
+                bloc.updateDumpedRecordConfig(this.id, config);
+                Navigator.of(context).pop();
+              });
+            },
+          ),
+          FlatButton(
+            child: Text(S.of(context).cancel),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      ),
+    );
+  }
+
   Widget _buildCard() {
     return Card(
         margin: EdgeInsets.only(bottom: 20),
@@ -117,55 +167,7 @@ class CardDetailTabState extends State<CardDetailTab> {
             title: Text(config["name"] ?? S.of(context).unnamedCard),
             subtitle: Text(time.toString().split('.')[0]),
             trailing: IconButton(
-              onPressed: () {
-                this.pendingName = config["name"] ?? "";
-
-                showDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  builder: (context) => AlertDialog(
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        TextFormField(
-                          decoration: InputDecoration(
-                            filled: true,
-                            labelText: S.of(context).cardName,
-                          ),
-                          maxLines: 1,
-                          initialValue: config["name"] ?? "",
-
-                          onChanged: (cont) {
-                            this.pendingName = cont;
-                          },
-                        ),
-                      ],
-                    ),
-                    actions: <Widget>[
-                      FlatButton(
-                        child: Text(S.of(context).ok),
-                        onPressed: () {
-                          setState(() {
-                            if(this.pendingName == "") {
-                              this.config["name"] = null;
-                            } else {
-                              this.config["name"] = this.pendingName;
-                            }
-                            bloc.updateDumpedRecordConfig(this.id, config);
-                            Navigator.of(context).pop();
-                          });
-                        },
-                      ),
-                      FlatButton(
-                        child: Text(S.of(context).cancel),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      )
-                    ],
-                  ),
-                );
-              },
+              onPressed: _editCardName,
               icon: Icon(Icons.edit),
               tooltip: S.of(context).edit,
             ),

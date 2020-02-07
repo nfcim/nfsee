@@ -215,7 +215,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     }
   }
 
-  Widget _buildAndroidHomePage(BuildContext context) {
+  Widget _buildHomePageAndroid(BuildContext context) {
     return Scaffold(
         primary: true,
         key: _scaffoldKey,
@@ -465,7 +465,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   @override
   Widget build(context) {
     return PlatformWidget(
-      androidBuilder: _buildAndroidHomePage,
+      androidBuilder: _buildHomePageAndroid,
       iosBuilder: _buildHomePageIos,
     );
   }
