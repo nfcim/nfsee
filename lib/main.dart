@@ -353,7 +353,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
               ),
               CupertinoButton(
                 padding: EdgeInsets.zero,
-                child: Icon(CupertinoIcons.create),
+                child: Icon(CupertinoIcons.plus_circled),
                 onPressed: () {
                   _readTag(context);
                 },
