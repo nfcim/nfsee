@@ -60,6 +60,12 @@ class _ScriptsActState extends State<ScriptsAct> {
         _webView.didReceiveMessage.listen(this._onReceivedMessage);
   }
 
+  @override
+  void dispose() {
+    _webViewListener.cancel();
+    super.dispose();
+  }
+
   void _onReceivedMessage(WebkitMessage message) async {
     if (webviewOwner != WebViewOwner.Script) {
       return;
@@ -149,12 +155,6 @@ class _ScriptsActState extends State<ScriptsAct> {
     } catch(e) {
       log(e);
     }
-  }
-
-  @override
-  void dispose() {
-    _webViewListener.cancel();
-    super.dispose();
   }
 
   void _showMessage(BuildContext context, String message) {

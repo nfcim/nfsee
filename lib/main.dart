@@ -103,6 +103,12 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     this._addWebViewHandler();
   }
 
+  @override
+  void dispose() {
+    _webViewListener.cancel();
+    super.dispose();
+  }
+
   void _addWebViewHandler() async {
     _webView.evalJavascript(await rootBundle.loadString('assets/ber-tlv.js'));
     _webView.evalJavascript(await rootBundle.loadString('assets/crypto-js.js'));
