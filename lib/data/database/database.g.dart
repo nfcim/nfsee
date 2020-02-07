@@ -11,13 +11,11 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
   final int id;
   final DateTime time;
   final String config;
-  final bool visible;
   final String data;
   DumpedRecord(
       {@required this.id,
       @required this.time,
       @required this.config,
-      @required this.visible,
       @required this.data});
   factory DumpedRecord.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
@@ -25,15 +23,12 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
     final intType = db.typeSystem.forDartType<int>();
     final dateTimeType = db.typeSystem.forDartType<DateTime>();
     final stringType = db.typeSystem.forDartType<String>();
-    final boolType = db.typeSystem.forDartType<bool>();
     return DumpedRecord(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       time:
           dateTimeType.mapFromDatabaseResponse(data['${effectivePrefix}time']),
       config:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}config']),
-      visible:
-          boolType.mapFromDatabaseResponse(data['${effectivePrefix}visible']),
       data: stringType.mapFromDatabaseResponse(data['${effectivePrefix}data']),
     );
   }
@@ -44,7 +39,6 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
       id: serializer.fromJson<int>(json['id']),
       time: serializer.fromJson<DateTime>(json['time']),
       config: serializer.fromJson<String>(json['config']),
-      visible: serializer.fromJson<bool>(json['visible']),
       data: serializer.fromJson<String>(json['data']),
     );
   }
@@ -55,7 +49,6 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
       'id': serializer.toJson<int>(id),
       'time': serializer.toJson<DateTime>(time),
       'config': serializer.toJson<String>(config),
-      'visible': serializer.toJson<bool>(visible),
       'data': serializer.toJson<String>(data),
     };
   }
@@ -67,20 +60,15 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
       time: time == null && nullToAbsent ? const Value.absent() : Value(time),
       config:
           config == null && nullToAbsent ? const Value.absent() : Value(config),
-      visible: visible == null && nullToAbsent
-          ? const Value.absent()
-          : Value(visible),
       data: data == null && nullToAbsent ? const Value.absent() : Value(data),
     );
   }
 
-  DumpedRecord copyWith(
-          {int id, DateTime time, String config, bool visible, String data}) =>
+  DumpedRecord copyWith({int id, DateTime time, String config, String data}) =>
       DumpedRecord(
         id: id ?? this.id,
         time: time ?? this.time,
         config: config ?? this.config,
-        visible: visible ?? this.visible,
         data: data ?? this.data,
       );
   @override
@@ -89,17 +77,14 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
           ..write('id: $id, ')
           ..write('time: $time, ')
           ..write('config: $config, ')
-          ..write('visible: $visible, ')
           ..write('data: $data')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(
-      id.hashCode,
-      $mrjc(time.hashCode,
-          $mrjc(config.hashCode, $mrjc(visible.hashCode, data.hashCode)))));
+  int get hashCode => $mrjf($mrjc(id.hashCode,
+      $mrjc(time.hashCode, $mrjc(config.hashCode, data.hashCode))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -107,7 +92,6 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
           other.id == this.id &&
           other.time == this.time &&
           other.config == this.config &&
-          other.visible == this.visible &&
           other.data == this.data);
 }
 
@@ -115,20 +99,17 @@ class DumpedRecordsCompanion extends UpdateCompanion<DumpedRecord> {
   final Value<int> id;
   final Value<DateTime> time;
   final Value<String> config;
-  final Value<bool> visible;
   final Value<String> data;
   const DumpedRecordsCompanion({
     this.id = const Value.absent(),
     this.time = const Value.absent(),
     this.config = const Value.absent(),
-    this.visible = const Value.absent(),
     this.data = const Value.absent(),
   });
   DumpedRecordsCompanion.insert({
     this.id = const Value.absent(),
     @required DateTime time,
     this.config = const Value.absent(),
-    this.visible = const Value.absent(),
     @required String data,
   })  : time = Value(time),
         data = Value(data);
@@ -136,13 +117,11 @@ class DumpedRecordsCompanion extends UpdateCompanion<DumpedRecord> {
       {Value<int> id,
       Value<DateTime> time,
       Value<String> config,
-      Value<bool> visible,
       Value<String> data}) {
     return DumpedRecordsCompanion(
       id: id ?? this.id,
       time: time ?? this.time,
       config: config ?? this.config,
-      visible: visible ?? this.visible,
       data: data ?? this.data,
     );
   }
@@ -183,15 +162,6 @@ class $DumpedRecordsTable extends DumpedRecords
         defaultValue: const Constant(DEFAULT_CONFIG));
   }
 
-  final VerificationMeta _visibleMeta = const VerificationMeta('visible');
-  GeneratedBoolColumn _visible;
-  @override
-  GeneratedBoolColumn get visible => _visible ??= _constructVisible();
-  GeneratedBoolColumn _constructVisible() {
-    return GeneratedBoolColumn('visible', $tableName, false,
-        defaultValue: const Constant(true));
-  }
-
   final VerificationMeta _dataMeta = const VerificationMeta('data');
   GeneratedTextColumn _data;
   @override
@@ -205,7 +175,7 @@ class $DumpedRecordsTable extends DumpedRecords
   }
 
   @override
-  List<GeneratedColumn> get $columns => [id, time, config, visible, data];
+  List<GeneratedColumn> get $columns => [id, time, config, data];
   @override
   $DumpedRecordsTable get asDslTable => this;
   @override
@@ -228,10 +198,6 @@ class $DumpedRecordsTable extends DumpedRecords
     if (d.config.present) {
       context.handle(
           _configMeta, config.isAcceptableValue(d.config.value, _configMeta));
-    }
-    if (d.visible.present) {
-      context.handle(_visibleMeta,
-          visible.isAcceptableValue(d.visible.value, _visibleMeta));
     }
     if (d.data.present) {
       context.handle(
@@ -262,9 +228,6 @@ class $DumpedRecordsTable extends DumpedRecords
     if (d.config.present) {
       map['config'] = Variable<String, StringType>(d.config.value);
     }
-    if (d.visible.present) {
-      map['visible'] = Variable<bool, BoolType>(d.visible.value);
-    }
     if (d.data.present) {
       map['data'] = Variable<String, StringType>(d.data.value);
     }
@@ -281,28 +244,27 @@ class SavedScript extends DataClass implements Insertable<SavedScript> {
   final int id;
   final String name;
   final String source;
-  final bool visible;
+  final DateTime creationTime;
   final DateTime lastUsed;
   SavedScript(
       {@required this.id,
       @required this.name,
       @required this.source,
-      @required this.visible,
+      @required this.creationTime,
       this.lastUsed});
   factory SavedScript.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final stringType = db.typeSystem.forDartType<String>();
-    final boolType = db.typeSystem.forDartType<bool>();
     final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return SavedScript(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
       source:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}source']),
-      visible:
-          boolType.mapFromDatabaseResponse(data['${effectivePrefix}visible']),
+      creationTime: dateTimeType
+          .mapFromDatabaseResponse(data['${effectivePrefix}creation_time']),
       lastUsed: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}last_used']),
     );
@@ -314,7 +276,7 @@ class SavedScript extends DataClass implements Insertable<SavedScript> {
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       source: serializer.fromJson<String>(json['source']),
-      visible: serializer.fromJson<bool>(json['visible']),
+      creationTime: serializer.fromJson<DateTime>(json['creationTime']),
       lastUsed: serializer.fromJson<DateTime>(json['lastUsed']),
     );
   }
@@ -325,7 +287,7 @@ class SavedScript extends DataClass implements Insertable<SavedScript> {
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'source': serializer.toJson<String>(source),
-      'visible': serializer.toJson<bool>(visible),
+      'creationTime': serializer.toJson<DateTime>(creationTime),
       'lastUsed': serializer.toJson<DateTime>(lastUsed),
     };
   }
@@ -337,9 +299,9 @@ class SavedScript extends DataClass implements Insertable<SavedScript> {
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       source:
           source == null && nullToAbsent ? const Value.absent() : Value(source),
-      visible: visible == null && nullToAbsent
+      creationTime: creationTime == null && nullToAbsent
           ? const Value.absent()
-          : Value(visible),
+          : Value(creationTime),
       lastUsed: lastUsed == null && nullToAbsent
           ? const Value.absent()
           : Value(lastUsed),
@@ -350,13 +312,13 @@ class SavedScript extends DataClass implements Insertable<SavedScript> {
           {int id,
           String name,
           String source,
-          bool visible,
+          DateTime creationTime,
           DateTime lastUsed}) =>
       SavedScript(
         id: id ?? this.id,
         name: name ?? this.name,
         source: source ?? this.source,
-        visible: visible ?? this.visible,
+        creationTime: creationTime ?? this.creationTime,
         lastUsed: lastUsed ?? this.lastUsed,
       );
   @override
@@ -365,7 +327,7 @@ class SavedScript extends DataClass implements Insertable<SavedScript> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('source: $source, ')
-          ..write('visible: $visible, ')
+          ..write('creationTime: $creationTime, ')
           ..write('lastUsed: $lastUsed')
           ..write(')'))
         .toString();
@@ -374,8 +336,10 @@ class SavedScript extends DataClass implements Insertable<SavedScript> {
   @override
   int get hashCode => $mrjf($mrjc(
       id.hashCode,
-      $mrjc(name.hashCode,
-          $mrjc(source.hashCode, $mrjc(visible.hashCode, lastUsed.hashCode)))));
+      $mrjc(
+          name.hashCode,
+          $mrjc(source.hashCode,
+              $mrjc(creationTime.hashCode, lastUsed.hashCode)))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -383,7 +347,7 @@ class SavedScript extends DataClass implements Insertable<SavedScript> {
           other.id == this.id &&
           other.name == this.name &&
           other.source == this.source &&
-          other.visible == this.visible &&
+          other.creationTime == this.creationTime &&
           other.lastUsed == this.lastUsed);
 }
 
@@ -391,34 +355,35 @@ class SavedScriptsCompanion extends UpdateCompanion<SavedScript> {
   final Value<int> id;
   final Value<String> name;
   final Value<String> source;
-  final Value<bool> visible;
+  final Value<DateTime> creationTime;
   final Value<DateTime> lastUsed;
   const SavedScriptsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.source = const Value.absent(),
-    this.visible = const Value.absent(),
+    this.creationTime = const Value.absent(),
     this.lastUsed = const Value.absent(),
   });
   SavedScriptsCompanion.insert({
     this.id = const Value.absent(),
     @required String name,
     @required String source,
-    this.visible = const Value.absent(),
+    @required DateTime creationTime,
     this.lastUsed = const Value.absent(),
   })  : name = Value(name),
-        source = Value(source);
+        source = Value(source),
+        creationTime = Value(creationTime);
   SavedScriptsCompanion copyWith(
       {Value<int> id,
       Value<String> name,
       Value<String> source,
-      Value<bool> visible,
+      Value<DateTime> creationTime,
       Value<DateTime> lastUsed}) {
     return SavedScriptsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       source: source ?? this.source,
-      visible: visible ?? this.visible,
+      creationTime: creationTime ?? this.creationTime,
       lastUsed: lastUsed ?? this.lastUsed,
     );
   }
@@ -462,13 +427,18 @@ class $SavedScriptsTable extends SavedScripts
     );
   }
 
-  final VerificationMeta _visibleMeta = const VerificationMeta('visible');
-  GeneratedBoolColumn _visible;
+  final VerificationMeta _creationTimeMeta =
+      const VerificationMeta('creationTime');
+  GeneratedDateTimeColumn _creationTime;
   @override
-  GeneratedBoolColumn get visible => _visible ??= _constructVisible();
-  GeneratedBoolColumn _constructVisible() {
-    return GeneratedBoolColumn('visible', $tableName, false,
-        defaultValue: const Constant(true));
+  GeneratedDateTimeColumn get creationTime =>
+      _creationTime ??= _constructCreationTime();
+  GeneratedDateTimeColumn _constructCreationTime() {
+    return GeneratedDateTimeColumn(
+      'creation_time',
+      $tableName,
+      false,
+    );
   }
 
   final VerificationMeta _lastUsedMeta = const VerificationMeta('lastUsed');
@@ -484,7 +454,8 @@ class $SavedScriptsTable extends SavedScripts
   }
 
   @override
-  List<GeneratedColumn> get $columns => [id, name, source, visible, lastUsed];
+  List<GeneratedColumn> get $columns =>
+      [id, name, source, creationTime, lastUsed];
   @override
   $SavedScriptsTable get asDslTable => this;
   @override
@@ -510,9 +481,13 @@ class $SavedScriptsTable extends SavedScripts
     } else if (isInserting) {
       context.missing(_sourceMeta);
     }
-    if (d.visible.present) {
-      context.handle(_visibleMeta,
-          visible.isAcceptableValue(d.visible.value, _visibleMeta));
+    if (d.creationTime.present) {
+      context.handle(
+          _creationTimeMeta,
+          creationTime.isAcceptableValue(
+              d.creationTime.value, _creationTimeMeta));
+    } else if (isInserting) {
+      context.missing(_creationTimeMeta);
     }
     if (d.lastUsed.present) {
       context.handle(_lastUsedMeta,
@@ -541,8 +516,9 @@ class $SavedScriptsTable extends SavedScripts
     if (d.source.present) {
       map['source'] = Variable<String, StringType>(d.source.value);
     }
-    if (d.visible.present) {
-      map['visible'] = Variable<bool, BoolType>(d.visible.value);
+    if (d.creationTime.present) {
+      map['creation_time'] =
+          Variable<DateTime, DateTimeType>(d.creationTime.value);
     }
     if (d.lastUsed.present) {
       map['last_used'] = Variable<DateTime, DateTimeType>(d.lastUsed.value);

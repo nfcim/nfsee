@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:moor/moor.dart';
+import 'package:nfsee/models.dart';
 
 import '../database/database.dart';
 
@@ -11,6 +12,7 @@ class NFSeeAppBloc {
   Stream<List<SavedScript>> _savedScripts;
 
   Stream<List<DumpedRecord>> get dumpedRecords => _dumpedRecords;
+
   Stream<List<SavedScript>> get savedScripts => _savedScripts;
 
   NFSeeAppBloc() : db = constructDb() {
@@ -18,10 +20,12 @@ class NFSeeAppBloc {
     _savedScripts = db.watchSavedScripts();
   }
 
-  void addDumpedRecord(dynamic data) {
-    db.addDumpedRecord(DumpedRecordsCompanion(
-      time: Value(DateTime.now()),
-      data: Value(jsonEncode(data)),
+  Future<void> addDumpedRecord(String data,
+      [DateTime time, String config]) async {
+    await db.addDumpedRecord(DumpedRecordsCompanion().copyWith(
+        data: Value(data),
+        time: Value(time ?? DateTime.now()),
+        config: Value(config ?? DEFAULT_CONFIG)
     ));
   }
 
@@ -33,14 +37,6 @@ class NFSeeAppBloc {
         ));
   }
 
-  Future<void> changeDumpedRecordVisibility(int id, bool visible) async {
-    db.writeDumpedRecord(
-        id,
-        DumpedRecordsCompanion(
-          visible: Value(visible)
-        ));
-  }
-
   Future<void> delDumpedRecord(int id) async {
     await db.deleteDumpedRecord(id);
   }
@@ -49,10 +45,12 @@ class NFSeeAppBloc {
     await db.deleteAllDumpedRecords();
   }
 
-  Future<void> addScript(String name, String source) async {
+  Future<void> addScript(String name, String source,
+      [DateTime creationTime]) async {
     await db.addSavedScript(SavedScriptsCompanion.insert(
       name: name,
       source: source,
+      creationTime: creationTime ?? DateTime.now(),
     ));
   }
 
@@ -69,13 +67,6 @@ class NFSeeAppBloc {
     await db.writeSavedScripts(SavedScriptsCompanion(
       id: Value(id),
       lastUsed: Value(DateTime.now()),
-    ));
-  }
-
-  Future<void> changeScriptVisibility(int id, bool visible) async {
-    await db.writeSavedScripts(SavedScriptsCompanion(
-      id: Value(id),
-      visible: Value(visible),
     ));
   }
 

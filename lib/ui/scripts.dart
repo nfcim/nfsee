@@ -174,8 +174,8 @@ class _ScriptsActState extends State<ScriptsAct> {
 
   void _deleteScript(BuildContext context, SavedScript script) async {
     // first hide the script
-    await this.bloc.changeScriptVisibility(script.id, false);
-    log('Script ${script.name} changed to hidden');
+    await this.bloc.delScript(script.id);
+    log('Script ${script.name} deleted');
     final message =
         '${S
         .of(context)
@@ -202,13 +202,11 @@ class _ScriptsActState extends State<ScriptsAct> {
           .then((reason) async {
         switch (reason) {
           case SnackBarClosedReason.action:
-          // user cancelled deletion
-            await this.bloc.changeScriptVisibility(script.id, true);
-            log('Script ${script.name} changed to visible');
+            // user cancelled deletion
+            await this.bloc.addScript(script.name, script.source, script.creationTime);
+            log('Script ${script.name} restored');
             break;
           default:
-            await this.bloc.delScript(script.id);
-            log('Script ${script.name} actually deleted');
             break;
         }
       });
@@ -254,7 +252,8 @@ class _ScriptsActState extends State<ScriptsAct> {
               ));
         }
         // filter only visible scripts
-        final scripts = snapshot.data.where((s) => s.visible).toList();
+        final scripts = snapshot.data.toList()
+          ..sort((a, b) => a.creationTime.compareTo(b.creationTime));
 
         return SingleChildScrollView(
             padding: EdgeInsets.only(bottom: 40),

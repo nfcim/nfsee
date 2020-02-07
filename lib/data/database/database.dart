@@ -17,8 +17,6 @@ class DumpedRecords extends Table {
 
   TextColumn get config => text()
       .withDefault(const Constant(DEFAULT_CONFIG))(); // Name, color, etc...
-  BoolColumn get visible =>
-      boolean().withDefault(const Constant(true))(); // for delete and undo
   TextColumn get data => text()();
 }
 
@@ -30,8 +28,7 @@ class SavedScripts extends Table {
 
   TextColumn get source => text()();
 
-  BoolColumn get visible =>
-      boolean().withDefault(const Constant(true))(); // for delete and undo
+  DateTimeColumn get creationTime => dateTime()();
   DateTimeColumn get lastUsed => dateTime().nullable()();
 }
 
@@ -53,8 +50,7 @@ class Database extends _$Database {
           await m.addColumn(dumpedRecords, dumpedRecords.config);
         }
         if (from < 6) {
-          await m.addColumn(dumpedRecords, dumpedRecords.visible);
-          await m.addColumn(savedScripts, savedScripts.visible);
+          await m.addColumn(savedScripts, savedScripts.creationTime);
         }
       });
 

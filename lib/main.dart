@@ -146,7 +146,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
       case 'finish':
         await FlutterNfcKit.finish();
         _closeReadModal(this.context);
-        bloc.addDumpedRecord(scriptModel.data);
+        bloc.addDumpedRecord(jsonEncode(scriptModel.data));
         print(scriptModel.data.toString());
         this._navigateToTag(DumpedRecord(
           id: 0,
@@ -180,7 +180,8 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     var config = jsonDecode(record.config ?? DEFAULT_CONFIG);
 
     // convert card_type to Type CardType
-    data['card_type'] = getEnumFromString<CardType>(CardType.values, data['card_type']);
+    data['card_type'] =
+        getEnumFromString<CardType>(CardType.values, data['card_type']);
 
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -239,7 +240,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
                     ],
                   ));
             }
-            final records = snapshot.data.reversed.where((c) => c.visible).toList()
+            final records = snapshot.data.toList()
               ..sort((a, b) => a.time.compareTo(b.time));
             return ListView.builder(
               padding: EdgeInsets.only(bottom: 48),
@@ -249,27 +250,31 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
                 return Dismissible(
                   direction: DismissDirection.startToEnd,
                   onDismissed: (direction) async {
-                    final message = '${S.of(context).record} ${r.id} ${S.of(context).deleted}';
-                    log('Record ${r.id} changed to hidden');
-                    await bloc.changeDumpedRecordVisibility(r.id, false);
+                    final message =
+                        '${S.of(context).record} ${r.id} ${S.of(context).deleted}';
+                    log('Record ${r.id} deleted');
+                    await this.bloc.delDumpedRecord(r.id);
                     Scaffold.of(context).hideCurrentSnackBar();
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                        behavior: SnackBarBehavior.floating,
-                        content: Text(message),
-                        duration: Duration(seconds: 5),
-                        action: SnackBarAction(
-                          label: S.of(context).undo,
-                          onPressed: () { },
-                        ))).closed.then((reason) async {
+                    Scaffold.of(context)
+                        .showSnackBar(SnackBar(
+                            behavior: SnackBarBehavior.floating,
+                            content: Text(message),
+                            duration: Duration(seconds: 5),
+                            action: SnackBarAction(
+                              label: S.of(context).undo,
+                              onPressed: () {},
+                            )))
+                        .closed
+                        .then((reason) async {
                       switch (reason) {
                         case SnackBarClosedReason.action:
-                        // user cancelled deletion
-                          await this.bloc.changeDumpedRecordVisibility(r.id, true);
-                          log('Record ${r.id} changed to visible');
+                          // user cancelled deletion, restore it
+                          await this
+                              .bloc
+                              .addDumpedRecord(r.data, r.time, r.config);
+                          log('Record ${r.id} restored');
                           break;
                         default:
-                          await this.bloc.delDumpedRecord(r.id);
-                          log('Record ${r.id} actually deleted');
                           break;
                       }
                     });
