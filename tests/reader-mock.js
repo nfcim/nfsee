@@ -12,6 +12,7 @@ const CardEnum = {
     TU: 1 << 9,
     VISA: 1 << 10,
     MC: 1 << 11,
+    ChinaID: 1 << 12,
     ALL: 0xFFFF,
 };
 const PresetAPDU = [
@@ -31,6 +32,10 @@ const PresetAPDU = [
 
     [CardEnum.TU, '00A4040008A00000063201010500', '6F318408A000000632010105A5259F0801029F0C1E01011000FFFFFFFF020103105170070104791381201907182040123100009000'],
     [CardEnum.TU, '00B097000B', '00000156100010000001019000'],
+
+    [CardEnum.ChinaID, '0036000008', '1122334455667788900000'],
+    [CardEnum.ChinaID, '00A40000026002', '900000'],
+    [CardEnum.ChinaID, '80B0000020', '0001302a0290090500000000000234d56be9911ee0a0443795a0056181833f11900000'],
 
     [CardEnum.CQ, '00A4040009A0000000038698070100', '6F348409A00000000386980701A5279F0801999F0C2000014000201412032099123100000000000000000000000000000000000000009000'],
     [CardEnum.CQ, '00B095001E', '0001400020141203209912310000000000000000000000000000000000009000'],
@@ -64,13 +69,14 @@ const PresetAPDU = [
     [CardEnum.ALL, '80CA9F3600', '9F360200169000'],
     [CardEnum.ALL, '80CA9F1700', '9F1701019000'],
 ];
-let MockCard = CardEnum.BJ;
+let MockCard = CardEnum.ChinaID;
 
 function poll() {
     return Promise.resolve({
-        "type": "iso7816",
+        "type": MockCard == CardEnum.ChinaID ? "" : "iso7816",
         "id": "deadbeef",
-        "standard": MockCard == CardEnum.THU ? "ISO 14443-4 (Type B)" : "ISO 14443-4 (Type A)",
+        "standard": MockCard == CardEnum.THU || MockCard == CardEnum.ChinaID ?
+            "ISO 14443-4 (Type B)" : "ISO 14443-4 (Type A)",
         "atqa": '',
         "sak": '',
         "historicalBytes": '',

@@ -32,6 +32,7 @@ enum CardType {
   TMoney,
   Octopus,
   Tsinghua,
+  ChinaResidentIDGen2,
   Unknown,
 }
 
@@ -72,6 +73,8 @@ extension CardTypeExtension on CardType {
         return S.of(context).Octopus;
       case CardType.Tsinghua:
         return S.of(context).Tsinghua;
+      case CardType.ChinaResidentIDGen2:
+        return S.of(context).ChinaResidentIDGen2;
       case CardType.Unknown:
       default:
         return S.of(context).Unknown;

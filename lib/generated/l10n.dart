@@ -407,6 +407,15 @@ class S {
     );
   }
 
+  String get ChinaResidentIDGen2 {
+    return Intl.message(
+      'China Resident ID Card',
+      name: 'ChinaResidentIDGen2',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get Unknown {
     return Intl.message(
       'Unknown',
@@ -731,6 +740,24 @@ class S {
     );
   }
 
+  String get icSerial {
+    return Intl.message(
+      'IC Serial No.',
+      name: 'icSerial',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get mgmtNumber {
+    return Intl.message(
+      'Card Management No.',
+      name: 'mgmtNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get Line1 {
     return Intl.message(
       'Line 1',
@@ -926,7 +953,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
 
   List<Locale> get supportedLocales {
     return const <Locale>[
-      Locale('en', ''), Locale('zh', ''),
+      Locale('zh', ''), Locale('en', ''),
     ];
   }
 

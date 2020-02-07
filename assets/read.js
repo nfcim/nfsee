@@ -486,7 +486,28 @@
         };
     };
 
+    let ReadChinaID = async (ic_serial) => {
+        let r = await _transceive('00A40000026002');
+        if (!r.endsWith('900000'))
+            return {};
+        r = await _transceive('80B0000020');
+        if (!r.endsWith('900000'))
+            return {};
+        const mgmt_number = r.slice(0, 32);
+        return {
+            'card_type': 'ChinaResidentIDGen2',
+            'ic_serial': ic_serial,
+            'mgmt_number': mgmt_number,
+        };
+    };
+
     let ReadAnyCard = async (tag) => {
+        // ChinaResidentID
+        if (tag.standard === "ISO 14443-3 (Type B)") {
+            let r = await _transceive('0036000008');
+            if (r.endsWith('900000'))
+                return await ReadChinaID(r.slice(0, 16));
+        }
         // TransBeijing
         let r = await _transceive('00B0840020');
         if (r.endsWith('9000') && r.startsWith('1000')) {
@@ -545,9 +566,8 @@
             'tx': apdu,
             'rx': result
         };
-        log(history);
         // append success history only
-        if (result.endsWith('9000')) {
+        if (result.endsWith('9000') || result.endsWith('900000')) {
             apdu_history.push(history);
         }
         return result;

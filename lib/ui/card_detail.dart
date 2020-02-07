@@ -73,6 +73,8 @@ class CardDetailTabState extends State<CardDetailTab> {
         return 't_money';
       case CardType.Tsinghua:
         return 'tsinghua';
+      case CardType.ChinaResidentIDGen2:
+        return 'china_id';
       default:
         return '';
     }
@@ -460,6 +462,10 @@ List<Detail> _parseCardDetails(
   addDetail('card_number', S.of(context).cardNumber, Icons.credit_card);
   // THU
   addDetail('internal_number', S.of(context).internalNumber, Icons.credit_card);
+  // China ID
+  addDetail('ic_serial', S.of(context).icSerial, Icons.sim_card);
+  // China ID
+  addDetail('mgmt_number', S.of(context).mgmtNumber, Icons.credit_card);
   // PBOC
   addDetail('name', S.of(context).holderName, Icons.person);
   // PBOC
