@@ -415,7 +415,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
       tabBar: CupertinoTabBar(
         items: [
           BottomNavigationBarItem(
-            title: Text(S.of(context).homeScreenTitle),
+            title: Text(S.of(context).scanTabTitle),
             icon: Icon(Icons.nfc),
           ),
           BottomNavigationBarItem(

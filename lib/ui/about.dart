@@ -54,6 +54,7 @@ class _AboutActState extends State<AboutAct> {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         middle: Text(S.of(context).about),
+        previousPageTitle: S.of(context).settingsTabTitle,
       ),
       child: Text(S.of(context).about),
     );
