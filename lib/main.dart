@@ -166,7 +166,8 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   }
 
   void _navigateToScriptMode() {
-    _webViewListener.cancel();
+    if(_webViewListener != null)
+      _webViewListener.cancel();
     Navigator.push(
             context, MaterialPageRoute(builder: (context) => ScriptsAct()))
         .then((_) {

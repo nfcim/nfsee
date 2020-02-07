@@ -4,20 +4,20 @@ import 'package:flutter/material.dart';
 
 import 'widgets.dart';
 
-class AboutTab extends StatefulWidget {
+class AboutAct extends StatefulWidget {
   static const title = 'About';
   static const androidIcon = Icon(Icons.info);
   static const iosIcon = Icon(Icons.info);
 
-  const AboutTab({this.androidDrawer});
+  const AboutAct({this.androidDrawer});
 
   final Widget androidDrawer;
 
   @override
-  _AboutTabState createState() => _AboutTabState();
+  _AboutActState createState() => _AboutActState();
 }
 
-class _AboutTabState extends State<AboutTab> {
+class _AboutActState extends State<AboutAct> {
   @override
   void initState() {
     super.initState();
@@ -54,7 +54,7 @@ class _AboutTabState extends State<AboutTab> {
   Widget _buildAndroid(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AboutTab.title),
+        title: Text(AboutAct.title),
         actions: [
           IconButton(
             icon: Icon(Icons.shuffle),

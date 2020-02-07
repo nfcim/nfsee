@@ -1,6 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:nfsee/data/blocs/bloc.dart';
+import 'package:nfsee/data/blocs/provider.dart';
+import 'package:nfsee/ui/about.dart';
 
 import 'widgets.dart';
 
@@ -16,6 +21,8 @@ class SettingsAct extends StatefulWidget {
 }
 
 class _SettingsActState extends State<SettingsAct> {
+  NFSeeAppBloc get bloc => BlocProvider.provideBloc(context);
+
   @override
   void initState() {
     super.initState();
@@ -50,10 +57,92 @@ class _SettingsActState extends State<SettingsAct> {
   // answer.
   // ===========================================================================
   Widget _buildAndroid(BuildContext context) {
-    // TODO(ui): scrollbar
     return Scaffold(
-      appBar: new AppBar(title: const Text(SettingsAct.title)),
-    );
+        appBar: new AppBar(title: const Text(SettingsAct.title)),
+        body: Builder(
+            builder: (outerCtx) => SafeArea(
+                    child: ListView(
+                  children: <Widget>[
+                    ListTile(
+                      leading: Icon(Icons.delete_sweep),
+                      title: Text("Delete all records/scripts"),
+                      onTap: () async {
+                        bool delRecords = false;
+                        bool delScripts = false;
+
+                        final recordCount = await bloc.countRecords();
+                        final scriptCount = await bloc.countScripts();
+
+                        showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                  title: Text("Delete"),
+                                  content: StatefulBuilder(
+                                    builder: (context, setState) => Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        CheckboxListTile(
+                                          onChanged: (v) {
+                                            setState(() {
+                                              delRecords = v;
+                                            });
+                                          },
+                                          value: delRecords,
+                                          title: Text("Records"),
+                                          subtitle: Text("Count: $recordCount"),
+                                        ),
+                                        CheckboxListTile(
+                                          onChanged: (v) {
+                                            setState(() {
+                                              delScripts = v;
+                                            });
+                                          },
+                                          value: delScripts,
+                                          title: Text("Scripts"),
+                                          subtitle: Text("Count: $scriptCount"),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  actions: <Widget>[
+                                    FlatButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text("CANCEL"),
+                                    ),
+                                    FlatButton(
+                                      onPressed: () {
+                                        if (delRecords)
+                                          bloc.delAllDumpedRecord();
+                                        if (delScripts) bloc.delAllScripts();
+                                        Navigator.of(context).pop();
+                                        Scaffold.of(outerCtx)
+                                            .showSnackBar(SnackBar(
+                                          behavior: SnackBarBehavior.floating,
+                                          content: Text("Data deleted"),
+                                          duration: Duration(seconds: 1),
+                                        ));
+                                      },
+                                      child: Text("DELETE"),
+                                    ),
+                                  ],
+                                ));
+                      },
+                    ),
+                    Divider(height: 0),
+                    ListTile(
+                      leading: Icon(Icons.info_outline),
+                      title: Text("About"),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AboutAct()));
+                      },
+                    ),
+                  ],
+                ))));
   }
 
   Widget _buildIos(BuildContext context) {

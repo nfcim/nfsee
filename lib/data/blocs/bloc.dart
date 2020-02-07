@@ -77,4 +77,12 @@ class NFSeeAppBloc {
   Future<void> delAllScripts() async {
     await db.deleteAllSavedScripts();
   }
+
+  Future<int> countRecords() async {
+    return await db.countDumpedRecords();
+  }
+
+  Future<int> countScripts() async {
+    return await db.countSavedScripts();
+  }
 }
