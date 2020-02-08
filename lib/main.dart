@@ -129,12 +129,14 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         try {
           final tag = await FlutterNfcKit.poll();
           _webView.evalJavascript("pollCallback(${jsonEncode(tag)})");
-        } catch (e) {
-          final errorMessage = 'Poll exception: ${e.toString()}';
-          log(errorMessage);
+        } on PlatformException catch (e) {
+          // no need to do anything with FlutterNfcKit, which will reset itself
+          log('Transceive error: ${e.toDetailString()}');
           _closeReadModal(this.context);
-          _scaffoldKey.currentState
-              .showSnackBar(SnackBar(content: Text(errorMessage)));
+          _scaffoldKey.currentState.showSnackBar(SnackBar(
+              content: Text('${S.of(context).readFailed}: ${e.toDetailString()}')));
+          // reject the promise
+          _webView.evalJavascript("pollErrorCallback(${e.toJsonString()})");
         }
         break;
 
@@ -142,18 +144,19 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         try {
           final rapdu = await FlutterNfcKit.transceive(scriptModel.data);
           _webView.evalJavascript("transceiveCallback('$rapdu')");
-        } catch (e) {
-          final errorMessage = 'Transceive exception: ${e.toString()}';
-          log(errorMessage);
+        } on PlatformException catch (e) {
+          // we need to explicitly finish the reader session now **in the script** to stop any following operations,
+          // otherwise a following poll might crash the entire application,
+          // because ReaderMode is still enabled, and the obselete MethodChannel.Result will be re-used.
+          log('Transceive error: ${e.toDetailString()}');
           _closeReadModal(this.context);
-          _scaffoldKey.currentState
-              .showSnackBar(SnackBar(content: Text(errorMessage)));
-          _webView.evalJavascript("transceiveErrorCallback()");
+          _scaffoldKey.currentState.showSnackBar(SnackBar(
+              content: Text('${S.of(context).readFailed}: ${e.toDetailString()}')));
+          _webView.evalJavascript("transceiveErrorCallback(${e.toJsonString()})");
         }
         break;
 
-      case 'finish':
-        await FlutterNfcKit.finish();
+      case 'report':
         _closeReadModal(this.context);
         final id = await bloc.addDumpedRecord(jsonEncode(scriptModel.data));
         this._navigateToTag(DumpedRecord(
@@ -164,8 +167,12 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         ));
         break;
 
+      case 'finish':
+        await FlutterNfcKit.finish();
+        break;
+
       case 'log':
-        log('Log from script: ${message.data.toString()}');
+        log('Log from script: ${scriptModel.data.toString()}');
         break;
 
       default:
@@ -228,7 +235,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
             this._readTag(context);
           },
           child: Icon(
-              Icons.nfc,
+            Icons.nfc,
           ),
           tooltip: S.of(context).scanTabTitle,
         ),
@@ -497,8 +504,8 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     // this._mockRead();
 
     if ((await modal) != true) {
-      // closed by user, cancel polling
-      await FlutterNfcKit.finish();
+      // closed by user, reject the promise
+      _webView.evalJavascript("pollErrorCallback()");
     }
 
     _reading = false;
@@ -533,4 +540,3 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
             )));
   }
 }
-

@@ -77,10 +77,9 @@ class _ScriptsActState extends State<ScriptsAct> {
         try {
           final tag = await FlutterNfcKit.poll();
           _webView.evalJavascript("pollCallback(${jsonEncode(tag)})");
-        } catch (e) {
-          final errorMessage = 'Poll exception: ${e.toString()}';
-          log(errorMessage);
-          _webView.evalJavascript("pollErrorCallback()");
+        } on PlatformException catch (e) {
+          log('Poll exception: ${e.toDetailString()}');
+          _webView.evalJavascript("pollErrorCallback(${e.toJsonString()})");
         }
         break;
 
@@ -88,10 +87,9 @@ class _ScriptsActState extends State<ScriptsAct> {
         try {
           final rapdu = await FlutterNfcKit.transceive(scriptModel.data);
           _webView.evalJavascript("transceiveCallback('$rapdu')");
-        } catch (e) {
-          final errorMessage = 'Transceive exception: ${e.toString()}';
-          log(errorMessage);
-          _webView.evalJavascript("transceiveErrorCallback()");
+        } on PlatformException catch (e) {
+          log('Transceive exception: ${e.toDetailString()}');
+          _webView.evalJavascript("transceiveErrorCallback(${e.toJsonString()})");
         }
         break;
 
@@ -125,7 +123,7 @@ class _ScriptsActState extends State<ScriptsAct> {
         break;
 
       case 'log':
-        log('Log from script: ${message.data.toString()}');
+        log('Log from script: ${scriptModel.data.toString()}');
         break;
 
       default:
@@ -152,7 +150,7 @@ class _ScriptsActState extends State<ScriptsAct> {
             await eval(source);
           })().catch((e) => error(e.toString())).finally(finish);
       ''');
-    } catch(e) {
+    } catch (e) {
       log(e);
     }
   }
@@ -190,33 +188,29 @@ class _ScriptsActState extends State<ScriptsAct> {
     await this.bloc.delScript(script.id);
     log('Script ${script.name} deleted');
     final message =
-        '${S
-        .of(context)
-        .script} ${script.name} ${S
-        .of(context)
-        .deleted}';
+        '${S.of(context).script} ${script.name} ${S.of(context).deleted}';
 
     if (defaultTargetPlatform == TargetPlatform.android) {
       var scaffold = Scaffold.of(context);
       scaffold.hideCurrentSnackBar();
       scaffold
           .showSnackBar(SnackBar(
-        behavior: SnackBarBehavior.floating,
-        content: Text(message),
-        duration: Duration(seconds: 5),
-        action: SnackBarAction(
-          label: S
-              .of(context)
-              .undo,
-          onPressed: () {},
-        ),
-      ))
+            behavior: SnackBarBehavior.floating,
+            content: Text(message),
+            duration: Duration(seconds: 5),
+            action: SnackBarAction(
+              label: S.of(context).undo,
+              onPressed: () {},
+            ),
+          ))
           .closed
           .then((reason) async {
         switch (reason) {
           case SnackBarClosedReason.action:
             // user cancelled deletion
-            await this.bloc.addScript(script.name, script.source, script.creationTime);
+            await this
+                .bloc
+                .addScript(script.name, script.source, script.creationTime);
             log('Script ${script.name} restored');
             break;
           default:
@@ -257,9 +251,7 @@ class _ScriptsActState extends State<ScriptsAct> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Image.asset('assets/empty.png', height: 200),
-                  Text(S
-                      .of(context)
-                      .noHistoryFound),
+                  Text(S.of(context).noHistoryFound),
                 ],
               ));
         }
@@ -271,116 +263,106 @@ class _ScriptsActState extends State<ScriptsAct> {
             padding: EdgeInsets.only(bottom: 40),
             child: ExpansionPanelList.radio(
               children: scripts
-                  .map((script) =>
-                  ExpansionPanelRadio(
-                    value: script.id,
-                    canTapOnHeader: true,
-                    headerBuilder: (context, open) =>
-                        ListTile(
-                          subtitle: Text(S
-                              .of(context)
-                              .lastExecutionTime +
+                  .map((script) => ExpansionPanelRadio(
+                        value: script.id,
+                        canTapOnHeader: true,
+                        headerBuilder: (context, open) => ListTile(
+                          subtitle: Text(S.of(context).lastExecutionTime +
                               ': ' +
                               (script.lastUsed != null
                                   ? script.lastUsed
-                                  .toString()
-                                  .split('.')[0] // remove part before ms
-                                  : S
-                                  .of(context)
-                                  .never)),
+                                      .toString()
+                                      .split('.')[0] // remove part before ms
+                                  : S.of(context).never)),
                           title: Text(script.name),
                           trailing: this.running == script.id
                               ? SizedBox(
-                            width: 24,
-                            height: 24,
-                            child:
-                            CircularProgressIndicator(strokeWidth: 3),
-                          )
+                                  width: 24,
+                                  height: 24,
+                                  child:
+                                      CircularProgressIndicator(strokeWidth: 3),
+                                )
                               : null,
                         ),
-                    body: Container(
-                      padding: EdgeInsets.only(
-                        bottom: 10,
-                        left: 20,
-                        right: 20,
-                      ),
-                      child: Column(
-                        children: <Widget>[
-                          this._getScriptResult(context, script),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
+                        body: Container(
+                          padding: EdgeInsets.only(
+                            bottom: 10,
+                            left: 20,
+                            right: 20,
+                          ),
+                          child: Column(
                             children: <Widget>[
-                              FlatButton.icon(
-                                // Disable run button if there is a script running in background
-                                  onPressed: this.running == -1
-                                      ? () async {
-                                    this._runScript(script);
-                                    await this
-                                        .bloc
-                                        .updateScriptUseTime(
-                                        script.id);
-                                  }
-                                      : null,
-                                  textTheme: ButtonTextTheme.primary,
-                                  // icon:
-                                  icon: this.running == script.id
-                                      ? Padding(
-                                      padding: EdgeInsets.all(4),
-                                      child: SizedBox(
-                                        width: 16,
-                                        height: 16,
-                                        child:
-                                        CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                          valueColor:
-                                          new AlwaysStoppedAnimation(
-                                            Theme
-                                                .of(context)
-                                                .disabledColor,
-                                          ),
-                                        ),
-                                      ))
-                                      : Icon(Icons.play_arrow),
-                                  label: Text(S
-                                      .of(context)
-                                      .run)),
-                              Expanded(child: Container()),
-                              IconButton(
-                                onPressed: () {
-                                  _showScriptDialog(script);
-                                },
-                                color: Theme.of(context).colorScheme.onSurface,
-                                icon: Icon(Icons.edit),
-                                tooltip: S.of(context).edit,
-                              ),
-                              IconButton(
-                                onPressed: () async =>
-                                    _deleteScript(context, script),
-                                color: Theme.of(context).colorScheme.onSurface,
-                                icon: Icon(Icons.delete),
-                                tooltip: S.of(context).delete,
-                              ),
-                              IconButton(
-                                onPressed: () async {
-                                  await Clipboard.setData(
-                                      ClipboardData(text: script.source));
-                                  _showMessage(context,
-                                      '${S
-                                          .of(context)
-                                          .script} ${script.name} ${S
-                                          .of(context)
-                                          .copied}');
-                                },
-                                color: Theme.of(context).colorScheme.onSurface,
-                                icon: Icon(Icons.content_copy),
-                                tooltip: S.of(context).copy
+                              this._getScriptResult(context, script),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  FlatButton.icon(
+                                      // Disable run button if there is a script running in background
+                                      onPressed: this.running == -1
+                                          ? () async {
+                                              this._runScript(script);
+                                              await this
+                                                  .bloc
+                                                  .updateScriptUseTime(
+                                                      script.id);
+                                            }
+                                          : null,
+                                      textTheme: ButtonTextTheme.primary,
+                                      // icon:
+                                      icon: this.running == script.id
+                                          ? Padding(
+                                              padding: EdgeInsets.all(4),
+                                              child: SizedBox(
+                                                width: 16,
+                                                height: 16,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                  valueColor:
+                                                      new AlwaysStoppedAnimation(
+                                                    Theme.of(context)
+                                                        .disabledColor,
+                                                  ),
+                                                ),
+                                              ))
+                                          : Icon(Icons.play_arrow),
+                                      label: Text(S.of(context).run)),
+                                  Expanded(child: Container()),
+                                  IconButton(
+                                    onPressed: () {
+                                      _showScriptDialog(script);
+                                    },
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
+                                    icon: Icon(Icons.edit),
+                                    tooltip: S.of(context).edit,
+                                  ),
+                                  IconButton(
+                                    onPressed: () async =>
+                                        _deleteScript(context, script),
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
+                                    icon: Icon(Icons.delete),
+                                    tooltip: S.of(context).delete,
+                                  ),
+                                  IconButton(
+                                      onPressed: () async {
+                                        await Clipboard.setData(
+                                            ClipboardData(text: script.source));
+                                        _showMessage(context,
+                                            '${S.of(context).script} ${script.name} ${S.of(context).copied}');
+                                      },
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface,
+                                      icon: Icon(Icons.content_copy),
+                                      tooltip: S.of(context).copy),
+                                ],
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                  ))
+                        ),
+                      ))
                   .toList(),
             ));
       },
@@ -397,7 +379,8 @@ class _ScriptsActState extends State<ScriptsAct> {
     } else {
       log("Modifying script: ${this.currentName}");
       await this.bloc.updateScriptContent(
-          this.currentId, this.currentName == '' ? 'Script' : this.currentName,
+          this.currentId,
+          this.currentName == '' ? 'Script' : this.currentName,
           this.currentSource);
     }
 
@@ -412,33 +395,29 @@ class _ScriptsActState extends State<ScriptsAct> {
   Widget _buildAddScriptDialogContent() {
     return SingleChildScrollView(
         child: ListBody(children: <Widget>[
-          TextFormField(
-            initialValue: this.currentName,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: S
-                  .of(context)
-                  .name,
-            ),
-            maxLines: 1,
-            onChanged: (cont) {
-              this.currentName = cont;
-            },
-          ),
-          SizedBox(height: 10),
-          TextFormField(
-            initialValue: this.currentSource,
-            decoration: InputDecoration(
-                border: OutlineInputBorder(), hintText: S
-                .of(context)
-                .code),
-            minLines: 3,
-            maxLines: null,
-            onChanged: (cont) {
-              this.currentSource = cont;
-            },
-          )
-        ]));
+      TextFormField(
+        initialValue: this.currentName,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          hintText: S.of(context).name,
+        ),
+        maxLines: 1,
+        onChanged: (cont) {
+          this.currentName = cont;
+        },
+      ),
+      SizedBox(height: 10),
+      TextFormField(
+        initialValue: this.currentSource,
+        decoration: InputDecoration(
+            border: OutlineInputBorder(), hintText: S.of(context).code),
+        minLines: 3,
+        maxLines: null,
+        onChanged: (cont) {
+          this.currentSource = cont;
+        },
+      )
+    ]));
   }
 
   void _showScriptDialog([SavedScript script]) {
@@ -466,11 +445,9 @@ class _ScriptsActState extends State<ScriptsAct> {
         barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
-            title: Text(id == -1 ? S
-                .of(context)
-                .addScript : S
-                .of(context)
-                .modifyScript),
+            title: Text(id == -1
+                ? S.of(context).addScript
+                : S.of(context).modifyScript),
             content: _buildAddScriptDialogContent(),
             actions: <Widget>[
               FlatButton(
@@ -478,7 +455,8 @@ class _ScriptsActState extends State<ScriptsAct> {
                 onPressed: _addOrModifyScript,
               ),
               FlatButton(
-                child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+                child:
+                    Text(MaterialLocalizations.of(context).cancelButtonLabel),
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop();
                 },
@@ -497,9 +475,7 @@ class _ScriptsActState extends State<ScriptsAct> {
         context: context,
         builder: (context) {
           return CupertinoAlertDialog(
-            title: Text(S
-                .of(context)
-                .addScript),
+            title: Text(S.of(context).addScript),
             content: _buildAddScriptDialogContent(),
             actions: <Widget>[
               CupertinoButton(
@@ -507,7 +483,8 @@ class _ScriptsActState extends State<ScriptsAct> {
                 onPressed: _addOrModifyScript,
               ),
               CupertinoButton(
-                child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+                child:
+                    Text(MaterialLocalizations.of(context).cancelButtonLabel),
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop();
                 },
@@ -519,9 +496,7 @@ class _ScriptsActState extends State<ScriptsAct> {
 
   Widget _buildAndroid(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(S
-          .of(context)
-          .scriptTabTitle)),
+      appBar: AppBar(title: Text(S.of(context).scriptTabTitle)),
 //      bottomNavigationBar: BottomAppBar(
 //        color: Colors.orange[500],
 //        shape: CircularNotchedRectangle(),
@@ -551,9 +526,7 @@ class _ScriptsActState extends State<ScriptsAct> {
   Widget _buildIos(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: Text(S
-            .of(context)
-            .scriptTabTitle),
+        middle: Text(S.of(context).scriptTabTitle),
         trailing: CupertinoButton(
           padding: EdgeInsets.zero,
           child: Icon(CupertinoIcons.create),
@@ -585,9 +558,8 @@ class _ScriptsActState extends State<ScriptsAct> {
         child: SelectableText(
           result,
           style: TextStyle(
-            color: error
-            ? Colors.red
-            : Theme.of(context).colorScheme.onSurface),
+              color:
+                  error ? Colors.red : Theme.of(context).colorScheme.onSurface),
         ),
       );
     }
@@ -597,13 +569,9 @@ class _ScriptsActState extends State<ScriptsAct> {
       margin: EdgeInsets.only(bottom: 10),
       child: Center(
           child: Text(
-            S
-                .of(context)
-                .pressRun,
-            style: TextStyle(color: Theme
-                .of(context)
-                .disabledColor),
-          )),
+        S.of(context).pressRun,
+        style: TextStyle(color: Theme.of(context).disabledColor),
+      )),
     );
   }
 }

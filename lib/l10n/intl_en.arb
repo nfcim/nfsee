@@ -4,6 +4,7 @@
   "settingsTabTitle": "Settings",
   "homeScreenTitle": "NFSee",
   "waitForCard": "Waiting for card...",
+  "readFailed": "Reading card failed",
   "noHistoryFound": "No history found",
   "cardName": "Card name",
   "lastExecutionTime": "Last execution time",

@@ -112,6 +112,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "privacyPolicyContent" : MessageLookupByLibrary.simpleMessage("assets/html/privacy_policy.en.html"),
     "provinceCode" : MessageLookupByLibrary.simpleMessage("Province Code"),
     "rawData" : MessageLookupByLibrary.simpleMessage(" Raw data"),
+    "readFailed" : MessageLookupByLibrary.simpleMessage("Reading card failed"),
     "record" : MessageLookupByLibrary.simpleMessage("Record"),
     "recordCount" : MessageLookupByLibrary.simpleMessage("record(s)"),
     "run" : MessageLookupByLibrary.simpleMessage("RUN"),

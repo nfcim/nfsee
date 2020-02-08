@@ -74,6 +74,15 @@ class S {
     );
   }
 
+  String get readFailed {
+    return Intl.message(
+      'Reading card failed',
+      name: 'readFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get noHistoryFound {
     return Intl.message(
       'No history found',
@@ -1052,7 +1061,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
 
   List<Locale> get supportedLocales {
     return const <Locale>[
-      Locale('zh', ''), Locale('en', ''),
+      Locale('en', ''), Locale('zh', ''),
     ];
   }
 

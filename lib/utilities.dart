@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import 'generated/l10n.dart';
@@ -26,10 +29,30 @@ T getEnumFromString<T>(Iterable<T> values, String value) {
       orElse: () => null);
 }
 
+extension PlatformExceptionExtension on PlatformException {
+  Map<String, dynamic> asMap() {
+    return {
+      "code": this.code,
+      "message": this.message,
+      "details": this.details.toString()
+    };
+  }
+
+  String toJsonString() => jsonEncode(this.asMap());
+
+  String toDetailString() {
+    var result = '${this.code} ${this.message}';
+    if (this.details != null) {
+       result += ' (${this.details.toString()})';
+    }
+    return result;
+  }
+}
+
+
 enum WebViewOwner { Main, Script }
 
 WebViewOwner webviewOwner = WebViewOwner.Main;
-
 
 List<Detail> parseTransactionDetails(
     Map<String, dynamic> _data, BuildContext context) {
@@ -52,7 +75,7 @@ List<Detail> parseTransactionDetails(
       'subway_exit',
       S.of(context).subwayExit,
       Icons.subway,
-          (s) => (getEnumFromString<BeijingSubway>(BeijingSubway.values, s))
+      (s) => (getEnumFromString<BeijingSubway>(BeijingSubway.values, s))
           .getName(context));
   addDetail('type', S.of(context).type);
   addDetail('country_code', S.of(context).countryCode, Icons.map);
@@ -61,11 +84,11 @@ List<Detail> parseTransactionDetails(
 
   // all remaining data, clone to avoid concurrent modificationL
   final remain = {}..addAll(data);
-  remain.forEach((k, _) => addDetail(k, '${S.of(context).rawData}: $k', Icons.error));
+  remain.forEach(
+      (k, _) => addDetail(k, '${S.of(context).rawData}: $k', Icons.error));
 
   return details;
 }
-
 
 List<Detail> parseCardDetails(
     Map<String, dynamic> _data, BuildContext context) {
@@ -91,8 +114,8 @@ List<Detail> parseCardDetails(
   // PBOC
   addDetail('name', S.of(context).holderName, Icons.person);
   // PBOC
-  addDetail(
-      'balance', S.of(context).balance, Icons.account_balance, formatTransactionBalance);
+  addDetail('balance', S.of(context).balance, Icons.account_balance,
+      formatTransactionBalance);
   // T Union
   addDetail('province_code', S.of(context).provinceCode, Icons.home);
   // T Union
@@ -100,14 +123,14 @@ List<Detail> parseCardDetails(
   // City Union / TUnion
   addDetail('city', S.of(context).city, Icons.home);
   // City Union
-  addDetail(
-      'issue_date', S.of(context).issueDate, Icons.calendar_today, formatTransactionDate);
+  addDetail('issue_date', S.of(context).issueDate, Icons.calendar_today,
+      formatTransactionDate);
   // PBOC
   addDetail('expiry_date', S.of(context).expiryDate, Icons.calendar_today,
       formatTransactionDate);
   // THU
-  addDetail('display_expiry_date', S.of(context).displayExpiryDate, Icons.calendar_today,
-      formatTransactionDate);
+  addDetail('display_expiry_date', S.of(context).displayExpiryDate,
+      Icons.calendar_today, formatTransactionDate);
   // PPSE
   addDetail('expiration', S.of(context).validUntil, Icons.calendar_today);
   // PBOC
@@ -122,11 +145,11 @@ List<Detail> parseCardDetails(
   addDetail('pin_retry', S.of(context).pinRetry, Icons.lock);
   // all remaining data, clone to avoid concurrent modification
   final remain = {}..addAll(data);
-  remain.forEach((k, _) => addDetail(k, '${S.of(context).rawData}: $k', Icons.error));
+  remain.forEach(
+      (k, _) => addDetail(k, '${S.of(context).rawData}: $k', Icons.error));
 
   return details;
 }
-
 
 void _addDetail(Map<dynamic, dynamic> data, List<Detail> details,
     String fieldName, String parsedName,
@@ -143,8 +166,6 @@ void _addDetail(Map<dynamic, dynamic> data, List<Detail> details,
     data.remove(fieldName);
   }
 }
-
-
 
 String parseTechnologicalDetailKey(String key) {
   switch (key) {
@@ -176,4 +197,3 @@ String parseTechnologicalDetailKey(String key) {
       return key;
   }
 }
-

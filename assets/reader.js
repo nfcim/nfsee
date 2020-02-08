@@ -33,9 +33,9 @@ const returnDataToPendingPromise = (data) => {
   }
 };
 
-const rejectPendingPromise = () => {
+const rejectPendingPromise = (e) => {
   if (pendingPromise) {
-    pendingPromise[1]();
+    pendingPromise[1](e);
     pendingPromise = null;
   }
 };

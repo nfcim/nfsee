@@ -555,9 +555,6 @@
         return { 'card_type': 'Unknown' };
     };
 
-    // poll a tag
-    const tag = await poll();
-    log(tag);
     // record APDU history
     let apdu_history = [];
     const _transceive = async (apdu) => {
@@ -572,14 +569,24 @@
         }
         return result;
     };
-    // read detailed information
-    let { card_type, ...detail } = await ReadAnyCard(tag);
-    // return to invoker
-    const result = {
-        tag,
-        card_type,
-        detail,
-        apdu_history
-    };
-    finish(result);
+
+    try {
+        // poll a tag
+        const tag = await poll();
+        log(tag);
+        // read detailed information
+        let { card_type, ...detail } = await ReadAnyCard(tag);
+        // return to invoker
+        const result = {
+            tag,
+            card_type,
+            detail,
+            apdu_history
+        };
+        report(result);
+    } catch (e) { 
+        log(`Script error: ${JSON.stringify(e)}`);
+    } finally {
+        finish();
+    }
 })();

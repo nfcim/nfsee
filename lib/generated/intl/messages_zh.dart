@@ -112,6 +112,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "privacyPolicyContent" : MessageLookupByLibrary.simpleMessage("assets/html/privacy_policy.zh.html"),
     "provinceCode" : MessageLookupByLibrary.simpleMessage("省市代码"),
     "rawData" : MessageLookupByLibrary.simpleMessage("其他数据"),
+    "readFailed" : MessageLookupByLibrary.simpleMessage("读卡失败"),
     "record" : MessageLookupByLibrary.simpleMessage("记录"),
     "recordCount" : MessageLookupByLibrary.simpleMessage("条记录"),
     "run" : MessageLookupByLibrary.simpleMessage("运行"),
