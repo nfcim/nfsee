@@ -211,7 +211,7 @@
         if (rapdu.endsWith('9000'))
             balance = parseInt(rapdu.slice(0, 8), 16) % 0x80000000;
         for (let i = 1; i <= 10; i++) {
-            const apdu = buf2hex(Uint8Array.from([0, 0xB2, i, 0xC4, 0]));
+            const apdu = buf2hex(Uint8Array.from([0, 0xB2, i, 0xC4, 0x17]));
             rapdu = await _transceive(apdu);
             if (!rapdu.endsWith('9000'))
                 break;
@@ -227,7 +227,7 @@
             });
         }
         let load_atc = undefined;
-        rapdu = await _transceive(`8050000${usage}0B0100000001000000000000`);
+        rapdu = await _transceive(`8050000${usage}0B010000000100000000000010`);
         if (rapdu.endsWith('9000'))
             load_atc = parseInt(rapdu.slice(8, 12), 16);
         return [balance, purchase_atc, load_atc, trans];
@@ -290,7 +290,7 @@
         let mf = await _transceive('00A40000023F00');
         if (!mf.endsWith('9000'))
             return {};
-        let f15 = await _transceive('00B0950000');
+        let f15 = await _transceive('00B095001C');
         if (!f15.endsWith('9000'))
             return {};
         let f0a = await _transceive('00B08A0005');
@@ -323,7 +323,7 @@
             let mf = await _transceive('00A40000023F00');
             if (!mf.endsWith('9000'))
                 return {};
-            f15 = await _transceive('00B0850000');
+            f15 = await _transceive('00B0850030');
             if (!f15.endsWith('9000'))
                 return {};
         }
