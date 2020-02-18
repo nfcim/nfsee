@@ -1,0 +1,3 @@
+assets/ber-tlv.js linguist-vendored
+assets/crypto-js.js linguist-vendored
+lib/generated/** linguist-generated=true
