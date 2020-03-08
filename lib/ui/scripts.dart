@@ -17,7 +17,8 @@ import 'package:nfsee/data/database/database.dart';
 import 'package:nfsee/generated/l10n.dart';
 import 'package:nfsee/models.dart';
 import 'package:nfsee/utilities.dart';
-import 'package:nfsee/ui/widgets.dart';
+
+import 'widgets.dart';
 
 class ScriptsAct extends StatefulWidget {
   static const androidIcon = Icon(Icons.code);
@@ -91,7 +92,8 @@ class _ScriptsActState extends State<ScriptsAct> {
           _webView.evalJavascript("transceiveCallback('$rapdu')");
         } on PlatformException catch (e) {
           log('Transceive exception: ${e.toDetailString()}');
-          _webView.evalJavascript("transceiveErrorCallback(${e.toJsonString()})");
+          _webView
+              .evalJavascript("transceiveErrorCallback(${e.toJsonString()})");
         }
         break;
 
@@ -507,10 +509,12 @@ class _ScriptsActState extends State<ScriptsAct> {
           IconButton(
             icon: const Icon(Icons.help),
             tooltip: S.of(context).help,
-            onPressed: () {launch('https://nfsee.nfc.im/js-extension/');},
+            onPressed: () {
+              launch('https://nfsee.nfc.im/js-extension/');
+            },
           ),
         ],
-        ),
+      ),
 //      bottomNavigationBar: BottomAppBar(
 //        color: Colors.orange[500],
 //        shape: CircularNotchedRectangle(),

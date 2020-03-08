@@ -7,21 +7,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:interactive_webview/interactive_webview.dart';
+
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';
 import 'package:nfsee/data/database/database.dart';
+import 'package:nfsee/generated/l10n.dart';
 import 'package:nfsee/models.dart';
-import 'package:nfsee/ui/card_detail.dart';
 import 'package:nfsee/utilities.dart';
-
-import 'ui/scripts.dart';
-import 'ui/settings.dart';
-import 'ui/widgets.dart';
-
-import 'generated/l10n.dart';
+import 'package:nfsee/ui/card_detail.dart';
+import 'package:nfsee/ui/scripts.dart';
+import 'package:nfsee/ui/settings.dart';
+import 'package:nfsee/ui/widgets.dart';
 
 void main() => runApp(NFSeeApp());
 
@@ -134,7 +134,8 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           log('Transceive error: ${e.toDetailString()}');
           _closeReadModal(this.context);
           _scaffoldKey.currentState.showSnackBar(SnackBar(
-              content: Text('${S.of(context).readFailed}: ${e.toDetailString()}')));
+              content:
+                  Text('${S.of(context).readFailed}: ${e.toDetailString()}')));
           // reject the promise
           _webView.evalJavascript("pollErrorCallback(${e.toJsonString()})");
         }
@@ -151,8 +152,10 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           log('Transceive error: ${e.toDetailString()}');
           _closeReadModal(this.context);
           _scaffoldKey.currentState.showSnackBar(SnackBar(
-              content: Text('${S.of(context).readFailed}: ${e.toDetailString()}')));
-          _webView.evalJavascript("transceiveErrorCallback(${e.toJsonString()})");
+              content:
+                  Text('${S.of(context).readFailed}: ${e.toDetailString()}')));
+          _webView
+              .evalJavascript("transceiveErrorCallback(${e.toJsonString()})");
         }
         break;
 

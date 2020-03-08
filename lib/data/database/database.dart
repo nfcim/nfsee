@@ -3,9 +3,10 @@ import 'dart:io';
 
 import 'package:moor/moor.dart';
 import 'package:moor_ffi/moor_ffi.dart';
-import 'package:nfsee/models.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
+
+import 'package:nfsee/models.dart';
 
 part 'database.g.dart';
 
