@@ -89,8 +89,8 @@ class _AboutActState extends State<AboutAct> {
               height: 0,
             ),
             ListTile(
-              title: Text(S.of(context).thirdPartyLicense),
-              onTap: () => launchAssetPage(S.of(context).thirdPartyLicense,
+              title: Text(S.of(context).openSourceLicenses),
+              onTap: () => launchAssetPage(S.of(context).openSourceLicenses,
                   S.of(context).thirdPartyLicenseContent),
             ),
             Divider(
