@@ -505,7 +505,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
     if ((await modal) != true) {
       // closed by user, reject the promise
-      _webView.evalJavascript("pollErrorCallback()");
+      _webView.evalJavascript("pollErrorCallback('User cancelled operation')");
     }
 
     _reading = false;
