@@ -22,7 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "AMEX" : MessageLookupByLibrary.simpleMessage("美国运通卡"),
-    "ATC" : MessageLookupByLibrary.simpleMessage("应用交易计数器"),
+    "ATC" : MessageLookupByLibrary.simpleMessage("交易计数器"),
     "Authorization" : MessageLookupByLibrary.simpleMessage("授权"),
     "BMAC" : MessageLookupByLibrary.simpleMessage("北京一卡通"),
     "BalanceInquiry" : MessageLookupByLibrary.simpleMessage("查询余额"),
@@ -73,7 +73,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "about" : MessageLookupByLibrary.simpleMessage("关于"),
     "addScript" : MessageLookupByLibrary.simpleMessage("添加脚本"),
     "amountOther" : MessageLookupByLibrary.simpleMessage("其他金额"),
-    "apduLogs" : MessageLookupByLibrary.simpleMessage("APDU 日志"),
+    "apduLogs" : MessageLookupByLibrary.simpleMessage("通信日志"),
     "balance" : MessageLookupByLibrary.simpleMessage("余额"),
     "cardName" : MessageLookupByLibrary.simpleMessage("卡片名称"),
     "cardNumber" : MessageLookupByLibrary.simpleMessage("卡号"),
@@ -98,7 +98,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "homepage" : MessageLookupByLibrary.simpleMessage("主页"),
     "icSerial" : MessageLookupByLibrary.simpleMessage("芯片序列号"),
     "internalNumber" : MessageLookupByLibrary.simpleMessage("内部卡号"),
-    "issueDate" : MessageLookupByLibrary.simpleMessage("颁发日期"),
+    "issueDate" : MessageLookupByLibrary.simpleMessage("发行日期"),
     "lastExecutionTime" : MessageLookupByLibrary.simpleMessage("上次执行时间"),
     "mgmtNumber" : MessageLookupByLibrary.simpleMessage("卡体管理号"),
     "modifyScript" : MessageLookupByLibrary.simpleMessage("修改脚本"),

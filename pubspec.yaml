@@ -1,7 +1,7 @@
 name: nfsee
 description: An NFC data dumper.
 
-version: 2.0.0+2
+version: 2.0.0+3
 
 environment:
   sdk: ">=2.6.0 <3.0.0"
@@ -11,7 +11,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  flutter_nfc_kit: "^1.0.0"
+  flutter_nfc_kit: "^1.0.1"
   interactive_webview: "^0.1.2"
   cupertino_icons: "^0.1.3"
   moor: "^2.3.0"

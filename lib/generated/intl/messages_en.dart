@@ -22,7 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "AMEX" : MessageLookupByLibrary.simpleMessage("American Express"),
-    "ATC" : MessageLookupByLibrary.simpleMessage("Application Transaction Counter"),
+    "ATC" : MessageLookupByLibrary.simpleMessage("Transaction Counter"),
     "Authorization" : MessageLookupByLibrary.simpleMessage("Authorization"),
     "BMAC" : MessageLookupByLibrary.simpleMessage("Beijing Yikatong"),
     "BalanceInquiry" : MessageLookupByLibrary.simpleMessage("Balance Inquiry"),
@@ -73,7 +73,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "about" : MessageLookupByLibrary.simpleMessage("About"),
     "addScript" : MessageLookupByLibrary.simpleMessage("Add script"),
     "amountOther" : MessageLookupByLibrary.simpleMessage("Amount, Other"),
-    "apduLogs" : MessageLookupByLibrary.simpleMessage("APDU Logs"),
+    "apduLogs" : MessageLookupByLibrary.simpleMessage("Communication Logs"),
     "balance" : MessageLookupByLibrary.simpleMessage("Balance"),
     "cardName" : MessageLookupByLibrary.simpleMessage("Card name"),
     "cardNumber" : MessageLookupByLibrary.simpleMessage("Card Number"),

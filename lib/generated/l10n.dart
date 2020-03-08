@@ -535,7 +535,7 @@ class S {
 
   String get apduLogs {
     return Intl.message(
-      'APDU Logs',
+      'Communication Logs',
       name: 'apduLogs',
       desc: '',
       args: [],
@@ -652,7 +652,7 @@ class S {
 
   String get ATC {
     return Intl.message(
-      'Application Transaction Counter',
+      'Transaction Counter',
       name: 'ATC',
       desc: '',
       args: [],
