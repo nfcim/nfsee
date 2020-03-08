@@ -112,5 +112,6 @@
   "thirdPartyLicense": "Third-Party Open Source License",
   "contactUs": "Contact Us",
   "privacyPolicyContent": "assets/html/privacy_policy.en.html",
-  "thirdPartyLicenseContent": "assets/html/third_party_license.html"
+  "thirdPartyLicenseContent": "assets/html/third_party_license.html",
+  "help": "Help"
 }

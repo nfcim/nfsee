@@ -93,6 +93,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "displayExpiryDate" : MessageLookupByLibrary.simpleMessage("Expiry Date on Card"),
     "edit" : MessageLookupByLibrary.simpleMessage("Edit"),
     "expiryDate" : MessageLookupByLibrary.simpleMessage("Expiry Date"),
+    "help" : MessageLookupByLibrary.simpleMessage("Help"),
     "holderName" : MessageLookupByLibrary.simpleMessage("Holder Name"),
     "homeScreenTitle" : MessageLookupByLibrary.simpleMessage("NFSee"),
     "homepage" : MessageLookupByLibrary.simpleMessage("Home Page"),

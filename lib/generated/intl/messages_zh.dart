@@ -93,6 +93,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "displayExpiryDate" : MessageLookupByLibrary.simpleMessage("卡面有效期"),
     "edit" : MessageLookupByLibrary.simpleMessage("编辑"),
     "expiryDate" : MessageLookupByLibrary.simpleMessage("有效期"),
+    "help" : MessageLookupByLibrary.simpleMessage("帮助"),
     "holderName" : MessageLookupByLibrary.simpleMessage("持有者姓名"),
     "homeScreenTitle" : MessageLookupByLibrary.simpleMessage("NFSee"),
     "homepage" : MessageLookupByLibrary.simpleMessage("主页"),

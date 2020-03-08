@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -7,8 +5,7 @@ import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:nfsee/generated/l10n.dart';
-
-import 'widgets.dart';
+import 'package:nfsee/ui/widgets.dart';
 
 class AboutAct extends StatefulWidget {
 
