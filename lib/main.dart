@@ -499,7 +499,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         builder: this._buildReadModal,
       );
     } else {
-      modal = Future.value();
+      modal = Future.value(true);
     }
 
     final script = await rootBundle.loadString('assets/read.js');

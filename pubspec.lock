@@ -210,9 +210,11 @@ packages:
   flutter_nfc_kit:
     dependency: "direct main"
     description:
-      name: flutter_nfc_kit
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "5d97d75985f6c7a59897926ce82d9d59f2ac537a"
+      url: "https://github.com/nfcim/flutter_nfc_kit.git"
+    source: git
     version: "1.0.2"
   flutter_test:
     dependency: "direct dev"
