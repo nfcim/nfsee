@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
-import 'generated/l10n.dart';
-import 'models.dart';
+import 'package:nfsee/generated/l10n.dart';
+import 'package:nfsee/models.dart';
 
 String formatTransactionDate(String raw) {
   return "${raw.substring(0, 4)}-${raw.substring(4, 6)}-${raw.substring(6, 8)}";
@@ -43,12 +43,11 @@ extension PlatformExceptionExtension on PlatformException {
   String toDetailString() {
     var result = '${this.code} ${this.message}';
     if (this.details != null) {
-       result += ' (${this.details.toString()})';
+      result += ' (${this.details.toString()})';
     }
     return result;
   }
 }
-
 
 enum WebViewOwner { Main, Script }
 

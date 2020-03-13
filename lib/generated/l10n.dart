@@ -535,7 +535,7 @@ class S {
 
   String get apduLogs {
     return Intl.message(
-      'APDU Logs',
+      'Communication Logs',
       name: 'apduLogs',
       desc: '',
       args: [],
@@ -652,7 +652,7 @@ class S {
 
   String get ATC {
     return Intl.message(
-      'Application Transaction Counter',
+      'Transaction Counter',
       name: 'ATC',
       desc: '',
       args: [],
@@ -1019,10 +1019,10 @@ class S {
     );
   }
 
-  String get thirdPartyLicense {
+  String get openSourceLicenses {
     return Intl.message(
-      'Third-Party Open Source License',
-      name: 'thirdPartyLicense',
+      'Open Source Licenses',
+      name: 'openSourceLicenses',
       desc: '',
       args: [],
     );
@@ -1050,6 +1050,15 @@ class S {
     return Intl.message(
       'assets/html/third_party_license.html',
       name: 'thirdPartyLicenseContent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get help {
+    return Intl.message(
+      'Help',
+      name: 'help',
       desc: '',
       args: [],
     );

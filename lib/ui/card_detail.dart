@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';
 import 'package:nfsee/generated/l10n.dart';
+import 'package:nfsee/models.dart';
+import "package:nfsee/utilities.dart";
 
-import '../models.dart';
 import 'widgets.dart';
-import "../utilities.dart";
 
 class CardDetailTab extends StatefulWidget {
   const CardDetailTab({this.data, this.config, this.id, this.time});
@@ -18,15 +19,15 @@ class CardDetailTab extends StatefulWidget {
 
   @override
   CardDetailTabState createState() => CardDetailTabState(
-    data: this.data,
-    config: this.config,
-    id: this.id,
-    time: this.time,
-  );
+        data: this.data,
+        config: this.config,
+        id: this.id,
+        time: this.time,
+      );
 }
 
 class CardDetailTabState extends State<CardDetailTab> {
-  CardDetailTabState({ this.data, this.config, this.id, this.time });
+  CardDetailTabState({this.data, this.config, this.id, this.time});
 
   final dynamic data;
   final dynamic config;
@@ -97,7 +98,6 @@ class CardDetailTabState extends State<CardDetailTab> {
               ),
               maxLines: 1,
               initialValue: config["name"] ?? "",
-
               onChanged: (cont) {
                 this.pendingName = cont;
               },
@@ -109,7 +109,7 @@ class CardDetailTabState extends State<CardDetailTab> {
             child: Text(MaterialLocalizations.of(context).okButtonLabel),
             onPressed: () {
               setState(() {
-                if(this.pendingName == "") {
+                if (this.pendingName == "") {
                   this.config["name"] = null;
                 } else {
                   this.config["name"] = this.pendingName;
@@ -227,7 +227,8 @@ class CardDetailTabState extends State<CardDetailTab> {
               title: Text(S.of(context).transactionHistory),
               subtitle: transferTiles == null
                   ? Text(S.of(context).notSupported)
-                  : Text("${transferTiles.length} ${S.of(context).recordCount}"),
+                  : Text(
+                      "${transferTiles.length} ${S.of(context).recordCount}"),
             );
           },
           body: Column(
@@ -322,4 +323,3 @@ class CardDetailTabState extends State<CardDetailTab> {
     );
   }
 }
-

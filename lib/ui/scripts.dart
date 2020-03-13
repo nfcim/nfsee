@@ -6,15 +6,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:interactive_webview/interactive_webview.dart';
 
-import '../data/blocs/bloc.dart';
-import '../data/blocs/provider.dart';
-import '../data/database/database.dart';
-import '../generated/l10n.dart';
-import '../models.dart';
-import '../utilities.dart';
+import 'package:nfsee/data/blocs/bloc.dart';
+import 'package:nfsee/data/blocs/provider.dart';
+import 'package:nfsee/data/database/database.dart';
+import 'package:nfsee/generated/l10n.dart';
+import 'package:nfsee/models.dart';
+import 'package:nfsee/utilities.dart';
+
 import 'widgets.dart';
 
 class ScriptsAct extends StatefulWidget {
@@ -89,7 +92,8 @@ class _ScriptsActState extends State<ScriptsAct> {
           _webView.evalJavascript("transceiveCallback('$rapdu')");
         } on PlatformException catch (e) {
           log('Transceive exception: ${e.toDetailString()}');
-          _webView.evalJavascript("transceiveErrorCallback(${e.toJsonString()})");
+          _webView
+              .evalJavascript("transceiveErrorCallback(${e.toJsonString()})");
         }
         break;
 
@@ -370,6 +374,9 @@ class _ScriptsActState extends State<ScriptsAct> {
   }
 
   void _addOrModifyScript() async {
+    if (this.currentSource == '') {
+      return;
+    }
     if (this.currentId == -1) {
       log("Adding script: ${this.currentName}");
 
@@ -451,15 +458,15 @@ class _ScriptsActState extends State<ScriptsAct> {
             content: _buildAddScriptDialogContent(),
             actions: <Widget>[
               FlatButton(
-                child: Text(MaterialLocalizations.of(context).okButtonLabel),
-                onPressed: _addOrModifyScript,
-              ),
-              FlatButton(
                 child:
                     Text(MaterialLocalizations.of(context).cancelButtonLabel),
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop();
                 },
+              ),
+              FlatButton(
+                child: Text(MaterialLocalizations.of(context).okButtonLabel),
+                onPressed: _addOrModifyScript,
               ),
             ],
           );
@@ -496,7 +503,18 @@ class _ScriptsActState extends State<ScriptsAct> {
 
   Widget _buildAndroid(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(S.of(context).scriptTabTitle)),
+      appBar: AppBar(
+        title: Text(S.of(context).scriptTabTitle),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.help),
+            tooltip: S.of(context).help,
+            onPressed: () {
+              launch('https://nfsee.nfc.im/js-extension/');
+            },
+          ),
+        ],
+      ),
 //      bottomNavigationBar: BottomAppBar(
 //        color: Colors.orange[500],
 //        shape: CircularNotchedRectangle(),

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -11,13 +9,11 @@ import 'package:nfsee/generated/l10n.dart';
 import 'widgets.dart';
 
 class AboutAct extends StatefulWidget {
-
   @override
   _AboutActState createState() => _AboutActState();
 }
 
 class _AboutActState extends State<AboutAct> {
-
   var _projectVersion = "";
   var _projectCode = "";
   var _appId = "";
@@ -43,73 +39,70 @@ class _AboutActState extends State<AboutAct> {
         context,
         MaterialPageRoute(
             builder: (context) => WebViewTab(
-              title: title,
-              assetUrl: url,
-            )));
+                  title: title,
+                  assetUrl: url,
+                )));
   }
 
   Widget _buildAboutBody() {
     initVersions();
     return Builder(
       builder: (outerContext) => SafeArea(
-        child: Padding(
-          padding: EdgeInsets.only(top: 24, bottom: 24),
-          child: Center(
-              child: Column(
-              children: <Widget>[
-                Image.asset(
-                    'assets/icons/icon_square.png',
-                    width: 100
-                ),
-                Text(
-                    _appName,
-                  style: Theme.of(context).textTheme.title,
-                ),
-                Text(
-                  _appId,
-                  style: Theme.of(context).textTheme.body1,
-                ),
-                Text(
-                  '$_projectVersion ($_projectCode)',
-                  style: Theme.of(context).textTheme.body1,
-                ),
-                ListTile(
-                  title: Text(S.of(context).homepage),
-                  onTap: () => launch('https://nfsee.nfc.im'),
-                ),
-                Divider(
-                  height: 0,
-                ),
-                ListTile(
-                  title: Text(S.of(context).sourceCode),
-                  onTap: () => launch('https://github.com/nfcim/nfsee'),
-                ),
-                Divider(
-                  height: 0,
-                ),
-                ListTile(
-                  title: Text(S.of(context).privacyPolicy),
-                  onTap: () => launchAssetPage(S.of(context).privacyPolicy, S.of(context).privacyPolicyContent),
-                ),
-                Divider(
-                  height: 0,
-                ),
-                ListTile(
-                  title: Text(S.of(context).thirdPartyLicense),
-                  onTap: () => launchAssetPage(S.of(context).thirdPartyLicense, S.of(context).thirdPartyLicenseContent),
-                ),
-                Divider(
-                  height: 0,
-                ),
-                ListTile(
-                  title: Text(S.of(context).contactUs),
-                  onTap: () => launch('mailto:nfsee@nfc.im'),
-                )
-              ],
+          child: Padding(
+        padding: EdgeInsets.only(top: 24, bottom: 24),
+        child: Center(
+            child: Column(
+          children: <Widget>[
+            Image.asset('assets/icons/icon_square.png', width: 100),
+            Text(
+              _appName,
+              style: Theme.of(context).textTheme.title,
+            ),
+            Text(
+              _appId,
+              style: Theme.of(context).textTheme.body1,
+            ),
+            Text(
+              '$_projectVersion ($_projectCode)',
+              style: Theme.of(context).textTheme.body1,
+            ),
+            ListTile(
+              title: Text(S.of(context).homepage),
+              onTap: () => launch('https://nfsee.nfc.im'),
+            ),
+            Divider(
+              height: 0,
+            ),
+            ListTile(
+              title: Text(S.of(context).sourceCode),
+              onTap: () => launch('https://github.com/nfcim/nfsee'),
+            ),
+            Divider(
+              height: 0,
+            ),
+            ListTile(
+              title: Text(S.of(context).privacyPolicy),
+              onTap: () => launchAssetPage(S.of(context).privacyPolicy,
+                  S.of(context).privacyPolicyContent),
+            ),
+            Divider(
+              height: 0,
+            ),
+            ListTile(
+              title: Text(S.of(context).openSourceLicenses),
+              onTap: () => launchAssetPage(S.of(context).openSourceLicenses,
+                  S.of(context).thirdPartyLicenseContent),
+            ),
+            Divider(
+              height: 0,
+            ),
+            ListTile(
+              title: Text(S.of(context).contactUs),
+              onTap: () => launch('mailto:nfsee@nfc.im'),
             )
-          ),
-        )
-      ),
+          ],
+        )),
+      )),
     );
   }
 

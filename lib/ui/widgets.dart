@@ -1,17 +1,16 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:nfsee/data/database/database.dart';
-import 'package:nfsee/generated/l10n.dart';
-
-import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter/services.dart';
 
-import '../models.dart';
-import '../utilities.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+
+import 'package:nfsee/data/database/database.dart';
+import 'package:nfsee/generated/l10n.dart';
+import 'package:nfsee/models.dart';
+import 'package:nfsee/utilities.dart';
 
 /// A simple widget that builds different things on different platforms.
 class PlatformWidget extends StatelessWidget {
@@ -41,7 +40,6 @@ class PlatformWidget extends StatelessWidget {
 }
 
 class WebViewTab extends StatelessWidget {
-
   final String title;
   final String assetUrl;
   const WebViewTab({this.title, this.assetUrl});
@@ -51,11 +49,9 @@ class WebViewTab extends StatelessWidget {
       initialUrl: 'about:blank',
       onWebViewCreated: (WebViewController webViewController) async {
         String fileText = await rootBundle.loadString(assetUrl);
-        webViewController.loadUrl(Uri.dataFromString(
-            fileText,
-            mimeType: 'text/html',
-            encoding: Encoding.getByName('utf-8')
-        ).toString());
+        webViewController.loadUrl(Uri.dataFromString(fileText,
+                mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
+            .toString());
       },
     );
   }
@@ -88,7 +84,6 @@ class WebViewTab extends StatelessWidget {
   }
 }
 
-
 class ReportRowItem extends StatelessWidget {
   const ReportRowItem({this.record, this.onTap});
 
@@ -101,7 +96,7 @@ class ReportRowItem extends StatelessWidget {
     var config = json.decode(record.config ?? DEFAULT_CONFIG);
 
     final type =
-    getEnumFromString<CardType>(CardType.values, data["card_type"]);
+        getEnumFromString<CardType>(CardType.values, data["card_type"]);
 
     var typestr = '${type.getName(context)}';
     if (type == CardType.Unknown) {
@@ -133,7 +128,6 @@ class ReportRowItem extends StatelessWidget {
     );
   }
 }
-
 
 class APDUTile extends StatelessWidget {
   const APDUTile({this.data, this.index});
@@ -195,7 +189,7 @@ class TransferTile extends StatelessWidget {
     final typePBOC = getEnumFromString<PBOCTransactionType>(
         PBOCTransactionType.values, data["type"]);
     final typePPSE =
-    getEnumFromString<ProcessingCode>(ProcessingCode.values, data["type"]);
+        getEnumFromString<ProcessingCode>(ProcessingCode.values, data["type"]);
 
     return ExpansionTile(
       leading: Icon(typePBOC == PBOCTransactionType.Load
@@ -207,11 +201,11 @@ class TransferTile extends StatelessWidget {
           "${formatTransactionDate(data["date"])} ${formatTransactionTime(data["time"])}"),
       children: parseTransactionDetails(data, context)
           .map((d) => ListTile(
-        dense: true,
-        title: Text(d.name),
-        subtitle: Text(d.value),
-        leading: Icon(d.icon ?? Icons.info),
-      ))
+                dense: true,
+                title: Text(d.name),
+                subtitle: Text(d.value),
+                leading: Icon(d.icon ?? Icons.info),
+              ))
           .toList(),
     );
   }

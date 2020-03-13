@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:moor/moor.dart';
-import 'package:nfsee/models.dart';
 
-import '../database/database.dart';
+import 'package:nfsee/models.dart';
+import 'package:nfsee/data/database/database.dart';
 
 class NFSeeAppBloc {
   final Database db;
@@ -25,8 +25,7 @@ class NFSeeAppBloc {
     return await db.addDumpedRecord(DumpedRecordsCompanion().copyWith(
         data: Value(data),
         time: Value(time ?? DateTime.now()),
-        config: Value(config ?? DEFAULT_CONFIG)
-    ));
+        config: Value(config ?? DEFAULT_CONFIG)));
   }
 
   void updateDumpedRecordConfig(int id, dynamic config) {
