@@ -403,6 +403,21 @@
         };
     };
 
+    let ParseTrack2Eqiv = (tr2eqiv) => {
+        tr2eqiv = buf2hex(tr2eqiv);
+        const sep = tr2eqiv.indexOf('D');
+        if (sep < 0) return null;
+        return [tr2eqiv.slice(0, sep),
+            tr2eqiv.slice(sep + 1, sep + 3) + '/' + tr2eqiv.slice(sep + 3, sep + 5)];
+    };
+
+    let ParseTrack1 = (tr1) => {
+        let text = GBKDecoder.decode(tr1);
+        let groups = text.match(/^B([0-9]{1,19})\^([^\^]{2,26})\^(([0-9]{2})([0-9]{2})|\^)/);
+        if(groups === null || groups.length < 6) return null;
+        return [groups[1], groups[4] + '/' + groups[5]];
+    };
+
     let ReadPPSE = async (fci) => {
         let DFName = ExtractFromTLV(fci, ['6F', 'A5', 'BF0C', '61', '4F']);
         if (!DFName) return {};
@@ -426,9 +441,11 @@
         const gpo_resp = await _transceive(`80A80000${pdol}00`);
         log("GPO: " + gpo_resp);
         if (!gpo_resp.endsWith('9000')) return {};
-        let track2 = ExtractFromTLV(gpo_resp, ['77', '57']);
+        let track2eqiv = ExtractFromTLV(gpo_resp, ['77', '57']);
         let atc = ExtractFromTLV(gpo_resp, ['77', '9F36']);
-        if (!track2) {
+        let pan = '';
+        let expiration = '';
+        if (!track2eqiv) {
             // None-PPSE procedure
             let AFL = ExtractFromTLV(gpo_resp, ['77', '94']);
             if (!AFL) {
@@ -436,17 +453,22 @@
                 if (!AIP_AFL) return {};
                 AFL = AIP_AFL.slice(2); // skip 2-byte AIP
             }
-            const elements = await FetchElementsFromAFL(AFL, ['57']);
-            track2 = elements['57'];
+            const elements = await FetchElementsFromAFL(AFL, ['56', '57', '9F6B' ]);
+            track2eqiv = elements['57'] || elements['9F6B'];
+            if (track2eqiv)
+                [pan, expiration] = ParseTrack2Eqiv(track2eqiv);
+            else if(elements['56'])
+                [pan, expiration] = ParseTrack1(elements['56']);
+            else
+                return {};
+        } else {
+            [pan, expiration] = ParseTrack2Eqiv(track2eqiv);
         }
         if (!atc) {
             let r = await _transceive("80CA9F3600");
             if (!r.endsWith('9000')) return {};
             atc = ExtractFromTLV(r, ['9F36']);
         }
-        track2 = buf2hex(track2);
-        const sep = track2.indexOf('D');
-        if (sep < 0) return {};
         atc = atc[0] << 8 | atc[1];
         let pin_retry = await _transceive("80CA9F1700");
         if (!pin_retry.endsWith('9000')) pin_retry = 'N/A';
@@ -460,8 +482,8 @@
         }
         return {
             'card_type': cardType,
-            'card_number': track2.slice(0, sep),
-            'expiration': track2.slice(sep + 1, sep + 3) + '/' + track2.slice(sep + 3, sep + 5),
+            'card_number': pan,
+            'expiration': expiration,
             'atc': atc,
             'transactions': transactions,
             'pin_retry': pin_retry,
