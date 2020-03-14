@@ -390,7 +390,7 @@
         city = (city in UnionPayRegion) ? UnionPayRegion[city] : `未知代码${city}`;
         return {
             'card_type': 'TUnion',
-            'card_number': number,
+            'card_number': number.replace(/^0+/, ''),
             'balance': balance_atc_trans[0],
             'purchase_atc': balance_atc_trans[1],
             'load_atc': balance_atc_trans[2],
