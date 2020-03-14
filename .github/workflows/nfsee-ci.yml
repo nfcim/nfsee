@@ -29,7 +29,7 @@ jobs:
         channel: 'stable' # or: 'dev' or 'beta'
     - run: flutter pub get
     #- run: flutter test
-    - run: flutter build apk --debug
+    - run: flutter build apk --debug --verbose
     - uses: actions/upload-artifact@v1
       with:
         name: apk-debug
