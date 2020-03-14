@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -35,13 +36,23 @@ class _AboutActState extends State<AboutAct> {
   }
 
   void launchAssetPage(String title, String url) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => WebViewTab(
-                  title: title,
-                  assetUrl: url,
-                )));
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => WebViewTab(
+                    title: title,
+                    assetUrl: url,
+                  )));
+    } else {
+      Navigator.of(context).push<void>(
+          CupertinoPageRoute(
+              builder: (context) => SafeArea(
+                  child: WebViewTab(
+                    title: title,
+                    assetUrl: url,
+                  ))));
+    }
   }
 
   Widget _buildAboutBody() {
