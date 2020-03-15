@@ -466,10 +466,13 @@
         }
         if (!atc) {
             let r = await _transceive("80CA9F3600");
-            if (!r.endsWith('9000')) return {};
-            atc = ExtractFromTLV(r, ['9F36']);
+            if (r.endsWith('9000'))
+                atc = ExtractFromTLV(r, ['9F36']);
         }
-        atc = atc[0] << 8 | atc[1];
+        if (!atc)
+            atc = 'N/A';
+        else
+            atc = atc[0] << 8 | atc[1];
         let pin_retry = await _transceive("80CA9F1700");
         if (!pin_retry.endsWith('9000')) pin_retry = 'N/A';
         else {
