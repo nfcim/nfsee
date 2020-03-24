@@ -78,8 +78,9 @@ class _ScriptsActState extends State<ScriptsAct> {
     switch (scriptModel.action) {
       case 'poll':
         try {
-          final tag = await FlutterNfcKit.poll();
+          final tag = await FlutterNfcKit.poll(iosAlertMessage: S.of(context).waitForCard);
           _webView.evalJavascript("pollCallback(${jsonEncode(tag)})");
+          FlutterNfcKit.setIosAlertMessage(S.of(context).executingScript);
         } on PlatformException catch (e) {
           log('Poll exception: ${e.toDetailString()}');
           _webView.evalJavascript("pollErrorCallback(${e.toJsonString()})");
@@ -119,7 +120,11 @@ class _ScriptsActState extends State<ScriptsAct> {
         break;
 
       case 'finish':
-        await FlutterNfcKit.finish();
+        if (this.errors[this.running] == true) {
+          await FlutterNfcKit.finish(iosErrorMessage: S.of(context).readFailed);
+        } else {
+          await FlutterNfcKit.finish(iosAlertMessage: S.of(context).readSucceeded);
+        }
         setState(() {
           this.lastRunning = this.running;
           this.running = -1;

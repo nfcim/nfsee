@@ -93,6 +93,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   final _webView = InteractiveWebView();
   StreamSubscription _webViewListener;
   var _reading = false;
+  Exception error;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   NFSeeAppBloc get bloc => BlocProvider.provideBloc(context);
@@ -126,10 +127,13 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     log('Received action ${scriptModel.action} from script');
     switch (scriptModel.action) {
       case 'poll':
+        error = null;
         try {
-          final tag = await FlutterNfcKit.poll();
+          final tag = await FlutterNfcKit.poll(iosAlertMessage: S.of(context).waitForCard);
           _webView.evalJavascript("pollCallback(${jsonEncode(tag)})");
+          FlutterNfcKit.setIosAlertMessage(S.of(context).cardPolled);
         } on PlatformException catch (e) {
+          error = e;
           // no need to do anything with FlutterNfcKit, which will reset itself
           log('Transceive error: ${e.toDetailString()}');
           _closeReadModal(this.context);
@@ -146,6 +150,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           final rapdu = await FlutterNfcKit.transceive(scriptModel.data);
           _webView.evalJavascript("transceiveCallback('$rapdu')");
         } on PlatformException catch (e) {
+          error = e;
           // we need to explicitly finish the reader session now **in the script** to stop any following operations,
           // otherwise a following poll might crash the entire application,
           // because ReaderMode is still enabled, and the obselete MethodChannel.Result will be re-used.
@@ -171,7 +176,12 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         break;
 
       case 'finish':
-        await FlutterNfcKit.finish();
+        if (error != null) {
+          await FlutterNfcKit.finish(iosErrorMessage: S.of(context).readFailed);
+          error = null;
+        } else {
+          await FlutterNfcKit.finish(iosAlertMessage: S.of(context).readSucceeded);
+        }
         break;
 
       case 'log':

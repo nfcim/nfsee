@@ -212,10 +212,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: bb7fac7d51282221b2fd2b4b0014148e0209196a
+      resolved-ref: "02810acd322fc566a4d5dc86e54fe6157918ad32"
       url: "https://github.com/nfcim/flutter_nfc_kit.git"
     source: git
-    version: "1.0.2"
+    version: "1.1.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -386,7 +386,7 @@ packages:
       name: package_config
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.9.1"
+    version: "1.9.2"
   package_info:
     dependency: "direct main"
     description:
@@ -470,7 +470,7 @@ packages:
       name: pub_semver
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.3"
+    version: "1.4.4"
   pubspec_parse:
     dependency: transitive
     description:

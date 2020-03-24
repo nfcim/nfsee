@@ -15,7 +15,7 @@ class S {
     AppLocalizationDelegate();
 
   static Future<S> load(Locale locale) {
-    final String name = locale.countryCode.isEmpty ? locale.languageCode : locale.toString();
+    final String name = (locale.countryCode?.isEmpty ?? false) ? locale.languageCode : locale.toString();
     final String localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
@@ -67,8 +67,35 @@ class S {
 
   String get waitForCard {
     return Intl.message(
-      'Waiting for card...',
+      'Hold your phone near the NFC card / tag...',
       name: 'waitForCard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get cardPolled {
+    return Intl.message(
+      'Reading you NFC card / tag...',
+      name: 'cardPolled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get executingScript {
+    return Intl.message(
+      'Executing your script...',
+      name: 'executingScript',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get readSucceeded {
+    return Intl.message(
+      'Read succeeded',
+      name: 'readSucceeded',
       desc: '',
       args: [],
     );
@@ -76,7 +103,7 @@ class S {
 
   String get readFailed {
     return Intl.message(
-      'Reading card failed',
+      'Read failed',
       name: 'readFailed',
       desc: '',
       args: [],
@@ -1070,7 +1097,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
 
   List<Locale> get supportedLocales {
     return const <Locale>[
-      Locale('zh', ''), Locale('en', ''),
+      Locale.fromSubtags(languageCode: 'en'), Locale.fromSubtags(languageCode: 'zh'),
     ];
   }
 

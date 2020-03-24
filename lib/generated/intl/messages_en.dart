@@ -77,6 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "balance" : MessageLookupByLibrary.simpleMessage("Balance"),
     "cardName" : MessageLookupByLibrary.simpleMessage("Card name"),
     "cardNumber" : MessageLookupByLibrary.simpleMessage("Card Number"),
+    "cardPolled" : MessageLookupByLibrary.simpleMessage("Reading you NFC card / tag..."),
     "city" : MessageLookupByLibrary.simpleMessage("City"),
     "code" : MessageLookupByLibrary.simpleMessage("Code"),
     "contactUs" : MessageLookupByLibrary.simpleMessage("Contact Us"),
@@ -92,6 +93,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "deletedHint" : MessageLookupByLibrary.simpleMessage("Data deleted"),
     "displayExpiryDate" : MessageLookupByLibrary.simpleMessage("Expiry Date on Card"),
     "edit" : MessageLookupByLibrary.simpleMessage("Edit"),
+    "executingScript" : MessageLookupByLibrary.simpleMessage("Executing your script..."),
     "expiryDate" : MessageLookupByLibrary.simpleMessage("Expiry Date"),
     "help" : MessageLookupByLibrary.simpleMessage("Help"),
     "holderName" : MessageLookupByLibrary.simpleMessage("Holder Name"),
@@ -114,7 +116,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "privacyPolicyContent" : MessageLookupByLibrary.simpleMessage("assets/html/privacy_policy.en.html"),
     "provinceCode" : MessageLookupByLibrary.simpleMessage("Province Code"),
     "rawData" : MessageLookupByLibrary.simpleMessage(" Raw data"),
-    "readFailed" : MessageLookupByLibrary.simpleMessage("Reading card failed"),
+    "readFailed" : MessageLookupByLibrary.simpleMessage("Read failed"),
+    "readSucceeded" : MessageLookupByLibrary.simpleMessage("Read succeeded"),
     "record" : MessageLookupByLibrary.simpleMessage("Record"),
     "recordCount" : MessageLookupByLibrary.simpleMessage("record(s)"),
     "run" : MessageLookupByLibrary.simpleMessage("RUN"),
@@ -135,6 +138,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "undo" : MessageLookupByLibrary.simpleMessage("UNDO"),
     "unnamedCard" : MessageLookupByLibrary.simpleMessage("Unnamed Card"),
     "validUntil" : MessageLookupByLibrary.simpleMessage("Valid Until"),
-    "waitForCard" : MessageLookupByLibrary.simpleMessage("Waiting for card...")
+    "waitForCard" : MessageLookupByLibrary.simpleMessage("Hold your phone near the NFC card / tag...")
   };
 }

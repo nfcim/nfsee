@@ -77,6 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "balance" : MessageLookupByLibrary.simpleMessage("余额"),
     "cardName" : MessageLookupByLibrary.simpleMessage("卡片名称"),
     "cardNumber" : MessageLookupByLibrary.simpleMessage("卡号"),
+    "cardPolled" : MessageLookupByLibrary.simpleMessage("正在读取您的 NFC 卡片 / 标签..."),
     "city" : MessageLookupByLibrary.simpleMessage("城市"),
     "code" : MessageLookupByLibrary.simpleMessage("代码"),
     "contactUs" : MessageLookupByLibrary.simpleMessage("联系我们"),
@@ -92,6 +93,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "deletedHint" : MessageLookupByLibrary.simpleMessage("数据已删除"),
     "displayExpiryDate" : MessageLookupByLibrary.simpleMessage("卡面有效期"),
     "edit" : MessageLookupByLibrary.simpleMessage("编辑"),
+    "executingScript" : MessageLookupByLibrary.simpleMessage("正在执行脚本..."),
     "expiryDate" : MessageLookupByLibrary.simpleMessage("有效期"),
     "help" : MessageLookupByLibrary.simpleMessage("帮助"),
     "holderName" : MessageLookupByLibrary.simpleMessage("持有者姓名"),
@@ -115,6 +117,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "provinceCode" : MessageLookupByLibrary.simpleMessage("省市代码"),
     "rawData" : MessageLookupByLibrary.simpleMessage("其他数据"),
     "readFailed" : MessageLookupByLibrary.simpleMessage("读卡失败"),
+    "readSucceeded" : MessageLookupByLibrary.simpleMessage("读卡成功"),
     "record" : MessageLookupByLibrary.simpleMessage("记录"),
     "recordCount" : MessageLookupByLibrary.simpleMessage("条记录"),
     "run" : MessageLookupByLibrary.simpleMessage("运行"),
@@ -134,6 +137,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "undo" : MessageLookupByLibrary.simpleMessage("撤销"),
     "unnamedCard" : MessageLookupByLibrary.simpleMessage("未命名卡片"),
     "validUntil" : MessageLookupByLibrary.simpleMessage("有效期"),
-    "waitForCard" : MessageLookupByLibrary.simpleMessage("等待读卡...")
+    "waitForCard" : MessageLookupByLibrary.simpleMessage("将您的手机靠近 NFC 卡片或标签...")
   };
 }
