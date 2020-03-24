@@ -119,6 +119,12 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     _webViewListener = _webView.didReceiveMessage.listen(_onReceivedMessage);
   }
 
+  void showSnackbar(SnackBar snackBar) {
+    if (_scaffoldKey.currentState != null) {
+      _scaffoldKey.currentState.showSnackBar(snackBar);
+    }
+  }
+
   void _onReceivedMessage(WebkitMessage message) async {
     if (webviewOwner != WebViewOwner.Main) {
       return;
@@ -137,7 +143,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           // no need to do anything with FlutterNfcKit, which will reset itself
           log('Transceive error: ${e.toDetailString()}');
           _closeReadModal(this.context);
-          _scaffoldKey.currentState.showSnackBar(SnackBar(
+          showSnackbar(SnackBar(
               content:
                   Text('${S.of(context).readFailed}: ${e.toDetailString()}')));
           // reject the promise
@@ -156,7 +162,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           // because ReaderMode is still enabled, and the obselete MethodChannel.Result will be re-used.
           log('Transceive error: ${e.toDetailString()}');
           _closeReadModal(this.context);
-          _scaffoldKey.currentState.showSnackBar(SnackBar(
+          showSnackbar(SnackBar(
               content:
                   Text('${S.of(context).readFailed}: ${e.toDetailString()}')));
           _webView
