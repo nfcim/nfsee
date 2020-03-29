@@ -263,10 +263,11 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
       ],
     );
 
-    final top = Padding(
+    final top = Expanded(child: Padding(
       padding: EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           Row(
             children: <Widget>[
@@ -283,9 +284,86 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
             ],
           ),
           Text("共 114514 条历史", style: TextStyle(color: Colors.black54, fontSize: 14)),
+
+          SizedBox(
+            height: 20,
+          ),
+
+          Card(
+            elevation: 4,
+            clipBehavior: Clip.antiAlias,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Stack(
+              children: <Widget>[
+                Image.asset('assets/card-bg.png'),
+                AspectRatio(
+                  aspectRatio: 86 / 54,
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(30, 20, 30, 20),
+                    child: Column(
+                      children: <Widget>[
+                        Spacer(),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+
+                              Text("别名", style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+                              Text("北京市政公交一卡通", style: TextStyle(color: Colors.white70, fontSize: 16)),
+                            ]),
+                            Spacer(),
+                            IconButton(
+                              icon: Icon(Icons.edit, color: Colors.white54),
+                            ),
+                          ]
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+              ],
+            ),
+          ),
+
+          SizedBox(height: 20),
+
+          Material(
+            elevation: 2,
+            child: Container(
+              decoration: BoxDecoration(
+                boxShadow: [BoxShadow(
+                  color: Colors.black,
+                )],
+                border: Border(
+                  top: BorderSide(color: Theme.of(context).colorScheme.primary, width: 5)
+                )
+              ),
+              child: Material(child: Column(
+                children: <Widget>[
+                  ListTile(
+                    title: Text('细节 1'),
+                  ),
+                  Divider(),
+                  ListTile(
+                    title: Text('细节 2'),
+                  ),
+                  ListTile(
+                    title: Text('细节 3'),
+                  ),
+                ],
+              )),
+            ),
+          ),
         ],
       ),
-    );
+    ));
 
     return Stack(
       children: <Widget>[
@@ -300,7 +378,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         ),
         new SafeArea(
           child: Column(
-            children: <Widget>[top, Spacer(), bottom],
+            children: <Widget>[top, bottom],
           ),
         ),
       ],
