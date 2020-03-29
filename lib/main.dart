@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:math' as math;
+import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -242,6 +243,69 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   }
 
   Widget _buildHomePageAndroid(BuildContext context) {
+    final bottom = BottomNavigationBar(
+      currentIndex: 1,
+      items: <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.code),
+          title: Text('脚本'),
+        ),
+
+        BottomNavigationBarItem(
+          icon: Icon(Icons.nfc),
+          title: Text('扫描'),
+        ),
+
+        BottomNavigationBarItem(
+          icon: Icon(Icons.settings),
+          title: Text('设置'),
+        ),
+      ],
+    );
+
+    final top = Padding(
+      padding: EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Text("扫描历史",
+                style: TextStyle(color: Colors.black, fontSize: 32),
+              ),
+              Spacer(),
+              IconButton(
+                icon: Icon(Icons.add, color: Theme.of(context).colorScheme.onPrimary),
+                onPressed: () {
+                  this._readTag(context);
+                },
+              ),
+            ],
+          ),
+          Text("共 114514 条历史", style: TextStyle(color: Colors.black54, fontSize: 14)),
+        ],
+      ),
+    );
+
+    return Stack(
+      children: <Widget>[
+        new Positioned(
+          child: new CustomPaint(
+            painter: new HomeBackgrondPainter(color: Theme.of(context).primaryColor),
+          ),
+          bottom: 0,
+          top: 0,
+          left: 0,
+          right: 0,
+        ),
+        new SafeArea(
+          child: Column(
+            children: <Widget>[top, Spacer(), bottom],
+          ),
+        ),
+      ],
+    );
+
     return Scaffold(
         primary: true,
         key: _scaffoldKey,
@@ -557,5 +621,35 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
                 Image.asset('assets/read.webp', height: 200),
               ],
             )));
+  }
+}
+
+class HomeBackgrondPainter extends CustomPainter {
+  final Color color;
+  HomeBackgrondPainter({ this.color });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final height = size.height;
+    final points = [
+      size.topLeft(Offset.zero),
+      size.topLeft(Offset(0, height / 3)),
+      size.topRight(Offset(0, height / 4)),
+      size.topRight(Offset.zero),
+    ];
+
+    final path = new Path()..addPolygon(points, true);
+
+    final paint = Paint()
+      ..style = PaintingStyle.fill
+      ..color = this.color;
+
+    canvas.drawShadow(path, Colors.black, 2, false);
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return false;
   }
 }
