@@ -15,14 +15,18 @@ import 'package:interactive_webview/interactive_webview.dart';
 
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';
+import 'package:nfsee/data/card.dart';
 import 'package:nfsee/data/database/database.dart';
 import 'package:nfsee/generated/l10n.dart';
 import 'package:nfsee/models.dart';
+import 'package:nfsee/ui/card_physics.dart';
 import 'package:nfsee/utilities.dart';
 import 'package:nfsee/ui/card_detail.dart';
 import 'package:nfsee/ui/scripts.dart';
 import 'package:nfsee/ui/settings.dart';
 import 'package:nfsee/ui/widgets.dart';
+
+const double DETAIL_OFFSET = 300;
 
 void main() => runApp(NFSeeApp());
 
@@ -90,25 +94,168 @@ class PlatformAdaptingHomePage extends StatefulWidget {
       _PlatformAdaptingHomePageState();
 }
 
-class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
+class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> with TickerProviderStateMixin {
   final _webView = InteractiveWebView();
   StreamSubscription _webViewListener;
   var _reading = false;
   Exception error;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  List<CardData> cards = [
+    CardData(category: CardCategory.unspecified, name: '呜喵', model: '喵喵蹭蹭月卡', cardNo: '12345678', raw: null),
+    CardData(category: CardCategory.unspecified, name: '诶嘿嘿', model: '北京市政交通卡不通', cardNo: 'XXX', raw: null),
+  ];
+
+  ScrollPhysics cardPhysics;
+  ScrollController cardController;
+  bool dragging = false;
+  bool scrolling = false;
+  int scrollingTicket = 0;
+  int currentIdx = 0;
+
+  bool hidden = false;
+  Animation<double> detailHide;
+  double detailHideVal = 0;
+  AnimationController detailHideTrans;
+
+  bool expanded = false;
+  ScrollController detailScroll;
+  Animation<double> detailExpand;
+  double detailExpandVal = 0;
+  AnimationController detailExpandTrans;
+
+  int focused = 0;
+  DumpedRecord focusedRecord = null;
 
   NFSeeAppBloc get bloc => BlocProvider.provideBloc(context);
 
   @override
   void initState() {
     super.initState();
+    this.initSelfOnce();
+    this.initSelf();
+  }
+
+  void initSelf() {
+    log("State updated");
     this._addWebViewHandler();
+    this.refreshPhysics();
+    this.refreshDetailScroll();
+
+    detailHide = Tween<double>(
+      begin: 1,
+      end: 0,
+    ).animate(CurvedAnimation(
+      parent: detailHideTrans,
+      curve: Curves.ease,
+    ));
+
+    detailHide.addListener(() {
+      this.setState(() {
+        this.detailHideVal = detailHide.value;
+      });
+    });
+
+    detailExpand = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(
+      parent: detailExpandTrans,
+      curve: Curves.ease,
+    ));
+
+    detailExpand.addListener(() {
+      this.setState(() {
+        this.detailExpandVal = detailExpand.value;
+      });
+    });
+  }
+
+  void initSelfOnce() {
+    detailHideTrans = AnimationController(
+      duration: const Duration(milliseconds: 100),
+      vsync: this
+    );
+
+    detailExpandTrans = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this
+    );
+  }
+
+  void refreshPhysics() {
+    log(this.cards.length.toString());
+    this.cardPhysics = CardPhysics(cardCount: this.cards.length);
+    this.cardController = ScrollController();
+    this.cardController.addListener(() {
+      final ticket = this.scrollingTicket + 1;
+      this.scrollingTicket = ticket;
+      Future fut = Future.delayed(const Duration(milliseconds: 100)).then((_) {
+        if(this.scrollingTicket != ticket) return;
+        this.setState(() {
+          this.scrolling = false;
+          this.updateAnimation();
+        });
+      });
+
+      this.setState(() {
+        this.scrolling = true;
+        this.updateAnimation();
+      });
+    });
+  }
+
+  void refreshDetailScroll() {
+    this.detailScroll = ScrollController();
+    this.detailScroll.addListener(() {
+      if(this.detailScroll.position.pixels == 0) return;
+      if(!this.expanded) this.setState(() {
+        this.expanded = true;
+        this.detailExpandTrans.animateTo(1);
+      });
+    });
+  }
+
+  @override
+  void reassemble() {
+    this.initSelf();
+    super.reassemble();
   }
 
   @override
   void dispose() {
     _webViewListener.cancel();
     super.dispose();
+  }
+
+  void updateAnimation() async {
+    if(this.scrolling || this.dragging) {
+      if(this.hidden) return;
+      this.hidden = true;
+      await Future.delayed(const Duration(milliseconds: 100));
+      if(this.hidden != true) return;
+      this.detailHideTrans.animateBack(0);
+      this.setState(() {
+        this.focused = 0;
+      });
+    } else {
+      if(!this.hidden) return;
+      this.hidden = false;
+      await Future.delayed(const Duration(milliseconds: 100));
+      if(this.hidden != false) return;
+      this.detailHideTrans.animateTo(1);
+      this.setState(() {
+        this.focused = 0;
+      });
+    }
+  }
+
+  void addCard() async {
+    this.setState(() {
+      this.cards += [CardData(category: CardCategory.unspecified, name: '???', model: '喵喵蹭蹭月卡', cardNo: '12345678', raw: null)];
+    });
+    this.refreshPhysics();
+    await Future.delayed(const Duration(milliseconds: 10));
+    this.cardController.animateTo(this.cardController.position.maxScrollExtent, duration: const Duration(seconds: 1), curve: ElasticOutCurve());
   }
 
   void _addWebViewHandler() async {
@@ -211,6 +358,8 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   }
 
   void _navigateToTag(DumpedRecord record) {
+    return; // TODO: move to homepage
+
     var data = jsonDecode(record.data);
     var config = jsonDecode(record.config ?? DEFAULT_CONFIG);
 
@@ -263,109 +412,66 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
       ],
     );
 
-    final top = Expanded(child: Padding(
-      padding: EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Row(
+    final navForeground = Column(
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              Text("扫描历史",
-                style: TextStyle(color: Colors.black, fontSize: 32),
-              ),
-              Spacer(),
-              IconButton(
-                icon: Icon(Icons.add, color: Theme.of(context).colorScheme.onPrimary),
-                onPressed: () {
-                  this._readTag(context);
-                },
-              ),
-            ],
-          ),
-          Text("共 114514 条历史", style: TextStyle(color: Colors.black54, fontSize: 14)),
-
-          SizedBox(
-            height: 20,
-          ),
-
-          Card(
-            elevation: 4,
-            clipBehavior: Clip.antiAlias,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Stack(
-              children: <Widget>[
-                Image.asset('assets/card-bg.png'),
-                AspectRatio(
-                  aspectRatio: 86 / 54,
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(30, 20, 30, 20),
-                    child: Column(
-                      children: <Widget>[
-                        Spacer(),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Column(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-
-                              Text("别名", style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
-                              Text("北京市政公交一卡通", style: TextStyle(color: Colors.white70, fontSize: 16)),
-                            ]),
-                            Spacer(),
-                            IconButton(
-                              icon: Icon(Icons.edit, color: Colors.white54),
-                            ),
-                          ]
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-              ],
-            ),
-          ),
-
-          SizedBox(height: 20),
-
-          Material(
-            elevation: 2,
-            child: Container(
-              decoration: BoxDecoration(
-                boxShadow: [BoxShadow(
-                  color: Colors.black,
-                )],
-                border: Border(
-                  top: BorderSide(color: Theme.of(context).colorScheme.primary, width: 5)
-                )
-              ),
-              child: Material(child: Column(
+              Row(
                 children: <Widget>[
-                  ListTile(
-                    title: Text('细节 1'),
+                  Text("扫描历史",
+                    style: TextStyle(color: Colors.black, fontSize: 32),
                   ),
-                  Divider(),
-                  ListTile(
-                    title: Text('细节 2'),
-                  ),
-                  ListTile(
-                    title: Text('细节 3'),
+                  Spacer(),
+                  IconButton(
+                    icon: Icon(Icons.add, color: Theme.of(context).colorScheme.onPrimary),
+                    onPressed: () {
+                      // this._readTag(context);
+                      this.addCard();
+                    },
                   ),
                 ],
-              )),
-            ),
-          ),
-        ],
-      ),
-    ));
+              ),
+              Text("共 ${cards.length} 条历史", style: TextStyle(color: Colors.black54, fontSize: 14)),
+            ]
+          )
+        ),
 
-    return Stack(
+        SizedBox(
+          height: 20,
+        ),
+
+        Container(
+          height: 240,
+          child: Listener(
+            onPointerDown: (_) {
+              this.setState(() {
+                this.dragging = true;
+                this.updateAnimation();
+              });
+            },
+            onPointerUp: (_) {
+              this.setState(() {
+                this.dragging = false;
+                this.updateAnimation();
+              });
+            },
+            child: ListView(
+              padding: EdgeInsets.symmetric(horizontal: (MediaQuery.of(context).size.width - CARD_WIDTH) / 2),
+              controller: cardController,
+              physics: cardPhysics,
+              scrollDirection: Axis.horizontal,
+              children: this.cards.map((c) { return c.homepageCard(); }).toList(),
+            )
+          )
+        ),
+      ],
+    );
+
+    final nav = Stack(
       children: <Widget>[
         new Positioned(
           child: new CustomPaint(
@@ -377,12 +483,32 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           right: 0,
         ),
         new SafeArea(
-          child: Column(
-            children: <Widget>[top, bottom],
-          ),
+          child: navForeground
         ),
       ],
     );
+
+    final detail = this.buildDetail(context);
+
+    final top = Expanded(child: Stack(
+      children: <Widget>[
+        Transform.translate(
+          offset: Offset(0, -DETAIL_OFFSET * this.detailExpandVal),
+          child: nav,
+        ),
+        Transform.translate(
+          offset: Offset(0, DETAIL_OFFSET * (1 - this.detailExpandVal)),
+          child: Transform.translate(
+            child: Opacity(child: detail, opacity: (1-this.detailHideVal)),
+            offset: Offset(0, 50 * this.detailHideVal)
+          ),
+        )
+      ],
+    ));
+
+    return Container(child: Column(
+      children: <Widget>[top, bottom],
+    ));
 
     return Scaffold(
         primary: true,
@@ -478,6 +604,78 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
             );
           },
         )));
+  }
+
+  Widget buildDetail(BuildContext ctx) {
+    if(this.focused >= this.cards.length) return Container();
+
+    final card = this.cards[this.focused];
+    var data = card.raw;
+
+    if(data == null) data = jsonDecode("""{
+      "detail": {
+        "card_number": "NUMBER",
+        "card_number1": "喵喵",
+        "card_number2": "这是一些测试数据",
+        "card_number3": "这是一些测试数据",
+        "card_number4": "这是一些测试数据",
+        "card_number5": "这是一些测试数据",
+        "card_number6": "这是一些测试数据",
+        "card_number7": "这是一些测试数据",
+        "card_number8": "这是一些测试数据",
+        "card_number9": "这是一些测试数据",
+        "card_number10": "这是一些测试数据",
+        "card_number11": "这是一些测试数据",
+        "card_number12": "这是一些测试数据",
+        "card_number13": "这是一些测试数据",
+        "card_number14": "这是一些测试数据"
+      }
+    }""");
+
+    final disp = Container(
+      child: Column(
+        children: <Widget>[
+          IgnorePointer(
+            ignoring: !this.expanded,
+            child: Opacity(
+              opacity: this.detailExpandVal,
+              child: AppBar(
+                primary: true,
+                backgroundColor: Color.fromARGB(255, 85, 69, 177),
+                title: Text(card.name),
+                leading: IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    this.detailExpandTrans.animateBack(0);
+                    this.detailScroll.animateTo(0, duration: Duration(milliseconds: 100), curve: ElasticOutCurve());
+                    this.setState(() {
+                      this.expanded = false;
+                    });
+                  },
+                ),
+                brightness: Brightness.light,
+              ),
+            ),
+          ),
+
+          Expanded(child: ListView(
+              controller: detailScroll,
+              padding: EdgeInsets.only(bottom: this.expanded ? 0 : DETAIL_OFFSET),
+
+              children: parseCardDetails(data["detail"], context)
+                  .map((d) => ListTile(
+                        dense: true,
+                        title: Text(d.name),
+                        subtitle: Text(d.value),
+                        leading: Icon(d.icon ?? Icons.info),
+                      ))
+                  .toList()
+          )),
+        ]
+      )
+    );
+
+    return disp;
   }
 
   Widget _buildBottomAppbar(BuildContext context) {
