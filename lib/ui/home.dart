@@ -8,20 +8,27 @@ import 'package:nfsee/data/blocs/provider.dart';
 import 'package:nfsee/data/card.dart';
 import 'package:nfsee/data/database/database.dart';
 import 'package:nfsee/main.dart';
+import 'package:nfsee/models.dart';
 import 'package:nfsee/ui/card_physics.dart';
 import 'package:nfsee/utilities.dart';
+
+import 'package:nfsee/generated/l10n.dart';
 
 const double DETAIL_OFFSET = 300;
 
 class HomeAct extends StatefulWidget {
+  final Future<void> Function() readCard;
+
+  HomeAct({ @required this.readCard });
+
   @override
   HomeState createState() => HomeState();
 }
 
 class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   List<CardData> cards = [
-    CardData(category: CardCategory.unspecified, name: '呜喵', model: '喵喵蹭蹭月卡', cardNo: '12345678', raw: null),
-    CardData(category: CardCategory.unspecified, name: '诶嘿嘿', model: '北京市政交通卡不通', cardNo: 'XXX', raw: null),
+    CardData(category: CardCategory.unspecified, name: '呜喵', cardType: CardType.Tsinghua, cardNo: '12345678', raw: null),
+    CardData(category: CardCategory.unspecified, name: '诶嘿嘿', cardType: CardType.Tsinghua, cardNo: 'XXX', raw: null),
   ];
 
   ScrollPhysics cardPhysics;
@@ -110,13 +117,13 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
         if(this.scrollingTicket != ticket) return;
         this.setState(() {
           this.scrolling = false;
-          this.updateAnimation();
+          this._updateDetailHide();
         });
       });
 
       this.setState(() {
         this.scrolling = true;
-        this.updateAnimation();
+        this._updateDetailHide();
       });
     });
   }
@@ -176,7 +183,7 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
     return true;
   }
 
-  void updateAnimation() async {
+  void _updateDetailHide() async {
     if(this.scrolling || this.dragging) {
       if(this.hidden) return;
       this.hidden = true;
@@ -200,7 +207,7 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
 
   void addCard() async {
     this.setState(() {
-      this.cards += [CardData(category: CardCategory.unspecified, name: '???', model: '喵喵蹭蹭月卡', cardNo: '12345678', raw: null)];
+      this.cards += [CardData(category: CardCategory.unspecified, name: '???', cardType: CardType.Tsinghua, cardNo: '12345678', raw: null)];
     });
     this._refreshPhysics();
     await Future.delayed(const Duration(milliseconds: 10));
@@ -225,9 +232,9 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
                   Spacer(),
                   IconButton(
                     icon: Icon(Icons.add, color: Theme.of(context).colorScheme.onPrimary),
-                    onPressed: () {
-                      // this._readTag(context);
-                      this.addCard();
+                    onPressed: () async {
+                      await this.widget.readCard();
+                      log("CARD read");
                     },
                   ),
                 ],
@@ -247,13 +254,13 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
             onPointerDown: (_) {
               this.setState(() {
                 this.dragging = true;
-                this.updateAnimation();
+                this._updateDetailHide();
               });
             },
             onPointerUp: (_) {
               this.setState(() {
                 this.dragging = false;
-                this.updateAnimation();
+                this._updateDetailHide();
               });
             },
             child: ListView(
@@ -261,7 +268,7 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
               controller: cardController,
               physics: cardPhysics,
               scrollDirection: Axis.horizontal,
-              children: this.cards.map((c) { return c.homepageCard(); }).toList(),
+              children: this.cards.map((c) { return c.homepageCard(context); }).toList(),
             )
           )
         ),
@@ -444,7 +451,7 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
               child: AppBar(
                 primary: true,
                 backgroundColor: Color.fromARGB(255, 85, 69, 177),
-                title: Text(card.name, style: Theme.of(context).textTheme.title.apply(color: Colors.white)),
+                title: Text(card.name ?? card.cardType.getName(context), style: Theme.of(context).textTheme.title.apply(color: Colors.white)),
                 leading: IconButton(
                   icon: Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () {
@@ -482,6 +489,55 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
     );
 
     return disp;
+  }
+
+  void _editCardName(CardData data) {
+    var pendingName = data.name ?? "";
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => AlertDialog(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            TextFormField(
+              decoration: InputDecoration(
+                filled: true,
+                labelText: S.of(context).cardName,
+              ),
+              maxLines: 1,
+              initialValue: pendingName,
+              onChanged: (cont) {
+                pendingName = cont;
+              },
+            ),
+          ],
+        ),
+        actions: <Widget>[
+          FlatButton(
+            child: Text(MaterialLocalizations.of(context).okButtonLabel),
+            onPressed: () {
+              setState(() {
+                if(pendingName == "") {
+                  data.name = null;
+                } else {
+                  data.name = pendingName;
+                }
+                bloc.updateDumpedRecordConfig(data.id, data.generateConfig());
+                Navigator.of(context).pop();
+              });
+            },
+          ),
+          FlatButton(
+            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      ),
+    );
   }
 
   @override

@@ -119,12 +119,15 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
   void _initSelf() {
     this._addWebViewHandler();
-    topController = PageController();
+    topController = PageController(
+      initialPage: this.currentTop,
+    );
   }
 
   @override
   void dispose() {
     _webViewListener.cancel();
+    topController.dispose();
     super.dispose();
   }
 
@@ -298,7 +301,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
   Widget _buildTop(context) {
     final scripts = ScriptsAct();
-    final home = HomeAct();
+    final home = HomeAct(readCard: () { return this._readTag(this.context); });
     final settings = SettingsAct();
     return Expanded(
       child: PageView(
@@ -505,3 +508,5 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
             )));
   }
 }
+
+const String DEFAULT_CONFIG = '{}';
