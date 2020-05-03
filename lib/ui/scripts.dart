@@ -520,22 +520,6 @@ class _ScriptsActState extends State<ScriptsAct> {
           ),
         ],
       ),
-//      bottomNavigationBar: BottomAppBar(
-//        color: Colors.orange[500],
-//        shape: CircularNotchedRectangle(),
-//        child: Padding(
-//          padding: const EdgeInsets.all(8),
-//          child: Row(children: <Widget>[
-//            IconButton(
-//              icon: const Icon(Icons.file_download),
-//              onPressed: () {
-//                // TODO(script): download from gist
-//              },
-//              color: Colors.black54,
-//            ),
-//          ]),
-//        ),
-//      ),
       body: Builder(builder: _buildBody),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
