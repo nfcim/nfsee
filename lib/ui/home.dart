@@ -13,12 +13,12 @@ import 'package:nfsee/utilities.dart';
 
 const double DETAIL_OFFSET = 300;
 
-class Home extends StatefulWidget {
+class HomeAct extends StatefulWidget {
   @override
   HomeState createState() => HomeState();
 }
 
-class HomeState extends State<Home> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   List<CardData> cards = [
     CardData(category: CardCategory.unspecified, name: '呜喵', model: '喵喵蹭蹭月卡', cardNo: '12345678', raw: null),
     CardData(category: CardCategory.unspecified, name: '诶嘿嘿', model: '北京市政交通卡不通', cardNo: 'XXX', raw: null),
@@ -37,6 +37,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin, AutomaticKeep
   AnimationController detailHideTrans;
 
   bool expanded = false;
+  bool expanding = false; // Expanding or collapsing
   ScrollController detailScroll;
   Animation<double> detailExpand;
   double detailExpandVal = 0;
@@ -50,14 +51,24 @@ class HomeState extends State<Home> with TickerProviderStateMixin, AutomaticKeep
   @override
   void initState() {
     super.initState();
-    this.initSelfOnce();
-    this.initSelf();
+    this._initSelf();
   }
 
-  void initSelf() {
+  void _initSelf() {
     log("State updated");
-    this.refreshPhysics();
-    this.refreshDetailScroll();
+
+    detailHideTrans = AnimationController(
+      duration: const Duration(milliseconds: 100),
+      vsync: this
+    );
+
+    detailExpandTrans = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this
+    );
+
+    this._refreshPhysics();
+    this._refreshDetailScroll();
 
     detailHide = Tween<double>(
       begin: 1,
@@ -88,19 +99,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin, AutomaticKeep
     });
   }
 
-  void initSelfOnce() {
-    detailHideTrans = AnimationController(
-      duration: const Duration(milliseconds: 100),
-      vsync: this
-    );
-
-    detailExpandTrans = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this
-    );
-  }
-
-  void refreshPhysics() {
+  void _refreshPhysics() {
     log(this.cards.length.toString());
     this.cardPhysics = CardPhysics(cardCount: this.cards.length);
     this.cardController = ScrollController();
@@ -122,21 +121,59 @@ class HomeState extends State<Home> with TickerProviderStateMixin, AutomaticKeep
     });
   }
 
-  void refreshDetailScroll() {
+  void _refreshDetailScroll() {
     this.detailScroll = ScrollController();
     this.detailScroll.addListener(() {
       if(this.detailScroll.position.pixels == 0) return;
-      if(!this.expanded) this.setState(() {
-        this.expanded = true;
-        this.detailExpandTrans.animateTo(1);
-      });
+      this._tryExpandDetail();
     });
   }
 
   @override
   void reassemble() {
-    this.initSelf();
+    this._initSelf();
     super.reassemble();
+  }
+
+  @override
+  void dispose() {
+    this.detailExpandTrans.dispose();
+    this.detailHideTrans.dispose();
+    super.dispose();
+  }
+
+  bool _tryExpandDetail() {
+    if(this.expanding) return false;
+    if(this.expanded) return false;
+
+    this.expanding = true;
+
+    this.detailExpandTrans.animateTo(1).then((_) {
+      this.expanding = false;
+    });
+    this.setState(() {
+      this.expanded = true;
+    });
+    return true;
+  }
+
+  bool _tryCollapseDetail() {
+    if(this.expanding) return false;
+    if(!this.expanded) return false;
+
+    this.expanding = true;
+
+    final fut1 = this.detailExpandTrans.animateBack(0);
+    final fut2 = this.detailScroll.animateTo(0, duration: Duration(milliseconds: 100), curve: ElasticOutCurve());
+    this.setState(() {
+      this.expanded = false;
+    });
+
+    Future.wait([fut1, fut2]).then((_) {
+      this.expanding = false;
+    });
+
+    return true;
   }
 
   void updateAnimation() async {
@@ -165,7 +202,7 @@ class HomeState extends State<Home> with TickerProviderStateMixin, AutomaticKeep
     this.setState(() {
       this.cards += [CardData(category: CardCategory.unspecified, name: '???', model: '喵喵蹭蹭月卡', cardNo: '12345678', raw: null)];
     });
-    this.refreshPhysics();
+    this._refreshPhysics();
     await Future.delayed(const Duration(milliseconds: 10));
     this.cardController.animateTo(this.cardController.position.maxScrollExtent, duration: const Duration(seconds: 1), curve: ElasticOutCurve());
   }
@@ -266,7 +303,12 @@ class HomeState extends State<Home> with TickerProviderStateMixin, AutomaticKeep
       ],
     );
 
-    return top;
+    return WillPopScope(
+      onWillPop: () {
+        return Future.value(!this._tryCollapseDetail());
+      },
+      child: top
+    );
 
     // Legacy impl
     /*
@@ -402,23 +444,19 @@ class HomeState extends State<Home> with TickerProviderStateMixin, AutomaticKeep
               child: AppBar(
                 primary: true,
                 backgroundColor: Color.fromARGB(255, 85, 69, 177),
-                title: Text(card.name),
+                title: Text(card.name, style: Theme.of(context).textTheme.title.apply(color: Colors.white)),
                 leading: IconButton(
-                  icon: Icon(Icons.arrow_back),
+                  icon: Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () {
-                    this.detailExpandTrans.animateBack(0);
-                    this.detailScroll.animateTo(0, duration: Duration(milliseconds: 100), curve: ElasticOutCurve());
-                    this.setState(() {
-                      this.expanded = false;
-                    });
+                    this._tryCollapseDetail();
                   },
                 ),
                 actions: <Widget>[
                   IconButton(
-                    icon: Icon(Icons.edit),
+                    icon: Icon(Icons.edit, color: Colors.white),
                   ),
                   IconButton(
-                    icon: Icon(Icons.more_vert),
+                    icon: Icon(Icons.more_vert, color: Colors.white),
                   ),
                 ],
                 brightness: Brightness.light,

@@ -298,7 +298,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
   Widget _buildTop(context) {
     final scripts = ScriptsAct();
-    final home = Home();
+    final home = HomeAct();
     final settings = SettingsAct();
     return Expanded(
       child: PageView(

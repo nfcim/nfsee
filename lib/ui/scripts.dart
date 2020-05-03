@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
+import 'package:nfsee/ui/custom_expansion_panel.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:interactive_webview/interactive_webview.dart';
 
@@ -28,7 +29,7 @@ class ScriptsAct extends StatefulWidget {
   _ScriptsActState createState() => _ScriptsActState();
 }
 
-class _ScriptsActState extends State<ScriptsAct> {
+class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   final _webView = InteractiveWebView();
   StreamSubscription _webViewListener;
 
@@ -56,16 +57,85 @@ class _ScriptsActState extends State<ScriptsAct> {
   /// Content of current script
   var currentSource = '';
 
+  ScrollController scroll;
+  Animation<double> appbarFloat;
+  double appbarFloatVal = 0;
+  AnimationController appbarFloatTrans;
+
+  Animation<double> runningOpacity;
+  double runningOpacityVal = 0;
+  AnimationController runningOpacityTrans;
+
   @override
   void initState() {
     super.initState();
+    this._initSelfOnce();
+    this._initSelf();
+  }
+
+  void _initSelfOnce() {
+  }
+
+  void _initSelf() {
     _webViewListener =
         _webView.didReceiveMessage.listen(this._onReceivedMessage);
+
+    appbarFloatTrans = AnimationController(
+      duration: const Duration(milliseconds: 100),
+      vsync: this
+    );
+
+    runningOpacityTrans = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this
+    )..repeat(reverse: true, period: Duration(seconds: 1));
+
+    appbarFloat = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(
+      parent: appbarFloatTrans,
+      curve: Curves.ease,
+    ));
+
+    appbarFloat.addListener(() {
+      this.setState(() {
+        this.appbarFloatVal = appbarFloat.value;
+      });
+    });
+
+    runningOpacity = Tween<double>(
+      begin: 0.3,
+      end: 1,
+    ).animate(CurvedAnimation(
+      parent: runningOpacityTrans,
+      curve: Curves.ease,
+    ));
+
+    runningOpacity.addListener(() {
+      this.setState(() {
+        this.runningOpacityVal = runningOpacity.value;
+      });
+    });
+
+    scroll = ScrollController();
+    scroll.addListener(() {
+      if(scroll.position.pixels != 0) this.appbarFloatTrans.animateTo(1);
+      else this.appbarFloatTrans.animateBack(0);
+    });
+  }
+
+  @override
+  void reassemble() {
+    this._initSelf();
+    super.reassemble();
   }
 
   @override
   void dispose() {
     _webViewListener.cancel();
+    this.appbarFloatTrans.dispose();
+    this.runningOpacityTrans.dispose();
     super.dispose();
   }
 
@@ -269,29 +339,27 @@ class _ScriptsActState extends State<ScriptsAct> {
           ..sort((a, b) => a.creationTime.compareTo(b.creationTime));
 
         return SingleChildScrollView(
-            padding: EdgeInsets.only(bottom: 40),
-            child: ExpansionPanelList.radio(
+            padding: EdgeInsets.only(bottom: 40, top: 60),
+            controller: scroll,
+            child: NFSeeExpansionPanelList.radio(
+              elevation: 1,
               children: scripts
-                  .map((script) => ExpansionPanelRadio(
+                  .map((script) => NFSeeExpansionPanelRadio(
+                        running: this.running == script.id,
                         value: script.id,
                         canTapOnHeader: true,
-                        headerBuilder: (context, open) => ListTile(
-                          subtitle: Text(S.of(context).lastExecutionTime +
-                              ': ' +
-                              (script.lastUsed != null
-                                  ? script.lastUsed
-                                      .toString()
-                                      .split('.')[0] // remove part before ms
-                                  : S.of(context).never)),
-                          title: Text(script.name),
-                          trailing: this.running == script.id
-                              ? SizedBox(
-                                  width: 24,
-                                  height: 24,
-                                  child:
-                                      CircularProgressIndicator(strokeWidth: 3),
-                                )
-                              : null,
+                        headerBuilder: (context, open) => Opacity(
+                          child: ListTile(
+                            subtitle: Text(S.of(context).lastExecutionTime +
+                                ': ' +
+                                (script.lastUsed != null
+                                    ? script.lastUsed
+                                        .toString()
+                                        .split('.')[0] // remove part before ms
+                                    : S.of(context).never)),
+                            title: Text(script.name), 
+                          ),
+                          opacity: this.running == script.id ? runningOpacityVal : 1,
                         ),
                         body: Container(
                           padding: EdgeInsets.only(
@@ -505,28 +573,36 @@ class _ScriptsActState extends State<ScriptsAct> {
           );
         });
   }
-
+        
   Widget _buildAndroid(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(S.of(context).scriptTabTitle),
-        actions: <Widget>[
+    final title = Transform.translate(
+      offset: Offset(0, 20 * (1-appbarFloatVal)),
+      child: AppBar(
+        elevation: appbarFloatVal * 4,
+        backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(appbarFloatVal),
+        title: Text(S.of(context).scriptTabTitle,
+          style: TextStyle(color: Colors.black, fontSize: 20 + 12 * (1-appbarFloatVal)),
+        ),
+        actions: [
           IconButton(
-            icon: const Icon(Icons.help),
+            icon: Icon(Icons.add, color: Colors.black87),
+            onPressed: _showScriptDialog,
+            tooltip: S.of(context).addScript,
+          ),
+          IconButton(
+            icon: const Icon(Icons.help, color: Colors.black87),
             tooltip: S.of(context).help,
             onPressed: () {
               launch('https://nfsee.nfc.im/js-extension/');
             },
           ),
-        ],
-      ),
+        ]
+      )
+    );
+
+    return Scaffold(
+      appBar: PreferredSize(child: title, preferredSize: Size.fromHeight(56)),
       body: Builder(builder: _buildBody),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: _showScriptDialog,
-        tooltip: S.of(context).addScript,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
@@ -581,4 +657,7 @@ class _ScriptsActState extends State<ScriptsAct> {
       )),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
