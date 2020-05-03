@@ -6,11 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';
 import 'package:nfsee/data/card.dart';
-import 'package:nfsee/data/database/database.dart';
-import 'package:nfsee/main.dart';
-import 'package:nfsee/models.dart';
 import 'package:nfsee/ui/card_physics.dart';
-import 'package:nfsee/ui/custom_expansion_panel.dart';
 import 'package:nfsee/ui/widgets.dart';
 import 'package:nfsee/utilities.dart';
 
@@ -73,8 +69,8 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
     this._refreshDetailScroll();
 
     detailHide = Tween<double>(
-      begin: 1,
-      end: 0,
+      begin: 0,
+      end: 1,
     ).animate(CurvedAnimation(
       parent: detailHideTrans,
       curve: Curves.ease,
@@ -261,13 +257,13 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
       this.hidden = true;
       await Future.delayed(const Duration(milliseconds: 100));
       if(this.hidden != true) return;
-      this.detailHideTrans.animateBack(0);
+      this.detailHideTrans.animateTo(1);
     } else if(!this.scrolling && !this.dragging) {
       if(!this.hidden) return;
       this.hidden = false;
       await Future.delayed(const Duration(milliseconds: 100));
       if(this.hidden != false) return;
-      this.detailHideTrans.animateTo(1);
+      this.detailHideTrans.animateBack(0);
       this._updateDetailInst(cards);
     }
   }
@@ -278,7 +274,7 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
     final next = targetIdx >= cards.length ? null : cards[targetIdx];
     if(next == this.detail) return;
     if(next != null && next.sameAs(this.detail)) return;
-    this.detail = next;
+    Future.delayed(Duration(seconds: 0)).then((_) => setState(() => this.detail = next));
     log("TIDX: $targetIdx");
   }
 
@@ -367,8 +363,16 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
                       this._editCardName(this.detail);
                     },
                   ),
-                  IconButton(
+                  PopupMenuButton<String>(
+                    onSelected: (act) {
+                      if(act == "delete") {
+                        this._delFocused();
+                      }
+                    },
                     icon: Icon(Icons.more_vert, color: Colors.white),
+                    itemBuilder: (context) => [
+                      PopupMenuItem(value: "delete", child: Text(S.of(context).delete)),
+                    ],
                   ),
                 ],
                 brightness: Brightness.light,
@@ -487,7 +491,9 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
         '${S.of(context).record} ${this.detail.id} ${S.of(context).deleted}';
     log('Record ${this.detail.id} deleted');
 
-    await this.bloc.delDumpedRecord(this.detail.id);
+    final deleted = this.detail;
+
+    await this.bloc.delDumpedRecord(deleted.id);
 
     this._tryCollapseDetail();
 
@@ -508,8 +514,12 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
               // user cancelled deletion, restore it
               await this
                   .bloc
-                  .addDumpedRecord(this.detail.raw, this.detail.time, this.detail.config);
-              log('Record ${this.detail.id} restored');
+                  .addDumpedRecord(
+                    jsonEncode(deleted.raw),
+                    deleted.time,
+                    deleted.config
+                  );
+              log('Record ${deleted.id} restored');
               break;
             default:
               break;

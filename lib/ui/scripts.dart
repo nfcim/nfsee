@@ -317,7 +317,7 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
   }
 
   Widget _buildBody(BuildContext context) {
-    return StreamBuilder<List<SavedScript>>(
+    return Expanded(child: StreamBuilder<List<SavedScript>>(
       stream: bloc.savedScripts,
       builder: (context, snapshot) {
         if (!snapshot.hasData || snapshot.data.length == 0) {
@@ -443,7 +443,7 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
                   .toList(),
             ));
       },
-    );
+    ));
   }
 
   void _addOrModifyScript() async {
@@ -600,9 +600,11 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
       )
     );
 
-    return Scaffold(
-      appBar: PreferredSize(child: title, preferredSize: Size.fromHeight(56)),
-      body: Builder(builder: _buildBody),
+    return Column(
+      children: <Widget>[
+        PreferredSize(child: title, preferredSize: Size.fromHeight(56)),
+        Builder(builder: _buildBody),
+      ],
     );
   }
 

@@ -293,24 +293,22 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
     final top = this._buildTop(context);
 
-    return Container(child: Column(
-      children: <Widget>[top, bottom],
-    ));
-
+    return Scaffold(
+      body: top,
+      bottomNavigationBar: bottom,
+    );
   }
 
   Widget _buildTop(context) {
     final scripts = ScriptsAct();
     final home = HomeAct(readCard: () { return this._readTag(this.context); });
     final settings = SettingsAct();
-    return Expanded(
-      child: PageView(
-        controller: topController,
-        children: <Widget>[scripts, home, settings],
-        onPageChanged: (page) {
-          this.setState(() { this.currentTop = page; });
-        },
-      )
+    return PageView(
+      controller: topController,
+      children: <Widget>[scripts, home, settings],
+      onPageChanged: (page) {
+        this.setState(() { this.currentTop = page; });
+      },
     );
   }
 

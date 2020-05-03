@@ -1090,6 +1090,24 @@ class S {
       args: [],
     );
   }
+
+  String get scanHistory {
+    return Intl.message(
+      'Scan History',
+      name: 'scanHistory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get historyCount {
+    return Intl.message(
+      '\$ found',
+      name: 'historyCount',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

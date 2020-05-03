@@ -116,5 +116,7 @@
     "contactUs": "Contact Us",
     "privacyPolicyContent": "assets/html/privacy_policy.en.html",
     "thirdPartyLicenseContent": "assets/html/third_party_license.html",
-    "help": "Help"
+    "help": "Help",
+    "scanHistory": "Scan History",
+    "historyCount": "$ found"
 }

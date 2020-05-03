@@ -945,8 +945,9 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial> with Ti
         Widget child = slice.child;
 
         if (widget.hasDividers) {
-          final bool hasTopDivider = true;
-          final bool hasBottomDivider = true;
+          final bool isMaterialGap = child is MaterialGap;
+          final bool hasTopDivider = isMaterialGap;
+          final bool hasBottomDivider = isMaterialGap;
 
           Border border;
           final BorderSide divider = Divider.createBorderSide(
