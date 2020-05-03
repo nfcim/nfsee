@@ -1108,6 +1108,24 @@ class S {
       args: [],
     );
   }
+
+  String get addedAt {
+    return Intl.message(
+      'Added at',
+      name: 'addedAt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get detailHint {
+    return Intl.message(
+      'Swipe up or tap on the card to show more',
+      name: 'detailHint',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

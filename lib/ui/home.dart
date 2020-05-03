@@ -139,7 +139,7 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  Text("扫描历史",
+                  Text(S.of(context).scanHistory,
                     style: TextStyle(color: Colors.black, fontSize: 32),
                   ),
                   Spacer(),
@@ -154,7 +154,7 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
                 ],
               ),
               Text(
-                data == null ? "加载中..." : "共 ${data.length} 条历史",
+                data == null ? "加载中..." : S.of(context).historyCount.replaceAll("\$", data.length.toString()),
                 style: TextStyle(color: Colors.black54, fontSize: 14)
               ),
             ]
@@ -385,8 +385,8 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
             child: Column(
               children: <Widget>[
                 ListTile(
-                  title: Text("添加于 ${this.detail.formattedTime}"),
-                  subtitle: Text("点击卡片或者上滑查看详情"),
+                  title: Text("${S.of(context).addedAt} ${this.detail.formattedTime}"),
+                  subtitle: Text(S.of(context).detailHint),
                   leading: Icon(Icons.access_time),
                 ),
                 Divider(),

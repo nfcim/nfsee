@@ -118,5 +118,7 @@
     "thirdPartyLicenseContent": "assets/html/third_party_license.html",
     "help": "Help",
     "scanHistory": "Scan History",
-    "historyCount": "$ found"
+    "historyCount": "$ found",
+    "addedAt": "Added at",
+    "detailHint": "Swipe up or tap on the card to show more"
 }

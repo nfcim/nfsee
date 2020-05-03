@@ -117,5 +117,7 @@
     "privacyPolicyContent": "assets/html/privacy_policy.zh.html",
     "help": "帮助",
     "scanHistory": "扫描历史",
-    "historyCount": "共 $ 条历史"
+    "historyCount": "共 $ 条历史",
+    "addedAt": "添加于",
+    "detailHint": "上滑或点击卡片查看详情"
 }
