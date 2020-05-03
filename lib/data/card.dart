@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:nfsee/data/database/database.dart';
+import 'package:nfsee/generated/l10n.dart';
 import 'package:nfsee/models.dart';
 import 'package:nfsee/utilities.dart';
 
@@ -19,8 +22,18 @@ class CardData {
   final CardType cardType;
   final String cardNo;
   final dynamic raw;
+  final DateTime time;
 
-  CardData({ this.id, this.category, this.name, this.cardNo, this.cardType, this.raw });
+  bool sameAs(CardData ano) {
+    if(ano == null) return false;
+    if(id != ano.id) return false;
+    if(config != ano.config) return false;
+    return true;
+  }
+
+  String get formattedTime => new DateFormat("MM/dd HH:mm:ss").format(time);
+
+  CardData({ this.id, this.category, this.name, this.cardNo, this.cardType, this.raw, this.time });
 
   factory CardData.fromDumpedRecord(DumpedRecord rec) {
     final data = jsonDecode(rec.data);
@@ -37,10 +50,11 @@ class CardData {
       category: category,
       cardType: cardType,
       raw: data,
+      time: rec.time,
     );
   }
 
-  String generateConfig() {
+  String get config {
     final m = Map();
     m.putIfAbsent("name", () => this.name);
     return jsonEncode(m);
@@ -73,13 +87,9 @@ class CardData {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
 
-                        Text(this.name, style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+                        Text(this.name ?? S.of(context).unnamedCard, style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
                         Text(this.cardType.getName(context), style: TextStyle(color: Colors.white70, fontSize: 16)),
                       ]),
-                      Spacer(),
-                      IconButton(
-                        icon: Icon(Icons.edit, color: Colors.white54),
-                      ),
                     ]
                   ),
                 ],

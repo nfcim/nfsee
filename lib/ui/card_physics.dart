@@ -17,6 +17,10 @@ class CardPhysics extends ScrollPhysics {
     return pos.pixels / CARD_WIDTH;
   }
 
+  int getItemIdx(ScrollPosition pos) {
+    return _posToItem(pos).round();
+  }
+
   double _itemToPix(int page) {
     return page * CARD_WIDTH;
   }

@@ -28,11 +28,11 @@ class NFSeeAppBloc {
         config: Value(config ?? DEFAULT_CONFIG)));
   }
 
-  void updateDumpedRecordConfig(int id, dynamic config) {
+  void updateDumpedRecordConfig(int id, String config) {
     db.writeDumpedRecord(
         id,
         DumpedRecordsCompanion(
-          config: Value(jsonEncode(config)),
+          config: Value(config),
         ));
   }
 
