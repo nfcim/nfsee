@@ -133,7 +133,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   }
 
   Future<void> _reloadWebview() async {
-    _webView.loadHTML("<!DOCTYPE html>");
+    // _webView.loadHTML("<!DOCTYPE html>");
     _webView.evalJavascript(await rootBundle.loadString('assets/ber-tlv.js'));
     _webView.evalJavascript(await rootBundle.loadString('assets/crypto-js.js'));
     _webView.evalJavascript(await rootBundle.loadString('assets/crypto.js'));
@@ -276,16 +276,16 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   Widget _buildHomePageAndroid(BuildContext context) {
     final bottom = BottomNavigationBar(
       currentIndex: this.currentTop,
-      onTap: (e) {
+      onTap: (e) async {
         setState(() {
           this.currentTop = e;
-          if(e == 0)
-            webviewOwner = WebViewOwner.Script;
-          else
-            webviewOwner = WebViewOwner.Script;
-          this._reloadWebview();
-          this.topController.animateToPage(e, duration: Duration(milliseconds: 500), curve: Curves.ease);
         });
+        if(e == 0)
+          webviewOwner = WebViewOwner.Script;
+        else
+          webviewOwner = WebViewOwner.Script;
+        await this._reloadWebview();
+        this.topController.animateToPage(e, duration: Duration(milliseconds: 500), curve: Curves.ease);
       },
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(

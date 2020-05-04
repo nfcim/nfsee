@@ -135,6 +135,7 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
 
     _webViewListener = _webView.didReceiveMessage.listen(this._onReceivedMessage);
     _webViewReloadListener = _webView.stateChanged.listen((e) async {
+      log(e.type.toString());
       if(e.type == WebViewState.didFinish) {
         log("reload detected");
         // Reload
@@ -143,10 +144,10 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
           this.lastRunning = -1;
         });
 
+        log("Reset listener");
         this._reloadWebviewListener();
       }
     });
-
   }
 
   @override
@@ -248,7 +249,7 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
     try {
       final wrapped = "(async function() {${script.source}})()";
       final encoded = json.encode(wrapped);
-      await _webView.evalJavascript('''
+      _webView.evalJavascript('''
           (async function() {
             let source = $encoded;
             await eval(source);
