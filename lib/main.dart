@@ -117,26 +117,34 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     super.reassemble();
   }
 
-  void _initSelf() {
-    this._addWebViewHandler();
+  void _initSelf() async {
     topController = PageController(
       initialPage: this.currentTop,
     );
+    await this._reloadWebview();
   }
 
   @override
   void dispose() {
     _webViewListener.cancel();
+    _webViewListener = null;
     topController.dispose();
     super.dispose();
   }
 
-  void _addWebViewHandler() async {
+  Future<void> _reloadWebview() async {
+    _webView.loadHTML("<!DOCTYPE html>");
     _webView.evalJavascript(await rootBundle.loadString('assets/ber-tlv.js'));
     _webView.evalJavascript(await rootBundle.loadString('assets/crypto-js.js'));
     _webView.evalJavascript(await rootBundle.loadString('assets/crypto.js'));
     _webView.evalJavascript(await rootBundle.loadString('assets/reader.js'));
     _webView.evalJavascript(await rootBundle.loadString('assets/codes.js'));
+    await this._addWebViewHandler();
+  }
+
+  Future<void> _addWebViewHandler() async {
+    if(_webViewListener != null)
+      _webViewListener.cancel();
     _webViewListener = _webView.didReceiveMessage.listen(_onReceivedMessage);
   }
 
@@ -147,6 +155,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   }
 
   void _onReceivedMessage(WebkitMessage message) async {
+    log("MESSAGE MAIN");
     if (webviewOwner != WebViewOwner.Main) {
       return;
     }
@@ -270,6 +279,11 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
       onTap: (e) {
         setState(() {
           this.currentTop = e;
+          if(e == 0)
+            webviewOwner = WebViewOwner.Script;
+          else
+            webviewOwner = WebViewOwner.Script;
+          this._reloadWebview();
           this.topController.animateToPage(e, duration: Duration(milliseconds: 500), curve: Curves.ease);
         });
       },

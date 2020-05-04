@@ -32,6 +32,7 @@ class ScriptsAct extends StatefulWidget {
 class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   final _webView = InteractiveWebView();
   StreamSubscription _webViewListener;
+  StreamSubscription _webViewReloadListener;
 
   NFSeeAppBloc get bloc => BlocProvider.provideBloc(context);
 
@@ -69,16 +70,11 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
   @override
   void initState() {
     super.initState();
-    this._initSelfOnce();
     this._initSelf();
   }
 
-  void _initSelfOnce() {
-  }
-
   void _initSelf() {
-    _webViewListener =
-        _webView.didReceiveMessage.listen(this._onReceivedMessage);
+    this._reloadWebviewListener();
 
     appbarFloatTrans = AnimationController(
       duration: const Duration(milliseconds: 100),
@@ -131,15 +127,43 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
     super.reassemble();
   }
 
+  void _reloadWebviewListener() {
+    if(_webViewListener != null)
+      _webViewListener.cancel();
+    if(_webViewReloadListener != null)
+      _webViewReloadListener.cancel();
+
+    _webViewListener = _webView.didReceiveMessage.listen(this._onReceivedMessage);
+    _webViewReloadListener = _webView.stateChanged.listen((e) async {
+      if(e.type == WebViewState.didFinish) {
+        log("reload detected");
+        // Reload
+        setState(() {
+          this.running = -1;
+          this.lastRunning = -1;
+        });
+
+        this._reloadWebviewListener();
+      }
+    });
+
+  }
+
   @override
   void dispose() {
+    log("DISPOSE");
     _webViewListener.cancel();
+    _webViewReloadListener.cancel();
+    _webViewListener = null;
+    _webViewReloadListener = null;
     this.appbarFloatTrans.dispose();
     this.runningOpacityTrans.dispose();
     super.dispose();
   }
 
   void _onReceivedMessage(WebkitMessage message) async {
+    log("MESSAGE");
+    log(webviewOwner.toString());
     if (webviewOwner != WebViewOwner.Script) {
       return;
     }
@@ -195,6 +219,7 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
         } else {
           await FlutterNfcKit.finish(iosAlertMessage: S.of(context).readSucceeded);
         }
+        log("Reseting running state");
         setState(() {
           this.lastRunning = this.running;
           this.running = -1;
@@ -624,6 +649,7 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
 
   @override
   Widget build(context) {
+    super.build(context);
     return PlatformWidget(
       androidBuilder: _buildAndroid,
       iosBuilder: _buildIos,

@@ -55,8 +55,6 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
   }
 
   void _initSelf() {
-    log("State updated");
-
     detailHideTrans = AnimationController(
       duration: const Duration(milliseconds: 100),
       vsync: this
@@ -269,7 +267,7 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
   void _updateDetailInst(List<CardData> cards) {
     int targetIdx = this.cardController != null && this.cardController.hasClients ?
       this.cardPhysics.getItemIdx(this.cardController.position) : 0;
-    final next = targetIdx >= cards.length ? null : cards[targetIdx];
+    final next = (cards == null || targetIdx >= cards.length) ? null : cards[targetIdx];
     if(next == this.detail) return;
     if(next != null && next.sameAs(this.detail)) return;
     Future.delayed(Duration(seconds: 0)).then((_) => setState(() => this.detail = next));
