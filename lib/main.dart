@@ -276,17 +276,17 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.code),
-          title: Text('脚本'),
+          title: Text(S.of(context).scriptTabTitle),
         ),
 
         BottomNavigationBarItem(
           icon: Icon(Icons.nfc),
-          title: Text('扫描'),
+          title: Text(S.of(context).scanTabTitle),
         ),
 
         BottomNavigationBarItem(
           icon: Icon(Icons.settings),
-          title: Text('设置'),
+          title: Text(S.of(context).settingsTabTitle),
         ),
       ],
     );
