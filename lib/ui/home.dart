@@ -15,7 +15,7 @@ import 'package:nfsee/generated/l10n.dart';
 const double DETAIL_OFFSET = 300;
 
 class HomeAct extends StatefulWidget {
-  final Future<void> Function() readCard;
+  final Future<bool> Function() readCard;
 
   HomeAct({ @required this.readCard });
 
@@ -146,7 +146,8 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
                   IconButton(
                     icon: Icon(Icons.add, color: Theme.of(context).colorScheme.onPrimary),
                     onPressed: () async {
-                      await this.widget.readCard();
+                      final cardRead = await this.widget.readCard();
+                      if(!cardRead) return;
                       this.addCard();
                       log("CARD read");
                     },
@@ -337,6 +338,15 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
   Widget _buildDetail(BuildContext ctx) {
     if(detail == null) return Container();
     var data = detail.raw;
+    
+    final detailTiles = parseCardDetails(data["detail"], context)
+      .map((d) => ListTile(
+            dense: true,
+            title: Text(d.name),
+            subtitle: Text(d.value),
+            leading: Icon(d.icon ?? Icons.info),
+          ))
+      .toList();
 
     final disp = Container(
       child: Column(
@@ -389,17 +399,8 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
                   subtitle: Text(S.of(context).detailHint),
                   leading: Icon(Icons.access_time),
                 ),
-                Divider(),
-                Column(
-                  children: parseCardDetails(data["detail"], context)
-                      .map((d) => ListTile(
-                            dense: true,
-                            title: Text(d.name),
-                            subtitle: Text(d.value),
-                            leading: Icon(d.icon ?? Icons.info),
-                          ))
-                      .toList()
-                ),
+                detailTiles.length == 0 ? Container() : Divider(),
+                Column(children: detailTiles),
                 Divider(),
                 this._buildMisc(context, data),
                 SizedBox(height: this.expanded ? 0 : DETAIL_OFFSET),

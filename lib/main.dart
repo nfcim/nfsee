@@ -305,6 +305,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     final settings = SettingsAct();
     return PageView(
       controller: topController,
+      physics: NeverScrollableScrollPhysics(),
       children: <Widget>[scripts, home, settings],
       onPageChanged: (page) {
         this.setState(() { this.currentTop = page; });
@@ -450,7 +451,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     );
   }
 
-  Future<void> _readTag(BuildContext context) async {
+  Future<bool> _readTag(BuildContext context) async {
     // Because we are launching an modal bottom sheet, user should not be able to intereact with the app anymore
     assert(!_reading);
 
@@ -469,12 +470,15 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     _webView.evalJavascript(script);
     // this._mockRead();
 
+    bool cardRead = true;
     if ((await modal) != true) {
       // closed by user, reject the promise
       _webView.evalJavascript("pollErrorCallback('User cancelled operation')");
+      cardRead = false;
     }
 
     _reading = false;
+    return cardRead;
   }
 
   void _deleteAll(BuildContext context) {
