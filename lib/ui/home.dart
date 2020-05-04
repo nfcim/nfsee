@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';
 import 'package:nfsee/data/card.dart';
@@ -199,10 +200,6 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
 
   void _refreshDetailScroll() {
     this.detailScroll = ScrollController();
-    this.detailScroll.addListener(() {
-      if(this.detailScroll.position.pixels == 0) return;
-      this._tryExpandDetail();
-    });
   }
 
   @override
@@ -390,23 +387,41 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
             ),
           ),
 
-          Expanded(child: SingleChildScrollView(
-            controller: detailScroll,
-            child: Column(
-              children: <Widget>[
-                ListTile(
-                  title: Text("${S.of(context).addedAt} ${this.detail.formattedTime}"),
-                  subtitle: Text(S.of(context).detailHint),
-                  leading: Icon(Icons.access_time),
-                ),
-                detailTiles.length == 0 ? Container() : Divider(),
-                Column(children: detailTiles),
-                Divider(),
-                this._buildMisc(context, data),
-                SizedBox(height: this.expanded ? 0 : DETAIL_OFFSET),
-              ],
-            ),
-          )),
+          NotificationListener(
+            onNotification: (notif) {
+              if(notif.depth != 0) return;
+              if(notif is UserScrollNotification) {
+                UserScrollNotification usnotif = notif;
+                if(usnotif.direction == ScrollDirection.reverse) {
+                  this._tryExpandDetail();
+                }
+              }
+
+              if(notif is OverscrollNotification) {
+                OverscrollNotification onotif = notif;
+                if(onotif.velocity == 0 && onotif.metrics.pixels == 0) {
+                  this._tryCollapseDetail();
+                }
+              }
+            },
+            child: Expanded(child: SingleChildScrollView(
+              controller: detailScroll,
+              child: Column(
+                children: <Widget>[
+                  ListTile(
+                    title: Text("${S.of(context).addedAt} ${this.detail.formattedTime}"),
+                    subtitle: Text(S.of(context).detailHint),
+                    leading: Icon(Icons.access_time),
+                  ),
+                  detailTiles.length == 0 ? Container() : Divider(),
+                  Column(children: detailTiles),
+                  Divider(),
+                  this._buildMisc(context, data),
+                  SizedBox(height: this.expanded ? 0 : DETAIL_OFFSET),
+                ],
+              ),
+            )),
+          ),
         ]
       )
     );
