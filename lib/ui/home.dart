@@ -390,20 +390,20 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
 
           NotificationListener(
             onNotification: (notif) {
-              if(notif.depth != 0) return;
               if(notif is UserScrollNotification) {
                 UserScrollNotification usnotif = notif;
-                if(usnotif.direction == ScrollDirection.reverse) {
+                if(usnotif.depth == 0 && usnotif.direction == ScrollDirection.reverse) {
                   this._tryExpandDetail();
                 }
               }
 
               if(notif is OverscrollNotification) {
                 OverscrollNotification onotif = notif;
-                if(onotif.velocity == 0 && onotif.metrics.pixels == 0) {
+                if(onotif.depth == 0 && onotif.velocity == 0 && onotif.metrics.pixels == 0) {
                   this._tryCollapseDetail();
                 }
               }
+              return false;
             },
             child: Expanded(child: SingleChildScrollView(
               controller: detailScroll,
