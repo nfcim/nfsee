@@ -132,6 +132,8 @@ class _AboutActState extends State<AboutAct> {
     return Scaffold(
       appBar: AppBar(
         title: Text(S.of(context).about),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
       ),
       body: _buildAboutBody(),
     );
