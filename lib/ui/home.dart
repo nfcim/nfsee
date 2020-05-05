@@ -459,8 +459,11 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
           data: tdata,
           child: ExpansionTile(
             leading: CircleAvatar(
-              backgroundColor: Colors.black12,
-              child: Icon(Icons.payment, color: Colors.black54),
+              backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.white12 : Colors.black12,
+              child: Icon(
+                Icons.payment,
+                color: Theme.of(context).brightness == Brightness.dark ? Colors.white54 : Colors.black54,
+              ),
             ),
             title: Text(S.of(context).transactionHistory),
             subtitle: transferTiles == null
@@ -475,8 +478,11 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
           data: tdata,
           child: ExpansionTile(
             leading: CircleAvatar(
-              backgroundColor: Colors.black12,
-              child: Icon(Icons.nfc, color: Colors.black54),
+              backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.white12 : Colors.black12,
+              child: Icon(
+                Icons.nfc,
+                color: Theme.of(context).brightness == Brightness.dark ? Colors.white54 : Colors.black54,
+              ),
             ),
             title: Text(S.of(context).technologicalDetails),
             subtitle: Text(data['tag']['standard']),
@@ -488,8 +494,11 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
           data: tdata,
           child: ExpansionTile(
             leading: CircleAvatar(
-              backgroundColor: Colors.black12,
-              child: Icon(Icons.history, color: Colors.black54),
+              backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.white12 : Colors.black12,
+              child: Icon(
+                Icons.history,
+                color: Theme.of(context).brightness == Brightness.dark ? Colors.white54 : Colors.black54,
+              ),
             ),
             title: Text(S.of(context).apduLogs),
             subtitle: Text(
