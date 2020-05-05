@@ -600,7 +600,14 @@
         const tag = await poll();
         log(tag);
         // read detailed information
-        let { card_type, ...detail } = await ReadAnyCard(tag);
+        var card_type = 'Unknown';
+        var detail = {};
+        try {
+            var { card_type, ..._detail } = await ReadAnyCard(tag);
+            Object.assign(detail, _detail);
+        } catch (e) {
+            log(`Script error when reading detail: ${JSON.stringify(e)}`);
+        }
         // return to invoker
         const result = {
             tag,
@@ -610,7 +617,7 @@
         };
         report(result);
     } catch (e) { 
-        log(`Script error: ${JSON.stringify(e)}`);
+        log(`Script error when polling: ${JSON.stringify(e)}`);
     } finally {
         finish();
     }
