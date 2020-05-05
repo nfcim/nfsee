@@ -551,12 +551,6 @@
             r = r.slice(0, -4);
             return await ReadTUnion(r);
         }
-        // PPSE
-        r = await _transceive('00A404000E325041592E5359532E444446303100');
-        if (r.endsWith('9000')) {
-            r = r.slice(0, -4);
-            return await ReadPPSE(r);
-        }
         // TransShenzhen / TransWuhan
         r = await _transceive('00A4000002100100');
         if (r.endsWith('9000')) {
@@ -575,6 +569,13 @@
         if (r.endsWith('9000')) {
             r = r.slice(0, -4);
             return await ReadLingnanTong(r);
+        }
+        // put it here because iOS fails here
+        // PPSE
+        r = await _transceive('00A404000E325041592E5359532E444446303100');
+        if (r.endsWith('9000')) {
+            r = r.slice(0, -4);
+            return await ReadPPSE(r);
         }
         // unsupported
         return { 'card_type': 'Unknown' };
