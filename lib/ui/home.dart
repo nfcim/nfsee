@@ -139,11 +139,14 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
               Row(
                 children: <Widget>[
                   Text(S.of(context).scanHistory,
-                    style: TextStyle(color: Colors.black, fontSize: 32),
+                    style: Theme.of(context).primaryTextTheme.title.copyWith(fontSize: 32),
                   ),
                   Spacer(),
                   IconButton(
-                    icon: Icon(Icons.add, color: Theme.of(context).colorScheme.onPrimary),
+                    icon: Icon(
+                      Icons.add,
+                      color: Theme.of(context).primaryTextTheme.headline.color,
+                    ),
                     onPressed: () async {
                       final cardRead = await this.widget.readCard();
                       if(!cardRead) return;
@@ -155,7 +158,7 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
               ),
               Text(
                 data == null ? "加载中..." : S.of(context).historyCount.replaceAll("\$", data.length.toString()),
-                style: TextStyle(color: Colors.black54, fontSize: 14)
+                style: Theme.of(context).primaryTextTheme.caption.copyWith(fontSize: 14),
               ),
             ]
           )

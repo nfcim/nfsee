@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -342,7 +343,7 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
   }
 
   Widget _buildBody(BuildContext context) {
-    return Expanded(child: StreamBuilder<List<SavedScript>>(
+    return Container(child: StreamBuilder<List<SavedScript>>(
       stream: bloc.savedScripts,
       builder: (context, snapshot) {
         if (!snapshot.hasData || snapshot.data.length == 0) {
@@ -364,7 +365,7 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
           ..sort((a, b) => a.creationTime.compareTo(b.creationTime));
 
         return SingleChildScrollView(
-          padding: EdgeInsets.only(bottom: 40, top: 60),
+          padding: EdgeInsets.only(bottom: 40, top: 120),
           controller: scroll,
           child: NFSeeExpansionPanelList.radio(
             elevation: 1,
@@ -600,27 +601,27 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
         });
   }
         
-  Widget _buildAndroid(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
     final title = Transform.translate(
       offset: Offset(0, 20 * (1-appbarFloatVal)),
       child: AppBar(
-        elevation: appbarFloatVal * 4,
-        backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(appbarFloatVal),
+        elevation: math.max((appbarFloatVal - 0.8) / 0.2 * 4, 0),
+        backgroundColor: Theme.of(context).primaryColor.withOpacity(appbarFloatVal),
         title: Text(S.of(context).scriptTabTitle,
-          style: TextStyle(
-            color: Colors.black,
+          style: Theme.of(context).primaryTextTheme.title.copyWith(
             fontSize: 20 + 12 * (1-appbarFloatVal),
-            fontWeight: appbarFloatVal < 0.5 ? FontWeight.normal : FontWeight.bold,
           ),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.add, color: Colors.black87),
+            icon: Icon(Icons.add, color: Theme.of(context).primaryTextTheme.headline.color),
             onPressed: _showScriptDialog,
             tooltip: S.of(context).addScript,
           ),
           IconButton(
-            icon: const Icon(Icons.help, color: Colors.black87),
+            icon: Icon(Icons.help, color: Theme.of(context).primaryTextTheme.headline.color),
             tooltip: S.of(context).help,
             onPressed: () {
               launch('https://nfsee.nfc.im/js-extension/');
@@ -630,34 +631,11 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
       )
     );
 
-    return Column(
+    return Stack(
       children: <Widget>[
-        PreferredSize(child: title, preferredSize: Size.fromHeight(56)),
         Builder(builder: _buildBody),
+        Column(children: [PreferredSize(child: title, preferredSize: Size.fromHeight(56))]),
       ],
-    );
-  }
-
-  Widget _buildIos(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Text(S.of(context).scriptTabTitle),
-        trailing: CupertinoButton(
-          padding: EdgeInsets.zero,
-          child: Icon(CupertinoIcons.create),
-          onPressed: _showScriptDialog,
-        ),
-      ),
-      child: SafeArea(child: _buildBody(context)),
-    );
-  }
-
-  @override
-  Widget build(context) {
-    super.build(context);
-    return PlatformWidget(
-      androidBuilder: _buildAndroid,
-      iosBuilder: _buildIos,
     );
   }
 

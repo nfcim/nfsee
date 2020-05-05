@@ -121,37 +121,10 @@ class _SettingsActState extends State<SettingsAct> {
             )));
   }
 
-  // ===========================================================================
-  // Non-shared code below because:
-  // - Android and iOS have different scaffolds
-  // - There are differenc items in the app bar / nav bar
-  // - Android has a hamburger drawer, iOS has bottom tabs
-  // - The iOS nav bar is scrollable, Android is not
-  // - Pull-to-refresh works differently, and Android has a button to trigger it too
-  //
-  // And these are all design time choices that doesn't have a single 'right'
-  // answer.
-  // ===========================================================================
-  Widget _buildAndroid(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
-        appBar: new AppBar(title: Text(S.of(context).settingsTabTitle)),
-        body: _buildSettingsBody());
-  }
-
-  Widget _buildIos(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Text(S.of(context).settingsTabTitle),
-      ),
-      child: _buildSettingsBody(),
-    );
-  }
-
-  @override
-  Widget build(context) {
-    return PlatformWidget(
-      androidBuilder: _buildAndroid,
-      iosBuilder: _buildIos,
+      appBar: new AppBar(title: Text(S.of(context).settingsTabTitle)),
+      body: _buildSettingsBody()
     );
   }
 }
