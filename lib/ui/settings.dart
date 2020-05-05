@@ -24,23 +24,6 @@ class _SettingsActState extends State<SettingsAct> {
     super.initState();
   }
 
-  void _togglePlatform() {
-    TargetPlatform _getOppositePlatform() {
-      if (defaultTargetPlatform == TargetPlatform.iOS) {
-        return TargetPlatform.android;
-      } else {
-        return TargetPlatform.iOS;
-      }
-    }
-
-    debugDefaultTargetPlatformOverride = _getOppositePlatform();
-    // This rebuilds the application. This should obviously never be
-    // done in a real app but it's done here since this app
-    // unrealistically toggles the current platform for demonstration
-    // purposes.
-    WidgetsBinding.instance.reassembleApplication();
-  }
-
   void _onTapDelete(BuildContext context, BuildContext outerCtx) async {
     bool delRecords = false;
     bool delScripts = false;
@@ -126,17 +109,7 @@ class _SettingsActState extends State<SettingsAct> {
         },
       ),
     ];
-    // hide in release mode
-    if (!kReleaseMode) {
-      items.addAll([
-        Divider(height: 0),
-        ListTile(
-          leading: Icon(Icons.shuffle),
-          title: Text(S.of(context).togglePlatform),
-          onTap: _togglePlatform,
-        )
-      ]);
-    }
+
     return items;
   }
 

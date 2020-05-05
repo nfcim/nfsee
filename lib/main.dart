@@ -22,7 +22,6 @@ import 'package:nfsee/models.dart';
 import 'package:nfsee/ui/card_physics.dart';
 import 'package:nfsee/ui/home.dart';
 import 'package:nfsee/utilities.dart';
-import 'package:nfsee/ui/card_detail.dart';
 import 'package:nfsee/ui/scripts.dart';
 import 'package:nfsee/ui/settings.dart';
 import 'package:nfsee/ui/widgets.dart';
@@ -203,12 +202,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
       case 'report':
         _closeReadModal(this.context);
         final id = await bloc.addDumpedRecord(jsonEncode(scriptModel.data));
-        this._navigateToTag(DumpedRecord(
-          id: id,
-          time: DateTime.now(),
-          data: jsonEncode(scriptModel.data),
-          config: DEFAULT_CONFIG,
-        ));
+        // TODO: pass to home page
         break;
 
       case 'finish':
@@ -230,50 +224,8 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     }
   }
 
-  void _navigateToScriptMode() {
-    webviewOwner = WebViewOwner.Script;
-    Navigator.push(
-            context, MaterialPageRoute(builder: (context) => ScriptsAct()))
-        .then((_) {
-      webviewOwner = WebViewOwner.Main;
-    });
-  }
-
-  void _navigateToTag(DumpedRecord record) {
-    return; // TODO: move to homepage
-
-    var data = jsonDecode(record.data);
-    var config = jsonDecode(record.config ?? DEFAULT_CONFIG);
-
-    // convert card_type to Type CardType
-    data['card_type'] =
-        getEnumFromString<CardType>(CardType.values, data['card_type']);
-
-    log(data.toString());
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.android:
-        Navigator.of(context).push<void>(
-          MaterialPageRoute(
-            builder: (context) => CardDetailTab(
-                data: data, config: config, id: record.id, time: record.time),
-          ),
-        );
-        break;
-      case TargetPlatform.iOS:
-        Navigator.of(context).push<void>(
-          CupertinoPageRoute(
-            title: 'Card Detail',
-            builder: (context) => CardDetailTab(
-                data: data, config: config, id: record.id, time: record.time),
-          ),
-        );
-        break;
-      default:
-        assert(false, 'Unexpected platform $defaultTargetPlatform');
-    }
-  }
-
-  Widget _buildHomePageAndroid(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     final bottom = BottomNavigationBar(
       currentIndex: this.currentTop,
       onTap: (e) async {
@@ -327,144 +279,6 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     );
   }
 
-  Widget _buildHistoryPageIos(BuildContext context) {
-    return CustomScrollView(
-      slivers: <Widget>[
-        CupertinoSliverNavigationBar(
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: Icon(CupertinoIcons.delete),
-                onPressed: () {
-                  _deleteAll(context);
-                },
-              ),
-              CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: Icon(CupertinoIcons.plus_circled),
-                onPressed: () {
-                  _readTag(context);
-                },
-              )
-            ],
-          ),
-        ),
-        SliverPadding(
-          padding: MediaQuery.of(context)
-              .removePadding(
-                  removeTop: true, removeLeft: true, removeRight: true)
-              .padding,
-          sliver: StreamBuilder<List<DumpedRecord>>(
-            stream: bloc.dumpedRecords,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData || snapshot.data.length == 0) {
-                return SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    return Text(
-                      "Press button on the top right to scan a NFC tag",
-                      style: TextStyle(color: Colors.grey),
-                      textAlign: TextAlign.center,
-                    );
-                  }, childCount: 1),
-                );
-              }
-              final records = snapshot.data.reversed.toList();
-              return SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    int realIndex = index ~/ 2;
-                    if (index.isEven) {
-                      return ReportRowItem(
-                          record: records[realIndex],
-                          onTap: () {
-                            this._navigateToTag(records[realIndex]);
-                          });
-                    } else {
-                      return Divider(
-                        height: 0,
-                        color: Colors.grey,
-                        indent: 10,
-                        endIndent: 10,
-                      );
-                    }
-                  },
-                  childCount: math.max(1, 2 * records.length - 1),
-                ),
-              );
-            },
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget _buildHomePageIos(BuildContext context) {
-    return CupertinoTabScaffold(
-      tabBar: CupertinoTabBar(
-        items: [
-          BottomNavigationBarItem(
-            title: Text(S.of(context).scanTabTitle),
-            icon: Icon(Icons.nfc),
-          ),
-          BottomNavigationBarItem(
-            title: Text(S.of(context).scriptTabTitle),
-            icon: Icon(Icons.play_arrow),
-          ),
-          BottomNavigationBarItem(
-            title: Text(S.of(context).settingsTabTitle),
-            icon: Icon(Icons.settings),
-          ),
-        ],
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              webviewOwner = WebViewOwner.Main;
-              break;
-            case 1:
-              webviewOwner = WebViewOwner.Script;
-              break;
-            case 2:
-              break;
-            default:
-              assert(false, 'Unexpected tab');
-          }
-        },
-      ),
-      tabBuilder: (context, index) {
-        switch (index) {
-          case 0:
-            return CupertinoTabView(
-              builder: (context) => _buildHistoryPageIos(context),
-              defaultTitle: S.of(context).homeScreenTitle,
-            );
-          case 1:
-            return CupertinoTabView(
-              builder: (context) => ScriptsAct(),
-              defaultTitle: S.of(context).scriptTabTitle,
-            );
-          case 2:
-            return CupertinoTabView(
-              builder: (context) => SettingsAct(),
-              defaultTitle: S.of(context).settingsTabTitle,
-            );
-          default:
-            assert(false, 'Unexpected tab');
-            return null;
-        }
-      },
-    );
-  }
-
-  @override
-  Widget build(context) {
-    return PlatformWidget(
-      androidBuilder: _buildHomePageAndroid,
-      iosBuilder: _buildHomePageIos,
-    );
-  }
-
   Future<bool> _readTag(BuildContext context) async {
     // Because we are launching an modal bottom sheet, user should not be able to intereact with the app anymore
     assert(!_reading);
@@ -493,10 +307,6 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
     _reading = false;
     return cardRead;
-  }
-
-  void _deleteAll(BuildContext context) {
-    bloc.delAllDumpedRecord();
   }
 
   void _closeReadModal(BuildContext context) {
