@@ -365,109 +365,110 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
           ..sort((a, b) => a.creationTime.compareTo(b.creationTime));
 
         return SingleChildScrollView(
-            padding: EdgeInsets.only(bottom: 40, top: 60),
-            controller: scroll,
-            child: NFSeeExpansionPanelList.radio(
-              elevation: 1,
-              children: scripts
-                  .map((script) => NFSeeExpansionPanelRadio(
-                        running: this.running == script.id,
-                        value: script.id,
-                        canTapOnHeader: true,
-                        headerBuilder: (context, open) => Opacity(
-                          child: ListTile(
-                            subtitle: Text(S.of(context).lastExecutionTime +
-                                ': ' +
-                                (script.lastUsed != null
-                                    ? script.lastUsed
-                                        .toString()
-                                        .split('.')[0] // remove part before ms
-                                    : S.of(context).never)),
-                            title: Text(script.name), 
-                          ),
-                          opacity: this.running == script.id ? runningOpacityVal : 1,
+          padding: EdgeInsets.only(bottom: 40, top: 60),
+          controller: scroll,
+          child: NFSeeExpansionPanelList.radio(
+            elevation: 1,
+            children: scripts
+                .map((script) => NFSeeExpansionPanelRadio(
+                      running: this.running == script.id,
+                      value: script.id,
+                      canTapOnHeader: true,
+                      headerBuilder: (context, open) => Opacity(
+                        child: ListTile(
+                          subtitle: Text(S.of(context).lastExecutionTime +
+                              ': ' +
+                              (script.lastUsed != null
+                                  ? script.lastUsed
+                                      .toString()
+                                      .split('.')[0] // remove part before ms
+                                  : S.of(context).never)),
+                          title: Text(script.name), 
                         ),
-                        body: Container(
-                          padding: EdgeInsets.only(
-                            bottom: 10,
-                            left: 20,
-                            right: 20,
-                          ),
-                          child: Column(
-                            children: <Widget>[
-                              this._getScriptResult(context, script),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: <Widget>[
-                                  FlatButton.icon(
-                                      // Disable run button if there is a script running in background
-                                      onPressed: this.running == -1
-                                          ? () async {
-                                              this._runScript(script);
-                                              await this
-                                                  .bloc
-                                                  .updateScriptUseTime(
-                                                      script.id);
-                                            }
-                                          : null,
-                                      textTheme: ButtonTextTheme.primary,
-                                      // icon:
-                                      icon: this.running == script.id
-                                          ? Padding(
-                                              padding: EdgeInsets.all(4),
-                                              child: SizedBox(
-                                                width: 16,
-                                                height: 16,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  strokeWidth: 2,
-                                                  valueColor:
-                                                      new AlwaysStoppedAnimation(
-                                                    Theme.of(context)
-                                                        .disabledColor,
-                                                  ),
+                        opacity: this.running == script.id ? runningOpacityVal : 1,
+                      ),
+                      body: Container(
+                        padding: EdgeInsets.only(
+                          bottom: 10,
+                          left: 20,
+                          right: 20,
+                        ),
+                        child: Column(
+                          children: <Widget>[
+                            this._getScriptResult(context, script),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                FlatButton.icon(
+                                    // Disable run button if there is a script running in background
+                                    onPressed: this.running == -1
+                                        ? () async {
+                                            this._runScript(script);
+                                            await this
+                                                .bloc
+                                                .updateScriptUseTime(
+                                                    script.id);
+                                          }
+                                        : null,
+                                    textTheme: ButtonTextTheme.primary,
+                                    // icon:
+                                    icon: this.running == script.id
+                                        ? Padding(
+                                            padding: EdgeInsets.all(4),
+                                            child: SizedBox(
+                                              width: 16,
+                                              height: 16,
+                                              child:
+                                                  CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                                valueColor:
+                                                    new AlwaysStoppedAnimation(
+                                                  Theme.of(context)
+                                                      .disabledColor,
                                                 ),
-                                              ))
-                                          : Icon(Icons.play_arrow),
-                                      label: Text(S.of(context).run)),
-                                  Expanded(child: Container()),
-                                  IconButton(
-                                    onPressed: () {
-                                      _showScriptDialog(script);
+                                              ),
+                                            ))
+                                        : Icon(Icons.play_arrow),
+                                    label: Text(S.of(context).run)),
+                                Expanded(child: Container()),
+                                IconButton(
+                                  onPressed: () {
+                                    _showScriptDialog(script);
+                                  },
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
+                                  icon: Icon(Icons.edit),
+                                  tooltip: S.of(context).edit,
+                                ),
+                                IconButton(
+                                  onPressed: () async =>
+                                      _deleteScript(context, script),
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
+                                  icon: Icon(Icons.delete),
+                                  tooltip: S.of(context).delete,
+                                ),
+                                IconButton(
+                                    onPressed: () async {
+                                      await Clipboard.setData(
+                                          ClipboardData(text: script.source));
+                                      _showMessage(context,
+                                          '${S.of(context).script} ${script.name} ${S.of(context).copied}');
                                     },
-                                    color:
-                                        Theme.of(context).colorScheme.onSurface,
-                                    icon: Icon(Icons.edit),
-                                    tooltip: S.of(context).edit,
-                                  ),
-                                  IconButton(
-                                    onPressed: () async =>
-                                        _deleteScript(context, script),
-                                    color:
-                                        Theme.of(context).colorScheme.onSurface,
-                                    icon: Icon(Icons.delete),
-                                    tooltip: S.of(context).delete,
-                                  ),
-                                  IconButton(
-                                      onPressed: () async {
-                                        await Clipboard.setData(
-                                            ClipboardData(text: script.source));
-                                        _showMessage(context,
-                                            '${S.of(context).script} ${script.name} ${S.of(context).copied}');
-                                      },
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface,
-                                      icon: Icon(Icons.content_copy),
-                                      tooltip: S.of(context).copy),
-                                ],
-                              ),
-                            ],
-                          ),
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface,
+                                    icon: Icon(Icons.content_copy),
+                                    tooltip: S.of(context).copy),
+                              ],
+                            ),
+                          ],
                         ),
-                      ))
-                  .toList(),
-            ));
+                      ),
+                    ))
+                .toList(),
+          )
+        );
       },
     ));
   }
@@ -607,7 +608,11 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
         elevation: appbarFloatVal * 4,
         backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(appbarFloatVal),
         title: Text(S.of(context).scriptTabTitle,
-          style: TextStyle(color: Colors.black, fontSize: 20 + 12 * (1-appbarFloatVal)),
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 20 + 12 * (1-appbarFloatVal),
+            fontWeight: appbarFloatVal < 0.5 ? FontWeight.normal : FontWeight.bold,
+          ),
         ),
         actions: [
           IconButton(

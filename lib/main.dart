@@ -283,7 +283,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         if(e == 0)
           webviewOwner = WebViewOwner.Script;
         else
-          webviewOwner = WebViewOwner.Script;
+          webviewOwner = WebViewOwner.Main;
         await this._reloadWebview();
         this.topController.animateToPage(e, duration: Duration(milliseconds: 500), curve: Curves.ease);
       },
