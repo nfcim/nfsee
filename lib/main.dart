@@ -170,7 +170,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         } on PlatformException catch (e) {
           error = e;
           // no need to do anything with FlutterNfcKit, which will reset itself
-          log('Transceive error: ${e.toDetailString()}');
+          log('Poll error: ${e.toDetailString()}');
           _closeReadModal(this.context);
           showSnackbar(SnackBar(
               content:
@@ -182,7 +182,9 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
       case 'transceive':
         try {
-          final rapdu = await FlutterNfcKit.transceive(scriptModel.data);
+          log('TX: ${scriptModel.data}');
+          final rapdu = await FlutterNfcKit.transceive(scriptModel.data as String);
+          log('RX: $rapdu');
           _webView.evalJavascript("transceiveCallback('$rapdu')");
         } on PlatformException catch (e) {
           error = e;
