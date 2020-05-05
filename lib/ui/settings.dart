@@ -92,6 +92,12 @@ class _SettingsActState extends State<SettingsAct> {
 
   List<Widget> _buildListItems(BuildContext outerCtx) {
     var items = <Widget>[
+      Padding(
+        padding: EdgeInsets.all(20),
+        child: Text(S.of(context).settingsTabTitle,
+          style: Theme.of(context).primaryTextTheme.title.copyWith(fontSize: 32),
+        ),
+      ),
       ListTile(
         leading: Icon(Icons.delete_sweep),
         title: Text(S.of(context).deleteData),
@@ -115,15 +121,14 @@ class _SettingsActState extends State<SettingsAct> {
 
   Widget _buildSettingsBody() {
     return Builder(
-        builder: (context) => SafeArea(
-                child: ListView(
-              children: _buildListItems(context),
-            )));
+      builder: (context) => SafeArea(
+              child: ListView(
+            children: _buildListItems(context),
+          )));
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: new AppBar(title: Text(S.of(context).settingsTabTitle)),
       body: _buildSettingsBody()
     );
   }
