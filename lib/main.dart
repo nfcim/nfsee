@@ -155,12 +155,11 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   }
 
   void _onReceivedMessage(WebkitMessage message) async {
-    log("MESSAGE MAIN");
     if (webviewOwner != WebViewOwner.Main) {
       return;
     }
     var scriptModel = ScriptDataModel.fromJson(message.data);
-    log('Received action ${scriptModel.action} from script');
+    log('[Main] Received action ${scriptModel.action} from script');
     switch (scriptModel.action) {
       case 'poll':
         error = null;

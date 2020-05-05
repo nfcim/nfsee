@@ -163,13 +163,12 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
   }
 
   void _onReceivedMessage(WebkitMessage message) async {
-    log("MESSAGE");
     log(webviewOwner.toString());
     if (webviewOwner != WebViewOwner.Script) {
       return;
     }
     var scriptModel = ScriptDataModel.fromJson(message.data);
-    log('Received action ${scriptModel.action} from script');
+    log('[Script] Received action ${scriptModel.action} from script');
     switch (scriptModel.action) {
       case 'poll':
         try {
