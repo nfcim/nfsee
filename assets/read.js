@@ -535,7 +535,9 @@
         if (balance === null)
             return { 'card_type': 'Unknown' };
         let balance_num = parseInt(balance.slice(0, 8), 16);
-        balance_num = (balance_num - 500) / 10.0;
+        // balance in units of 0.1HKD plus 500
+        // convert to units of 0.01HKD
+        balance_num = (balance_num - 500) * 10;
         return {
             'card_type': 'Octopus',
             'card_number': idm_pmm[0],
