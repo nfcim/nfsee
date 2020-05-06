@@ -137,6 +137,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     _webView.evalJavascript(await rootBundle.loadString('assets/crypto-js.js'));
     _webView.evalJavascript(await rootBundle.loadString('assets/crypto.js'));
     _webView.evalJavascript(await rootBundle.loadString('assets/reader.js'));
+    _webView.evalJavascript(await rootBundle.loadString('assets/felica.js'));
     _webView.evalJavascript(await rootBundle.loadString('assets/codes.js'));
     await this._addWebViewHandler();
   }
