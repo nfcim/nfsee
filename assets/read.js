@@ -408,13 +408,13 @@
         const sep = tr2eqiv.indexOf('D');
         if (sep < 0) return null;
         return [tr2eqiv.slice(0, sep),
-            tr2eqiv.slice(sep + 1, sep + 3) + '/' + tr2eqiv.slice(sep + 3, sep + 5)];
+        tr2eqiv.slice(sep + 1, sep + 3) + '/' + tr2eqiv.slice(sep + 3, sep + 5)];
     };
 
     let ParseTrack1 = (tr1) => {
         let text = GBKDecoder.decode(tr1);
         let groups = text.match(/^B([0-9]{1,19})\^([^\^]{2,26})\^(([0-9]{2})([0-9]{2})|\^)/);
-        if(groups === null || groups.length < 6) return null;
+        if (groups === null || groups.length < 6) return null;
         return [groups[1], groups[4] + '/' + groups[5]];
     };
 
@@ -453,11 +453,11 @@
                 if (!AIP_AFL) return {};
                 AFL = AIP_AFL.slice(2); // skip 2-byte AIP
             }
-            const elements = await FetchElementsFromAFL(AFL, ['56', '57', '9F6B' ]);
+            const elements = await FetchElementsFromAFL(AFL, ['56', '57', '9F6B']);
             track2eqiv = elements['57'] || elements['9F6B'];
             if (track2eqiv)
                 [pan, expiration] = ParseTrack2Eqiv(track2eqiv);
-            else if(elements['56'])
+            else if (elements['56'])
                 [pan, expiration] = ParseTrack1(elements['56']);
             else
                 return {};
@@ -526,12 +526,33 @@
         };
     };
 
+    let ReadOctopus = async () => {
+        const sysCode = 0x0880;
+        const balanceSrvCode = 0x0117;
+        const f = new Felica(_transceive);
+        const idm_pmm = await f.polling(sysCode);
+        const balance = await f.readWithoutEncryption(balanceSrvCode, 0);
+        if (balance === null)
+            return { 'card_type': 'Unknown' };
+        let balance_num = parseInt(balance.slice(0, 8), 16);
+        balance_num = (balance_num - 500) / 10.0;
+        return {
+            'card_type': 'Octopus',
+            'card_number': idm_pmm[0],
+            'balance': balance_num,
+        };
+    };
+
     let ReadAnyCard = async (tag) => {
+        if (tag.type === "felica") {
+            return await ReadOctopus();
+        }
         // ChinaResidentID
         if (tag.standard === "ISO 14443-3 (Type B)") {
             let r = await _transceive('0036000008');
             if (r.endsWith('900000'))
                 return await ReadChinaID(r.slice(0, 16));
+            return { 'card_type': 'Unknown' };
         }
         // TransBeijing
         let r = await _transceive('00B0840020');
@@ -581,28 +602,33 @@
         return { 'card_type': 'Unknown' };
     };
 
-    // record APDU history
-    let apdu_history = [];
-    const _transceive = async (apdu) => {
-        const result = await transceive(apdu);
-        let history = {
-            'tx': apdu,
-            'rx': result
+    let getWrappedTransceive = (apdu_history, tagType) => {
+        return async (apdu) => {
+            const result = await transceive(apdu);
+            let history = {
+                'tx': apdu,
+                'rx': result
+            };
+            // append success history only
+            if (tagType != 'iso7816' || result.endsWith('9000')) {
+                apdu_history.push(history);
+            }
+            return result;
         };
-        // append success history only
-        if (result.endsWith('9000') || result.endsWith('900000')) {
-            apdu_history.push(history);
-        }
-        return result;
-    };
+    }
+
+    let _transceive = null;
 
     try {
+        // record APDU history
+        let apdu_history = [];
         // poll a tag
         const tag = await poll();
         log(tag);
         // read detailed information
         var card_type = 'Unknown';
         var detail = {};
+        _transceive = getWrappedTransceive(apdu_history, tag.type);
         try {
             var { card_type, ..._detail } = await ReadAnyCard(tag);
             Object.assign(detail, _detail);
@@ -617,7 +643,7 @@
             apdu_history
         };
         report(result);
-    } catch (e) { 
+    } catch (e) {
         log(`Script error when polling: ${JSON.stringify(e)}`);
     } finally {
         finish();
