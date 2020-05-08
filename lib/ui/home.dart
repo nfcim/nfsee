@@ -443,7 +443,7 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
         : null;
     final technologyDetailTiles = (data["tag"] as Map<String, dynamic>)
         .entries
-        .where((t) => t.value != '') // filter empty values
+        .where((t) => t.value != '' && t.value != null) // filter empty values
         .map((t) => TechnologicalDetailTile(name: t.key, value: t.value))
         .toList();
 
