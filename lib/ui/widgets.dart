@@ -211,6 +211,31 @@ class TransferTile extends StatelessWidget {
   }
 }
 
+class NDEFTile extends StatelessWidget {
+  const NDEFTile({this.data});
+
+  final Map<String, dynamic> data;
+
+  @override
+  Widget build(context) {
+    return ExpansionTile(
+      leading: Icon(Icons.accessible),
+      title: Text(
+          ""),
+      subtitle: Text(
+          ""),
+      children: []
+          .map((d) => ListTile(
+                dense: true,
+                title: Text(d.name),
+                subtitle: Text(d.value),
+                leading: Icon(d.icon ?? Icons.info),
+              ))
+          .toList(),
+    );
+  }
+}
+
 class TechnologicalDetailTile extends StatelessWidget {
   const TechnologicalDetailTile({this.name, this.value});
 

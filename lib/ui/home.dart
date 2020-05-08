@@ -441,6 +441,11 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
             .map((t) => TransferTile(data: t))
             .toList()
         : null;
+    final ndefTiles = data["detail"]["ndef"] != null
+        ? (data["detail"]["ndef"] as List<dynamic>)
+            .map((t) => NDEFTile(data: t))
+            .toList()
+        : null;
     final technologyDetailTiles = (data["tag"] as Map<String, dynamic>)
         .entries
         .where((t) => t.value != '' && t.value != null) // filter empty values
@@ -471,6 +476,25 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
                 : Text(
                     "${transferTiles.length} ${S.of(context).recordCount}"),
             children: transferTiles ?? [],
+          ),
+        ),
+        Divider(),
+        Theme(
+          data: tdata,
+          child: ExpansionTile(
+            leading: CircleAvatar(
+              backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.white12 : Colors.black12,
+              child: Icon(
+                Icons.payment,
+                color: Theme.of(context).brightness == Brightness.dark ? Colors.white54 : Colors.black54,
+              ),
+            ),
+            title: Text(S.of(context).ndefRecords),
+            subtitle: ndefTiles == null
+                ? Text(S.of(context).notSupported)
+                : Text(
+                    "${ndefTiles.length} ${S.of(context).recordCount}"),
+            children: ndefTiles ?? [],
           ),
         ),
         Divider(),

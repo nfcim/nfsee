@@ -1124,6 +1124,15 @@ class S {
       args: [],
     );
   }
+
+  String get ndefRecords {
+    return Intl.message(
+      'NDEF Records',
+      name: 'ndefRecords',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -119,5 +119,6 @@
     "scanHistory": "扫描历史",
     "historyCount": "共 $ 条历史",
     "addedAt": "添加于",
-    "detailHint": "上滑或点击卡片查看详情"
+    "detailHint": "上滑或点击卡片查看详情",
+    "ndefRecords": "NDEF 记录"
 }

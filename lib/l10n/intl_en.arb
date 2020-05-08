@@ -120,5 +120,6 @@
     "scanHistory": "Scan History",
     "historyCount": "$ found",
     "addedAt": "Added at",
-    "detailHint": "Swipe up or tap on the card to show more"
+    "detailHint": "Swipe up or tap on the card to show more",
+    "ndefRecords": "NDEF Records"
 }

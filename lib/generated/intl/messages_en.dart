@@ -109,6 +109,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "mgmtNumber" : MessageLookupByLibrary.simpleMessage("Card Management No."),
     "modifyScript" : MessageLookupByLibrary.simpleMessage("Modify script"),
     "name" : MessageLookupByLibrary.simpleMessage("Name"),
+    "ndefRecords" : MessageLookupByLibrary.simpleMessage("NDEF Records"),
     "never" : MessageLookupByLibrary.simpleMessage("Never"),
     "noHistoryFound" : MessageLookupByLibrary.simpleMessage("No history found"),
     "notSupported" : MessageLookupByLibrary.simpleMessage("Not supported"),

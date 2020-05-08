@@ -109,6 +109,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "mgmtNumber" : MessageLookupByLibrary.simpleMessage("卡体管理号"),
     "modifyScript" : MessageLookupByLibrary.simpleMessage("修改脚本"),
     "name" : MessageLookupByLibrary.simpleMessage("名称"),
+    "ndefRecords" : MessageLookupByLibrary.simpleMessage("NDEF 记录"),
     "never" : MessageLookupByLibrary.simpleMessage("从未"),
     "noHistoryFound" : MessageLookupByLibrary.simpleMessage("暂无历史记录"),
     "notSupported" : MessageLookupByLibrary.simpleMessage("不支持"),
