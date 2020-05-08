@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
@@ -218,12 +219,24 @@ class NDEFTile extends StatelessWidget {
 
   @override
   Widget build(context) {
+    var title = "unknown";
+    var subtitle = "";
+    if (data["typeNameFormat"] == "nfcWellKnown") {
+      // record text definition
+      // https://nfc-forum.org/our-work/specification-releases/specifications/nfc-forum-assigned-numbers-register/
+      if (data["type"] == "55") {
+        // URI, ascii "U"
+        title = "URL";
+      } else if (data["type"] == "54") {
+        // Text, ascii "T"
+        title = "Text";
+      }
+    }
+
     return ExpansionTile(
       leading: Icon(Icons.accessible),
-      title: Text(
-          ""),
-      subtitle: Text(
-          ""),
+      title: Text(title),
+      subtitle: Text(subtitle),
       children: []
           .map((d) => ListTile(
                 dense: true,
