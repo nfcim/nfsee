@@ -545,9 +545,20 @@
         };
     };
 
+    let ReadMifareUltralight = async () => {
+        // data begins at page 4, ends at page 16
+        let r = await _transceive('3004');
+        r += await _transceive('3008');
+        r += await _transceive('300C');
+        return { 'card_type': 'mifare', 'data': r };
+    };
+
     let ReadAnyCard = async (tag) => {
         if (tag.type === "felica") {
             return await ReadOctopus();
+        }
+        if (tag.type === "mifare_ultralight") {
+            return await ReadMifareUltralight();
         }
         // ChinaResidentID
         if (tag.standard === "ISO 14443-3 (Type B)") {
