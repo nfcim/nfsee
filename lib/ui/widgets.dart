@@ -246,15 +246,24 @@ class NDEFTile extends StatelessWidget {
         }
         // the rest is uri
         var rest = utf8.decode(payload.sublist(1));
-        details.add(Detail(name: "URI", value: "$prefix$rest", icon: Icons.web));
+        subtitle = "$prefix$rest";
       } else if (data["type"] == "54") {
         // Text, ascii "T"
         title = "Text";
         icon = Icons.text_fields;
+        // first byte is encoding
+        // byte[1:3] is language
+        // byte[3:] is text
+        final lang = utf8.decode(payload.sublist(1, 3));
+        details.add(
+            Detail(name: "Language code", value: lang, icon: Icons.language));
+        final text = utf8.decode(payload.sublist(3));
+        details.add(Detail(name: "Text", value: text, icon: Icons.text_fields));
       }
+    } else {
+      details.add(
+          Detail(name: "Raw payload", value: data["payload"], icon: Icons.web));
     }
-    details.add(
-        Detail(name: "Raw payload", value: data["payload"], icon: Icons.web));
     if (data["identifier"] != null && data["identifier"] != '') {
       details.add(Detail(
           name: "Identifier", value: data["identifier"], icon: Icons.web));
