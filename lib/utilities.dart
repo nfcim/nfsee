@@ -29,6 +29,14 @@ T getEnumFromString<T>(Iterable<T> values, String value) {
       orElse: () => null);
 }
 
+List<int> decodeHexString(String hex) {
+  var result = <int>[];
+  for (int i = 0; i < hex.length; i += 2) {
+    result.add(int.parse(hex.substring(i, i + 2), radix: 16));
+  }
+  return result;
+}
+
 extension PlatformExceptionExtension on PlatformException {
   Map<String, dynamic> asMap() {
     return {

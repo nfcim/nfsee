@@ -221,23 +221,50 @@ class NDEFTile extends StatelessWidget {
   Widget build(context) {
     var title = "unknown";
     var subtitle = "";
+    var icon = Icons.info;
+    var details = <Detail>[];
+    final payload = decodeHexString(data["payload"].toString());
     if (data["typeNameFormat"] == "nfcWellKnown") {
       // record text definition
       // https://nfc-forum.org/our-work/specification-releases/specifications/nfc-forum-assigned-numbers-register/
       if (data["type"] == "55") {
         // URI, ascii "U"
-        title = "URL";
+        title = "URI";
+        icon = Icons.web;
+        // first byte is URI identifer code
+        var prefix = "";
+        if (payload.length >= 1) {
+          final identifier = payload[0];
+          // TODO whole mapping
+          if (identifier == 0x02) {
+            prefix = "https://www.";
+          } else if (identifier == 0x04) {
+            prefix = "https://";
+          } else if (identifier == 0x05) {
+            prefix = "tel:";
+          }
+        }
+        // the rest is uri
+        var rest = utf8.decode(payload.sublist(1));
+        details.add(Detail(name: "URI", value: "$prefix$rest", icon: Icons.web));
       } else if (data["type"] == "54") {
         // Text, ascii "T"
         title = "Text";
+        icon = Icons.text_fields;
       }
+    }
+    details.add(
+        Detail(name: "Raw payload", value: data["payload"], icon: Icons.web));
+    if (data["identifier"] != null && data["identifier"] != '') {
+      details.add(Detail(
+          name: "Identifier", value: data["identifier"], icon: Icons.web));
     }
 
     return ExpansionTile(
-      leading: Icon(Icons.accessible),
+      leading: Icon(icon),
       title: Text(title),
       subtitle: Text(subtitle),
-      children: []
+      children: details
           .map((d) => ListTile(
                 dense: true,
                 title: Text(d.name),
