@@ -560,6 +560,9 @@
         if (tag.type === "mifare_ultralight") {
             return await ReadMifareUltralight();
         }
+        if (tag.type === "mifare_plus") {
+            return {};
+        }
         // ChinaResidentID
         if (tag.standard === "ISO 14443-3 (Type B)") {
             let r = await _transceive('0036000008');

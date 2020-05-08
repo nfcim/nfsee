@@ -212,7 +212,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "395f682a0759c8fce1288f3274c88aec797e3f0e"
+      resolved-ref: f620e2ff77fc8b911b9d74c636b591db897aed5f
       url: "https://github.com/nfcim/flutter_nfc_kit.git"
     source: git
     version: "1.1.0"

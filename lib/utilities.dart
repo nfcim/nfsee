@@ -192,8 +192,14 @@ String parseTechnologicalDetailKey(String key) {
       return 'ATQA';
     case 'manufacturer':
       return 'Manufacturer';
-    case 'ndef':
-      return 'NDEF Availability';
+    case 'ndefAvailable':
+      return 'NDEF Available';
+    case 'ndefCanMakeReadOnly':
+      return 'NDEF Can Make Read Only';
+    case 'ndefWriteable':
+      return 'NDEF Writeable';
+    case 'ndefCapacity':
+      return 'NDEF Capacity';
     default:
       return key;
   }
