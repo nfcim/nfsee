@@ -645,6 +645,7 @@
         try {
             var { card_type, ..._detail } = await ReadAnyCard(tag);
             Object.assign(detail, _detail);
+            detail["ndef"] = tag["ndef"];
         } catch (e) {
             log(`Script error when reading detail: ${JSON.stringify(e)}`);
         }

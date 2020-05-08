@@ -143,8 +143,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   }
 
   Future<void> _addWebViewHandler() async {
-    if(_webViewListener != null)
-      _webViewListener.cancel();
+    if (_webViewListener != null) _webViewListener.cancel();
     _webViewListener = _webView.didReceiveMessage.listen(_onReceivedMessage);
   }
 
@@ -164,8 +163,21 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
       case 'poll':
         error = null;
         try {
-          final tag = await FlutterNfcKit.poll(iosAlertMessage: S.of(context).waitForCard);
-          _webView.evalJavascript("pollCallback(${jsonEncode(tag)})");
+          final tag = await FlutterNfcKit.poll(
+              iosAlertMessage: S.of(context).waitForCard);
+          final json = tag.toJson();
+
+          // try to read ndef and insert into json
+          try {
+            final ndef = await FlutterNfcKit.readNDEF();
+            json["ndef"] = ndef;
+          } on PlatformException catch (e) {
+            // allow readNDEF to fail
+            json["ndef"] = null;
+            log('Silent readNDEF error: ${e.toDetailString()}');
+          }
+
+          _webView.evalJavascript("pollCallback(${jsonEncode(json)})");
           FlutterNfcKit.setIosAlertMessage(S.of(context).cardPolled);
         } on PlatformException catch (e) {
           error = e;
@@ -183,7 +195,8 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
       case 'transceive':
         try {
           log('TX: ${scriptModel.data}');
-          final rapdu = await FlutterNfcKit.transceive(scriptModel.data as String);
+          final rapdu =
+              await FlutterNfcKit.transceive(scriptModel.data as String);
           log('RX: $rapdu');
           _webView.evalJavascript("transceiveCallback('$rapdu')");
         } on PlatformException catch (e) {
@@ -212,7 +225,8 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           await FlutterNfcKit.finish(iosErrorMessage: S.of(context).readFailed);
           error = null;
         } else {
-          await FlutterNfcKit.finish(iosAlertMessage: S.of(context).readSucceeded);
+          await FlutterNfcKit.finish(
+              iosAlertMessage: S.of(context).readSucceeded);
         }
         break;
 
@@ -234,24 +248,23 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         setState(() {
           this.currentTop = e;
         });
-        if(e == 0)
+        if (e == 0)
           webviewOwner = WebViewOwner.Script;
         else
           webviewOwner = WebViewOwner.Main;
         await this._reloadWebview();
-        this.topController.animateToPage(e, duration: Duration(milliseconds: 500), curve: Curves.ease);
+        this.topController.animateToPage(e,
+            duration: Duration(milliseconds: 500), curve: Curves.ease);
       },
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.code),
           title: Text(S.of(context).scriptTabTitle),
         ),
-
         BottomNavigationBarItem(
           icon: Icon(Icons.nfc),
           title: Text(S.of(context).scanTabTitle),
         ),
-
         BottomNavigationBarItem(
           icon: Icon(Icons.settings),
           title: Text(S.of(context).settingsTabTitle),
@@ -269,14 +282,18 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
   Widget _buildTop(context) {
     final scripts = ScriptsAct();
-    final home = HomeAct(readCard: () { return this._readTag(this.context); });
+    final home = HomeAct(readCard: () {
+      return this._readTag(this.context);
+    });
     final settings = SettingsAct();
     return PageView(
       controller: topController,
       physics: NeverScrollableScrollPhysics(),
       children: <Widget>[scripts, home, settings],
       onPageChanged: (page) {
-        this.setState(() { this.currentTop = page; });
+        this.setState(() {
+          this.currentTop = page;
+        });
       },
     );
   }
