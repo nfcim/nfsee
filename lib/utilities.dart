@@ -192,6 +192,8 @@ String parseTechnologicalDetailKey(String key) {
       return 'ATQA';
     case 'manufacturer':
       return 'Manufacturer';
+    case 'ndef':
+      return 'NDEF Availability';
     default:
       return key;
   }

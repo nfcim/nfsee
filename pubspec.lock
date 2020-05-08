@@ -212,7 +212,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: d64298a8aa228c59749fe82d75ec5a9009167934
+      resolved-ref: d7d783c10cee3019f4f3b367fa89968e7a03f55b
       url: "https://github.com/nfcim/flutter_nfc_kit.git"
     source: git
     version: "1.1.0"
@@ -372,7 +372,7 @@ packages:
       name: node_io
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.1+2"
+    version: "1.1.0"
   package_config:
     dependency: transitive
     description:

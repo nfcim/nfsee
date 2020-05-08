@@ -444,7 +444,7 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
     final technologyDetailTiles = (data["tag"] as Map<String, dynamic>)
         .entries
         .where((t) => t.value != '' && t.value != null) // filter empty values
-        .map((t) => TechnologicalDetailTile(name: t.key, value: t.value))
+        .map((t) => TechnologicalDetailTile(name: t.key, value: t.value.toString()))
         .toList();
 
     final rawTdata = Theme.of(context);
