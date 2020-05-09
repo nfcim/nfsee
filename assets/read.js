@@ -546,9 +546,6 @@
     };
 
     let ReadMifareUltralight = async () => {
-        // read signature
-        let signature = await _transceive('3C00');
-
         // get version
         let version = await _transceive('60');
         if (version.length == 16) {
@@ -645,7 +642,6 @@
             return {
                 'card_type': 'MifareUltralight',
                 data,
-                mifare_signature: signature,
                 mifare_vendor,
                 mifare_product_type,
                 mifare_product_subtype,

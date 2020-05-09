@@ -103,6 +103,7 @@ List<Detail> parseCardDetails(
   var data = {}..addAll(_data);
   data.remove('transactions');
   data.remove('ndef');
+  data.remove('data');
 
   var details = <Detail>[];
 
