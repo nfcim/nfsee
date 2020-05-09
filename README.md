@@ -18,16 +18,18 @@ flutter build # for release version
 
 ## Support Matrix
 
-| Type                            | Android | iOS | Description      |
-| ------------------------------- | ------- | --- | ---------------- |
-| P. R. C. Resident ID            | ✅️       | ❌   | GUID only        |
-| Beijing Yikatong                | ✅️       | ❌   | Full             |
-| Tsinghua University Campus Card | ✅️       | ✅️   | Full             |
-| Bank Card (PPSE)                | ✅️       | ❌   | Full             |
-| T-Union Card                    | ✅️       | ✅️   | Full             |
-| CityUnion Card                  | ✅️       | ✅️   | Full             |
-| Shenzhen Tong                   | ✅️       | ✅️   | Full             |
-| Lingnan Pass                    | ✅️       | ✅️   | Full             |
-| Octopus                         | ✅️       | ✅️   | Limited metadata |
+| Type                            | Android  | iOS  | Description      |
+| ------------------------------- | -------- | ---- | ---------------- |
+| P. R. C. Resident ID            | ✅️        | ❌    | GUID only        |
+| Beijing Yikatong                | ✅️        | ❌    | Full             |
+| Tsinghua University Campus Card | ✅️        | ✅️    | Full             |
+| Bank Card (PPSE)                | ✅️        | ❌    | Full             |
+| T-Union Card                    | ✅️        | ✅️    | Full             |
+| CityUnion Card                  | ✅️        | ✅️    | Full             |
+| Shenzhen Tong                   | ✅️        | ✅️    | Full             |
+| Lingnan Pass                    | ✅️        | ✅️    | Full             |
+| Octopus                         | ✅️        | ✅️    | Limited metadata |
+| NXP NTAG 215                    | Untested | ✅️    | NDEF records     |
+| NXP DESFire EV2                 | Untested | ✅️    | NDEF records     |
 
 "Full" in description field refers to metadata (such as card ID, balance, etc.) and recent transactions.

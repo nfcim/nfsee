@@ -284,7 +284,7 @@ class NDEFTile extends StatelessWidget {
         // the rest is uri
         var rest = utf8.decode(payload.sublist(1));
         subtitle = "$prefix$rest";
-        details.add(Detail(name: "Prefix", value: prefix, icon: Icons.tab));
+        details.add(Detail(name: "Well-known Prefix", value: prefix, icon: Icons.tab));
       } else if (type == "T") {
         // Text, "T"
         title = "Text";
