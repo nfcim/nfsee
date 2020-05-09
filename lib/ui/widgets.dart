@@ -380,7 +380,11 @@ class DataTile extends StatelessWidget {
           margin: EdgeInsets.only(right: 5),
           child: Text(
             "${(i >> 1).toRadixString(16).padLeft(4, '0')}:",
-            style: Theme.of(context).textTheme.body1.apply(color: Colors.green),
+            style: Theme.of(context)
+                .textTheme
+                .body1
+                .apply(color: Colors.green)
+                .apply(fontFamily: "Courier"), // monospaced
           ));
       segs.add(seg);
 
@@ -397,8 +401,11 @@ class DataTile extends StatelessWidget {
             margin: EdgeInsets.only(right: 5),
             child: Text(
               slice,
-              style:
-                  Theme.of(context).textTheme.body1.apply(color: Colors.green),
+              style: Theme.of(context)
+                  .textTheme
+                  .body1
+                  .apply(color: Colors.green)
+                  .apply(fontFamily: "Courier"), // monospaced
             ));
         segs.add(seg);
 
