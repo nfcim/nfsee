@@ -204,8 +204,8 @@ String parseTechnologicalDetailKey(String key) {
       return 'NDEF Available';
     case 'ndefCanMakeReadOnly':
       return 'NDEF Can Make Read Only';
-    case 'ndefWriteable':
-      return 'NDEF Writeable';
+    case 'ndefWritable':
+      return 'NDEF Writable';
     case 'ndefCapacity':
       return 'NDEF Capacity';
     default:

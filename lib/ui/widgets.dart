@@ -235,18 +235,55 @@ class NDEFTile extends StatelessWidget {
         var prefix = "";
         if (payload.length >= 1) {
           final identifier = payload[0];
-          // TODO whole mapping
-          if (identifier == 0x02) {
-            prefix = "https://www.";
-          } else if (identifier == 0x04) {
-            prefix = "https://";
-          } else if (identifier == 0x05) {
-            prefix = "tel:";
+          // whole mapping
+          List<String> mapping = [
+            "",
+            "http://www.",
+            "https://www.",
+            "http://",
+            "https://",
+            "tel:",
+            "mailto:",
+            "ftp://anonymous:anonymous@",
+            "ftp://ftp.",
+            "ftps://",
+            "sftp://",
+            "smb://",
+            "nfs://",
+            "ftp://",
+            "dav://",
+            "news:",
+            "telnet://",
+            "imap:",
+            "rtsp://",
+            "urn:",
+            "pop:",
+            "sip:",
+            "sips:",
+            "tftp:",
+            "btspp://",
+            "btl2cap://",
+            "btgoep://",
+            "tcpobex://",
+            "irdaobex://",
+            "file://",
+            "urn:epc:id:",
+            "urn:epc:tag:",
+            "urn:epc:pat:",
+            "urn:epc:raw:",
+            "urn:epc:",
+            "urn:nfc:",
+          ];
+          if (identifier < mapping.length) {
+            prefix = mapping[identifier];
+          } else {
+            prefix = "unknown:";
           }
         }
         // the rest is uri
         var rest = utf8.decode(payload.sublist(1));
         subtitle = "$prefix$rest";
+        details.add(Detail(name: "Prefix", value: prefix, icon: Icons.tab));
       } else if (data["type"] == "54") {
         // Text, ascii "T"
         title = "Text";
@@ -254,11 +291,11 @@ class NDEFTile extends StatelessWidget {
         // first byte is encoding
         // byte[1:3] is language
         // byte[3:] is text
+        // TODO: handle utf16
         final lang = utf8.decode(payload.sublist(1, 3));
         details.add(
             Detail(name: "Language code", value: lang, icon: Icons.language));
-        final text = utf8.decode(payload.sublist(3));
-        details.add(Detail(name: "Text", value: text, icon: Icons.text_fields));
+        subtitle = utf8.decode(payload.sublist(3));
       }
     } else {
       details.add(
