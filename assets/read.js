@@ -556,6 +556,7 @@
             if (mifare_vendor_id === "04") {
                 mifare_vendor = "NXP Semiconductor";
             }
+            let mifare_product_name = "unknown";
 
             let mifare_product_type = version.substring(4, 6);
             let mifare_product_subtype = version.substring(6, 8);
@@ -574,12 +575,6 @@
                 mifare_storage_size = `${mifare_storage_size} bytes`;
             }
             let mifare_protocol_type = version.substring(14, 16);
-
-            if (mifare_product_subtype === "01") {
-                mifare_product_subtype = "17 pF";
-            } else if (mifare_product_subtype === "02") {
-                mifare_product_subtype = "50 pF";
-            }
 
             // ref: MF0ULX1 datasheet
             if (mifare_product_type === "03") {
@@ -605,6 +600,22 @@
                 if (mifare_minor_product_version === "00") {
                     mifare_minor_product_version = "0";
                 }
+
+                if (mifare_product_subtype === "02") {
+                    if (storage_size === 0x0F) {
+                        mifare_product_name = "NTAG213";
+                    } else if (storage_size === 0x11) {
+                        mifare_product_name = "NTAG215";
+                    } else if (storage_size === 0x13) {
+                        mifare_product_name = "NTAG216";
+                    }
+                }
+            }
+
+            if (mifare_product_subtype === "01") {
+                mifare_product_subtype = "17 pF";
+            } else if (mifare_product_subtype === "02") {
+                mifare_product_subtype = "50 pF";
             }
 
             if (mifare_protocol_type === "03") {
@@ -616,6 +627,7 @@
                 mifare_product_type,
                 mifare_product_subtype,
                 mifare_product_version: `${mifare_major_product_version} ${mifare_minor_product_version}`,
+                mifare_product_name,
                 mifare_storage_size,
                 mifare_protocol_type
             };

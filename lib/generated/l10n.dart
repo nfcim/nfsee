@@ -1170,6 +1170,15 @@ class S {
     );
   }
 
+  String get mifareProductName {
+    return Intl.message(
+      'MIFARE Product Name',
+      name: 'mifareProductName',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get mifareStorageSize {
     return Intl.message(
       'MIFARE Storage Size',

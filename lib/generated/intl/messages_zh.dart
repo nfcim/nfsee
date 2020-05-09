@@ -107,6 +107,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "issueDate" : MessageLookupByLibrary.simpleMessage("发行日期"),
     "lastExecutionTime" : MessageLookupByLibrary.simpleMessage("上次执行时间"),
     "mgmtNumber" : MessageLookupByLibrary.simpleMessage("卡体管理号"),
+    "mifareProductName" : MessageLookupByLibrary.simpleMessage("MIFARE 产品名"),
     "mifareProductSubtype" : MessageLookupByLibrary.simpleMessage("MIFARE 产品子类型"),
     "mifareProductType" : MessageLookupByLibrary.simpleMessage("MIFARE 产品类型"),
     "mifareProductVersion" : MessageLookupByLibrary.simpleMessage("MIFARE 产品版本"),

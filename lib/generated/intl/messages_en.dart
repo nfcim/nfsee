@@ -107,6 +107,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "issueDate" : MessageLookupByLibrary.simpleMessage("Issue Date"),
     "lastExecutionTime" : MessageLookupByLibrary.simpleMessage("Last execution time"),
     "mgmtNumber" : MessageLookupByLibrary.simpleMessage("Card Management No."),
+    "mifareProductName" : MessageLookupByLibrary.simpleMessage("MIFARE Product Name"),
     "mifareProductSubtype" : MessageLookupByLibrary.simpleMessage("MIFARE Product Subtype"),
     "mifareProductType" : MessageLookupByLibrary.simpleMessage("MIFARE Product Type"),
     "mifareProductVersion" : MessageLookupByLibrary.simpleMessage("MIFARE Product Version"),
