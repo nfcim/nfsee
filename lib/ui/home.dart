@@ -458,16 +458,19 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
       dividerColor: Colors.transparent,
     );
 
+    final backgroundColor = Theme.of(context).brightness == Brightness.dark ? Colors.white12 : Colors.black12;
+    final iconColor = Theme.of(context).brightness == Brightness.dark ? Colors.white54 : Colors.black54;
+
     final misc = Column(
       children: [
         Theme(
           data: tdata,
           child: ExpansionTile(
             leading: CircleAvatar(
-              backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.white12 : Colors.black12,
+              backgroundColor: backgroundColor,
               child: Icon(
                 Icons.payment,
-                color: Theme.of(context).brightness == Brightness.dark ? Colors.white54 : Colors.black54,
+                color: iconColor,
               ),
             ),
             title: Text(S.of(context).transactionHistory),
@@ -483,10 +486,10 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
           data: tdata,
           child: ExpansionTile(
             leading: CircleAvatar(
-              backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.white12 : Colors.black12,
+              backgroundColor: backgroundColor,
               child: Icon(
-                Icons.payment,
-                color: Theme.of(context).brightness == Brightness.dark ? Colors.white54 : Colors.black54,
+                Icons.note,
+                color: iconColor,
               ),
             ),
             title: Text(S.of(context).ndefRecords),
@@ -502,10 +505,10 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
           data: tdata,
           child: ExpansionTile(
             leading: CircleAvatar(
-              backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.white12 : Colors.black12,
+              backgroundColor: backgroundColor,
               child: Icon(
                 Icons.nfc,
-                color: Theme.of(context).brightness == Brightness.dark ? Colors.white54 : Colors.black54,
+                color: iconColor,
               ),
             ),
             title: Text(S.of(context).technologicalDetails),
@@ -518,10 +521,10 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
           data: tdata,
           child: ExpansionTile(
             leading: CircleAvatar(
-              backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.white12 : Colors.black12,
+              backgroundColor: backgroundColor,
               child: Icon(
                 Icons.history,
-                color: Theme.of(context).brightness == Brightness.dark ? Colors.white54 : Colors.black54,
+                color: iconColor,
               ),
             ),
             title: Text(S.of(context).apduLogs),

@@ -99,9 +99,10 @@ List<Detail> parseTransactionDetails(
 
 List<Detail> parseCardDetails(
     Map<String, dynamic> _data, BuildContext context) {
-  // make a copy and remove transactions, the remaining fields are all details
+  // make a copy and remove transactions & ndef, the remaining fields are all details
   var data = {}..addAll(_data);
   data.remove('transactions');
+  data.remove('ndef');
 
   var details = <Detail>[];
 
