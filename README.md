@@ -33,3 +33,4 @@ flutter build # for release version
 | NXP DESFire EV2 MF3 D22         | ❌       | ✅️    | NDEF records     |
 
 "Full" in description field refers to metadata (such as card ID, balance, etc.) and recent transactions.
+

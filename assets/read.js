@@ -545,12 +545,93 @@
         };
     };
 
+    let ReadMifareVersion = async () => {
+        // get version
+        let version = await _transceive('60');
+        if (version.length == 16) {
+            // success
+
+            let mifare_vendor_id = version.substring(2, 4);
+            let mifare_vendor = "unknown";
+            if (mifare_vendor_id === "04") {
+                mifare_vendor = "NXP Semiconductor";
+            }
+
+            let mifare_product_type = version.substring(4, 6);
+            let mifare_product_subtype = version.substring(6, 8);
+            let mifare_major_product_version = version.substring(8, 10);
+            let mifare_minor_product_version = version.substring(10, 12);
+            let mifare_storage_size = version.substring(12, 14);
+            // most significant 7 bits = n
+            // storage size = 2^n
+            let storage_size = parseInt(mifare_storage_size, 16);
+            mifare_storage_size = 1 << (parseInt(mifare_storage_size, 16) >> 1);
+            if (storage_size & 1) {
+                // least bit is 1
+                mifare_storage_size = `Between ${mifare_storage_size} and ${mifare_storage_size * 2} bytes`;
+            } else {
+                // least bit is 0
+                mifare_storage_size = `${mifare_storage_size} bytes`;
+            }
+            let mifare_protocol_type = version.substring(14, 16);
+
+            if (mifare_product_subtype === "01") {
+                mifare_product_subtype = "17 pF";
+            } else if (mifare_product_subtype === "02") {
+                mifare_product_subtype = "50 pF";
+            }
+
+            // ref: MF0ULX1 datasheet
+            if (mifare_product_type === "03") {
+                mifare_product_type = "MIFARE Ultralight";
+
+                if (mifare_major_product_version === "01") {
+                    mifare_major_product_version = "EV1";
+                }
+
+                if (mifare_minor_product_version === "00") {
+                    mifare_minor_product_version = "V0";
+                }
+            }
+
+            // ref: NTAG213/215/216 datasheet
+            if (mifare_product_type === "04") {
+                mifare_product_type = "NTAG";
+
+                if (mifare_major_product_version === "01") {
+                    mifare_major_product_version = "1";
+                }
+
+                if (mifare_minor_product_version === "00") {
+                    mifare_minor_product_version = "0";
+                }
+            }
+
+            if (mifare_protocol_type === "03") {
+                mifare_protocol_type = "ISO 14443-3 (Type A)";
+            }
+
+            return {
+                mifare_vendor,
+                mifare_product_type,
+                mifare_product_subtype,
+                mifare_major_product_version,
+                mifare_minor_product_version,
+                mifare_storage_size,
+                mifare_protocol_type
+            };
+        } else {
+            return {};
+        }
+    };
+
     let ReadMifareUltralight = async () => {
         // data begins at page 4, ends at page 16
         let r = await _transceive('3004');
         r += await _transceive('3008');
         r += await _transceive('300C');
-        return { 'card_type': 'mifare', 'data': r };
+        let version = await ReadMifareVersion();
+        return { 'card_type': 'mifare', 'data': r, ...version };
     };
 
     let ReadAnyCard = async (tag) => {
