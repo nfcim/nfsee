@@ -33,5 +33,7 @@ flutter build # for release version
 | MIFARE DESFire[^3]              | ❌       | ✅️    | NDEF records               |
 
 [^1]: "Full" in description field refers to metadata (such as card ID, balance, etc.) and recent transactions.
+
 [^2]: Tested with NXP NTAG 213
+
 [^3]: Tested with NXP DESFire EV2 MF3 D22
