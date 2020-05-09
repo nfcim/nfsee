@@ -205,6 +205,8 @@ extension BeijingSubwayExtension on BeijingSubway {
         return S.of(context).Batong;
       case BeijingSubway.CapitalAirport:
         return S.of(context).CapitalAirport;
+      default:
+        return "Unknown";
     }
   }
 }

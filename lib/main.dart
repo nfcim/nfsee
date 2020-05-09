@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -15,16 +14,12 @@ import 'package:interactive_webview/interactive_webview.dart';
 
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';
-import 'package:nfsee/data/card.dart';
-import 'package:nfsee/data/database/database.dart';
 import 'package:nfsee/generated/l10n.dart';
 import 'package:nfsee/models.dart';
-import 'package:nfsee/ui/card_physics.dart';
 import 'package:nfsee/ui/home.dart';
 import 'package:nfsee/utilities.dart';
 import 'package:nfsee/ui/scripts.dart';
 import 'package:nfsee/ui/settings.dart';
-import 'package:nfsee/ui/widgets.dart';
 
 void main() => runApp(NFSeeApp());
 

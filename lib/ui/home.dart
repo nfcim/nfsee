@@ -140,7 +140,7 @@ class HomeState extends State<HomeAct>
                         S.of(context).scanHistory,
                         style: Theme.of(context)
                             .primaryTextTheme
-                            .title
+                            .headline6
                             .copyWith(fontSize: 32),
                       ),
                       Spacer(),
@@ -148,7 +148,7 @@ class HomeState extends State<HomeAct>
                         icon: Icon(
                           Icons.add,
                           color:
-                              Theme.of(context).primaryTextTheme.headline.color,
+                              Theme.of(context).primaryTextTheme.headline5.color,
                         ),
                         onPressed: () async {
                           final cardRead = await this.widget.readCard();
@@ -371,7 +371,7 @@ class HomeState extends State<HomeAct>
             title: Text(detail.name ?? S.of(context).unnamedCard,
                 style: Theme.of(context)
                     .textTheme
-                    .title
+                    .headline6
                     .apply(color: Colors.white)),
             leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -476,7 +476,7 @@ class HomeState extends State<HomeAct>
 
     final rawTdata = Theme.of(context);
     final tdata = rawTdata.copyWith(
-      accentColor: rawTdata.textTheme.subhead.color,
+      accentColor: rawTdata.textTheme.subtitle1.color,
       dividerColor: Colors.transparent,
     );
 

@@ -171,7 +171,7 @@ class APDUTile extends StatelessWidget {
           margin: EdgeInsets.only(right: 5),
           child: Text(
             slice,
-            style: Theme.of(context).textTheme.body1.apply(color: color),
+            style: Theme.of(context).textTheme.bodyText2.apply(color: color),
           ));
       segs.add(seg);
     }
@@ -382,7 +382,7 @@ class DataTile extends StatelessWidget {
             "${(i >> 1).toRadixString(16).padLeft(4, '0')}:",
             style: Theme.of(context)
                 .textTheme
-                .body1
+                .bodyText2
                 .apply(color: Colors.green)
                 .apply(fontFamily: "Courier"), // monospaced
           ));
@@ -403,7 +403,7 @@ class DataTile extends StatelessWidget {
               slice,
               style: Theme.of(context)
                   .textTheme
-                  .body1
+                  .bodyText2
                   .apply(color: Colors.green)
                   .apply(fontFamily: "Courier"), // monospaced
             ));
@@ -427,7 +427,7 @@ class DataTile extends StatelessWidget {
             dump,
             style: Theme.of(context)
                 .textTheme
-                .body1
+                .bodyText2
                 .apply(color: Colors.green)
                 .apply(fontFamily: "Courier"), // monospaced
           ));

@@ -20,8 +20,6 @@ import 'package:nfsee/generated/l10n.dart';
 import 'package:nfsee/models.dart';
 import 'package:nfsee/utilities.dart';
 
-import 'widgets.dart';
-
 class ScriptsAct extends StatefulWidget {
   static const androidIcon = Icon(Icons.code);
   static const iosIcon = Icon(Icons.code);
@@ -610,18 +608,18 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
         elevation: math.max((appbarFloatVal - 0.8) / 0.2 * 4, 0),
         backgroundColor: Theme.of(context).primaryColor.withOpacity(appbarFloatVal),
         title: Text(S.of(context).scriptTabTitle,
-          style: Theme.of(context).primaryTextTheme.title.copyWith(
+          style: Theme.of(context).primaryTextTheme.headline6.copyWith(
             fontSize: 20 + 12 * (1-appbarFloatVal),
           ),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.add, color: Theme.of(context).primaryTextTheme.headline.color),
+            icon: Icon(Icons.add, color: Theme.of(context).primaryTextTheme.headline5.color),
             onPressed: _showScriptDialog,
             tooltip: S.of(context).addScript,
           ),
           IconButton(
-            icon: Icon(Icons.help, color: Theme.of(context).primaryTextTheme.headline.color),
+            icon: Icon(Icons.help, color: Theme.of(context).primaryTextTheme.headline5.color),
             tooltip: S.of(context).help,
             onPressed: () {
               launch('https://nfsee.nfc.im/js-extension/');

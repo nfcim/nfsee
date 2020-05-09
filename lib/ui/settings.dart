@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:nfsee/data/blocs/bloc.dart';
@@ -7,7 +6,6 @@ import 'package:nfsee/data/blocs/provider.dart';
 import 'package:nfsee/generated/l10n.dart';
 
 import 'about.dart';
-import 'widgets.dart';
 
 class SettingsAct extends StatefulWidget {
   const SettingsAct();
@@ -95,7 +93,7 @@ class _SettingsActState extends State<SettingsAct> {
       Padding(
         padding: EdgeInsets.all(20),
         child: Text(S.of(context).settingsTabTitle,
-          style: Theme.of(context).primaryTextTheme.title.copyWith(fontSize: 32),
+          style: Theme.of(context).primaryTextTheme.headline6.copyWith(fontSize: 32),
         ),
       ),
       ListTile(
