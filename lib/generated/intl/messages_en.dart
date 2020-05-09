@@ -113,6 +113,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "mifareProductSubtype" : MessageLookupByLibrary.simpleMessage("MIFARE Product Subtype"),
     "mifareProductType" : MessageLookupByLibrary.simpleMessage("MIFARE Product Type"),
     "mifareProductVersion" : MessageLookupByLibrary.simpleMessage("MIFARE Product Version"),
+    "mifareProductionDate" : MessageLookupByLibrary.simpleMessage("MIFARE Production Date"),
+    "mifareProtocolType" : MessageLookupByLibrary.simpleMessage("MIFARE Protocol Type"),
     "mifareStorageSize" : MessageLookupByLibrary.simpleMessage("MIFARE Storage Size"),
     "mifareVendor" : MessageLookupByLibrary.simpleMessage("MIFARE Vendor"),
     "modifyScript" : MessageLookupByLibrary.simpleMessage("Modify script"),

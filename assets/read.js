@@ -688,12 +688,22 @@
             mifare_storage_size = `${mifare_storage_size} bytes`;
         }
 
+        // af: more data
+        let software_vesion = await _transceive('90af000000');
+        // af: more data
+        let more_info = await _transceive('90af000000');
+        // BCD
+        let week = parseInt(more_info.substring(24, 26));
+        let year = parseInt(more_info.substring(26, 28));
+        let mifare_production_date = `week ${week} of year 20${year}`;
+
         return {
             mifare_vendor,
             mifare_product_type,
             mifare_product_subtype,
             mifare_product_version: `${mifare_major_product_version} ${mifare_minor_product_version}`,
             mifare_storage_size,
+            mifare_production_date,
         };
     };
 

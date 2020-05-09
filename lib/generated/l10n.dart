@@ -1197,6 +1197,15 @@ class S {
     );
   }
 
+  String get mifareProductionDate {
+    return Intl.message(
+      'MIFARE Production Date',
+      name: 'mifareProductionDate',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get memoryData {
     return Intl.message(
       'Memory Data',
