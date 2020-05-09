@@ -554,66 +554,73 @@
     };
 
     let ReadAnyCard = async (tag) => {
-        if (tag.type === "felica") {
+        if (tag.type === "felica" && tag.systemCode === "8008") {
+            // Octopus
             return await ReadOctopus();
-        }
-        if (tag.type === "mifare_ultralight") {
+        } else if (tag.type === "mifare_ultralight") {
             return await ReadMifareUltralight();
-        }
-        if (tag.type === "mifare_plus") {
-            return {};
-        }
-        // ChinaResidentID
-        if (tag.standard === "ISO 14443-3 (Type B)") {
+        } else if (tag.standard === "ISO 14443-3 (Type B)") {
+            // ChinaResidentID
             let r = await _transceive('0036000008');
             if (r.endsWith('900000'))
                 return await ReadChinaID(r.slice(0, 16));
             return { 'card_type': 'Unknown' };
-        }
-        // TransBeijing
-        let r = await _transceive('00B0840020');
-        if (r.endsWith('9000') && r.startsWith('1000')) {
-            return await ReadTransBeijing(r.slice(0, -4));
-        }
-        // THU / CityUnion
-        r = await _transceive('00A4040009A0000000038698070100');
-        if (r.endsWith('9000')) {
-            if (tag.standard === "ISO 14443-4 (Type B)")
+        } else if (tag.standard === "ISO 14443-4 (Type A)") {
+            // TransBeijing
+            let r = await _transceive('00B0840020');
+            if (r.endsWith('9000') && r.startsWith('1000')) {
+                return await ReadTransBeijing(r.slice(0, -4));
+            }
+
+            // CityUnion
+            r = await _transceive('00A4040009A0000000038698070100');
+            if (r.endsWith('9000')) {
+                return await ReadCityUnion(r.slice(0, -4));
+            }
+
+            // TUnion
+            r = await _transceive('00A4040008A00000063201010500');
+            if (r.endsWith('9000')) {
+                r = r.slice(0, -4);
+                return await ReadTUnion(r);
+            }
+
+            // TransShenzhen / TransWuhan
+            r = await _transceive('00A4000002100100');
+            if (r.endsWith('9000')) {
+                r = r.slice(0, -4);
+                let DFName = ExtractFromTLV(r, ['6F', '84']);
+                if (DFName) {
+                    DFName = GBKDecoder.decode(DFName);
+                    if (DFName.startsWith('PAY.SZT'))
+                        return await ReadTransShenzhen(r);
+                    else if (DFName.startsWith('AP1.WHCTC'))
+                        return await ReadTransWuhan();
+                }
+            }
+
+            // LingnanTong
+            r = await _transceive('00A40400085041592E4150505900');
+            if (r.endsWith('9000')) {
+                r = r.slice(0, -4);
+                return await ReadLingnanTong(r);
+            }
+
+            // put it here because iOS fails here
+            // PPSE
+            r = await _transceive('00A404000E325041592E5359532E444446303100');
+            if (r.endsWith('9000')) {
+                r = r.slice(0, -4);
+                return await ReadPPSE(r);
+            }
+        } else if (tag.standard === "ISO 14443-4 (Type B)") {
+            // THU
+            r = await _transceive('00A4040009A0000000038698070100');
+            if (r.endsWith('9000')) {
                 return await ReadTHU();
-            return await ReadCityUnion(r.slice(0, -4));
-        }
-        // TUnion
-        r = await _transceive('00A4040008A00000063201010500');
-        if (r.endsWith('9000')) {
-            r = r.slice(0, -4);
-            return await ReadTUnion(r);
-        }
-        // TransShenzhen / TransWuhan
-        r = await _transceive('00A4000002100100');
-        if (r.endsWith('9000')) {
-            r = r.slice(0, -4);
-            let DFName = ExtractFromTLV(r, ['6F', '84']);
-            if (DFName) {
-                DFName = GBKDecoder.decode(DFName);
-                if (DFName.startsWith('PAY.SZT'))
-                    return await ReadTransShenzhen(r);
-                else if (DFName.startsWith('AP1.WHCTC'))
-                    return await ReadTransWuhan();
             }
         }
-        // LingnanTong
-        r = await _transceive('00A40400085041592E4150505900');
-        if (r.endsWith('9000')) {
-            r = r.slice(0, -4);
-            return await ReadLingnanTong(r);
-        }
-        // put it here because iOS fails here
-        // PPSE
-        r = await _transceive('00A404000E325041592E5359532E444446303100');
-        if (r.endsWith('9000')) {
-            r = r.slice(0, -4);
-            return await ReadPPSE(r);
-        }
+
         // unsupported
         return { 'card_type': 'Unknown' };
     };
