@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
@@ -310,7 +309,7 @@ class NDEFTile extends StatelessWidget {
             name: "Payload in UTF-8",
             value: payloadUtf8,
             icon: Icons.text_fields));
-      } on FormatException catch (e) {
+      } on FormatException catch (_) {
         // silently ignore
       }
     } else {
@@ -373,6 +372,18 @@ class DataTile extends StatelessWidget {
     var view = List<Widget>();
     for (int i = 0; i < data.length; i += group) {
       var segs = List<Widget>();
+
+      // addr
+      final seg = Container(
+          width: 50,
+          margin: EdgeInsets.only(right: 5),
+          child: Text(
+            "${i.toRadixString(16).padLeft(4, '0')}:",
+            style: Theme.of(context).textTheme.body1.apply(color: Colors.green),
+          ));
+      segs.add(seg);
+
+      // data
       for (int j = i; j < data.length && j < i + group; j += 2) {
         final slice = data.substring(j, j + 2).toUpperCase();
         final seg = Container(
