@@ -284,7 +284,8 @@ class NDEFTile extends StatelessWidget {
         // the rest is uri
         var rest = utf8.decode(payload.sublist(1));
         subtitle = "$prefix$rest";
-        details.add(Detail(name: "Well-known Prefix", value: prefix, icon: Icons.tab));
+        details.add(
+            Detail(name: "Well-known Prefix", value: prefix, icon: Icons.tab));
       } else if (type == "T") {
         // Text, "T"
         title = "Text";
@@ -357,6 +358,48 @@ class TechnologicalDetailTile extends StatelessWidget {
       title: Text(parseTechnologicalDetailKey(name)),
       subtitle: Text(value ?? "null"),
       leading: Icon(Icons.info),
+    );
+  }
+}
+
+class DataTile extends StatelessWidget {
+  const DataTile({this.data});
+
+  final String data;
+
+  @override
+  Widget build(context) {
+    var group = 16;
+    var view = List<Widget>();
+    for (int i = 0; i < data.length; i += group) {
+      var segs = List<Widget>();
+      for (int j = i; j < data.length && j < i + group; j += 2) {
+        final slice = data.substring(j, j + 2).toUpperCase();
+        final seg = Container(
+            width: 20,
+            margin: EdgeInsets.only(right: 5),
+            child: Text(
+              slice,
+              style:
+                  Theme.of(context).textTheme.body1.apply(color: Colors.green),
+            ));
+        segs.add(seg);
+      }
+      view.add(Wrap(children: segs));
+    }
+
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        border: Border(
+          top: Divider.createBorderSide(context),
+        ),
+      ),
+      padding: EdgeInsets.all(16),
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: view),
     );
   }
 }

@@ -1196,6 +1196,24 @@ class S {
       args: [],
     );
   }
+
+  String get memoryData {
+    return Intl.message(
+      'Memory Data',
+      name: 'memoryData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get byteCount {
+    return Intl.message(
+      'byte(s)',
+      name: 'byteCount',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -127,5 +127,7 @@
     "mifareProductVersion": "MIFARE 产品版本",
     "mifareProductName": "MIFARE 产品名",
     "mifareStorageSize": "MIFARE 存储大小",
-    "mifareProtocolType": "MIFARE 协议类型"
+    "mifareProtocolType": "MIFARE 协议类型",
+    "memoryData": "内存数据",
+    "byteCount": "字节"
 }

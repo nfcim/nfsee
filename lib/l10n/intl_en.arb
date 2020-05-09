@@ -128,5 +128,7 @@
     "mifareProductVersion": "MIFARE Product Version",
     "mifareProductName": "MIFARE Product Name",
     "mifareStorageSize": "MIFARE Storage Size",
-    "mifareProtocolType": "MIFARE Protocol Type"
+    "mifareProtocolType": "MIFARE Protocol Type",
+    "memoryData": "Memory Data",
+    "byteCount": "byte(s)"
 }
