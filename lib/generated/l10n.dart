@@ -1133,6 +1133,60 @@ class S {
       args: [],
     );
   }
+
+  String get mifareVendor {
+    return Intl.message(
+      'MIFARE Vendor',
+      name: 'mifareVendor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get mifareProductType {
+    return Intl.message(
+      'MIFARE Product Type',
+      name: 'mifareProductType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get mifareProductSubtype {
+    return Intl.message(
+      'MIFARE Product Subtype',
+      name: 'mifareProductSubtype',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get mifareProductVersion {
+    return Intl.message(
+      'MIFARE Product Version',
+      name: 'mifareProductVersion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get mifareStorageSize {
+    return Intl.message(
+      'MIFARE Storage Size',
+      name: 'mifareStorageSize',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get mifareProtocolType {
+    return Intl.message(
+      'MIFARE Protocol Type',
+      name: 'mifareProtocolType',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -121,5 +121,11 @@
     "historyCount": "$ found",
     "addedAt": "Added at",
     "detailHint": "Swipe up or tap on the card to show more",
-    "ndefRecords": "NDEF Records"
+    "ndefRecords": "NDEF Records",
+    "mifareVendor": "MIFARE Vendor",
+    "mifareProductType": "MIFARE Product Type",
+    "mifareProductSubtype": "MIFARE Product Subtype",
+    "mifareProductVersion": "MIFARE Product Version",
+    "mifareStorageSize": "MIFARE Storage Size",
+    "mifareProtocolType": "MIFARE Protocol Type"
 }

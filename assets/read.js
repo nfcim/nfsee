@@ -615,8 +615,7 @@
                 mifare_vendor,
                 mifare_product_type,
                 mifare_product_subtype,
-                mifare_major_product_version,
-                mifare_minor_product_version,
+                mifare_product_version: `${mifare_major_product_version} ${mifare_minor_product_version}`,
                 mifare_storage_size,
                 mifare_protocol_type
             };
@@ -631,7 +630,11 @@
         r += await _transceive('3008');
         r += await _transceive('300C');
         let version = await ReadMifareVersion();
-        return { 'card_type': 'mifare', 'data': r, ...version };
+        return { 'card_type': 'mifare_ultralight', 'data': r, ...version };
+    };
+
+    let ReadMifarePlus = async () => {
+        return { 'card_type': 'mifare_plus' };
     };
 
     let ReadAnyCard = async (tag) => {
@@ -640,6 +643,8 @@
             return await ReadOctopus();
         } else if (tag.type === "mifare_ultralight") {
             return await ReadMifareUltralight();
+        } else if (tag.type === "mifare_plus") {
+            return await ReadMifarePlus();
         } else if (tag.standard === "ISO 14443-3 (Type B)") {
             // ChinaResidentID
             let r = await _transceive('0036000008');

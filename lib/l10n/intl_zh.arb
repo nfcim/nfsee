@@ -120,5 +120,11 @@
     "historyCount": "共 $ 条历史",
     "addedAt": "添加于",
     "detailHint": "上滑或点击卡片查看详情",
-    "ndefRecords": "NDEF 记录"
+    "ndefRecords": "NDEF 记录",
+    "mifareVendor": "MIFARE 生产商",
+    "mifareProductType": "MIFARE 产品类型",
+    "mifareProductSubtype": "MIFARE 产品子类型",
+    "mifareProductVersion": "MIFARE 产品版本",
+    "mifareStorageSize": "MIFARE 存储大小",
+    "mifareProtocolType": "MIFARE 协议类型"
 }
