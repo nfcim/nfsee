@@ -564,7 +564,6 @@
             let r = await _transceive('0036000008');
             if (r.endsWith('900000'))
                 return await ReadChinaID(r.slice(0, 16));
-            return { 'card_type': 'Unknown' };
         } else if (tag.standard === "ISO 14443-4 (Type A)") {
             // TransBeijing
             let r = await _transceive('00B0840020');
