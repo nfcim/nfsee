@@ -545,7 +545,10 @@
         };
     };
 
-    let ReadMifareVersion = async () => {
+    let ReadMifareUltralight = async () => {
+        // read signature
+        let signature = await _transceive('3C00');
+
         // get version
         let version = await _transceive('60');
         if (version.length == 16) {
@@ -566,7 +569,18 @@
             // most significant 7 bits = n
             // storage size = 2^n
             let storage_size = parseInt(mifare_storage_size, 16);
-            mifare_storage_size = 1 << (parseInt(mifare_storage_size, 16) >> 1);
+
+            // read data from page 0, to page storage_size/4
+            mifare_storage_size = 1 << (storage_size >> 1);
+            let data = "";
+            for (let i = 0; i < mifare_storage_size / 4; i += 4) {
+                let hex = i.toString(16);
+                if (hex.length == 1) {
+                    hex = "0" + hex;
+                }
+                data += await _transceive(`30${hex}`);
+            }
+
             if (storage_size & 1) {
                 // least bit is 1
                 mifare_storage_size = `Between ${mifare_storage_size} and ${mifare_storage_size * 2} bytes`;
@@ -623,6 +637,8 @@
             }
 
             return {
+                data,
+                mifare_signature: signature,
                 mifare_vendor,
                 mifare_product_type,
                 mifare_product_subtype,
@@ -634,15 +650,6 @@
         } else {
             return {};
         }
-    };
-
-    let ReadMifareUltralight = async () => {
-        // data begins at page 4, ends at page 16
-        let r = await _transceive('3004');
-        r += await _transceive('3008');
-        r += await _transceive('300C');
-        let version = await ReadMifareVersion();
-        return { 'card_type': 'mifare_ultralight', 'data': r, ...version };
     };
 
     let ReadMifarePlus = async () => {
