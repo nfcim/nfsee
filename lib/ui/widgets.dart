@@ -301,12 +301,20 @@ class NDEFTile extends StatelessWidget {
     } else if (data["typeNameFormat"] == "media") {
       title = "MIME media record";
       subtitle = type;
-      details.add(
-          Detail(name: "Payload", value: data["payload"], icon: Icons.text_fields));
-      details.add(Detail(name: "MIME type", value: type, icon: Icons.text_format));
+      details.add(Detail(
+          name: "Payload", value: data["payload"], icon: Icons.text_fields));
+      try {
+        final payloadUtf8 = utf8.decode(decodeHexString(data["payload"]));
+        details.add(Detail(
+            name: "Payload in UTF-8",
+            value: payloadUtf8,
+            icon: Icons.text_fields));
+      } on FormatException catch (e) {
+        // silently ignore
+      }
     } else {
-      details.add(
-          Detail(name: "Raw payload", value: data["payload"], icon: null));
+      details
+          .add(Detail(name: "Raw payload", value: data["payload"], icon: null));
       details.add(Detail(name: "Raw type", value: type, icon: null));
       details.add(Detail(
           name: "Raw type name format",
