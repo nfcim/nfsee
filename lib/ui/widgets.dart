@@ -224,11 +224,12 @@ class NDEFTile extends StatelessWidget {
     var icon = Icons.info;
     var details = <Detail>[];
     final payload = decodeHexString(data["payload"].toString());
+    final type = utf8.decode(decodeHexString(data["type"].toString()));
     if (data["typeNameFormat"] == "nfcWellKnown") {
       // record text definition
       // https://nfc-forum.org/our-work/specification-releases/specifications/nfc-forum-assigned-numbers-register/
-      if (data["type"] == "55") {
-        // URI, ascii "U"
+      if (type == "U") {
+        // URI, "U"
         title = "URI";
         icon = Icons.web;
         // first byte is URI identifer code
@@ -284,8 +285,8 @@ class NDEFTile extends StatelessWidget {
         var rest = utf8.decode(payload.sublist(1));
         subtitle = "$prefix$rest";
         details.add(Detail(name: "Prefix", value: prefix, icon: Icons.tab));
-      } else if (data["type"] == "54") {
-        // Text, ascii "T"
+      } else if (type == "T") {
+        // Text, "T"
         title = "Text";
         icon = Icons.text_fields;
         // first byte is encoding
@@ -297,10 +298,23 @@ class NDEFTile extends StatelessWidget {
             Detail(name: "Language code", value: lang, icon: Icons.language));
         subtitle = utf8.decode(payload.sublist(3));
       }
+    } else if (data["typeNameFormat"] == "media") {
+      title = "MIME media record";
+      subtitle = type;
+      details.add(
+          Detail(name: "Payload", value: data["payload"], icon: Icons.text_fields));
+      details.add(Detail(name: "MIME type", value: type, icon: Icons.text_format));
     } else {
       details.add(
-          Detail(name: "Raw payload", value: data["payload"], icon: Icons.web));
+          Detail(name: "Raw payload", value: data["payload"], icon: null));
+      details.add(Detail(name: "Raw type", value: type, icon: null));
+      details.add(Detail(
+          name: "Raw type name format",
+          value: data["typeNameFormat"],
+          icon: null));
     }
+
+    // add identifier when available
     if (data["identifier"] != null && data["identifier"] != '') {
       details.add(Detail(
           name: "Identifier", value: data["identifier"], icon: Icons.web));
