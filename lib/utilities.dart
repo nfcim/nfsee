@@ -158,7 +158,6 @@ List<Detail> parseCardDetails(
   addDetail('mifare_product_version', S.of(context).mifareProductVersion, Icons.text_fields);
   addDetail('mifare_product_name', S.of(context).mifareProductName, Icons.branding_watermark);
   addDetail('mifare_storage_size', S.of(context).mifareStorageSize, Icons.format_size);
-  addDetail('mifare_protocol_type', S.of(context).mifareProtocolType, Icons.nfc);
   // all remaining data, clone to avoid concurrent modification
   final remain = {}..addAll(data);
   remain.forEach(

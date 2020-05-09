@@ -630,10 +630,6 @@
                 mifare_product_subtype = "50 pF";
             }
 
-            if (mifare_protocol_type === "03") {
-                mifare_protocol_type = "ISO 14443-3 (Type A)";
-            }
-
             // read data from page 0, to page storage_size/4
             let data = "";
             for (let i = 0; i < real_storage_size / 4; i += 4) {
@@ -655,7 +651,6 @@
                 mifare_product_version: `${mifare_major_product_version} ${mifare_minor_product_version}`,
                 mifare_product_name,
                 mifare_storage_size,
-                mifare_protocol_type
             };
         } else {
             return {};
@@ -664,6 +659,42 @@
 
     let ReadMifarePlus = async () => {
         return { 'card_type': 'mifare_plus' };
+    };
+
+    let ReadMifareDESFire = async (hardware_version) => {
+        let mifare_vendor_id = hardware_version.substring(0, 2);
+        let mifare_vendor = "unknown";
+        if (mifare_vendor_id === "04") {
+            mifare_vendor = "NXP Semiconductor";
+        }
+
+        let mifare_product_type = hardware_version.substring(2, 4);
+        let mifare_product_subtype = hardware_version.substring(4, 6);
+        let mifare_major_product_version = hardware_version.substring(6, 8);
+        let mifare_minor_product_version = hardware_version.substring(8, 10);
+
+        let mifare_storage_size = hardware_version.substring(10, 12);
+        // most significant 7 bits = n
+        // storage size = 2^n
+        let storage_size = parseInt(mifare_storage_size, 16);
+
+        mifare_storage_size = 1 << (storage_size >> 1);
+
+        if (storage_size & 1) {
+            // least bit is 1
+            mifare_storage_size = `Between ${mifare_storage_size} and ${mifare_storage_size * 2} bytes`;
+        } else {
+            // least bit is 0
+            mifare_storage_size = `${mifare_storage_size} bytes`;
+        }
+
+        return {
+            mifare_vendor,
+            mifare_product_type,
+            mifare_product_subtype,
+            mifare_product_version: `${mifare_major_product_version} ${mifare_minor_product_version}`,
+            mifare_storage_size,
+        };
     };
 
     let ReadAnyCard = async (tag) => {
@@ -684,6 +715,12 @@
             let r = await _transceive('00B0840020');
             if (r.endsWith('9000') && r.startsWith('1000')) {
                 return await ReadTransBeijing(r.slice(0, -4));
+            }
+
+            // MIFARE DESFire GetVersion: 60
+            r = await _transceive('9060000000');
+            if (r.endsWith('91af')) {
+                return await ReadMifareDESFire(r.slice(0, -4));
             }
 
             // CityUnion
