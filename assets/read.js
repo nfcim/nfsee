@@ -570,16 +570,8 @@
             // storage size = 2^n
             let storage_size = parseInt(mifare_storage_size, 16);
 
-            // read data from page 0, to page storage_size/4
             mifare_storage_size = 1 << (storage_size >> 1);
-            let data = "";
-            for (let i = 0; i < mifare_storage_size / 4; i += 4) {
-                let hex = i.toString(16);
-                if (hex.length == 1) {
-                    hex = "0" + hex;
-                }
-                data += await _transceive(`30${hex}`);
-            }
+            let real_storage_size = mifare_storage_size;
 
             if (storage_size & 1) {
                 // least bit is 1
@@ -618,10 +610,13 @@
                 if (mifare_product_subtype === "02") {
                     if (storage_size === 0x0F) {
                         mifare_product_name = "NTAG213";
+                        real_storage_size = 45 * 4;
                     } else if (storage_size === 0x11) {
                         mifare_product_name = "NTAG215";
+                        real_storage_size = 135 * 4;
                     } else if (storage_size === 0x13) {
                         mifare_product_name = "NTAG216";
+                        real_storage_size = 231 * 4;
                     }
                 }
             }
@@ -635,6 +630,18 @@
             if (mifare_protocol_type === "03") {
                 mifare_protocol_type = "ISO 14443-3 (Type A)";
             }
+
+            // read data from page 0, to page storage_size/4
+            let data = "";
+            for (let i = 0; i < real_storage_size / 4; i += 4) {
+                let hex = i.toString(16);
+                if (hex.length == 1) {
+                    hex = "0" + hex;
+                }
+                data += await _transceive(`30${hex}`);
+            }
+            // strip extra data
+            data = data.substring(0, real_storage_size * 2);
 
             return {
                 data,

@@ -470,7 +470,9 @@ class HomeState extends State<HomeAct>
         .map((t) =>
             TechnologicalDetailTile(name: t.key, value: t.value.toString()))
         .toList();
-    final dataTiles = data["detail"]["data"] == null ? <Widget>[] : [DataTile(data: data["detail"]["data"])];
+    final dataTiles = data["detail"]["data"] == null
+        ? <Widget>[]
+        : [DataTile(data: data["detail"]["data"])];
 
     final rawTdata = Theme.of(context);
     final tdata = rawTdata.copyWith(
@@ -552,7 +554,8 @@ class HomeState extends State<HomeAct>
             title: Text(S.of(context).memoryData),
             subtitle: data["detail"]["data"] == null
                 ? Text("Inavailabile")
-                : Text("${data["detail"]["data"].length} ${S.of(context).byteCount}"),
+                : Text(
+                    "${data["detail"]["data"].length >> 1} ${S.of(context).byteCount}"),
             children: dataTiles,
           ),
         ),

@@ -378,7 +378,7 @@ class DataTile extends StatelessWidget {
           width: 50,
           margin: EdgeInsets.only(right: 5),
           child: Text(
-            "${i.toRadixString(16).padLeft(4, '0')}:",
+            "${(i >> 1).toRadixString(16).padLeft(4, '0')}:",
             style: Theme.of(context).textTheme.body1.apply(color: Colors.green),
           ));
       segs.add(seg);
