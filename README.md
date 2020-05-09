@@ -21,7 +21,7 @@ flutter build # for release version
 | Type                            | Android | iOS  | Description                |
 | ------------------------------- | ------- | ---- | -------------------------- |
 | P. R. C. Resident ID            | ✅️       | ❌    | GUID only                  |
-| Beijing Yikatong                | ✅️       | ❌    | Full                       |
+| Beijing Yikatong                | ✅️       | ❌    | Full[^1]                   |
 | Tsinghua University Campus Card | ✅️       | ✅️    | Full                       |
 | Bank Card (PPSE)                | ✅️       | ❌    | Full                       |
 | T-Union Card                    | ✅️       | ✅️    | Full                       |
@@ -29,8 +29,9 @@ flutter build # for release version
 | Shenzhen Tong                   | ✅️       | ✅️    | Full                       |
 | Lingnan Pass                    | ✅️       | ✅️    | Full                       |
 | Octopus                         | ✅️       | ✅️    | Limited metadata           |
-| NXP NTAG 213                    | ❌       | ✅️    | NDEF records & Memory Dump |
-| NXP DESFire EV2 MF3 D22         | ❌       | ✅️    | NDEF records               |
+| MIFARE Ultralight[^2]           | ❌       | ✅️    | NDEF records & Memory Dump |
+| MIFARE DESFire[^3]              | ❌       | ✅️    | NDEF records               |
 
-"Full" in description field refers to metadata (such as card ID, balance, etc.) and recent transactions.
-
+[^1]: "Full" in description field refers to metadata (such as card ID, balance, etc.) and recent transactions.
+[^2]: Tested with NXP NTAG 213
+[^3]: Tested with NXP DESFire EV2 MF3 D22
