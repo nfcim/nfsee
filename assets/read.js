@@ -643,6 +643,7 @@
             data = data.substring(0, real_storage_size * 2);
 
             return {
+                'card_type': 'MifareUltralight',
                 data,
                 mifare_signature: signature,
                 mifare_vendor,
@@ -658,7 +659,7 @@
     };
 
     let ReadMifarePlus = async () => {
-        return { 'card_type': 'mifare_plus' };
+        return { 'card_type': 'MifarePlus' };
     };
 
     let ReadMifareDESFire = async (hardware_version) => {
@@ -698,6 +699,7 @@
         let mifare_production_date = `week ${week} of year 20${year}`;
 
         return {
+            'card_type': 'MifareDESFire',
             mifare_vendor,
             mifare_product_type,
             mifare_product_subtype,

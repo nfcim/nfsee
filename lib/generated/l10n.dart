@@ -441,6 +441,33 @@ class S {
     );
   }
 
+  String get MifareUltralight {
+    return Intl.message(
+      'MIFARE Ultralight',
+      name: 'MifareUltralight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get MifarePlus {
+    return Intl.message(
+      'MIFARE Plus',
+      name: 'MifarePlus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get MifareDESFire {
+    return Intl.message(
+      'MIFARE DESFire',
+      name: 'MifareDESFire',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get Unknown {
     return Intl.message(
       'Unknown',

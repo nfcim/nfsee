@@ -40,6 +40,9 @@ enum CardType {
   Octopus,
   Tsinghua,
   ChinaResidentIDGen2,
+  MifareUltralight,
+  MifarePlus,
+  MifareDESFire,
   Unknown,
 }
 
@@ -82,6 +85,12 @@ extension CardTypeExtension on CardType {
         return S.of(context).Tsinghua;
       case CardType.ChinaResidentIDGen2:
         return S.of(context).ChinaResidentIDGen2;
+      case CardType.MifareUltralight:
+        return S.of(context).MifareUltralight;
+      case CardType.MifarePlus:
+        return S.of(context).MifarePlus;
+      case CardType.MifareDESFire:
+        return S.of(context).MifareDESFire;
       case CardType.Unknown:
       default:
         return S.of(context).Unknown;
