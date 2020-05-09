@@ -611,12 +611,15 @@
                     if (storage_size === 0x0F) {
                         mifare_product_name = "NTAG213";
                         real_storage_size = 45 * 4;
+                        mifare_storage_size = `${real_storage_size} bytes`;
                     } else if (storage_size === 0x11) {
                         mifare_product_name = "NTAG215";
                         real_storage_size = 135 * 4;
+                        mifare_storage_size = `${real_storage_size} bytes`;
                     } else if (storage_size === 0x13) {
                         mifare_product_name = "NTAG216";
                         real_storage_size = 231 * 4;
+                        mifare_storage_size = `${real_storage_size} bytes`;
                     }
                 }
             }

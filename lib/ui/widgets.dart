@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
@@ -384,8 +385,13 @@ class DataTile extends StatelessWidget {
       segs.add(seg);
 
       // data
-      for (int j = i; j < data.length && j < i + group; j += 2) {
-        final slice = data.substring(j, j + 2).toUpperCase();
+      var dump = "";
+      for (int j = i; j < i + group; j += 2) {
+        var slice = "";
+        if (j < data.length) {
+          slice = data.substring(j, j + 2).toUpperCase();
+        }
+
         final seg = Container(
             width: 20,
             margin: EdgeInsets.only(right: 5),
@@ -395,7 +401,31 @@ class DataTile extends StatelessWidget {
                   Theme.of(context).textTheme.body1.apply(color: Colors.green),
             ));
         segs.add(seg);
+
+        if (slice != "") {
+          final ascii = int.parse(slice, radix: 16);
+          if (0x20 <= ascii && ascii <= 0x7e) {
+            // printable
+            dump += String.fromCharCode(ascii);
+          } else {
+            dump += ".";
+          }
+        }
       }
+
+      final segDump = Container(
+          width: 70,
+          margin: EdgeInsets.only(right: 5),
+          child: Text(
+            dump,
+            style: Theme.of(context)
+                .textTheme
+                .body1
+                .apply(color: Colors.green)
+                .apply(fontFamily: "Courier"), // monospaced
+          ));
+      segs.add(segDump);
+
       view.add(Wrap(children: segs));
     }
 
