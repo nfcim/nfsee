@@ -48,6 +48,7 @@
     "MifareUltralight": "MIFARE Ultralight",
     "MifarePlus": "MIFARE Plus",
     "MifareDESFire": "MIFARE DESFire",
+    "MifareClassic": "MIFARE Classic",
     "Unknown": "未知",
     "Authorization": "授权",
     "BalanceInquiry": "查询余额",

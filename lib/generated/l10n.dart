@@ -468,6 +468,15 @@ class S {
     );
   }
 
+  String get MifareClassic {
+    return Intl.message(
+      'MIFARE Classic',
+      name: 'MifareClassic',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get Unknown {
     return Intl.message(
       'Unknown',

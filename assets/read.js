@@ -713,6 +713,8 @@
             return await ReadMifareUltralight();
         } else if (tag.type === "mifare_plus") {
             return await ReadMifarePlus();
+        } else if (tag.type === "mifare_classic") {
+            return { 'card_type': 'MifareClassic' };
         } else if (tag.standard === "ISO 14443-3 (Type B)") {
             // ChinaResidentID
             let r = await _transceive('0036000008');
@@ -727,7 +729,7 @@
 
             // MIFARE DESFire GetVersion: 60
             r = await _transceive('9060000000');
-            if (r.endsWith('91af')) {
+            if (r.endsWith('91AF')) {
                 return await ReadMifareDESFire(r.slice(0, -4));
             }
 

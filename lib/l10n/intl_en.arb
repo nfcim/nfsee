@@ -48,6 +48,7 @@
     "MifareUltralight": "MIFARE Ultralight",
     "MifarePlus": "MIFARE Plus",
     "MifareDESFire": "MIFARE DESFire",
+    "MifareClassic": "MIFARE Classic",
     "Unknown": "Unknown",
     "Authorization": "Authorization",
     "BalanceInquiry": "Balance Inquiry",

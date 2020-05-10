@@ -54,6 +54,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "LingnanPass" : MessageLookupByLibrary.simpleMessage("Lingnan Pass"),
     "Load" : MessageLookupByLibrary.simpleMessage("Load"),
     "MC" : MessageLookupByLibrary.simpleMessage("MasterCard"),
+    "MifareClassic" : MessageLookupByLibrary.simpleMessage("MIFARE Classic"),
     "MifareDESFire" : MessageLookupByLibrary.simpleMessage("MIFARE DESFire"),
     "MifarePlus" : MessageLookupByLibrary.simpleMessage("MIFARE Plus"),
     "MifareUltralight" : MessageLookupByLibrary.simpleMessage("MIFARE Ultralight"),
