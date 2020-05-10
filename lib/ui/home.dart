@@ -299,6 +299,7 @@ class HomeState extends State<HomeAct>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final cardStream = bloc.dumpedRecords.map(
         (records) => records.map((r) => CardData.fromDumpedRecord(r)).toList());
     final navForeground = StreamBuilder(

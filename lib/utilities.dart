@@ -218,6 +218,8 @@ String parseTechnologicalDetailKey(String key) {
       return 'NDEF Writable';
     case 'ndefCapacity':
       return 'NDEF Capacity';
+    case 'ndefType':
+      return 'NDEF Tag Type';
     default:
       return key;
   }

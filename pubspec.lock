@@ -212,7 +212,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "432f2b5e9e2df34544d81a9f4e074b3559f68bcb"
+      resolved-ref: c4d9b92a678e2a8111068ac6885863638284bd11
       url: "https://github.com/nfcim/flutter_nfc_kit.git"
     source: git
     version: "1.1.0"
@@ -421,7 +421,7 @@ packages:
       name: pedantic
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.8.0+1"
+    version: "1.9.0"
   petitparser:
     dependency: transitive
     description:
