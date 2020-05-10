@@ -29,11 +29,15 @@ flutter build # for release version
 | Shenzhen Tong                   | ✅️       | ✅️    | Full                       |
 | Lingnan Pass                    | ✅️       | ✅️    | Full                       |
 | Octopus                         | ✅️       | ✅️    | Limited metadata           |
-| MIFARE Ultralight[^2]           | ❌       | ✅️    | NDEF records & Memory Dump |
-| MIFARE DESFire[^3]              | ❌       | ✅️    | NDEF records               |
+| MIFARE Ultralight[^2]           | ✅️       | ✅️    | NDEF records & Memory Dump |
+| MIFARE DESFire[^3]              | ✅️       | ✅️    | NDEF records               |
+| MIFARE Classic[^4]              | ✅️       | ❌    | NDEF records               |
 
 [^1]: "Full" in description field refers to metadata (such as card ID, balance, etc.) and recent transactions.
 
 [^2]: Tested with NXP NTAG 213
 
 [^3]: Tested with NXP DESFire EV2 MF3 D22
+
+[^4]: Tested with NXP MIFARE Classic EV1 4K S70
+
