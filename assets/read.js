@@ -705,6 +705,28 @@
         };
     };
 
+    let ReadMifareClassic = async (tag) => {
+        let data = "";
+        // MAD public key and NDEF public keys
+        let keys = ["A0A1A2A3A4A5", "D3F7D3F7D3F7", "D3F7D3F7D3F7"];
+        for (let sector = 0; sector < 3; sector += 1) {
+            try {
+                // authenticate key a with public key
+                let begin_block = sector * 4;
+                await _transceive(`600${begin_block.toString(16)}${tag.id}${keys[sector]}`);
+                // four blocks each sector
+                data += await _transceive(`300${(begin_block + 0).toString(16)}`);
+                data += await _transceive(`300${(begin_block + 1).toString(16)}`);
+                data += await _transceive(`300${(begin_block + 2).toString(16)}`);
+                data += await _transceive(`300${(begin_block + 3).toString(16)}`);
+            } catch (e) {
+                // allow to fail
+                break;
+            }
+        }
+        return { 'card_type': 'MifareClassic', data };
+    };
+
     let ReadAnyCard = async (tag) => {
         if (tag.type === "felica" && tag.systemCode === "8008") {
             // Octopus
@@ -714,7 +736,7 @@
         } else if (tag.type === "mifare_plus") {
             return await ReadMifarePlus();
         } else if (tag.type === "mifare_classic") {
-            return { 'card_type': 'MifareClassic' };
+            return await ReadMifareClassic(tag);
         } else if (tag.standard === "ISO 14443-3 (Type B)") {
             // ChinaResidentID
             let r = await _transceive('0036000008');
