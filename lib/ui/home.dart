@@ -554,7 +554,7 @@ class HomeState extends State<HomeAct>
             ),
             title: Text(S.of(context).memoryData),
             subtitle: data["detail"]["data"] == null
-                ? Text("Inavailabile")
+                ? Text("Unavailabile")
                 : Text(
                     "${data["detail"]["data"].length >> 1} ${S.of(context).byteCount}"),
             children: dataTiles,
