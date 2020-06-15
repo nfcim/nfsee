@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
@@ -170,7 +171,7 @@ class APDUTile extends StatelessWidget {
           margin: EdgeInsets.only(right: 5),
           child: Text(
             slice,
-            style: Theme.of(context).textTheme.body1.apply(color: color),
+            style: Theme.of(context).textTheme.bodyText2.apply(color: color),
           ));
       segs.add(seg);
     }
@@ -211,6 +212,139 @@ class TransferTile extends StatelessWidget {
   }
 }
 
+class NDEFTile extends StatelessWidget {
+  const NDEFTile({this.data});
+
+  final Map<String, dynamic> data;
+
+  @override
+  Widget build(context) {
+    var title = "unknown";
+    var subtitle = "";
+    var icon = Icons.info;
+    var details = <Detail>[];
+    final payload = decodeHexString(data["payload"].toString());
+    final type = utf8.decode(decodeHexString(data["type"].toString()));
+    if (data["typeNameFormat"] == "nfcWellKnown") {
+      // record text definition
+      // https://nfc-forum.org/our-work/specification-releases/specifications/nfc-forum-assigned-numbers-register/
+      if (type == "U") {
+        // URI, "U"
+        title = "URI";
+        icon = Icons.web;
+        // first byte is URI identifer code
+        var prefix = "";
+        if (payload.length >= 1) {
+          final identifier = payload[0];
+          // whole mapping
+          List<String> mapping = [
+            "",
+            "http://www.",
+            "https://www.",
+            "http://",
+            "https://",
+            "tel:",
+            "mailto:",
+            "ftp://anonymous:anonymous@",
+            "ftp://ftp.",
+            "ftps://",
+            "sftp://",
+            "smb://",
+            "nfs://",
+            "ftp://",
+            "dav://",
+            "news:",
+            "telnet://",
+            "imap:",
+            "rtsp://",
+            "urn:",
+            "pop:",
+            "sip:",
+            "sips:",
+            "tftp:",
+            "btspp://",
+            "btl2cap://",
+            "btgoep://",
+            "tcpobex://",
+            "irdaobex://",
+            "file://",
+            "urn:epc:id:",
+            "urn:epc:tag:",
+            "urn:epc:pat:",
+            "urn:epc:raw:",
+            "urn:epc:",
+            "urn:nfc:",
+          ];
+          if (identifier < mapping.length) {
+            prefix = mapping[identifier];
+          } else {
+            prefix = "unknown:";
+          }
+        }
+        // the rest is uri
+        var rest = utf8.decode(payload.sublist(1));
+        subtitle = "$prefix$rest";
+        details.add(
+            Detail(name: "Well-known Prefix", value: prefix, icon: Icons.tab));
+      } else if (type == "T") {
+        // Text, "T"
+        title = "Text";
+        icon = Icons.text_fields;
+        // first byte is encoding
+        // byte[1:3] is language
+        // byte[3:] is text
+        // TODO: handle utf16
+        final lang = utf8.decode(payload.sublist(1, 3));
+        details.add(
+            Detail(name: "Language code", value: lang, icon: Icons.language));
+        subtitle = utf8.decode(payload.sublist(3));
+      }
+    } else if (data["typeNameFormat"] == "media") {
+      title = "MIME media record";
+      subtitle = type;
+      details.add(Detail(
+          name: "Payload", value: data["payload"], icon: Icons.text_fields));
+      try {
+        final payloadUtf8 = utf8.decode(decodeHexString(data["payload"]));
+        details.add(Detail(
+            name: "Payload in UTF-8",
+            value: payloadUtf8,
+            icon: Icons.text_fields));
+      } on FormatException catch (_) {
+        // silently ignore
+      }
+    } else {
+      details
+          .add(Detail(name: "Raw payload", value: data["payload"], icon: null));
+      details.add(Detail(name: "Raw type", value: type, icon: null));
+      details.add(Detail(
+          name: "Raw type name format",
+          value: data["typeNameFormat"],
+          icon: null));
+    }
+
+    // add identifier when available
+    if (data["identifier"] != null && data["identifier"] != '') {
+      details.add(Detail(
+          name: "Identifier", value: data["identifier"], icon: Icons.web));
+    }
+
+    return ExpansionTile(
+      leading: Icon(icon),
+      title: Text(title),
+      subtitle: Text(subtitle),
+      children: details
+          .map((d) => ListTile(
+                dense: true,
+                title: Text(d.name),
+                subtitle: Text(d.value),
+                leading: Icon(d.icon ?? Icons.info),
+              ))
+          .toList(),
+    );
+  }
+}
+
 class TechnologicalDetailTile extends StatelessWidget {
   const TechnologicalDetailTile({this.name, this.value});
 
@@ -224,6 +358,96 @@ class TechnologicalDetailTile extends StatelessWidget {
       title: Text(parseTechnologicalDetailKey(name)),
       subtitle: Text(value ?? "null"),
       leading: Icon(Icons.info),
+    );
+  }
+}
+
+class DataTile extends StatelessWidget {
+  const DataTile({this.data});
+
+  final String data;
+
+  @override
+  Widget build(context) {
+    var group = 16;
+    var view = List<Widget>();
+    for (int i = 0; i < data.length; i += group) {
+      var segs = List<Widget>();
+
+      // addr
+      final seg = Container(
+          width: 50,
+          margin: EdgeInsets.only(right: 5),
+          child: Text(
+            "${(i >> 1).toRadixString(16).padLeft(4, '0')}:",
+            style: Theme.of(context)
+                .textTheme
+                .bodyText2
+                .apply(color: Colors.green)
+                .apply(fontFamily: "Courier"), // monospaced
+          ));
+      segs.add(seg);
+
+      // data
+      var dump = "";
+      for (int j = i; j < i + group; j += 2) {
+        var slice = "";
+        if (j < data.length) {
+          slice = data.substring(j, j + 2).toUpperCase();
+        }
+
+        final seg = Container(
+            width: 20,
+            margin: EdgeInsets.only(right: 5),
+            child: Text(
+              slice,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2
+                  .apply(color: Colors.green)
+                  .apply(fontFamily: "Courier"), // monospaced
+            ));
+        segs.add(seg);
+
+        if (slice != "") {
+          final ascii = int.parse(slice, radix: 16);
+          if (0x20 <= ascii && ascii <= 0x7e) {
+            // printable
+            dump += String.fromCharCode(ascii);
+          } else {
+            dump += ".";
+          }
+        }
+      }
+
+      final segDump = Container(
+          width: 70,
+          margin: EdgeInsets.only(right: 5),
+          child: Text(
+            dump,
+            style: Theme.of(context)
+                .textTheme
+                .bodyText2
+                .apply(color: Colors.green)
+                .apply(fontFamily: "Courier"), // monospaced
+          ));
+      segs.add(segDump);
+
+      view.add(Wrap(children: segs));
+    }
+
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        border: Border(
+          top: Divider.createBorderSide(context),
+        ),
+      ),
+      padding: EdgeInsets.all(16),
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: view),
     );
   }
 }

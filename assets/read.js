@@ -408,13 +408,13 @@
         const sep = tr2eqiv.indexOf('D');
         if (sep < 0) return null;
         return [tr2eqiv.slice(0, sep),
-            tr2eqiv.slice(sep + 1, sep + 3) + '/' + tr2eqiv.slice(sep + 3, sep + 5)];
+        tr2eqiv.slice(sep + 1, sep + 3) + '/' + tr2eqiv.slice(sep + 3, sep + 5)];
     };
 
     let ParseTrack1 = (tr1) => {
         let text = GBKDecoder.decode(tr1);
         let groups = text.match(/^B([0-9]{1,19})\^([^\^]{2,26})\^(([0-9]{2})([0-9]{2})|\^)/);
-        if(groups === null || groups.length < 6) return null;
+        if (groups === null || groups.length < 6) return null;
         return [groups[1], groups[4] + '/' + groups[5]];
     };
 
@@ -453,11 +453,11 @@
                 if (!AIP_AFL) return {};
                 AFL = AIP_AFL.slice(2); // skip 2-byte AIP
             }
-            const elements = await FetchElementsFromAFL(AFL, ['56', '57', '9F6B' ]);
+            const elements = await FetchElementsFromAFL(AFL, ['56', '57', '9F6B']);
             track2eqiv = elements['57'] || elements['9F6B'];
             if (track2eqiv)
                 [pan, expiration] = ParseTrack2Eqiv(track2eqiv);
-            else if(elements['56'])
+            else if (elements['56'])
                 [pan, expiration] = ParseTrack1(elements['56']);
             else
                 return {};
@@ -526,86 +526,321 @@
         };
     };
 
+    let ReadOctopus = async () => {
+        const sysCode = 0x0880;
+        const balanceSrvCode = 0x0117;
+        const f = new Felica(_transceive);
+        const idm_pmm = await f.polling(sysCode);
+        const balance = await f.readWithoutEncryption(balanceSrvCode, 0);
+        if (balance === null)
+            return { 'card_type': 'Unknown' };
+        let balance_num = parseInt(balance.slice(0, 8), 16);
+        // balance in units of 0.1HKD plus 500
+        // convert to units of 0.01HKD
+        balance_num = (balance_num - 500) * 10;
+        return {
+            'card_type': 'Octopus',
+            'card_number': idm_pmm[0],
+            'balance': balance_num,
+        };
+    };
+
+    let ReadMifareUltralight = async () => {
+        // get version
+        let version = await _transceive('60');
+        if (version.length == 16) {
+            // success
+
+            let mifare_vendor_id = version.substring(2, 4);
+            let mifare_vendor = "unknown";
+            if (mifare_vendor_id === "04") {
+                mifare_vendor = "NXP Semiconductor";
+            }
+            let mifare_product_name = "unknown";
+
+            let mifare_product_type = version.substring(4, 6);
+            let mifare_product_subtype = version.substring(6, 8);
+            let mifare_major_product_version = version.substring(8, 10);
+            let mifare_minor_product_version = version.substring(10, 12);
+            let mifare_storage_size = version.substring(12, 14);
+            // most significant 7 bits = n
+            // storage size = 2^n
+            let storage_size = parseInt(mifare_storage_size, 16);
+
+            mifare_storage_size = 1 << (storage_size >> 1);
+            let real_storage_size = mifare_storage_size;
+
+            if (storage_size & 1) {
+                // least bit is 1
+                mifare_storage_size = `Between ${mifare_storage_size} and ${mifare_storage_size * 2} bytes`;
+            } else {
+                // least bit is 0
+                mifare_storage_size = `${mifare_storage_size} bytes`;
+            }
+            let mifare_protocol_type = version.substring(14, 16);
+
+            // ref: MF0ULX1 datasheet
+            if (mifare_product_type === "03") {
+                mifare_product_type = "MIFARE Ultralight";
+
+                if (mifare_major_product_version === "01") {
+                    mifare_major_product_version = "EV1";
+                }
+
+                if (mifare_minor_product_version === "00") {
+                    mifare_minor_product_version = "V0";
+                }
+            }
+
+            // ref: NTAG213/215/216 datasheet
+            if (mifare_product_type === "04") {
+                mifare_product_type = "NTAG";
+
+                if (mifare_major_product_version === "01") {
+                    mifare_major_product_version = "1";
+                }
+
+                if (mifare_minor_product_version === "00") {
+                    mifare_minor_product_version = "0";
+                }
+
+                if (mifare_product_subtype === "02") {
+                    if (storage_size === 0x0F) {
+                        mifare_product_name = "NTAG213";
+                        real_storage_size = 45 * 4;
+                        mifare_storage_size = `${real_storage_size} bytes`;
+                    } else if (storage_size === 0x11) {
+                        mifare_product_name = "NTAG215";
+                        real_storage_size = 135 * 4;
+                        mifare_storage_size = `${real_storage_size} bytes`;
+                    } else if (storage_size === 0x13) {
+                        mifare_product_name = "NTAG216";
+                        real_storage_size = 231 * 4;
+                        mifare_storage_size = `${real_storage_size} bytes`;
+                    }
+                }
+            }
+
+            if (mifare_product_subtype === "01") {
+                mifare_product_subtype = "17 pF";
+            } else if (mifare_product_subtype === "02") {
+                mifare_product_subtype = "50 pF";
+            }
+
+            // read data from page 0, to page storage_size/4
+            let data = "";
+            for (let i = 0; i < real_storage_size / 4; i += 4) {
+                let hex = i.toString(16);
+                if (hex.length == 1) {
+                    hex = "0" + hex;
+                }
+                data += await _transceive(`30${hex}`);
+            }
+            // strip extra data
+            data = data.substring(0, real_storage_size * 2);
+
+            return {
+                'card_type': 'MifareUltralight',
+                data,
+                mifare_vendor,
+                mifare_product_type,
+                mifare_product_subtype,
+                mifare_product_version: `${mifare_major_product_version} ${mifare_minor_product_version}`,
+                mifare_product_name,
+                mifare_storage_size,
+            };
+        } else {
+            return {};
+        }
+    };
+
+    let ReadMifarePlus = async () => {
+        return { 'card_type': 'MifarePlus' };
+    };
+
+    let ReadMifareDESFire = async (hardware_version) => {
+        let mifare_vendor_id = hardware_version.substring(0, 2);
+        let mifare_vendor = "unknown";
+        if (mifare_vendor_id === "04") {
+            mifare_vendor = "NXP Semiconductor";
+        }
+
+        let mifare_product_type = hardware_version.substring(2, 4);
+        let mifare_product_subtype = hardware_version.substring(4, 6);
+        let mifare_major_product_version = hardware_version.substring(6, 8);
+        let mifare_minor_product_version = hardware_version.substring(8, 10);
+
+        let mifare_storage_size = hardware_version.substring(10, 12);
+        // most significant 7 bits = n
+        // storage size = 2^n
+        let storage_size = parseInt(mifare_storage_size, 16);
+
+        mifare_storage_size = 1 << (storage_size >> 1);
+
+        if (storage_size & 1) {
+            // least bit is 1
+            mifare_storage_size = `Between ${mifare_storage_size} and ${mifare_storage_size * 2} bytes`;
+        } else {
+            // least bit is 0
+            mifare_storage_size = `${mifare_storage_size} bytes`;
+        }
+
+        // af: more data
+        let software_vesion = await _transceive('90af000000');
+        // af: more data
+        let more_info = await _transceive('90af000000');
+        // BCD
+        let week = parseInt(more_info.substring(24, 26));
+        let year = parseInt(more_info.substring(26, 28));
+        let mifare_production_date = `week ${week} of year 20${year}`;
+
+        return {
+            'card_type': 'MifareDESFire',
+            mifare_vendor,
+            mifare_product_type,
+            mifare_product_subtype,
+            mifare_product_version: `${mifare_major_product_version} ${mifare_minor_product_version}`,
+            mifare_storage_size,
+            mifare_production_date,
+        };
+    };
+
+    let ReadMifareClassic = async (tag) => {
+        let data = "";
+        // MAD public key and NDEF public keys
+        let keys = ["A0A1A2A3A4A5", "D3F7D3F7D3F7", "D3F7D3F7D3F7"];
+        for (let sector = 0; sector < 3; sector += 1) {
+            try {
+                // authenticate key a with public key
+                let begin_block = sector * 4;
+                await _transceive(`600${begin_block.toString(16)}${tag.id}${keys[sector]}`);
+                // four blocks each sector
+                data += await _transceive(`300${(begin_block + 0).toString(16)}`);
+                data += await _transceive(`300${(begin_block + 1).toString(16)}`);
+                data += await _transceive(`300${(begin_block + 2).toString(16)}`);
+                data += await _transceive(`300${(begin_block + 3).toString(16)}`);
+            } catch (e) {
+                // allow to fail
+                break;
+            }
+        }
+        return { 'card_type': 'MifareClassic', data };
+    };
+
     let ReadAnyCard = async (tag) => {
-        // ChinaResidentID
-        if (tag.standard === "ISO 14443-3 (Type B)") {
+        if (tag.type === "felica" && tag.systemCode === "8008") {
+            // Octopus
+            return await ReadOctopus();
+        } else if (tag.type === "mifare_ultralight") {
+            return await ReadMifareUltralight();
+        } else if (tag.type === "mifare_plus") {
+            return await ReadMifarePlus();
+        } else if (tag.type === "mifare_classic") {
+            return await ReadMifareClassic(tag);
+        } else if (tag.standard === "ISO 14443-3 (Type B)") {
+            // ChinaResidentID
             let r = await _transceive('0036000008');
             if (r.endsWith('900000'))
                 return await ReadChinaID(r.slice(0, 16));
-        }
-        // TransBeijing
-        let r = await _transceive('00B0840020');
-        if (r.endsWith('9000') && r.startsWith('1000')) {
-            return await ReadTransBeijing(r.slice(0, -4));
-        }
-        // THU / CityUnion
-        r = await _transceive('00A4040009A0000000038698070100');
-        if (r.endsWith('9000')) {
-            if (tag.standard === "ISO 14443-4 (Type B)")
+        } else if (tag.standard === "ISO 14443-4 (Type A)") {
+            // TransBeijing
+            let r = await _transceive('00B0840020');
+            if (r.endsWith('9000') && r.startsWith('1000')) {
+                return await ReadTransBeijing(r.slice(0, -4));
+            }
+
+            // MIFARE DESFire GetVersion: 60
+            r = await _transceive('9060000000');
+            if (r.endsWith('91AF')) {
+                return await ReadMifareDESFire(r.slice(0, -4));
+            }
+
+            // CityUnion
+            r = await _transceive('00A4040009A0000000038698070100');
+            if (r.endsWith('9000')) {
+                return await ReadCityUnion(r.slice(0, -4));
+            }
+
+            // TUnion
+            r = await _transceive('00A4040008A00000063201010500');
+            if (r.endsWith('9000')) {
+                r = r.slice(0, -4);
+                return await ReadTUnion(r);
+            }
+
+            // TransShenzhen / TransWuhan
+            r = await _transceive('00A4000002100100');
+            if (r.endsWith('9000')) {
+                r = r.slice(0, -4);
+                let DFName = ExtractFromTLV(r, ['6F', '84']);
+                if (DFName) {
+                    DFName = GBKDecoder.decode(DFName);
+                    if (DFName.startsWith('PAY.SZT'))
+                        return await ReadTransShenzhen(r);
+                    else if (DFName.startsWith('AP1.WHCTC'))
+                        return await ReadTransWuhan();
+                }
+            }
+
+            // LingnanTong
+            r = await _transceive('00A40400085041592E4150505900');
+            if (r.endsWith('9000')) {
+                r = r.slice(0, -4);
+                return await ReadLingnanTong(r);
+            }
+
+            // put it here because iOS fails here
+            // PPSE
+            r = await _transceive('00A404000E325041592E5359532E444446303100');
+            if (r.endsWith('9000')) {
+                r = r.slice(0, -4);
+                return await ReadPPSE(r);
+            }
+        } else if (tag.standard === "ISO 14443-4 (Type B)") {
+            // THU
+            r = await _transceive('00A4040009A0000000038698070100');
+            if (r.endsWith('9000')) {
                 return await ReadTHU();
-            return await ReadCityUnion(r.slice(0, -4));
-        }
-        // TUnion
-        r = await _transceive('00A4040008A00000063201010500');
-        if (r.endsWith('9000')) {
-            r = r.slice(0, -4);
-            return await ReadTUnion(r);
-        }
-        // TransShenzhen / TransWuhan
-        r = await _transceive('00A4000002100100');
-        if (r.endsWith('9000')) {
-            r = r.slice(0, -4);
-            let DFName = ExtractFromTLV(r, ['6F', '84']);
-            if (DFName) {
-                DFName = GBKDecoder.decode(DFName);
-                if (DFName.startsWith('PAY.SZT'))
-                    return await ReadTransShenzhen(r);
-                else if (DFName.startsWith('AP1.WHCTC'))
-                    return await ReadTransWuhan();
             }
         }
-        // LingnanTong
-        r = await _transceive('00A40400085041592E4150505900');
-        if (r.endsWith('9000')) {
-            r = r.slice(0, -4);
-            return await ReadLingnanTong(r);
-        }
-        // put it here because iOS fails here
-        // PPSE
-        r = await _transceive('00A404000E325041592E5359532E444446303100');
-        if (r.endsWith('9000')) {
-            r = r.slice(0, -4);
-            return await ReadPPSE(r);
-        }
+
         // unsupported
         return { 'card_type': 'Unknown' };
     };
 
-    // record APDU history
-    let apdu_history = [];
-    const _transceive = async (apdu) => {
-        const result = await transceive(apdu);
-        let history = {
-            'tx': apdu,
-            'rx': result
+    let getWrappedTransceive = (apdu_history, tagType) => {
+        return async (apdu) => {
+            const result = await transceive(apdu);
+            let history = {
+                'tx': apdu,
+                'rx': result
+            };
+            // append success history only
+            if (tagType != 'iso7816' || result.endsWith('9000')) {
+                apdu_history.push(history);
+            }
+            return result;
         };
-        // append success history only
-        if (result.endsWith('9000') || result.endsWith('900000')) {
-            apdu_history.push(history);
-        }
-        return result;
-    };
+    }
+
+    let _transceive = null;
 
     try {
+        // record APDU history
+        let apdu_history = [];
         // poll a tag
         const tag = await poll();
         log(tag);
         // read detailed information
         var card_type = 'Unknown';
         var detail = {};
+        _transceive = getWrappedTransceive(apdu_history, tag.type);
         try {
             var { card_type, ..._detail } = await ReadAnyCard(tag);
             Object.assign(detail, _detail);
+            // pass ndef struct to detail
+            detail["ndef"] = tag["ndef"];
+            delete tag["ndef"];
         } catch (e) {
             log(`Script error when reading detail: ${JSON.stringify(e)}`);
         }
@@ -617,7 +852,7 @@
             apdu_history
         };
         report(result);
-    } catch (e) { 
+    } catch (e) {
         log(`Script error when polling: ${JSON.stringify(e)}`);
     } finally {
         finish();

@@ -45,6 +45,10 @@
     "Octopus": "Octopus",
     "Tsinghua": "Tsinghua University Campus Card",
     "ChinaResidentIDGen2": "China Resident ID Card",
+    "MifareUltralight": "MIFARE Ultralight",
+    "MifarePlus": "MIFARE Plus",
+    "MifareDESFire": "MIFARE DESFire",
+    "MifareClassic": "MIFARE Classic",
     "Unknown": "Unknown",
     "Authorization": "Authorization",
     "BalanceInquiry": "Balance Inquiry",
@@ -120,5 +124,16 @@
     "scanHistory": "Scan History",
     "historyCount": "$ found",
     "addedAt": "Added at",
-    "detailHint": "Swipe up or tap on the card to show more"
+    "detailHint": "Swipe up or tap on the card to show more",
+    "ndefRecords": "NDEF Records",
+    "mifareVendor": "MIFARE Vendor",
+    "mifareProductType": "MIFARE Product Type",
+    "mifareProductSubtype": "MIFARE Product Subtype",
+    "mifareProductVersion": "MIFARE Product Version",
+    "mifareProductName": "MIFARE Product Name",
+    "mifareStorageSize": "MIFARE Storage Size",
+    "mifareProtocolType": "MIFARE Protocol Type",
+    "mifareProductionDate": "MIFARE Production Date",
+    "memoryData": "Memory Data",
+    "byteCount": "byte(s)"
 }

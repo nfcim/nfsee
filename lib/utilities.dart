@@ -29,6 +29,14 @@ T getEnumFromString<T>(Iterable<T> values, String value) {
       orElse: () => null);
 }
 
+List<int> decodeHexString(String hex) {
+  var result = <int>[];
+  for (int i = 0; i < hex.length; i += 2) {
+    result.add(int.parse(hex.substring(i, i + 2), radix: 16));
+  }
+  return result;
+}
+
 extension PlatformExceptionExtension on PlatformException {
   Map<String, dynamic> asMap() {
     return {
@@ -91,9 +99,11 @@ List<Detail> parseTransactionDetails(
 
 List<Detail> parseCardDetails(
     Map<String, dynamic> _data, BuildContext context) {
-  // make a copy and remove transactions, the remaining fields are all details
+  // make a copy and remove transactions & ndef, the remaining fields are all details
   var data = {}..addAll(_data);
   data.remove('transactions');
+  data.remove('ndef');
+  data.remove('data');
 
   var details = <Detail>[];
 
@@ -142,6 +152,14 @@ List<Detail> parseCardDetails(
   addDetail('atc', S.of(context).ATC, Icons.exposure_plus_1);
   // PPSE
   addDetail('pin_retry', S.of(context).pinRetry, Icons.lock);
+  // Mifare
+  addDetail('mifare_vendor', S.of(context).mifareVendor, Icons.copyright);
+  addDetail('mifare_product_type', S.of(context).mifareProductType, Icons.looks_one);
+  addDetail('mifare_product_subtype', S.of(context).mifareProductSubtype, Icons.looks_two);
+  addDetail('mifare_product_version', S.of(context).mifareProductVersion, Icons.text_fields);
+  addDetail('mifare_product_name', S.of(context).mifareProductName, Icons.branding_watermark);
+  addDetail('mifare_storage_size', S.of(context).mifareStorageSize, Icons.format_size);
+  addDetail('mifare_production_date', S.of(context).mifareProductionDate, Icons.date_range);
   // all remaining data, clone to avoid concurrent modification
   final remain = {}..addAll(data);
   remain.forEach(
@@ -192,6 +210,16 @@ String parseTechnologicalDetailKey(String key) {
       return 'ATQA';
     case 'manufacturer':
       return 'Manufacturer';
+    case 'ndefAvailable':
+      return 'NDEF Available';
+    case 'ndefCanMakeReadOnly':
+      return 'NDEF Can Make Read Only';
+    case 'ndefWritable':
+      return 'NDEF Writable';
+    case 'ndefCapacity':
+      return 'NDEF Capacity';
+    case 'ndefType':
+      return 'NDEF Tag Type';
     default:
       return key;
   }

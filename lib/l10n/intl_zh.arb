@@ -45,6 +45,10 @@
     "Octopus": "八达通",
     "Tsinghua": "清华大学校园卡",
     "ChinaResidentIDGen2": "二代居民身份证",
+    "MifareUltralight": "MIFARE Ultralight",
+    "MifarePlus": "MIFARE Plus",
+    "MifareDESFire": "MIFARE DESFire",
+    "MifareClassic": "MIFARE Classic",
     "Unknown": "未知",
     "Authorization": "授权",
     "BalanceInquiry": "查询余额",
@@ -119,5 +123,16 @@
     "scanHistory": "扫描历史",
     "historyCount": "共 $ 条历史",
     "addedAt": "添加于",
-    "detailHint": "上滑或点击卡片查看详情"
+    "detailHint": "上滑或点击卡片查看详情",
+    "ndefRecords": "NDEF 记录",
+    "mifareVendor": "MIFARE 生产商",
+    "mifareProductType": "MIFARE 产品类型",
+    "mifareProductSubtype": "MIFARE 产品子类型",
+    "mifareProductVersion": "MIFARE 产品版本",
+    "mifareProductName": "MIFARE 产品名",
+    "mifareStorageSize": "MIFARE 存储大小",
+    "mifareProtocolType": "MIFARE 协议类型",
+    "mifareProductionDate": "MIFARE 生产日期",
+    "memoryData": "内存数据",
+    "byteCount": "字节"
 }

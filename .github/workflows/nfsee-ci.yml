@@ -7,8 +7,8 @@ name: NFSee CI
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    tags:
+    - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -34,3 +34,26 @@ jobs:
       with:
         name: apk-debug
         path: build/app/outputs/apk/debug/app-debug.apk
+
+    - name: Create Release
+      id: create_release
+      if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+    - name: Upload Release Asset
+      id: upload-release-asset 
+      if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+      uses: actions/upload-release-asset@v1
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: build/app/outputs/apk/debug/app-debug.apk
+          asset_name: nfsee-android-debug.apk
+          asset_content_type: application/vnd.android.package-archive

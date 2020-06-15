@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 
 const double CARD_WIDTH = (240 - 20) * (86.0 / 54) + 20;

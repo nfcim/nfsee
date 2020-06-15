@@ -14,6 +14,7 @@ const CardEnum = {
     MC: 1 << 11,
     ChinaID: 1 << 12,
     MC2: 1 << 13,
+    Octo: 1 << 14,
     ALL: 0xFFFF,
 };
 const PresetAPDU = [
@@ -70,15 +71,34 @@ const PresetAPDU = [
 
     [CardEnum.ALL, '80CA9F3600', '9F360200169000'],
     [CardEnum.ALL, '80CA9F1700', '9F1701019000'],
+
+    [CardEnum.Octo, '060080080100', '140151525354555657580120220427674EFF8008'], // polling
+    [CardEnum.Octo, '10065152535455565758011701018000', '1D075152535455565758000001000003E500000000000000000000000D'], // read balance, addr = 0
+    [CardEnum.Octo, '10065152535455565758011701018001', '0C07515253545556575801A8'], // read balance, addr = 1
+
 ];
-let MockCard = CardEnum.MC2;
+let MockCard = CardEnum.Octo;
 
 function poll() {
+    const getType = () => {
+        switch (MockCard) {
+            case CardEnum.Octo: return "felica";
+            case CardEnum.ChinaID: return "unknown";
+            default: return "iso7816";
+        }
+    }
+    const getStandard = () => {
+        switch (MockCard) {
+            case CardEnum.Octo: return "ISO 18092";
+            case CardEnum.THU: return "ISO 14443-4 (Type B)";
+            case CardEnum.ChinaID: return "ISO 14443-3 (Type B)";
+            default: return "ISO 14443-4 (Type A)";
+        }
+    }
     return Promise.resolve({
-        "type": MockCard == CardEnum.ChinaID ? "" : "iso7816",
+        "type": getType(),
         "id": "deadbeef",
-        "standard": MockCard == CardEnum.THU || MockCard == CardEnum.ChinaID ?
-            "ISO 14443-4 (Type B)" : "ISO 14443-4 (Type A)",
+        "standard": getStandard(),
         "atqa": '',
         "sak": '',
         "historicalBytes": '',

@@ -18,13 +18,14 @@ const double DETAIL_OFFSET = 300;
 class HomeAct extends StatefulWidget {
   final Future<bool> Function() readCard;
 
-  HomeAct({ @required this.readCard });
+  HomeAct({@required this.readCard});
 
   @override
   HomeState createState() => HomeState();
 }
 
-class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+class HomeState extends State<HomeAct>
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   CardPhysics cardPhysics;
   ScrollController cardController;
   bool dragging = false;
@@ -56,14 +57,10 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
 
   void _initSelf() {
     detailHideTrans = AnimationController(
-      duration: const Duration(milliseconds: 100),
-      vsync: this
-    );
+        duration: const Duration(milliseconds: 100), vsync: this);
 
     detailExpandTrans = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this
-    );
+        duration: const Duration(milliseconds: 200), vsync: this);
 
     this._refreshDetailScroll();
 
@@ -97,9 +94,9 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
   }
 
   void _refreshPhysics(List<CardData> cards) {
-    if(cards == null) return;
-    if(this.cardPhysics?.cardCount == cards.length) return;
-    if(this.cardController != null) this.cardController.dispose();
+    if (cards == null) return;
+    if (this.cardPhysics?.cardCount == cards.length) return;
+    if (this.cardController != null) this.cardController.dispose();
 
     this.cardPhysics = CardPhysics(cardCount: cards.length);
     this.cardController = ScrollController();
@@ -108,7 +105,7 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
       this.scrollingTicket = ticket;
 
       Future fut = Future.delayed(const Duration(milliseconds: 100)).then((_) {
-        if(this.scrollingTicket != ticket) return;
+        if (this.scrollingTicket != ticket) return;
         this.setState(() {
           this.scrolling = false;
           this._updateDetailHide(cards);
@@ -122,7 +119,8 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
     });
   }
 
-  Widget _rerenderNavForeground(BuildContext context, AsyncSnapshot<List<CardData>> snapshot) {
+  Widget _rerenderNavForeground(
+      BuildContext context, AsyncSnapshot<List<CardData>> snapshot) {
     // log(snapshot.toString());
     final data = snapshot.data;
     this._refreshPhysics(data);
@@ -131,70 +129,81 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
     return Column(
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.only(top: 20, left: 20, right: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Row(
+            padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
-                  Text(S.of(context).scanHistory,
-                    style: Theme.of(context).primaryTextTheme.title.copyWith(fontSize: 32),
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        S.of(context).scanHistory,
+                        style: Theme.of(context)
+                            .primaryTextTheme
+                            .headline6
+                            .copyWith(fontSize: 32),
+                      ),
+                      Spacer(),
+                      IconButton(
+                        icon: Icon(
+                          Icons.add,
+                          color:
+                              Theme.of(context).primaryTextTheme.headline5.color,
+                        ),
+                        onPressed: () async {
+                          final cardRead = await this.widget.readCard();
+                          if (!cardRead) return;
+                          this.addCard();
+                          log("CARD read");
+                        },
+                      ),
+                    ],
                   ),
-                  Spacer(),
-                  IconButton(
-                    icon: Icon(
-                      Icons.add,
-                      color: Theme.of(context).primaryTextTheme.headline.color,
-                    ),
-                    onPressed: () async {
-                      final cardRead = await this.widget.readCard();
-                      if(!cardRead) return;
-                      this.addCard();
-                      log("CARD read");
-                    },
+                  Text(
+                    data == null
+                        ? "加载中..."
+                        : S
+                            .of(context)
+                            .historyCount
+                            .replaceAll("\$", data.length.toString()),
+                    style: Theme.of(context)
+                        .primaryTextTheme
+                        .caption
+                        .copyWith(fontSize: 14),
                   ),
-                ],
-              ),
-              Text(
-                data == null ? "加载中..." : S.of(context).historyCount.replaceAll("\$", data.length.toString()),
-                style: Theme.of(context).primaryTextTheme.caption.copyWith(fontSize: 14),
-              ),
-            ]
-          )
-        ),
-
+                ])),
         SizedBox(
           height: 20,
         ),
-
         Container(
-          height: 240,
-          child: Listener(
-            onPointerDown: (_) {
-              this.setState(() {
-                this.dragging = true;
-                this._updateDetailHide(data);
-              });
-            },
-            onPointerUp: (_) {
-              this.setState(() {
-                this.dragging = false;
-                this._updateDetailHide(data);
-              });
-            },
-            child: ListView(
-              padding: EdgeInsets.symmetric(horizontal: (MediaQuery.of(context).size.width - CARD_WIDTH) / 2),
-              controller: cardController,
-              physics: cardPhysics,
-              scrollDirection: Axis.horizontal,
-              children: (data ?? []).map((c) => GestureDetector(
-                child: c.homepageCard(context),
-                onTap: this._tryExpandDetail,
-              )).toList(),
-            )
-          )
-        ),
+            height: 240,
+            child: Listener(
+                onPointerDown: (_) {
+                  this.setState(() {
+                    this.dragging = true;
+                    this._updateDetailHide(data);
+                  });
+                },
+                onPointerUp: (_) {
+                  this.setState(() {
+                    this.dragging = false;
+                    this._updateDetailHide(data);
+                  });
+                },
+                child: ListView(
+                  padding: EdgeInsets.symmetric(
+                      horizontal:
+                          (MediaQuery.of(context).size.width - CARD_WIDTH) / 2),
+                  controller: cardController,
+                  physics: cardPhysics,
+                  scrollDirection: Axis.horizontal,
+                  children: (data ?? [])
+                      .map((c) => GestureDetector(
+                            child: c.homepageCard(context),
+                            onTap: this._tryExpandDetail,
+                          ))
+                      .toList(),
+                ))),
       ],
     );
   }
@@ -217,8 +226,8 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
   }
 
   bool _tryExpandDetail() {
-    if(this.expanding) return false;
-    if(this.expanded) return false;
+    if (this.expanding) return false;
+    if (this.expanded) return false;
 
     this.expanding = true;
 
@@ -232,13 +241,14 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
   }
 
   bool _tryCollapseDetail() {
-    if(this.expanding) return false;
-    if(!this.expanded) return false;
+    if (this.expanding) return false;
+    if (!this.expanded) return false;
 
     this.expanding = true;
 
     final fut1 = this.detailExpandTrans.animateBack(0);
-    final fut2 = this.detailScroll.animateTo(0, duration: Duration(milliseconds: 100), curve: ElasticOutCurve());
+    final fut2 = this.detailScroll.animateTo(0,
+        duration: Duration(milliseconds: 100), curve: ElasticOutCurve());
     this.setState(() {
       this.expanded = false;
     });
@@ -251,40 +261,47 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
   }
 
   void _updateDetailHide(List<CardData> cards) async {
-    if(this.scrolling) {
-      if(this.hidden) return;
+    if (this.scrolling) {
+      if (this.hidden) return;
       this.hidden = true;
       await Future.delayed(const Duration(milliseconds: 100));
-      if(this.hidden != true) return;
+      if (this.hidden != true) return;
       this.detailHideTrans.animateTo(1);
-    } else if(!this.scrolling && !this.dragging) {
-      if(!this.hidden) return;
+    } else if (!this.scrolling && !this.dragging) {
+      if (!this.hidden) return;
       this.hidden = false;
       await Future.delayed(const Duration(milliseconds: 100));
-      if(this.hidden != false) return;
+      if (this.hidden != false) return;
       this.detailHideTrans.animateBack(0);
       this._updateDetailInst(cards);
     }
   }
 
   void _updateDetailInst(List<CardData> cards) {
-    int targetIdx = this.cardController != null && this.cardController.hasClients ?
-      this.cardPhysics.getItemIdx(this.cardController.position) : 0;
-    final next = (cards == null || targetIdx >= cards.length) ? null : cards[targetIdx];
-    if(next == this.detail) return;
-    if(next != null && next.sameAs(this.detail)) return;
-    Future.delayed(Duration(seconds: 0)).then((_) => setState(() => this.detail = next));
+    int targetIdx =
+        this.cardController != null && this.cardController.hasClients
+            ? this.cardPhysics.getItemIdx(this.cardController.position)
+            : 0;
+    final next =
+        (cards == null || targetIdx >= cards.length) ? null : cards[targetIdx];
+    if (next == this.detail) return;
+    if (next != null && next.sameAs(this.detail)) return;
+    Future.delayed(Duration(seconds: 0))
+        .then((_) => setState(() => this.detail = next));
     log("TIDX: $targetIdx");
   }
 
   void addCard() async {
     await Future.delayed(const Duration(milliseconds: 10));
-    this.cardController.animateTo(this.cardController.position.maxScrollExtent, duration: const Duration(seconds: 1), curve: ElasticOutCurve());
+    this.cardController.animateTo(this.cardController.position.maxScrollExtent,
+        duration: const Duration(seconds: 1), curve: ElasticOutCurve());
   }
 
   @override
   Widget build(BuildContext context) {
-    final cardStream = bloc.dumpedRecords.map((records) => records.map((r) => CardData.fromDumpedRecord(r)).toList());
+    super.build(context);
+    final cardStream = bloc.dumpedRecords.map(
+        (records) => records.map((r) => CardData.fromDumpedRecord(r)).toList());
     final navForeground = StreamBuilder(
       stream: cardStream,
       builder: this._rerenderNavForeground,
@@ -294,16 +311,15 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
       children: <Widget>[
         new Positioned(
           child: new CustomPaint(
-            painter: new HomeBackgrondPainter(color: Theme.of(context).primaryColor),
+            painter:
+                new HomeBackgrondPainter(color: Theme.of(context).primaryColor),
           ),
           bottom: 0,
           top: 0,
           left: 0,
           right: 0,
         ),
-        new SafeArea(
-          child: navForeground
-        ),
+        new SafeArea(child: navForeground),
       ],
     );
 
@@ -318,114 +334,117 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
         Transform.translate(
           offset: Offset(0, DETAIL_OFFSET * (1 - this.detailExpandVal)),
           child: Transform.translate(
-            child: Opacity(child: detail, opacity: (1-this.detailHideVal)),
-            offset: Offset(0, 50 * this.detailHideVal)
-          ),
+              child: Opacity(child: detail, opacity: (1 - this.detailHideVal)),
+              offset: Offset(0, 50 * this.detailHideVal)),
         )
       ],
     );
 
     return WillPopScope(
-      onWillPop: () {
-        return Future.value(!this._tryCollapseDetail());
-      },
-      child: top
-    );
+        onWillPop: () {
+          return Future.value(!this._tryCollapseDetail());
+        },
+        child: top);
   }
 
   Widget _buildDetail(BuildContext ctx) {
-    if(detail == null) return Container();
+    if (detail == null) return Container();
     var data = detail.raw;
-    
+
     final detailTiles = parseCardDetails(data["detail"], context)
-      .map((d) => ListTile(
-            dense: true,
-            title: Text(d.name),
-            subtitle: Text(d.value),
-            leading: Icon(d.icon ?? Icons.info),
-          ))
-      .toList();
+        .map((d) => ListTile(
+              dense: true,
+              title: Text(d.name),
+              subtitle: Text(d.value),
+              leading: Icon(d.icon ?? Icons.info),
+            ))
+        .toList();
 
     final disp = Container(
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          IgnorePointer(
-            ignoring: !this.expanded,
-            child: Opacity(
-              opacity: this.detailExpandVal,
-              child: AppBar(
-                primary: true,
-                backgroundColor: Color.fromARGB(255, 85, 69, 177),
-                title: Text(detail.name ?? S.of(context).unnamedCard, style: Theme.of(context).textTheme.title.apply(color: Colors.white)),
-                leading: IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.white),
-                  onPressed: () {
-                    this._tryCollapseDetail();
-                  },
-                ),
-                actions: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.edit, color: Colors.white),
-                    onPressed: () {
-                      this._editCardName(this.detail);
-                    },
-                  ),
-                  PopupMenuButton<String>(
-                    onSelected: (act) {
-                      if(act == "delete") {
-                        this._delFocused();
-                      }
-                    },
-                    icon: Icon(Icons.more_vert, color: Colors.white),
-                    itemBuilder: (context) => [
-                      PopupMenuItem(value: "delete", child: Text(S.of(context).delete)),
-                    ],
-                  ),
-                ],
-                brightness: Brightness.light,
-              ),
+        child: Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
+      IgnorePointer(
+        ignoring: !this.expanded,
+        child: Opacity(
+          opacity: this.detailExpandVal,
+          child: AppBar(
+            primary: true,
+            backgroundColor: Color.fromARGB(255, 85, 69, 177),
+            title: Text(detail.name ?? S.of(context).unnamedCard,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline6
+                    .apply(color: Colors.white)),
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () {
+                this._tryCollapseDetail();
+              },
             ),
-          ),
-
-          NotificationListener(
-            onNotification: (notif) {
-              if(notif is UserScrollNotification) {
-                UserScrollNotification usnotif = notif;
-                if(usnotif.depth == 0 && usnotif.direction == ScrollDirection.reverse) {
-                  this._tryExpandDetail();
-                }
-              }
-
-              if(notif is OverscrollNotification) {
-                OverscrollNotification onotif = notif;
-                if(onotif.depth == 0 && onotif.velocity == 0 && onotif.metrics.pixels == 0) {
-                  this._tryCollapseDetail();
-                }
-              }
-              return false;
-            },
-            child: Expanded(child: SingleChildScrollView(
-              controller: detailScroll,
-              child: Column(
-                children: <Widget>[
-                  ListTile(
-                    title: Text("${S.of(context).addedAt} ${this.detail.formattedTime}"),
-                    subtitle: Text(S.of(context).detailHint),
-                    leading: Icon(Icons.access_time),
-                  ),
-                  detailTiles.length == 0 ? Container() : Divider(),
-                  Column(children: detailTiles),
-                  Divider(),
-                  this._buildMisc(context, data),
-                  SizedBox(height: this.expanded ? 0 : DETAIL_OFFSET),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.edit, color: Colors.white),
+                onPressed: () {
+                  this._editCardName(this.detail);
+                },
+              ),
+              PopupMenuButton<String>(
+                onSelected: (act) {
+                  if (act == "delete") {
+                    this._delFocused();
+                  }
+                },
+                icon: Icon(Icons.more_vert, color: Colors.white),
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                      value: "delete", child: Text(S.of(context).delete)),
                 ],
               ),
-            )),
+            ],
+            brightness: Brightness.light,
           ),
-        ]
-      )
-    );
+        ),
+      ),
+      NotificationListener(
+        onNotification: (notif) {
+          if (notif is UserScrollNotification) {
+            UserScrollNotification usnotif = notif;
+            if (usnotif.depth == 0 &&
+                usnotif.direction == ScrollDirection.reverse) {
+              this._tryExpandDetail();
+            }
+          }
+
+          if (notif is OverscrollNotification) {
+            OverscrollNotification onotif = notif;
+            if (onotif.depth == 0 &&
+                onotif.velocity == 0 &&
+                onotif.metrics.pixels == 0) {
+              this._tryCollapseDetail();
+            }
+          }
+          return false;
+        },
+        child: Expanded(
+            child: SingleChildScrollView(
+          controller: detailScroll,
+          child: Column(
+            children: <Widget>[
+              ListTile(
+                title: Text(
+                    "${S.of(context).addedAt} ${this.detail.formattedTime}"),
+                subtitle: Text(S.of(context).detailHint),
+                leading: Icon(Icons.access_time),
+              ),
+              detailTiles.length == 0 ? Container() : Divider(),
+              Column(children: detailTiles),
+              Divider(),
+              this._buildMisc(context, data),
+              SizedBox(height: this.expanded ? 0 : DETAIL_OFFSET),
+            ],
+          ),
+        )),
+      ),
+    ]));
 
     return disp;
   }
@@ -441,17 +460,33 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
             .map((t) => TransferTile(data: t))
             .toList()
         : null;
+    final ndefTiles = data["detail"]["ndef"] != null
+        ? (data["detail"]["ndef"] as List<dynamic>)
+            .map((t) => NDEFTile(data: t))
+            .toList()
+        : null;
     final technologyDetailTiles = (data["tag"] as Map<String, dynamic>)
         .entries
-        .where((t) => t.value != '') // filter empty values
-        .map((t) => TechnologicalDetailTile(name: t.key, value: t.value))
+        .where((t) => t.value != '' && t.value != null) // filter empty values
+        .map((t) =>
+            TechnologicalDetailTile(name: t.key, value: t.value.toString()))
         .toList();
+    final dataTiles = data["detail"]["data"] == null
+        ? <Widget>[]
+        : [DataTile(data: data["detail"]["data"])];
 
     final rawTdata = Theme.of(context);
     final tdata = rawTdata.copyWith(
-      accentColor: rawTdata.textTheme.subhead.color,
+      accentColor: rawTdata.textTheme.subtitle1.color,
       dividerColor: Colors.transparent,
     );
+
+    final backgroundColor = Theme.of(context).brightness == Brightness.dark
+        ? Colors.white12
+        : Colors.black12;
+    final iconColor = Theme.of(context).brightness == Brightness.dark
+        ? Colors.white54
+        : Colors.black54;
 
     final misc = Column(
       children: [
@@ -459,17 +494,16 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
           data: tdata,
           child: ExpansionTile(
             leading: CircleAvatar(
-              backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.white12 : Colors.black12,
+              backgroundColor: backgroundColor,
               child: Icon(
                 Icons.payment,
-                color: Theme.of(context).brightness == Brightness.dark ? Colors.white54 : Colors.black54,
+                color: iconColor,
               ),
             ),
             title: Text(S.of(context).transactionHistory),
             subtitle: transferTiles == null
                 ? Text(S.of(context).notSupported)
-                : Text(
-                    "${transferTiles.length} ${S.of(context).recordCount}"),
+                : Text("${transferTiles.length} ${S.of(context).recordCount}"),
             children: transferTiles ?? [],
           ),
         ),
@@ -478,10 +512,28 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
           data: tdata,
           child: ExpansionTile(
             leading: CircleAvatar(
-              backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.white12 : Colors.black12,
+              backgroundColor: backgroundColor,
+              child: Icon(
+                Icons.note,
+                color: iconColor,
+              ),
+            ),
+            title: Text(S.of(context).ndefRecords),
+            subtitle: ndefTiles == null
+                ? Text(S.of(context).notSupported)
+                : Text("${ndefTiles.length} ${S.of(context).recordCount}"),
+            children: ndefTiles ?? [],
+          ),
+        ),
+        Divider(),
+        Theme(
+          data: tdata,
+          child: ExpansionTile(
+            leading: CircleAvatar(
+              backgroundColor: backgroundColor,
               child: Icon(
                 Icons.nfc,
-                color: Theme.of(context).brightness == Brightness.dark ? Colors.white54 : Colors.black54,
+                color: iconColor,
               ),
             ),
             title: Text(S.of(context).technologicalDetails),
@@ -494,10 +546,29 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
           data: tdata,
           child: ExpansionTile(
             leading: CircleAvatar(
-              backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.white12 : Colors.black12,
+              backgroundColor: backgroundColor,
+              child: Icon(
+                Icons.chat,
+                color: iconColor,
+              ),
+            ),
+            title: Text(S.of(context).memoryData),
+            subtitle: data["detail"]["data"] == null
+                ? Text("Unavailabile")
+                : Text(
+                    "${data["detail"]["data"].length >> 1} ${S.of(context).byteCount}"),
+            children: dataTiles,
+          ),
+        ),
+        Divider(),
+        Theme(
+          data: tdata,
+          child: ExpansionTile(
+            leading: CircleAvatar(
+              backgroundColor: backgroundColor,
               child: Icon(
                 Icons.history,
-                color: Theme.of(context).brightness == Brightness.dark ? Colors.white54 : Colors.black54,
+                color: iconColor,
               ),
             ),
             title: Text(S.of(context).apduLogs),
@@ -535,22 +606,17 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
             )))
         .closed
         .then((reason) async {
-          switch (reason) {
-            case SnackBarClosedReason.action:
-              // user cancelled deletion, restore it
-              await this
-                  .bloc
-                  .addDumpedRecord(
-                    jsonEncode(deleted.raw),
-                    deleted.time,
-                    deleted.config
-                  );
-              log('Record ${deleted.id} restored');
-              break;
-            default:
-              break;
-          }
-        });
+      switch (reason) {
+        case SnackBarClosedReason.action:
+          // user cancelled deletion, restore it
+          await this.bloc.addDumpedRecord(
+              jsonEncode(deleted.raw), deleted.time, deleted.config);
+          log('Record ${deleted.id} restored');
+          break;
+        default:
+          break;
+      }
+    });
   }
 
   void _editCardName(CardData data) {
@@ -581,7 +647,7 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
             child: Text(MaterialLocalizations.of(context).okButtonLabel),
             onPressed: () {
               setState(() {
-                if(pendingName == "") {
+                if (pendingName == "") {
                   data.name = null;
                 } else {
                   data.name = pendingName;
@@ -608,7 +674,7 @@ class HomeState extends State<HomeAct> with TickerProviderStateMixin, AutomaticK
 
 class HomeBackgrondPainter extends CustomPainter {
   final Color color;
-  HomeBackgrondPainter({ this.color });
+  HomeBackgrondPainter({this.color});
 
   @override
   void paint(Canvas canvas, Size size) {

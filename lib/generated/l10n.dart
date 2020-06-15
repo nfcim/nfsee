@@ -441,6 +441,42 @@ class S {
     );
   }
 
+  String get MifareUltralight {
+    return Intl.message(
+      'MIFARE Ultralight',
+      name: 'MifareUltralight',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get MifarePlus {
+    return Intl.message(
+      'MIFARE Plus',
+      name: 'MifarePlus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get MifareDESFire {
+    return Intl.message(
+      'MIFARE DESFire',
+      name: 'MifareDESFire',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get MifareClassic {
+    return Intl.message(
+      'MIFARE Classic',
+      name: 'MifareClassic',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get Unknown {
     return Intl.message(
       'Unknown',
@@ -1120,6 +1156,105 @@ class S {
     return Intl.message(
       'Swipe up or tap on the card to show more',
       name: 'detailHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get ndefRecords {
+    return Intl.message(
+      'NDEF Records',
+      name: 'ndefRecords',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get mifareVendor {
+    return Intl.message(
+      'MIFARE Vendor',
+      name: 'mifareVendor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get mifareProductType {
+    return Intl.message(
+      'MIFARE Product Type',
+      name: 'mifareProductType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get mifareProductSubtype {
+    return Intl.message(
+      'MIFARE Product Subtype',
+      name: 'mifareProductSubtype',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get mifareProductVersion {
+    return Intl.message(
+      'MIFARE Product Version',
+      name: 'mifareProductVersion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get mifareProductName {
+    return Intl.message(
+      'MIFARE Product Name',
+      name: 'mifareProductName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get mifareStorageSize {
+    return Intl.message(
+      'MIFARE Storage Size',
+      name: 'mifareStorageSize',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get mifareProtocolType {
+    return Intl.message(
+      'MIFARE Protocol Type',
+      name: 'mifareProtocolType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get mifareProductionDate {
+    return Intl.message(
+      'MIFARE Production Date',
+      name: 'mifareProductionDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get memoryData {
+    return Intl.message(
+      'Memory Data',
+      name: 'memoryData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get byteCount {
+    return Intl.message(
+      'byte(s)',
+      name: 'byteCount',
       desc: '',
       args: [],
     );
