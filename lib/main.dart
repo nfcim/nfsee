@@ -69,7 +69,9 @@ class _NFSeeAppState extends State<NFSeeApp> {
         ),
         builder: (context, child) {
           return CupertinoTheme(
-            data: CupertinoThemeData(),
+            data: CupertinoThemeData(
+              scaffoldBackgroundColor: Colors.grey[850]
+            ),
             child: Material(child: child),
           );
         },
