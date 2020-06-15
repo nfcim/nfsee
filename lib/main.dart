@@ -63,10 +63,12 @@ class _NFSeeAppState extends State<NFSeeApp> {
           accentColor: Colors.deepOrange,
         ),
         builder: (context, child) {
+          var themeData = CupertinoThemeData();
+          if(MediaQuery.of(context).platformBrightness == Brightness.dark) {
+            themeData = CupertinoThemeData(scaffoldBackgroundColor: Colors.grey[850]);
+          }
           return CupertinoTheme(
-            data: CupertinoThemeData(
-              scaffoldBackgroundColor: Colors.grey[850]
-            ),
+            data: themeData,
             child: Material(child: child),
           );
         },
