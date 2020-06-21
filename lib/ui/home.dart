@@ -125,7 +125,7 @@ class HomeState extends State<HomeAct>
     final data = snapshot.data;
     this._refreshPhysics(data);
     this._updateDetailInst(data);
-
+    CARD_WIDTH = MediaQuery.of(context).size.width * 0.9;
     return Column(
       children: <Widget>[
         Padding(
