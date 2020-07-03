@@ -44,6 +44,7 @@ class _NFSeeAppState extends State<NFSeeApp> {
       // Either Material or Cupertino widgets work in either Material or Cupertino
       // Apps.
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         localizationsDelegates: [
           S.delegate,
           GlobalMaterialLocalizations.delegate,
