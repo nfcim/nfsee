@@ -8,18 +8,24 @@ import 'intl/messages_all.dart';
 // Made by Localizely
 // **************************************************************************
 
+// ignore_for_file: non_constant_identifier_names, lines_longer_than_80_chars
+
 class S {
   S();
+  
+  static S current;
   
   static const AppLocalizationDelegate delegate =
     AppLocalizationDelegate();
 
   static Future<S> load(Locale locale) {
-    final String name = (locale.countryCode?.isEmpty ?? false) ? locale.languageCode : locale.toString();
-    final String localeName = Intl.canonicalizedLocale(name);
+    final name = (locale.countryCode?.isEmpty ?? false) ? locale.languageCode : locale.toString();
+    final localeName = Intl.canonicalizedLocale(name); 
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
-      return S();
+      S.current = S();
+      
+      return S.current;
     });
   } 
 
@@ -27,6 +33,7 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Run Script`
   String get scriptTabTitle {
     return Intl.message(
       'Run Script',
@@ -36,6 +43,7 @@ class S {
     );
   }
 
+  /// `Scan`
   String get scanTabTitle {
     return Intl.message(
       'Scan',
@@ -45,6 +53,7 @@ class S {
     );
   }
 
+  /// `Settings`
   String get settingsTabTitle {
     return Intl.message(
       'Settings',
@@ -54,6 +63,7 @@ class S {
     );
   }
 
+  /// `NFSee`
   String get homeScreenTitle {
     return Intl.message(
       'NFSee',
@@ -63,6 +73,7 @@ class S {
     );
   }
 
+  /// `Hold your phone near the NFC card / tag...`
   String get waitForCard {
     return Intl.message(
       'Hold your phone near the NFC card / tag...',
@@ -72,6 +83,7 @@ class S {
     );
   }
 
+  /// `Reading you NFC card / tag...`
   String get cardPolled {
     return Intl.message(
       'Reading you NFC card / tag...',
@@ -81,6 +93,7 @@ class S {
     );
   }
 
+  /// `Executing your script...`
   String get executingScript {
     return Intl.message(
       'Executing your script...',
@@ -90,6 +103,7 @@ class S {
     );
   }
 
+  /// `Read succeeded`
   String get readSucceeded {
     return Intl.message(
       'Read succeeded',
@@ -99,6 +113,7 @@ class S {
     );
   }
 
+  /// `Read failed`
   String get readFailed {
     return Intl.message(
       'Read failed',
@@ -108,6 +123,7 @@ class S {
     );
   }
 
+  /// `No history found`
   String get noHistoryFound {
     return Intl.message(
       'No history found',
@@ -117,6 +133,7 @@ class S {
     );
   }
 
+  /// `Card name`
   String get cardName {
     return Intl.message(
       'Card name',
@@ -126,6 +143,7 @@ class S {
     );
   }
 
+  /// `Last execution time`
   String get lastExecutionTime {
     return Intl.message(
       'Last execution time',
@@ -135,6 +153,7 @@ class S {
     );
   }
 
+  /// `Never`
   String get never {
     return Intl.message(
       'Never',
@@ -144,6 +163,7 @@ class S {
     );
   }
 
+  /// `RUN`
   String get run {
     return Intl.message(
       'RUN',
@@ -153,6 +173,7 @@ class S {
     );
   }
 
+  /// `Add script`
   String get addScript {
     return Intl.message(
       'Add script',
@@ -162,6 +183,7 @@ class S {
     );
   }
 
+  /// `Modify script`
   String get modifyScript {
     return Intl.message(
       'Modify script',
@@ -171,6 +193,7 @@ class S {
     );
   }
 
+  /// `Name`
   String get name {
     return Intl.message(
       'Name',
@@ -180,6 +203,7 @@ class S {
     );
   }
 
+  /// `Code`
   String get code {
     return Intl.message(
       'Code',
@@ -189,6 +213,7 @@ class S {
     );
   }
 
+  /// `UNDO`
   String get undo {
     return Intl.message(
       'UNDO',
@@ -198,6 +223,7 @@ class S {
     );
   }
 
+  /// `Record`
   String get record {
     return Intl.message(
       'Record',
@@ -207,6 +233,7 @@ class S {
     );
   }
 
+  /// `Script`
   String get script {
     return Intl.message(
       'Script',
@@ -216,6 +243,7 @@ class S {
     );
   }
 
+  /// `deleted`
   String get deleted {
     return Intl.message(
       'deleted',
@@ -225,6 +253,7 @@ class S {
     );
   }
 
+  /// `copied`
   String get copied {
     return Intl.message(
       'copied',
@@ -234,6 +263,7 @@ class S {
     );
   }
 
+  /// `Edit`
   String get edit {
     return Intl.message(
       'Edit',
@@ -243,6 +273,7 @@ class S {
     );
   }
 
+  /// `Delete`
   String get delete {
     return Intl.message(
       'Delete',
@@ -252,6 +283,7 @@ class S {
     );
   }
 
+  /// `Copy`
   String get copy {
     return Intl.message(
       'Copy',
@@ -261,6 +293,7 @@ class S {
     );
   }
 
+  /// `Press RUN to get result`
   String get pressRun {
     return Intl.message(
       'Press RUN to get result',
@@ -270,6 +303,7 @@ class S {
     );
   }
 
+  /// `Toggle UI Platform (debug only)`
   String get togglePlatform {
     return Intl.message(
       'Toggle UI Platform (debug only)',
@@ -279,6 +313,7 @@ class S {
     );
   }
 
+  /// `UnionPay Credit`
   String get UPCredit {
     return Intl.message(
       'UnionPay Credit',
@@ -288,6 +323,7 @@ class S {
     );
   }
 
+  /// `UnionPay Debit`
   String get UPDebit {
     return Intl.message(
       'UnionPay Debit',
@@ -297,6 +333,7 @@ class S {
     );
   }
 
+  /// `UnionPay Secured Credit`
   String get UPSecuredCredit {
     return Intl.message(
       'UnionPay Secured Credit',
@@ -306,6 +343,7 @@ class S {
     );
   }
 
+  /// `Visa`
   String get Visa {
     return Intl.message(
       'Visa',
@@ -315,6 +353,7 @@ class S {
     );
   }
 
+  /// `MasterCard`
   String get MC {
     return Intl.message(
       'MasterCard',
@@ -324,6 +363,7 @@ class S {
     );
   }
 
+  /// `American Express`
   String get AMEX {
     return Intl.message(
       'American Express',
@@ -333,6 +373,7 @@ class S {
     );
   }
 
+  /// `JCB`
   String get JCB {
     return Intl.message(
       'JCB',
@@ -342,6 +383,7 @@ class S {
     );
   }
 
+  /// `Discover`
   String get Discover {
     return Intl.message(
       'Discover',
@@ -351,6 +393,7 @@ class S {
     );
   }
 
+  /// `City Union`
   String get CityUnion {
     return Intl.message(
       'City Union',
@@ -360,6 +403,7 @@ class S {
     );
   }
 
+  /// `T Union`
   String get TUnion {
     return Intl.message(
       'T Union',
@@ -369,6 +413,7 @@ class S {
     );
   }
 
+  /// `Beijing Yikatong`
   String get BMAC {
     return Intl.message(
       'Beijing Yikatong',
@@ -378,6 +423,7 @@ class S {
     );
   }
 
+  /// `Lingnan Pass`
   String get LingnanPass {
     return Intl.message(
       'Lingnan Pass',
@@ -387,6 +433,7 @@ class S {
     );
   }
 
+  /// `Shenzhen Tong`
   String get ShenzhenTong {
     return Intl.message(
       'Shenzhen Tong',
@@ -396,6 +443,7 @@ class S {
     );
   }
 
+  /// `Wuhan Tong`
   String get WuhanTong {
     return Intl.message(
       'Wuhan Tong',
@@ -405,6 +453,7 @@ class S {
     );
   }
 
+  /// `T-Money`
   String get TMoney {
     return Intl.message(
       'T-Money',
@@ -414,6 +463,7 @@ class S {
     );
   }
 
+  /// `Octopus`
   String get Octopus {
     return Intl.message(
       'Octopus',
@@ -423,6 +473,7 @@ class S {
     );
   }
 
+  /// `Tsinghua University Campus Card`
   String get Tsinghua {
     return Intl.message(
       'Tsinghua University Campus Card',
@@ -432,6 +483,7 @@ class S {
     );
   }
 
+  /// `China Resident ID Card`
   String get ChinaResidentIDGen2 {
     return Intl.message(
       'China Resident ID Card',
@@ -441,6 +493,7 @@ class S {
     );
   }
 
+  /// `MIFARE Ultralight`
   String get MifareUltralight {
     return Intl.message(
       'MIFARE Ultralight',
@@ -450,6 +503,7 @@ class S {
     );
   }
 
+  /// `MIFARE Plus`
   String get MifarePlus {
     return Intl.message(
       'MIFARE Plus',
@@ -459,6 +513,7 @@ class S {
     );
   }
 
+  /// `MIFARE DESFire`
   String get MifareDESFire {
     return Intl.message(
       'MIFARE DESFire',
@@ -468,6 +523,7 @@ class S {
     );
   }
 
+  /// `MIFARE Classic`
   String get MifareClassic {
     return Intl.message(
       'MIFARE Classic',
@@ -477,6 +533,7 @@ class S {
     );
   }
 
+  /// `Unknown`
   String get Unknown {
     return Intl.message(
       'Unknown',
@@ -486,6 +543,7 @@ class S {
     );
   }
 
+  /// `Authorization`
   String get Authorization {
     return Intl.message(
       'Authorization',
@@ -495,6 +553,7 @@ class S {
     );
   }
 
+  /// `Balance Inquiry`
   String get BalanceInquiry {
     return Intl.message(
       'Balance Inquiry',
@@ -504,6 +563,7 @@ class S {
     );
   }
 
+  /// `Cash`
   String get Cash {
     return Intl.message(
       'Cash',
@@ -513,6 +573,7 @@ class S {
     );
   }
 
+  /// `Void`
   String get Void {
     return Intl.message(
       'Void',
@@ -522,6 +583,7 @@ class S {
     );
   }
 
+  /// `Mobile Topup`
   String get MobileTopup {
     return Intl.message(
       'Mobile Topup',
@@ -531,6 +593,7 @@ class S {
     );
   }
 
+  /// `Load`
   String get Load {
     return Intl.message(
       'Load',
@@ -540,6 +603,7 @@ class S {
     );
   }
 
+  /// `Purchase`
   String get Purchase {
     return Intl.message(
       'Purchase',
@@ -549,6 +613,7 @@ class S {
     );
   }
 
+  /// `Compound Purchase`
   String get CompoundPurchase {
     return Intl.message(
       'Compound Purchase',
@@ -558,6 +623,7 @@ class S {
     );
   }
 
+  /// `Unnamed Card`
   String get unnamedCard {
     return Intl.message(
       'Unnamed Card',
@@ -567,6 +633,7 @@ class S {
     );
   }
 
+  /// `Transaction History`
   String get transactionHistory {
     return Intl.message(
       'Transaction History',
@@ -576,6 +643,7 @@ class S {
     );
   }
 
+  /// `record(s)`
   String get recordCount {
     return Intl.message(
       'record(s)',
@@ -585,6 +653,7 @@ class S {
     );
   }
 
+  /// `Technological Details`
   String get technologicalDetails {
     return Intl.message(
       'Technological Details',
@@ -594,6 +663,7 @@ class S {
     );
   }
 
+  /// `Communication Logs`
   String get apduLogs {
     return Intl.message(
       'Communication Logs',
@@ -603,6 +673,7 @@ class S {
     );
   }
 
+  /// `Not supported`
   String get notSupported {
     return Intl.message(
       'Not supported',
@@ -612,6 +683,7 @@ class S {
     );
   }
 
+  /// `Card Number`
   String get cardNumber {
     return Intl.message(
       'Card Number',
@@ -621,6 +693,7 @@ class S {
     );
   }
 
+  /// `Internal Number`
   String get internalNumber {
     return Intl.message(
       'Internal Number',
@@ -630,6 +703,7 @@ class S {
     );
   }
 
+  /// `Holder Name`
   String get holderName {
     return Intl.message(
       'Holder Name',
@@ -639,6 +713,7 @@ class S {
     );
   }
 
+  /// `Balance`
   String get balance {
     return Intl.message(
       'Balance',
@@ -648,6 +723,7 @@ class S {
     );
   }
 
+  /// `Province Code`
   String get provinceCode {
     return Intl.message(
       'Province Code',
@@ -657,6 +733,7 @@ class S {
     );
   }
 
+  /// `TUnion Card Type`
   String get tuType {
     return Intl.message(
       'TUnion Card Type',
@@ -666,6 +743,7 @@ class S {
     );
   }
 
+  /// `City`
   String get city {
     return Intl.message(
       'City',
@@ -675,6 +753,7 @@ class S {
     );
   }
 
+  /// `Issue Date`
   String get issueDate {
     return Intl.message(
       'Issue Date',
@@ -684,6 +763,7 @@ class S {
     );
   }
 
+  /// `Expiry Date`
   String get expiryDate {
     return Intl.message(
       'Expiry Date',
@@ -693,6 +773,7 @@ class S {
     );
   }
 
+  /// `Expiry Date on Card`
   String get displayExpiryDate {
     return Intl.message(
       'Expiry Date on Card',
@@ -702,6 +783,7 @@ class S {
     );
   }
 
+  /// `Valid Until`
   String get validUntil {
     return Intl.message(
       'Valid Until',
@@ -711,6 +793,7 @@ class S {
     );
   }
 
+  /// `Transaction Counter`
   String get ATC {
     return Intl.message(
       'Transaction Counter',
@@ -720,6 +803,7 @@ class S {
     );
   }
 
+  /// `Remaining PIN Retry Counter`
   String get pinRetry {
     return Intl.message(
       'Remaining PIN Retry Counter',
@@ -729,6 +813,7 @@ class S {
     );
   }
 
+  /// ` Raw data`
   String get rawData {
     return Intl.message(
       ' Raw data',
@@ -738,6 +823,7 @@ class S {
     );
   }
 
+  /// `Transaction Number`
   String get transactionNumber {
     return Intl.message(
       'Transaction Number',
@@ -747,6 +833,7 @@ class S {
     );
   }
 
+  /// `Terminal`
   String get terminal {
     return Intl.message(
       'Terminal',
@@ -756,6 +843,7 @@ class S {
     );
   }
 
+  /// `Type`
   String get type {
     return Intl.message(
       'Type',
@@ -765,6 +853,7 @@ class S {
     );
   }
 
+  /// `Country Code`
   String get countryCode {
     return Intl.message(
       'Country Code',
@@ -774,6 +863,7 @@ class S {
     );
   }
 
+  /// `Currency`
   String get currency {
     return Intl.message(
       'Currency',
@@ -783,6 +873,7 @@ class S {
     );
   }
 
+  /// `Amount, Other`
   String get amountOther {
     return Intl.message(
       'Amount, Other',
@@ -792,6 +883,7 @@ class S {
     );
   }
 
+  /// `Subway Exit`
   String get subwayExit {
     return Intl.message(
       'Subway Exit',
@@ -801,6 +893,7 @@ class S {
     );
   }
 
+  /// `IC Serial No.`
   String get icSerial {
     return Intl.message(
       'IC Serial No.',
@@ -810,6 +903,7 @@ class S {
     );
   }
 
+  /// `Card Management No.`
   String get mgmtNumber {
     return Intl.message(
       'Card Management No.',
@@ -819,6 +913,7 @@ class S {
     );
   }
 
+  /// `Line 1`
   String get Line1 {
     return Intl.message(
       'Line 1',
@@ -828,6 +923,7 @@ class S {
     );
   }
 
+  /// `Line 2`
   String get Line2 {
     return Intl.message(
       'Line 2',
@@ -837,6 +933,7 @@ class S {
     );
   }
 
+  /// `Line 4`
   String get Line4 {
     return Intl.message(
       'Line 4',
@@ -846,6 +943,7 @@ class S {
     );
   }
 
+  /// `Line 5`
   String get Line5 {
     return Intl.message(
       'Line 5',
@@ -855,6 +953,7 @@ class S {
     );
   }
 
+  /// `Line 6`
   String get Line6 {
     return Intl.message(
       'Line 6',
@@ -864,6 +963,7 @@ class S {
     );
   }
 
+  /// `Line 7`
   String get Line7 {
     return Intl.message(
       'Line 7',
@@ -873,6 +973,7 @@ class S {
     );
   }
 
+  /// `Line 8`
   String get Line8 {
     return Intl.message(
       'Line 8',
@@ -882,6 +983,7 @@ class S {
     );
   }
 
+  /// `Line 9`
   String get Line9 {
     return Intl.message(
       'Line 9',
@@ -891,6 +993,7 @@ class S {
     );
   }
 
+  /// `Line 10`
   String get Line10 {
     return Intl.message(
       'Line 10',
@@ -900,6 +1003,7 @@ class S {
     );
   }
 
+  /// `Line 13`
   String get Line13 {
     return Intl.message(
       'Line 13',
@@ -909,6 +1013,7 @@ class S {
     );
   }
 
+  /// `Line 14`
   String get Line14 {
     return Intl.message(
       'Line 14',
@@ -918,6 +1023,7 @@ class S {
     );
   }
 
+  /// `Line 15`
   String get Line15 {
     return Intl.message(
       'Line 15',
@@ -927,6 +1033,7 @@ class S {
     );
   }
 
+  /// `Line 16`
   String get Line16 {
     return Intl.message(
       'Line 16',
@@ -936,6 +1043,7 @@ class S {
     );
   }
 
+  /// `Xijiao Line`
   String get Xijiao {
     return Intl.message(
       'Xijiao Line',
@@ -945,6 +1053,7 @@ class S {
     );
   }
 
+  /// `Daxing Airport Line`
   String get DaxingAirport {
     return Intl.message(
       'Daxing Airport Line',
@@ -954,6 +1063,7 @@ class S {
     );
   }
 
+  /// `Daxing Line`
   String get Daxing {
     return Intl.message(
       'Daxing Line',
@@ -963,6 +1073,7 @@ class S {
     );
   }
 
+  /// `Changping Line`
   String get Changping {
     return Intl.message(
       'Changping Line',
@@ -972,6 +1083,7 @@ class S {
     );
   }
 
+  /// `Fangshan Line`
   String get Fangshan {
     return Intl.message(
       'Fangshan Line',
@@ -981,6 +1093,7 @@ class S {
     );
   }
 
+  /// `Yizhuang Line`
   String get Yizhuang {
     return Intl.message(
       'Yizhuang Line',
@@ -990,6 +1103,7 @@ class S {
     );
   }
 
+  /// `Batong Line`
   String get Batong {
     return Intl.message(
       'Batong Line',
@@ -999,6 +1113,7 @@ class S {
     );
   }
 
+  /// `Capital Airport Line`
   String get CapitalAirport {
     return Intl.message(
       'Capital Airport Line',
@@ -1008,6 +1123,7 @@ class S {
     );
   }
 
+  /// `Data deleted`
   String get deletedHint {
     return Intl.message(
       'Data deleted',
@@ -1017,6 +1133,7 @@ class S {
     );
   }
 
+  /// `Delete Data`
   String get deleteDataDialog {
     return Intl.message(
       'Delete Data',
@@ -1026,6 +1143,7 @@ class S {
     );
   }
 
+  /// `Count`
   String get dataCount {
     return Intl.message(
       'Count',
@@ -1035,6 +1153,7 @@ class S {
     );
   }
 
+  /// `About`
   String get about {
     return Intl.message(
       'About',
@@ -1044,6 +1163,7 @@ class S {
     );
   }
 
+  /// `Delete records & scripts`
   String get deleteData {
     return Intl.message(
       'Delete records & scripts',
@@ -1053,6 +1173,7 @@ class S {
     );
   }
 
+  /// `Privacy Policy`
   String get privacyPolicy {
     return Intl.message(
       'Privacy Policy',
@@ -1062,6 +1183,7 @@ class S {
     );
   }
 
+  /// `Home Page`
   String get homepage {
     return Intl.message(
       'Home Page',
@@ -1071,6 +1193,7 @@ class S {
     );
   }
 
+  /// `Source Code`
   String get sourceCode {
     return Intl.message(
       'Source Code',
@@ -1080,6 +1203,7 @@ class S {
     );
   }
 
+  /// `Open Source Licenses`
   String get openSourceLicenses {
     return Intl.message(
       'Open Source Licenses',
@@ -1089,6 +1213,7 @@ class S {
     );
   }
 
+  /// `Contact Us`
   String get contactUs {
     return Intl.message(
       'Contact Us',
@@ -1098,6 +1223,7 @@ class S {
     );
   }
 
+  /// `assets/html/privacy_policy.en.html`
   String get privacyPolicyContent {
     return Intl.message(
       'assets/html/privacy_policy.en.html',
@@ -1107,6 +1233,7 @@ class S {
     );
   }
 
+  /// `assets/html/third_party_license.html`
   String get thirdPartyLicenseContent {
     return Intl.message(
       'assets/html/third_party_license.html',
@@ -1116,6 +1243,7 @@ class S {
     );
   }
 
+  /// `Help`
   String get help {
     return Intl.message(
       'Help',
@@ -1125,6 +1253,7 @@ class S {
     );
   }
 
+  /// `Scan History`
   String get scanHistory {
     return Intl.message(
       'Scan History',
@@ -1134,6 +1263,7 @@ class S {
     );
   }
 
+  /// `$ found`
   String get historyCount {
     return Intl.message(
       '\$ found',
@@ -1143,6 +1273,7 @@ class S {
     );
   }
 
+  /// `Added at`
   String get addedAt {
     return Intl.message(
       'Added at',
@@ -1152,6 +1283,7 @@ class S {
     );
   }
 
+  /// `Swipe up or tap on the card to show more`
   String get detailHint {
     return Intl.message(
       'Swipe up or tap on the card to show more',
@@ -1161,6 +1293,7 @@ class S {
     );
   }
 
+  /// `NDEF Records`
   String get ndefRecords {
     return Intl.message(
       'NDEF Records',
@@ -1170,6 +1303,7 @@ class S {
     );
   }
 
+  /// `MIFARE Vendor`
   String get mifareVendor {
     return Intl.message(
       'MIFARE Vendor',
@@ -1179,6 +1313,7 @@ class S {
     );
   }
 
+  /// `MIFARE Product Type`
   String get mifareProductType {
     return Intl.message(
       'MIFARE Product Type',
@@ -1188,6 +1323,7 @@ class S {
     );
   }
 
+  /// `MIFARE Product Subtype`
   String get mifareProductSubtype {
     return Intl.message(
       'MIFARE Product Subtype',
@@ -1197,6 +1333,7 @@ class S {
     );
   }
 
+  /// `MIFARE Product Version`
   String get mifareProductVersion {
     return Intl.message(
       'MIFARE Product Version',
@@ -1206,6 +1343,7 @@ class S {
     );
   }
 
+  /// `MIFARE Product Name`
   String get mifareProductName {
     return Intl.message(
       'MIFARE Product Name',
@@ -1215,6 +1353,7 @@ class S {
     );
   }
 
+  /// `MIFARE Storage Size`
   String get mifareStorageSize {
     return Intl.message(
       'MIFARE Storage Size',
@@ -1224,6 +1363,7 @@ class S {
     );
   }
 
+  /// `MIFARE Protocol Type`
   String get mifareProtocolType {
     return Intl.message(
       'MIFARE Protocol Type',
@@ -1233,6 +1373,7 @@ class S {
     );
   }
 
+  /// `MIFARE Production Date`
   String get mifareProductionDate {
     return Intl.message(
       'MIFARE Production Date',
@@ -1242,6 +1383,7 @@ class S {
     );
   }
 
+  /// `Memory Data`
   String get memoryData {
     return Intl.message(
       'Memory Data',
@@ -1251,6 +1393,7 @@ class S {
     );
   }
 
+  /// `byte(s)`
   String get byteCount {
     return Intl.message(
       'byte(s)',
@@ -1280,7 +1423,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
 
   bool _isSupported(Locale locale) {
     if (locale != null) {
-      for (Locale supportedLocale in supportedLocales) {
+      for (var supportedLocale in supportedLocales) {
         if (supportedLocale.languageCode == locale.languageCode) {
           return true;
         }
