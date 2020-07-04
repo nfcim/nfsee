@@ -68,12 +68,14 @@ class WebViewTab extends StatelessWidget {
 
   Widget _buildIos(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Text(title),
-        previousPageTitle: S.of(context).about,
-      ),
-      child: _buildWebView(),
-    );
+        navigationBar: CupertinoNavigationBar(
+          middle: Text(title),
+          previousPageTitle: S.of(context).about,
+        ),
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+          child: _buildWebView(),
+        ));
   }
 
   @override
