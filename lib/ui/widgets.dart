@@ -336,7 +336,7 @@ class NDEFTile extends StatelessWidget {
 
     return ExpansionTile(
       leading: Icon(icon),
-      title: Text("NDEF: " + title),
+      title: Text(title),
       subtitle: Text(subtitle),
       children: details
           .map((d) => ListTile(

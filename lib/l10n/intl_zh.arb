@@ -140,5 +140,6 @@
     "languageCode": "语言编码",
     "mimeMediaRecord": "MIME 媒体记录",
     "payload": "载荷",
-    "identifier": "标识"
+    "identifier": "标识",
+    "unavailable": "不可用"
 }

@@ -462,8 +462,8 @@ class HomeState extends State<HomeAct>
             .toList()
         : null;
     final ndefTiles = data["detail"]["ndef"] != null
-        ? (data["detail"]["ndef"] as List<NDEFRecord>)
-            .map((t) => NDEFTile(data: t))
+        ? (data["detail"]["ndef"] as List<dynamic>)
+            .map((t) => NDEFTile(data: NDEFRecord.fromJson(t)))
             .toList()
         : null;
     final technologyDetailTiles = (data["tag"] as Map<String, dynamic>)
@@ -555,7 +555,7 @@ class HomeState extends State<HomeAct>
             ),
             title: Text(S.of(context).memoryData),
             subtitle: data["detail"]["data"] == null
-                ? Text("Unavailabile")
+                ? Text(S.of(context).unavailable)
                 : Text(
                     "${data["detail"]["data"].length >> 1} ${S.of(context).byteCount}"),
             children: dataTiles,

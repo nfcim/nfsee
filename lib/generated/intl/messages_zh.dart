@@ -158,6 +158,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionNumber" : MessageLookupByLibrary.simpleMessage("交易序号"),
     "tuType" : MessageLookupByLibrary.simpleMessage("交通联合卡类型"),
     "type" : MessageLookupByLibrary.simpleMessage("类型"),
+    "unavailable" : MessageLookupByLibrary.simpleMessage("不可用"),
     "undo" : MessageLookupByLibrary.simpleMessage("撤销"),
     "unnamedCard" : MessageLookupByLibrary.simpleMessage("未命名卡片"),
     "validUntil" : MessageLookupByLibrary.simpleMessage("有效期"),

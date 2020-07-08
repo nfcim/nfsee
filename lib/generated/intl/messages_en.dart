@@ -159,6 +159,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "transactionNumber" : MessageLookupByLibrary.simpleMessage("Transaction Number"),
     "tuType" : MessageLookupByLibrary.simpleMessage("TUnion Card Type"),
     "type" : MessageLookupByLibrary.simpleMessage("Type"),
+    "unavailable" : MessageLookupByLibrary.simpleMessage("Unavailable"),
     "undo" : MessageLookupByLibrary.simpleMessage("UNDO"),
     "unnamedCard" : MessageLookupByLibrary.simpleMessage("Unnamed Card"),
     "validUntil" : MessageLookupByLibrary.simpleMessage("Valid Until"),
