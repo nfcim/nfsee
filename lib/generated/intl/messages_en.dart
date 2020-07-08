@@ -108,8 +108,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "homeScreenTitle" : MessageLookupByLibrary.simpleMessage("NFSee"),
     "homepage" : MessageLookupByLibrary.simpleMessage("Home Page"),
     "icSerial" : MessageLookupByLibrary.simpleMessage("IC Serial No."),
+    "identifier" : MessageLookupByLibrary.simpleMessage("Identifier"),
     "internalNumber" : MessageLookupByLibrary.simpleMessage("Internal Number"),
     "issueDate" : MessageLookupByLibrary.simpleMessage("Issue Date"),
+    "languageCode" : MessageLookupByLibrary.simpleMessage("Language Code"),
     "lastExecutionTime" : MessageLookupByLibrary.simpleMessage("Last execution time"),
     "memoryData" : MessageLookupByLibrary.simpleMessage("Memory Data"),
     "mgmtNumber" : MessageLookupByLibrary.simpleMessage("Card Management No."),
@@ -121,6 +123,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "mifareProtocolType" : MessageLookupByLibrary.simpleMessage("MIFARE Protocol Type"),
     "mifareStorageSize" : MessageLookupByLibrary.simpleMessage("MIFARE Storage Size"),
     "mifareVendor" : MessageLookupByLibrary.simpleMessage("MIFARE Vendor"),
+    "mimeMediaRecord" : MessageLookupByLibrary.simpleMessage("MIME Media Record"),
     "modifyScript" : MessageLookupByLibrary.simpleMessage("Modify script"),
     "name" : MessageLookupByLibrary.simpleMessage("Name"),
     "ndefRecords" : MessageLookupByLibrary.simpleMessage("NDEF Records"),
@@ -128,6 +131,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "noHistoryFound" : MessageLookupByLibrary.simpleMessage("No history found"),
     "notSupported" : MessageLookupByLibrary.simpleMessage("Not supported"),
     "openSourceLicenses" : MessageLookupByLibrary.simpleMessage("Open Source Licenses"),
+    "payload" : MessageLookupByLibrary.simpleMessage("Payload"),
     "pinRetry" : MessageLookupByLibrary.simpleMessage("Remaining PIN Retry Counter"),
     "pressRun" : MessageLookupByLibrary.simpleMessage("Press RUN to get result"),
     "privacyPolicy" : MessageLookupByLibrary.simpleMessage("Privacy Policy"),
@@ -148,6 +152,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "subwayExit" : MessageLookupByLibrary.simpleMessage("Subway Exit"),
     "technologicalDetails" : MessageLookupByLibrary.simpleMessage("Technological Details"),
     "terminal" : MessageLookupByLibrary.simpleMessage("Terminal"),
+    "text" : MessageLookupByLibrary.simpleMessage("Text"),
     "thirdPartyLicenseContent" : MessageLookupByLibrary.simpleMessage("assets/html/third_party_license.html"),
     "togglePlatform" : MessageLookupByLibrary.simpleMessage("Toggle UI Platform (debug only)"),
     "transactionHistory" : MessageLookupByLibrary.simpleMessage("Transaction History"),
@@ -157,6 +162,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "undo" : MessageLookupByLibrary.simpleMessage("UNDO"),
     "unnamedCard" : MessageLookupByLibrary.simpleMessage("Unnamed Card"),
     "validUntil" : MessageLookupByLibrary.simpleMessage("Valid Until"),
-    "waitForCard" : MessageLookupByLibrary.simpleMessage("Hold your phone near the NFC card / tag...")
+    "waitForCard" : MessageLookupByLibrary.simpleMessage("Hold your phone near the NFC card / tag..."),
+    "wellKnownPrefix" : MessageLookupByLibrary.simpleMessage("Well-known Prefix")
   };
 }

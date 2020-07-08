@@ -1402,6 +1402,66 @@ class S {
       args: [],
     );
   }
+
+  /// `Well-known Prefix`
+  String get wellKnownPrefix {
+    return Intl.message(
+      'Well-known Prefix',
+      name: 'wellKnownPrefix',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Text`
+  String get text {
+    return Intl.message(
+      'Text',
+      name: 'text',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Language Code`
+  String get languageCode {
+    return Intl.message(
+      'Language Code',
+      name: 'languageCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `MIME Media Record`
+  String get mimeMediaRecord {
+    return Intl.message(
+      'MIME Media Record',
+      name: 'mimeMediaRecord',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Payload`
+  String get payload {
+    return Intl.message(
+      'Payload',
+      name: 'payload',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Identifier`
+  String get identifier {
+    return Intl.message(
+      'Identifier',
+      name: 'identifier',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

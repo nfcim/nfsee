@@ -222,12 +222,38 @@ class NDEFTile extends StatelessWidget {
 
   @override
   Widget build(context) {
-    var title = "unknown";
+    var title = S.of(context).Unknown;
     var subtitle = "";
     var icon = Icons.info;
     var details = <Detail>[];
     final payload = decodeHexString(data.payload);
     final type = utf8.decode(decodeHexString(data.type));
+
+
+    // general info
+    // add identifier when available
+    if (data.identifier != null && data.identifier != '') {
+      details.add(Detail(name: S.of(context).identifier, value: data.identifier, icon: Icons.title));
+    }
+    // payload (raw + decoded)
+    details.add(Detail(name: S.of(context).payload, value: data.payload, icon: Icons.sd_card));
+    try {
+      final payloadUtf8 = utf8.decode(decodeHexString(data.payload));
+      details.add(Detail(
+          name: S.of(context).payload + " (UTF-8)",
+          value: payloadUtf8,
+          icon: Icons.text_fields));
+    } on FormatException catch (_) {
+      // silently ignore
+    }
+    // type & TNF
+    details.add(Detail(name: S.of(context).type, value: type, icon: Icons.sort_by_alpha));
+    details.add(Detail(
+        name: "Type Name Format",
+        value: data.typeNameFormat.toString(),
+        icon: Icons.sort_by_alpha));
+
+
     if (data.typeNameFormat == NDEFTypeNameFormat.nfcWellKnown) {
       // record text definition
       // https://nfc-forum.org/our-work/specification-releases/specifications/nfc-forum-assigned-numbers-register/
@@ -287,54 +313,30 @@ class NDEFTile extends StatelessWidget {
         // the rest is uri
         var rest = utf8.decode(payload.sublist(1));
         subtitle = "$prefix$rest";
-        details.add(
-            Detail(name: "Well-known Prefix", value: prefix, icon: Icons.tab));
+        details.add(Detail(name: S.of(context).wellKnownPrefix, value: prefix, icon: Icons.tab));
       } else if (type == "T") {
         // Text, "T"
-        title = "Text";
+        title = S.of(context).text;
         icon = Icons.text_fields;
         // first byte is encoding
         // byte[1:3] is language
         // byte[3:] is text
         // TODO: handle utf16
         final lang = utf8.decode(payload.sublist(1, 3));
-        details.add(
-            Detail(name: "Language code", value: lang, icon: Icons.language));
-        subtitle = utf8.decode(payload.sublist(3));
+        details.add(Detail(name: S.of(context).languageCode, value: lang, icon: Icons.language));
+        subtitle = lang;
       }
     } else if (data.typeNameFormat == NDEFTypeNameFormat.media) {
-      title = "MIME media record";
+      title = S.of(context).mimeMediaRecord;
       subtitle = type;
-      details.add(Detail(
-          name: "Payload", value: data.payload, icon: Icons.text_fields));
-      try {
-        final payloadUtf8 = utf8.decode(decodeHexString(data.payload));
-        details.add(Detail(
-            name: "Payload in UTF-8",
-            value: payloadUtf8,
-            icon: Icons.text_fields));
-      } on FormatException catch (_) {
-        // silently ignore
-      }
     } else {
-      details
-          .add(Detail(name: "Raw payload", value: data.payload, icon: null));
-      details.add(Detail(name: "Raw type", value: type, icon: null));
-      details.add(Detail(
-          name: "Raw type name format",
-          value: data.typeNameFormat.toString(),
-          icon: null));
+      // TODO: use upgraded nfc_flutter_kit for NDEF
     }
 
-    // add identifier when available
-    if (data.identifier != null && data.identifier != '') {
-      details.add(Detail(
-          name: "Identifier", value: data.identifier, icon: Icons.web));
-    }
 
     return ExpansionTile(
       leading: Icon(icon),
-      title: Text(title),
+      title: Text("NDEF: " + title),
       subtitle: Text(subtitle),
       children: details
           .map((d) => ListTile(

@@ -108,8 +108,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "homeScreenTitle" : MessageLookupByLibrary.simpleMessage("NFSee"),
     "homepage" : MessageLookupByLibrary.simpleMessage("主页"),
     "icSerial" : MessageLookupByLibrary.simpleMessage("芯片序列号"),
+    "identifier" : MessageLookupByLibrary.simpleMessage("标识"),
     "internalNumber" : MessageLookupByLibrary.simpleMessage("内部卡号"),
     "issueDate" : MessageLookupByLibrary.simpleMessage("发行日期"),
+    "languageCode" : MessageLookupByLibrary.simpleMessage("语言编码"),
     "lastExecutionTime" : MessageLookupByLibrary.simpleMessage("上次执行时间"),
     "memoryData" : MessageLookupByLibrary.simpleMessage("内存数据"),
     "mgmtNumber" : MessageLookupByLibrary.simpleMessage("卡体管理号"),
@@ -121,6 +123,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "mifareProtocolType" : MessageLookupByLibrary.simpleMessage("MIFARE 协议类型"),
     "mifareStorageSize" : MessageLookupByLibrary.simpleMessage("MIFARE 存储大小"),
     "mifareVendor" : MessageLookupByLibrary.simpleMessage("MIFARE 生产商"),
+    "mimeMediaRecord" : MessageLookupByLibrary.simpleMessage("MIME 媒体记录"),
     "modifyScript" : MessageLookupByLibrary.simpleMessage("修改脚本"),
     "name" : MessageLookupByLibrary.simpleMessage("名称"),
     "ndefRecords" : MessageLookupByLibrary.simpleMessage("NDEF 记录"),
@@ -128,6 +131,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "noHistoryFound" : MessageLookupByLibrary.simpleMessage("暂无历史记录"),
     "notSupported" : MessageLookupByLibrary.simpleMessage("不支持"),
     "openSourceLicenses" : MessageLookupByLibrary.simpleMessage("开源许可协议"),
+    "payload" : MessageLookupByLibrary.simpleMessage("载荷"),
     "pinRetry" : MessageLookupByLibrary.simpleMessage("剩余 PIN 重试次数"),
     "pressRun" : MessageLookupByLibrary.simpleMessage("点击运行以获得结果"),
     "privacyPolicy" : MessageLookupByLibrary.simpleMessage("隐私政策"),
@@ -148,6 +152,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "subwayExit" : MessageLookupByLibrary.simpleMessage("地铁出站线路"),
     "technologicalDetails" : MessageLookupByLibrary.simpleMessage("技术细节"),
     "terminal" : MessageLookupByLibrary.simpleMessage("终端"),
+    "text" : MessageLookupByLibrary.simpleMessage("文本"),
     "togglePlatform" : MessageLookupByLibrary.simpleMessage("切换 UI 平台（仅用于调试）"),
     "transactionHistory" : MessageLookupByLibrary.simpleMessage("交易历史"),
     "transactionNumber" : MessageLookupByLibrary.simpleMessage("交易序号"),
@@ -156,6 +161,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "undo" : MessageLookupByLibrary.simpleMessage("撤销"),
     "unnamedCard" : MessageLookupByLibrary.simpleMessage("未命名卡片"),
     "validUntil" : MessageLookupByLibrary.simpleMessage("有效期"),
-    "waitForCard" : MessageLookupByLibrary.simpleMessage("将您的手机靠近 NFC 卡片或标签...")
+    "waitForCard" : MessageLookupByLibrary.simpleMessage("将您的手机靠近 NFC 卡片或标签..."),
+    "wellKnownPrefix" : MessageLookupByLibrary.simpleMessage("常见前缀")
   };
 }
