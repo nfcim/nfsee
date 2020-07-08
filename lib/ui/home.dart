@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';
 import 'package:nfsee/data/card.dart';
@@ -461,7 +462,7 @@ class HomeState extends State<HomeAct>
             .toList()
         : null;
     final ndefTiles = data["detail"]["ndef"] != null
-        ? (data["detail"]["ndef"] as List<dynamic>)
+        ? (data["detail"]["ndef"] as List<NDEFRecord>)
             .map((t) => NDEFTile(data: t))
             .toList()
         : null;

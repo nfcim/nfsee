@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -217,7 +218,7 @@ class TransferTile extends StatelessWidget {
 class NDEFTile extends StatelessWidget {
   const NDEFTile({this.data});
 
-  final Map<String, dynamic> data;
+  final NDEFRecord data;
 
   @override
   Widget build(context) {
@@ -225,9 +226,9 @@ class NDEFTile extends StatelessWidget {
     var subtitle = "";
     var icon = Icons.info;
     var details = <Detail>[];
-    final payload = decodeHexString(data["payload"].toString());
-    final type = utf8.decode(decodeHexString(data["type"].toString()));
-    if (data["typeNameFormat"] == "nfcWellKnown") {
+    final payload = decodeHexString(data.payload);
+    final type = utf8.decode(decodeHexString(data.type));
+    if (data.typeNameFormat == NDEFTypeNameFormat.nfcWellKnown) {
       // record text definition
       // https://nfc-forum.org/our-work/specification-releases/specifications/nfc-forum-assigned-numbers-register/
       if (type == "U") {
@@ -301,13 +302,13 @@ class NDEFTile extends StatelessWidget {
             Detail(name: "Language code", value: lang, icon: Icons.language));
         subtitle = utf8.decode(payload.sublist(3));
       }
-    } else if (data["typeNameFormat"] == "media") {
+    } else if (data.typeNameFormat == NDEFTypeNameFormat.media) {
       title = "MIME media record";
       subtitle = type;
       details.add(Detail(
-          name: "Payload", value: data["payload"], icon: Icons.text_fields));
+          name: "Payload", value: data.payload, icon: Icons.text_fields));
       try {
-        final payloadUtf8 = utf8.decode(decodeHexString(data["payload"]));
+        final payloadUtf8 = utf8.decode(decodeHexString(data.payload));
         details.add(Detail(
             name: "Payload in UTF-8",
             value: payloadUtf8,
@@ -317,18 +318,18 @@ class NDEFTile extends StatelessWidget {
       }
     } else {
       details
-          .add(Detail(name: "Raw payload", value: data["payload"], icon: null));
+          .add(Detail(name: "Raw payload", value: data.payload, icon: null));
       details.add(Detail(name: "Raw type", value: type, icon: null));
       details.add(Detail(
           name: "Raw type name format",
-          value: data["typeNameFormat"],
+          value: data.typeNameFormat.toString(),
           icon: null));
     }
 
     // add identifier when available
-    if (data["identifier"] != null && data["identifier"] != '') {
+    if (data.identifier != null && data.identifier != '') {
       details.add(Detail(
-          name: "Identifier", value: data["identifier"], icon: Icons.web));
+          name: "Identifier", value: data.identifier, icon: Icons.web));
     }
 
     return ExpansionTile(
