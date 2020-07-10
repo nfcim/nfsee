@@ -153,11 +153,11 @@ class APDUTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            Text("#${this.index} - TX",
+            Text("#${this.index+1} - TX",
                 style: Theme.of(context).textTheme.caption),
             this.hexView(data["tx"], context, Colors.green),
             SizedBox(height: 16),
-            Text("#${this.index} - RX",
+            Text("#${this.index+1} - RX",
                 style: Theme.of(context).textTheme.caption),
             this.hexView(data["rx"], context, Colors.orange),
           ]),
@@ -170,7 +170,7 @@ class APDUTile extends StatelessWidget {
     for (int i = 0; i < str.length; i += 2) {
       final slice = str.substring(i, i + 2).toUpperCase();
       final seg = Container(
-          width: 20,
+          width: 22,
           margin: EdgeInsets.only(right: 5),
           child: Text(
             slice,
