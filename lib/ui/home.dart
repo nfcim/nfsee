@@ -463,7 +463,7 @@ class HomeState extends State<HomeAct>
         : null;
     final ndefTiles = data["detail"]["ndef"] != null
         ? (data["detail"]["ndef"] as List<dynamic>)
-            .map((t) => NDEFTile(data: NDEFRecord.fromJson(t)))
+            .map((t) => NDEFTile(raw: NDEFRawRecord.fromJson(t)))
             .toList()
         : null;
     final technologyDetailTiles = (data["tag"] as Map<String, dynamic>)

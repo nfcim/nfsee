@@ -1472,6 +1472,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Encoding`
+  String get encoding {
+    return Intl.message(
+      'Encoding',
+      name: 'encoding',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

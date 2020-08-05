@@ -100,6 +100,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "detailHint" : MessageLookupByLibrary.simpleMessage("上滑或点击卡片查看详情"),
     "displayExpiryDate" : MessageLookupByLibrary.simpleMessage("卡面有效期"),
     "edit" : MessageLookupByLibrary.simpleMessage("编辑"),
+    "encoding" : MessageLookupByLibrary.simpleMessage("编码"),
     "executingScript" : MessageLookupByLibrary.simpleMessage("正在执行脚本..."),
     "expiryDate" : MessageLookupByLibrary.simpleMessage("有效期"),
     "help" : MessageLookupByLibrary.simpleMessage("帮助"),

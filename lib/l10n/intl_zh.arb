@@ -141,5 +141,6 @@
     "mimeMediaRecord": "MIME 媒体记录",
     "payload": "载荷",
     "identifier": "标识",
-    "unavailable": "不可用"
+    "unavailable": "不可用",
+    "encoding": "编码"
 }

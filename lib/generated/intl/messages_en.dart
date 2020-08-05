@@ -100,6 +100,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "detailHint" : MessageLookupByLibrary.simpleMessage("Swipe up or tap on the card to show more"),
     "displayExpiryDate" : MessageLookupByLibrary.simpleMessage("Expiry Date on Card"),
     "edit" : MessageLookupByLibrary.simpleMessage("Edit"),
+    "encoding" : MessageLookupByLibrary.simpleMessage("Encoding"),
     "executingScript" : MessageLookupByLibrary.simpleMessage("Executing your script..."),
     "expiryDate" : MessageLookupByLibrary.simpleMessage("Expiry Date"),
     "help" : MessageLookupByLibrary.simpleMessage("Help"),

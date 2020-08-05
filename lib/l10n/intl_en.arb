@@ -142,5 +142,6 @@
     "mimeMediaRecord": "MIME Media Record",
     "payload": "Payload",
     "identifier": "Identifier",
-    "unavailable": "Unavailable"
+    "unavailable": "Unavailable",
+    "encoding": "Encoding"
 }

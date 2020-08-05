@@ -169,7 +169,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
           // try to read ndef and insert into json
           try {
-            final ndef = await FlutterNfcKit.readNDEF();
+            final ndef = await FlutterNfcKit.readNDEFRawRecords();
             json["ndef"] = ndef;
           } on PlatformException catch (e) {
             // allow readNDEF to fail
