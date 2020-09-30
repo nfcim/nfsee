@@ -523,25 +523,11 @@
         const number = purse_info.slice(24, 34);
         const issue_date = purse_info.slice(34, 42);
         const expiry_date = purse_info.slice(42, 50);
-        const max_balance = parseInt(purse_info.slice(54, 62), 16);
         let balance = 'N/A';
         let rapdu = await _transceive('904C000004');
         if (rapdu.endsWith('9000')) {
             balance = parseInt(rapdu.slice(0, 8), 16);
             console.log(balance);
-        }
-        // read trip records
-        let trip_records = [];
-        for (let i = 1; i <= 10; i++) {
-            const apdu = buf2hex(Uint8Array.from([0, 0xB2, i, 0x1C, 0x34]));
-            rapdu = await _transceive(apdu);
-            if (!rapdu.endsWith('9000'))
-                break;
-            trip_records.push({
-                'trip_id': rapdu.slice(8, 10),
-                'journey_id': rapdu.slice(10, 12),
-                'timestamp': rapdu.slice(26, 40)
-            });
         }
         let balance_records = [];
         // read balance records
@@ -566,8 +552,6 @@
             'issue_date': issue_date,
             'expiry_date': expiry_date,
             'transactions': balance_records,
-            'max_balance': max_balance,
-            'trips': trip_records
         }
     }
 
