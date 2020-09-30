@@ -192,14 +192,21 @@ class TransferTile extends StatelessWidget {
     final typePPSE =
         getEnumFromString<ProcessingCode>(ProcessingCode.values, data["type"]);
 
+    var subtitle;
+    if (data["date"] != null && data["time"] != null) {
+      subtitle =
+          "${formatTransactionDate(data["date"])} ${formatTransactionTime(data["time"])}";
+    } else {
+      subtitle = "";
+    }
+
     return ExpansionTile(
       leading: Icon(typePBOC == PBOCTransactionType.Load
           ? Icons.attach_money
           : Icons.money_off),
       title: Text(
           "${formatTransactionBalance(data["amount"])} - ${typePBOC == null ? typePPSE.getName(context) : typePBOC.getName(context)}"),
-      subtitle: Text(
-          "${formatTransactionDate(data["date"])} ${formatTransactionTime(data["time"])}"),
+      subtitle: Text(subtitle),
       children: parseTransactionDetails(data, context)
           .map((d) => ListTile(
                 dense: true,

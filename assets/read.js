@@ -17,6 +17,10 @@
         '06': 'Purchase',
         '09': 'CompoundPurchase', // GB/T 31778
     };
+    const TMoney_TTI2NAME = {
+        '01': 'Purchace',
+        '02': 'Load',
+    };
     const ISO8583_ProcessingCode2Name = {
         '00': 'Authorization',
         '31': 'BalanceInquiry',
@@ -511,6 +515,62 @@
         };
     };
 
+    let ReadTMoney = async (fci) => {
+        let purse_info = fci.slice(8);
+        if (!purse_info) {
+            return {};
+        }
+        const number = purse_info.slice(24, 34);
+        const issue_date = purse_info.slice(34, 42);
+        const expiry_date = purse_info.slice(42, 50);
+        const max_balance = parseInt(purse_info.slice(54, 62), 16);
+        let balance = 'N/A';
+        let rapdu = await _transceive('904C000004');
+        if (rapdu.endsWith('9000')) {
+            balance = parseInt(rapdu.slice(0, 8), 16);
+            console.log(balance);
+        }
+        // read trip records
+        let trip_records = [];
+        for (let i = 1; i <= 10; i++) {
+            const apdu = buf2hex(Uint8Array.from([0, 0xB2, i, 0x1C, 0x34]));
+            rapdu = await _transceive(apdu);
+            if (!rapdu.endsWith('9000'))
+                break;
+            trip_records.push({
+                'trip_id': rapdu.slice(8, 10),
+                'journey_id': rapdu.slice(10, 12),
+                'timestamp': rapdu.slice(26, 40)
+            });
+        }
+        let balance_records = [];
+        // read balance records
+        for (let i = 1; i <= 10; i++) {
+            const apdu = buf2hex(Uint8Array.from([0, 0xB2, i, 0x24, 0x2E]));
+            rapdu = await _transceive(apdu);
+            if (!rapdu.endsWith('9000'))
+                break;
+            balance_records.push({
+                'type': TMoney_TTI2NAME[rapdu.slice(0, 2)] || '',
+                'number': parseInt(rapdu.slice(8, 10), 16),
+                'balance_after': parseInt(rapdu.slice(4, 12), 16),
+                'transaction_couter': parseInt(rapdu.slice(12, 20), 16),
+                'amount': parseInt(rapdu.slice(20, 28), 16),
+                'terminal': rapdu.slice(28, 37),
+            });
+        }
+        return {
+            'card_type': 'TMoney',
+            'card_number': number,
+            'balance': balance,
+            'issue_date': issue_date,
+            'expiry_date': expiry_date,
+            'transactions': balance_records,
+            'max_balance': max_balance,
+            'trips': trip_records
+        }
+    }
+
     let ReadChinaID = async (ic_serial) => {
         let r = await _transceive('00A40000026002');
         if (!r.endsWith('900000'))
@@ -787,6 +847,15 @@
             if (r.endsWith('9000')) {
                 r = r.slice(0, -4);
                 return await ReadLingnanTong(r);
+            }
+
+            // T-Money
+            // TODO 
+            r = await _transceive('00A4040007D410000003000100');
+            if (r.endsWith('9000')) {
+                console.log("TMoney");
+                r = r.slice(0, -4);
+                return await ReadTMoney(r);
             }
 
             // put it here because iOS fails here
