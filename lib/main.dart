@@ -44,6 +44,7 @@ class _NFSeeAppState extends State<NFSeeApp> {
       // Either Material or Cupertino widgets work in either Material or Cupertino
       // Apps.
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         localizationsDelegates: [
           S.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -63,8 +64,12 @@ class _NFSeeAppState extends State<NFSeeApp> {
           accentColor: Colors.deepOrange,
         ),
         builder: (context, child) {
+          var themeData = CupertinoThemeData();
+          if(MediaQuery.of(context).platformBrightness == Brightness.dark) {
+            themeData = CupertinoThemeData(scaffoldBackgroundColor: Colors.grey[850]);
+          }
           return CupertinoTheme(
-            data: CupertinoThemeData(),
+            data: themeData,
             child: Material(child: child),
           );
         },
@@ -164,7 +169,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
           // try to read ndef and insert into json
           try {
-            final ndef = await FlutterNfcKit.readNDEF();
+            final ndef = await FlutterNfcKit.readNDEFRawRecords();
             json["ndef"] = ndef;
           } on PlatformException catch (e) {
             // allow readNDEF to fail

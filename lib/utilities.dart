@@ -29,6 +29,10 @@ T getEnumFromString<T>(Iterable<T> values, String value) {
       orElse: () => null);
 }
 
+String enumToString<T>(T value) {
+  return value.toString().split('.').last;
+}
+
 List<int> decodeHexString(String hex) {
   var result = <int>[];
   for (int i = 0; i < hex.length; i += 2) {

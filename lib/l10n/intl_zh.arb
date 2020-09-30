@@ -134,5 +134,13 @@
     "mifareProtocolType": "MIFARE 协议类型",
     "mifareProductionDate": "MIFARE 生产日期",
     "memoryData": "内存数据",
-    "byteCount": "字节"
+    "byteCount": "字节",
+    "wellKnownPrefix": "常见前缀",
+    "text": "文本",
+    "languageCode": "语言编码",
+    "mimeMediaRecord": "MIME 媒体记录",
+    "payload": "载荷",
+    "identifier": "标识",
+    "unavailable": "不可用",
+    "encoding": "编码"
 }

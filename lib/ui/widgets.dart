@@ -6,7 +6,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:ndef/ndef.dart' as ndef;
 
 import 'package:nfsee/data/database/database.dart';
 import 'package:nfsee/generated/l10n.dart';
@@ -68,12 +70,14 @@ class WebViewTab extends StatelessWidget {
 
   Widget _buildIos(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Text(title),
-        previousPageTitle: S.of(context).about,
-      ),
-      child: _buildWebView(),
-    );
+        navigationBar: CupertinoNavigationBar(
+          middle: Text(title),
+          previousPageTitle: S.of(context).about,
+        ),
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+          child: _buildWebView(),
+        ));
   }
 
   @override
@@ -150,11 +154,11 @@ class APDUTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            Text("#${this.index} - TX",
+            Text("#${this.index+1} - TX",
                 style: Theme.of(context).textTheme.caption),
             this.hexView(data["tx"], context, Colors.green),
             SizedBox(height: 16),
-            Text("#${this.index} - RX",
+            Text("#${this.index+1} - RX",
                 style: Theme.of(context).textTheme.caption),
             this.hexView(data["rx"], context, Colors.orange),
           ]),
@@ -167,7 +171,7 @@ class APDUTile extends StatelessWidget {
     for (int i = 0; i < str.length; i += 2) {
       final slice = str.substring(i, i + 2).toUpperCase();
       final seg = Container(
-          width: 20,
+          width: 22,
           margin: EdgeInsets.only(right: 5),
           child: Text(
             slice,
@@ -220,120 +224,60 @@ class TransferTile extends StatelessWidget {
 }
 
 class NDEFTile extends StatelessWidget {
-  const NDEFTile({this.data});
+  NDEFTile({this.raw}): data = FlutterNfcKit.decodeNDEFRawRecord(raw);
 
-  final Map<String, dynamic> data;
+  final NDEFRawRecord raw;
+  final ndef.NDEFRecord data;
 
   @override
   Widget build(context) {
-    var title = "unknown";
+    var title = S.of(context).Unknown;
     var subtitle = "";
     var icon = Icons.info;
     var details = <Detail>[];
-    final payload = decodeHexString(data["payload"].toString());
-    final type = utf8.decode(decodeHexString(data["type"].toString()));
-    if (data["typeNameFormat"] == "nfcWellKnown") {
-      // record text definition
-      // https://nfc-forum.org/our-work/specification-releases/specifications/nfc-forum-assigned-numbers-register/
-      if (type == "U") {
-        // URI, "U"
-        title = "URI";
-        icon = Icons.web;
-        // first byte is URI identifer code
-        var prefix = "";
-        if (payload.length >= 1) {
-          final identifier = payload[0];
-          // whole mapping
-          List<String> mapping = [
-            "",
-            "http://www.",
-            "https://www.",
-            "http://",
-            "https://",
-            "tel:",
-            "mailto:",
-            "ftp://anonymous:anonymous@",
-            "ftp://ftp.",
-            "ftps://",
-            "sftp://",
-            "smb://",
-            "nfs://",
-            "ftp://",
-            "dav://",
-            "news:",
-            "telnet://",
-            "imap:",
-            "rtsp://",
-            "urn:",
-            "pop:",
-            "sip:",
-            "sips:",
-            "tftp:",
-            "btspp://",
-            "btl2cap://",
-            "btgoep://",
-            "tcpobex://",
-            "irdaobex://",
-            "file://",
-            "urn:epc:id:",
-            "urn:epc:tag:",
-            "urn:epc:pat:",
-            "urn:epc:raw:",
-            "urn:epc:",
-            "urn:nfc:",
-          ];
-          if (identifier < mapping.length) {
-            prefix = mapping[identifier];
-          } else {
-            prefix = "unknown:";
-          }
-        }
-        // the rest is uri
-        var rest = utf8.decode(payload.sublist(1));
-        subtitle = "$prefix$rest";
-        details.add(
-            Detail(name: "Well-known Prefix", value: prefix, icon: Icons.tab));
-      } else if (type == "T") {
-        // Text, "T"
-        title = "Text";
-        icon = Icons.text_fields;
-        // first byte is encoding
-        // byte[1:3] is language
-        // byte[3:] is text
-        // TODO: handle utf16
-        final lang = utf8.decode(payload.sublist(1, 3));
-        details.add(
-            Detail(name: "Language code", value: lang, icon: Icons.language));
-        subtitle = utf8.decode(payload.sublist(3));
-      }
-    } else if (data["typeNameFormat"] == "media") {
-      title = "MIME media record";
-      subtitle = type;
-      details.add(Detail(
-          name: "Payload", value: data["payload"], icon: Icons.text_fields));
-      try {
-        final payloadUtf8 = utf8.decode(decodeHexString(data["payload"]));
-        details.add(Detail(
-            name: "Payload in UTF-8",
-            value: payloadUtf8,
-            icon: Icons.text_fields));
-      } on FormatException catch (_) {
-        // silently ignore
-      }
-    } else {
-      details
-          .add(Detail(name: "Raw payload", value: data["payload"], icon: null));
-      details.add(Detail(name: "Raw type", value: type, icon: null));
-      details.add(Detail(
-          name: "Raw type name format",
-          value: data["typeNameFormat"],
-          icon: null));
+
+
+    // general info
+    // add identifier when available
+    if (raw.identifier != null && raw.identifier != '') {
+      details.add(Detail(name: S.of(context).identifier, value: raw.identifier, icon: Icons.title));
     }
 
-    // add identifier when available
-    if (data["identifier"] != null && data["identifier"] != '') {
+    // type & TNF
+    details.add(Detail(
+        name: "Type Name Format",
+        value: enumToString(raw.typeNameFormat),
+        icon: Icons.sort_by_alpha));
+    details.add(Detail(name: S.of(context).type, value: data.decodedType, icon: Icons.sort_by_alpha));
+
+    // payload (raw + decoded)
+    details.add(Detail(name: S.of(context).payload, value: raw.payload, icon: Icons.sd_card));
+    try {
+      final payloadUtf8 = utf8.decode(decodeHexString(raw.payload));
       details.add(Detail(
-          name: "Identifier", value: data["identifier"], icon: Icons.web));
+          name: S.of(context).payload + " (UTF-8)",
+          value: payloadUtf8,
+          icon: Icons.text_fields));
+    } on FormatException catch (_) {
+      // silently ignore
+    }
+
+    if (data is ndef.UriRecord) {
+      var r = data as ndef.UriRecord;
+      icon = Icons.web;
+      title = "URI";
+      subtitle = r.uriData;
+      details.add(Detail(name: S.of(context).wellKnownPrefix, value: r.uriPrefix, icon: Icons.tab));
+    } else if (data is ndef.TextRecord) {
+      var r = data as ndef.TextRecord;
+      icon = Icons.text_fields;
+      title = S.of(context).text;
+      subtitle = r.text;
+      details.add(Detail(name: S.of(context).encoding, value: enumToString(r.encoding), icon: Icons.code));
+      details.add(Detail(name: S.of(context).languageCode, value: r.language, icon: Icons.language));
+    } else if (data is ndef.MimeRecord) {
+      title = S.of(context).mimeMediaRecord;
+      subtitle = data.decodedType;
     }
 
     return ExpansionTile(

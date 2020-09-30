@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';
 import 'package:nfsee/data/card.dart';
@@ -462,7 +463,7 @@ class HomeState extends State<HomeAct>
         : null;
     final ndefTiles = data["detail"]["ndef"] != null
         ? (data["detail"]["ndef"] as List<dynamic>)
-            .map((t) => NDEFTile(data: t))
+            .map((t) => NDEFTile(raw: NDEFRawRecord.fromJson(t)))
             .toList()
         : null;
     final technologyDetailTiles = (data["tag"] as Map<String, dynamic>)
@@ -554,7 +555,7 @@ class HomeState extends State<HomeAct>
             ),
             title: Text(S.of(context).memoryData),
             subtitle: data["detail"]["data"] == null
-                ? Text("Inavailabile")
+                ? Text(S.of(context).unavailable)
                 : Text(
                     "${data["detail"]["data"].length >> 1} ${S.of(context).byteCount}"),
             children: dataTiles,

@@ -135,5 +135,13 @@
     "mifareProtocolType": "MIFARE Protocol Type",
     "mifareProductionDate": "MIFARE Production Date",
     "memoryData": "Memory Data",
-    "byteCount": "byte(s)"
+    "byteCount": "byte(s)",
+    "wellKnownPrefix": "Well-known Prefix",
+    "text": "Text",
+    "languageCode": "Language Code",
+    "mimeMediaRecord": "MIME Media Record",
+    "payload": "Payload",
+    "identifier": "Identifier",
+    "unavailable": "Unavailable",
+    "encoding": "Encoding"
 }
