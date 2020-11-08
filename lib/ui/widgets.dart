@@ -224,7 +224,7 @@ class TransferTile extends StatelessWidget {
 }
 
 class NDEFTile extends StatelessWidget {
-  NDEFTile({this.raw}): data = FlutterNfcKit.decodeNDEFRawRecord(raw);
+  NDEFTile({this.raw}): data = NDEFRecordConvert.fromRaw(raw);
 
   final NDEFRawRecord raw;
   final ndef.NDEFRecord data;
@@ -266,8 +266,8 @@ class NDEFTile extends StatelessWidget {
       var r = data as ndef.UriRecord;
       icon = Icons.web;
       title = "URI";
-      subtitle = r.uriData;
-      details.add(Detail(name: S.of(context).wellKnownPrefix, value: r.uriPrefix, icon: Icons.tab));
+      subtitle = r.uriString;
+      details.add(Detail(name: S.of(context).wellKnownPrefix, value: r.prefix, icon: Icons.tab));
     } else if (data is ndef.TextRecord) {
       var r = data as ndef.TextRecord;
       icon = Icons.text_fields;

@@ -32,6 +32,34 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
       data: stringType.mapFromDatabaseResponse(data['${effectivePrefix}data']),
     );
   }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || id != null) {
+      map['id'] = Variable<int>(id);
+    }
+    if (!nullToAbsent || time != null) {
+      map['time'] = Variable<DateTime>(time);
+    }
+    if (!nullToAbsent || config != null) {
+      map['config'] = Variable<String>(config);
+    }
+    if (!nullToAbsent || data != null) {
+      map['data'] = Variable<String>(data);
+    }
+    return map;
+  }
+
+  DumpedRecordsCompanion toCompanion(bool nullToAbsent) {
+    return DumpedRecordsCompanion(
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      time: time == null && nullToAbsent ? const Value.absent() : Value(time),
+      config:
+          config == null && nullToAbsent ? const Value.absent() : Value(config),
+      data: data == null && nullToAbsent ? const Value.absent() : Value(data),
+    );
+  }
+
   factory DumpedRecord.fromJson(Map<String, dynamic> json,
       {ValueSerializer serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
@@ -51,17 +79,6 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
       'config': serializer.toJson<String>(config),
       'data': serializer.toJson<String>(data),
     };
-  }
-
-  @override
-  DumpedRecordsCompanion createCompanion(bool nullToAbsent) {
-    return DumpedRecordsCompanion(
-      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
-      time: time == null && nullToAbsent ? const Value.absent() : Value(time),
-      config:
-          config == null && nullToAbsent ? const Value.absent() : Value(config),
-      data: data == null && nullToAbsent ? const Value.absent() : Value(data),
-    );
   }
 
   DumpedRecord copyWith({int id, DateTime time, String config, String data}) =>
@@ -113,6 +130,20 @@ class DumpedRecordsCompanion extends UpdateCompanion<DumpedRecord> {
     @required String data,
   })  : time = Value(time),
         data = Value(data);
+  static Insertable<DumpedRecord> custom({
+    Expression<int> id,
+    Expression<DateTime> time,
+    Expression<String> config,
+    Expression<String> data,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (time != null) 'time': time,
+      if (config != null) 'config': config,
+      if (data != null) 'data': data,
+    });
+  }
+
   DumpedRecordsCompanion copyWith(
       {Value<int> id,
       Value<DateTime> time,
@@ -124,6 +155,35 @@ class DumpedRecordsCompanion extends UpdateCompanion<DumpedRecord> {
       config: config ?? this.config,
       data: data ?? this.data,
     );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (time.present) {
+      map['time'] = Variable<DateTime>(time.value);
+    }
+    if (config.present) {
+      map['config'] = Variable<String>(config.value);
+    }
+    if (data.present) {
+      map['data'] = Variable<String>(data.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DumpedRecordsCompanion(')
+          ..write('id: $id, ')
+          ..write('time: $time, ')
+          ..write('config: $config, ')
+          ..write('data: $data')
+          ..write(')'))
+        .toString();
   }
 }
 
@@ -183,25 +243,26 @@ class $DumpedRecordsTable extends DumpedRecords
   @override
   final String actualTableName = 'dumped_records';
   @override
-  VerificationContext validateIntegrity(DumpedRecordsCompanion d,
+  VerificationContext validateIntegrity(Insertable<DumpedRecord> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
-    if (d.id.present) {
-      context.handle(_idMeta, id.isAcceptableValue(d.id.value, _idMeta));
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
     }
-    if (d.time.present) {
+    if (data.containsKey('time')) {
       context.handle(
-          _timeMeta, time.isAcceptableValue(d.time.value, _timeMeta));
+          _timeMeta, time.isAcceptableOrUnknown(data['time'], _timeMeta));
     } else if (isInserting) {
       context.missing(_timeMeta);
     }
-    if (d.config.present) {
-      context.handle(
-          _configMeta, config.isAcceptableValue(d.config.value, _configMeta));
+    if (data.containsKey('config')) {
+      context.handle(_configMeta,
+          config.isAcceptableOrUnknown(data['config'], _configMeta));
     }
-    if (d.data.present) {
+    if (data.containsKey('data')) {
       context.handle(
-          _dataMeta, data.isAcceptableValue(d.data.value, _dataMeta));
+          _dataMeta, this.data.isAcceptableOrUnknown(data['data'], _dataMeta));
     } else if (isInserting) {
       context.missing(_dataMeta);
     }
@@ -214,24 +275,6 @@ class $DumpedRecordsTable extends DumpedRecords
   DumpedRecord map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
     return DumpedRecord.fromData(data, _db, prefix: effectivePrefix);
-  }
-
-  @override
-  Map<String, Variable> entityToSql(DumpedRecordsCompanion d) {
-    final map = <String, Variable>{};
-    if (d.id.present) {
-      map['id'] = Variable<int, IntType>(d.id.value);
-    }
-    if (d.time.present) {
-      map['time'] = Variable<DateTime, DateTimeType>(d.time.value);
-    }
-    if (d.config.present) {
-      map['config'] = Variable<String, StringType>(d.config.value);
-    }
-    if (d.data.present) {
-      map['data'] = Variable<String, StringType>(d.data.value);
-    }
-    return map;
   }
 
   @override
@@ -269,6 +312,42 @@ class SavedScript extends DataClass implements Insertable<SavedScript> {
           .mapFromDatabaseResponse(data['${effectivePrefix}last_used']),
     );
   }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || id != null) {
+      map['id'] = Variable<int>(id);
+    }
+    if (!nullToAbsent || name != null) {
+      map['name'] = Variable<String>(name);
+    }
+    if (!nullToAbsent || source != null) {
+      map['source'] = Variable<String>(source);
+    }
+    if (!nullToAbsent || creationTime != null) {
+      map['creation_time'] = Variable<DateTime>(creationTime);
+    }
+    if (!nullToAbsent || lastUsed != null) {
+      map['last_used'] = Variable<DateTime>(lastUsed);
+    }
+    return map;
+  }
+
+  SavedScriptsCompanion toCompanion(bool nullToAbsent) {
+    return SavedScriptsCompanion(
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      source:
+          source == null && nullToAbsent ? const Value.absent() : Value(source),
+      creationTime: creationTime == null && nullToAbsent
+          ? const Value.absent()
+          : Value(creationTime),
+      lastUsed: lastUsed == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastUsed),
+    );
+  }
+
   factory SavedScript.fromJson(Map<String, dynamic> json,
       {ValueSerializer serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
@@ -290,22 +369,6 @@ class SavedScript extends DataClass implements Insertable<SavedScript> {
       'creationTime': serializer.toJson<DateTime>(creationTime),
       'lastUsed': serializer.toJson<DateTime>(lastUsed),
     };
-  }
-
-  @override
-  SavedScriptsCompanion createCompanion(bool nullToAbsent) {
-    return SavedScriptsCompanion(
-      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
-      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
-      source:
-          source == null && nullToAbsent ? const Value.absent() : Value(source),
-      creationTime: creationTime == null && nullToAbsent
-          ? const Value.absent()
-          : Value(creationTime),
-      lastUsed: lastUsed == null && nullToAbsent
-          ? const Value.absent()
-          : Value(lastUsed),
-    );
   }
 
   SavedScript copyWith(
@@ -373,6 +436,22 @@ class SavedScriptsCompanion extends UpdateCompanion<SavedScript> {
   })  : name = Value(name),
         source = Value(source),
         creationTime = Value(creationTime);
+  static Insertable<SavedScript> custom({
+    Expression<int> id,
+    Expression<String> name,
+    Expression<String> source,
+    Expression<DateTime> creationTime,
+    Expression<DateTime> lastUsed,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (source != null) 'source': source,
+      if (creationTime != null) 'creation_time': creationTime,
+      if (lastUsed != null) 'last_used': lastUsed,
+    });
+  }
+
   SavedScriptsCompanion copyWith(
       {Value<int> id,
       Value<String> name,
@@ -386,6 +465,39 @@ class SavedScriptsCompanion extends UpdateCompanion<SavedScript> {
       creationTime: creationTime ?? this.creationTime,
       lastUsed: lastUsed ?? this.lastUsed,
     );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
+    if (creationTime.present) {
+      map['creation_time'] = Variable<DateTime>(creationTime.value);
+    }
+    if (lastUsed.present) {
+      map['last_used'] = Variable<DateTime>(lastUsed.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SavedScriptsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('source: $source, ')
+          ..write('creationTime: $creationTime, ')
+          ..write('lastUsed: $lastUsed')
+          ..write(')'))
+        .toString();
   }
 }
 
@@ -463,35 +575,36 @@ class $SavedScriptsTable extends SavedScripts
   @override
   final String actualTableName = 'saved_scripts';
   @override
-  VerificationContext validateIntegrity(SavedScriptsCompanion d,
+  VerificationContext validateIntegrity(Insertable<SavedScript> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
-    if (d.id.present) {
-      context.handle(_idMeta, id.isAcceptableValue(d.id.value, _idMeta));
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
     }
-    if (d.name.present) {
+    if (data.containsKey('name')) {
       context.handle(
-          _nameMeta, name.isAcceptableValue(d.name.value, _nameMeta));
+          _nameMeta, name.isAcceptableOrUnknown(data['name'], _nameMeta));
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
-    if (d.source.present) {
-      context.handle(
-          _sourceMeta, source.isAcceptableValue(d.source.value, _sourceMeta));
+    if (data.containsKey('source')) {
+      context.handle(_sourceMeta,
+          source.isAcceptableOrUnknown(data['source'], _sourceMeta));
     } else if (isInserting) {
       context.missing(_sourceMeta);
     }
-    if (d.creationTime.present) {
+    if (data.containsKey('creation_time')) {
       context.handle(
           _creationTimeMeta,
-          creationTime.isAcceptableValue(
-              d.creationTime.value, _creationTimeMeta));
+          creationTime.isAcceptableOrUnknown(
+              data['creation_time'], _creationTimeMeta));
     } else if (isInserting) {
       context.missing(_creationTimeMeta);
     }
-    if (d.lastUsed.present) {
+    if (data.containsKey('last_used')) {
       context.handle(_lastUsedMeta,
-          lastUsed.isAcceptableValue(d.lastUsed.value, _lastUsedMeta));
+          lastUsed.isAcceptableOrUnknown(data['last_used'], _lastUsedMeta));
     }
     return context;
   }
@@ -502,28 +615,6 @@ class $SavedScriptsTable extends SavedScripts
   SavedScript map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
     return SavedScript.fromData(data, _db, prefix: effectivePrefix);
-  }
-
-  @override
-  Map<String, Variable> entityToSql(SavedScriptsCompanion d) {
-    final map = <String, Variable>{};
-    if (d.id.present) {
-      map['id'] = Variable<int, IntType>(d.id.value);
-    }
-    if (d.name.present) {
-      map['name'] = Variable<String, StringType>(d.name.value);
-    }
-    if (d.source.present) {
-      map['source'] = Variable<String, StringType>(d.source.value);
-    }
-    if (d.creationTime.present) {
-      map['creation_time'] =
-          Variable<DateTime, DateTimeType>(d.creationTime.value);
-    }
-    if (d.lastUsed.present) {
-      map['last_used'] = Variable<DateTime, DateTimeType>(d.lastUsed.value);
-    }
-    return map;
   }
 
   @override
