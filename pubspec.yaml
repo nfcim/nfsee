@@ -1,7 +1,7 @@
 name: nfsee
 description: An NFC data dumper.
 
-version: 2.0.1+1
+version: 2.1.0+4
 
 environment:
   sdk: ">=2.6.0 <3.0.0"
@@ -48,4 +48,3 @@ flutter_icons:
   android: false
   ios: true
   image_path_ios: "assets/icons/icon_full.png"
-
