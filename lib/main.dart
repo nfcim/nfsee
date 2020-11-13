@@ -93,6 +93,7 @@ class PlatformAdaptingHomePage extends StatefulWidget {
 }
 
 class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
+  HomeAct home;
   final _webView = InteractiveWebView();
   StreamSubscription _webViewListener;
   var _reading = false;
@@ -217,7 +218,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
       case 'report':
         _closeReadModal(this.context);
         final id = await bloc.addDumpedRecord(jsonEncode(scriptModel.data));
-        // TODO: pass to home page
+        home.scrollToNewCard();
         break;
 
       case 'finish':
@@ -285,6 +286,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     final home = HomeAct(readCard: () {
       return this._readTag(this.context);
     });
+    this.home = home;
     final settings = SettingsAct();
     return PageView(
       controller: topController,

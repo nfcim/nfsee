@@ -18,11 +18,17 @@ const double DETAIL_OFFSET = 300;
 
 class HomeAct extends StatefulWidget {
   final Future<bool> Function() readCard;
+  HomeState state;
 
   HomeAct({@required this.readCard});
 
   @override
-  HomeState createState() => HomeState();
+  HomeState createState() {
+    this.state = HomeState();
+    return this.state;
+  }
+
+  void scrollToNewCard() => this.state.addCard();
 }
 
 class HomeState extends State<HomeAct>
@@ -154,7 +160,7 @@ class HomeState extends State<HomeAct>
                         onPressed: () async {
                           final cardRead = await this.widget.readCard();
                           if (!cardRead) return;
-                          this.addCard();
+                          // this.addCard();
                           log("CARD read");
                         },
                       ),
@@ -295,7 +301,7 @@ class HomeState extends State<HomeAct>
   void addCard() async {
     await Future.delayed(const Duration(milliseconds: 10));
     this.cardController.animateTo(this.cardController.position.maxScrollExtent,
-        duration: const Duration(seconds: 1), curve: ElasticOutCurve());
+        duration: const Duration(microseconds: 500), curve: ElasticOutCurve());
   }
 
   @override
