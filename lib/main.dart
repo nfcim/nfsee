@@ -57,16 +57,19 @@ class _NFSeeAppState extends State<NFSeeApp> {
           brightness: Brightness.light,
           primarySwatch: Colors.orange,
           accentColor: Colors.deepOrange,
+          platform: TargetPlatform.android,
         ),
         darkTheme: ThemeData(
           brightness: Brightness.dark,
           primarySwatch: Colors.orange,
           accentColor: Colors.deepOrange,
+          platform: TargetPlatform.android,
         ),
         builder: (context, child) {
           var themeData = CupertinoThemeData();
-          if(MediaQuery.of(context).platformBrightness == Brightness.dark) {
-            themeData = CupertinoThemeData(scaffoldBackgroundColor: Colors.grey[850]);
+          if (MediaQuery.of(context).platformBrightness == Brightness.dark) {
+            themeData =
+                CupertinoThemeData(scaffoldBackgroundColor: Colors.grey[850]);
           }
           return CupertinoTheme(
             data: themeData,
