@@ -28,7 +28,8 @@ class ScriptsAct extends StatefulWidget {
   _ScriptsActState createState() => _ScriptsActState();
 }
 
-class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+class _ScriptsActState extends State<ScriptsAct>
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   final _webView = InteractiveWebView();
   StreamSubscription _webViewListener;
   StreamSubscription _webViewReloadListener;
@@ -76,14 +77,11 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
     this._reloadWebviewListener();
 
     appbarFloatTrans = AnimationController(
-      duration: const Duration(milliseconds: 100),
-      vsync: this
-    );
+        duration: const Duration(milliseconds: 100), vsync: this);
 
     runningOpacityTrans = AnimationController(
-      duration: const Duration(milliseconds: 1000),
-      vsync: this
-    )..repeat(reverse: true, period: Duration(seconds: 1));
+        duration: const Duration(milliseconds: 1000), vsync: this)
+      ..repeat(reverse: true, period: Duration(seconds: 1));
 
     appbarFloat = Tween<double>(
       begin: 0,
@@ -115,8 +113,10 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
 
     scroll = ScrollController();
     scroll.addListener(() {
-      if(scroll.position.pixels != 0) this.appbarFloatTrans.animateTo(1);
-      else this.appbarFloatTrans.animateBack(0);
+      if (scroll.position.pixels != 0)
+        this.appbarFloatTrans.animateTo(1);
+      else
+        this.appbarFloatTrans.animateBack(0);
     });
   }
 
@@ -127,15 +127,14 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
   }
 
   void _reloadWebviewListener() {
-    if(_webViewListener != null)
-      _webViewListener.cancel();
-    if(_webViewReloadListener != null)
-      _webViewReloadListener.cancel();
+    if (_webViewListener != null) _webViewListener.cancel();
+    if (_webViewReloadListener != null) _webViewReloadListener.cancel();
 
-    _webViewListener = _webView.didReceiveMessage.listen(this._onReceivedMessage);
+    _webViewListener =
+        _webView.didReceiveMessage.listen(this._onReceivedMessage);
     _webViewReloadListener = _webView.stateChanged.listen((e) async {
       log(e.type.toString());
-      if(e.type == WebViewState.didFinish) {
+      if (e.type == WebViewState.didFinish) {
         log("reload detected");
         // Reload
         setState(() {
@@ -171,7 +170,8 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
     switch (scriptModel.action) {
       case 'poll':
         try {
-          final tag = await FlutterNfcKit.poll(iosAlertMessage: S.of(context).waitForCard);
+          final tag = await FlutterNfcKit.poll(
+              iosAlertMessage: S.of(context).waitForCard);
           _webView.evalJavascript("pollCallback(${jsonEncode(tag)})");
           FlutterNfcKit.setIosAlertMessage(S.of(context).executingScript);
         } on PlatformException catch (e) {
@@ -216,7 +216,8 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
         if (this.errors[this.running] == true) {
           await FlutterNfcKit.finish(iosErrorMessage: S.of(context).readFailed);
         } else {
-          await FlutterNfcKit.finish(iosAlertMessage: S.of(context).readSucceeded);
+          await FlutterNfcKit.finish(
+              iosAlertMessage: S.of(context).readSucceeded);
         }
         log("Reseting running state");
         setState(() {
@@ -341,7 +342,8 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
   }
 
   Widget _buildBody(BuildContext context) {
-    return Container(child: StreamBuilder<List<SavedScript>>(
+    return Container(
+        child: StreamBuilder<List<SavedScript>>(
       stream: bloc.savedScripts,
       builder: (context, snapshot) {
         if (!snapshot.hasData || snapshot.data.length == 0) {
@@ -363,110 +365,110 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
           ..sort((a, b) => a.creationTime.compareTo(b.creationTime));
 
         return SingleChildScrollView(
-          padding: EdgeInsets.only(bottom: 40, top: 120),
-          controller: scroll,
-          child: NFSeeExpansionPanelList.radio(
-            elevation: 1,
-            children: scripts
-                .map((script) => NFSeeExpansionPanelRadio(
-                      running: this.running == script.id,
-                      value: script.id,
-                      canTapOnHeader: true,
-                      headerBuilder: (context, open) => Opacity(
-                        child: ListTile(
-                          subtitle: Text(S.of(context).lastExecutionTime +
-                              ': ' +
-                              (script.lastUsed != null
-                                  ? script.lastUsed
-                                      .toString()
-                                      .split('.')[0] // remove part before ms
-                                  : S.of(context).never)),
-                          title: Text(script.name), 
+            padding: EdgeInsets.only(bottom: 40, top: 120),
+            controller: scroll,
+            child: NFSeeExpansionPanelList.radio(
+              elevation: 1,
+              children: scripts
+                  .map((script) => NFSeeExpansionPanelRadio(
+                        running: this.running == script.id,
+                        value: script.id,
+                        canTapOnHeader: true,
+                        headerBuilder: (context, open) => Opacity(
+                          child: ListTile(
+                            subtitle: Text(S.of(context).lastExecutionTime +
+                                ': ' +
+                                (script.lastUsed != null
+                                    ? script.lastUsed
+                                        .toString()
+                                        .split('.')[0] // remove part before ms
+                                    : S.of(context).never)),
+                            title: Text(script.name),
+                          ),
+                          opacity:
+                              this.running == script.id ? runningOpacityVal : 1,
                         ),
-                        opacity: this.running == script.id ? runningOpacityVal : 1,
-                      ),
-                      body: Container(
-                        padding: EdgeInsets.only(
-                          bottom: 10,
-                          left: 20,
-                          right: 20,
-                        ),
-                        child: Column(
-                          children: <Widget>[
-                            this._getScriptResult(context, script),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                FlatButton.icon(
-                                    // Disable run button if there is a script running in background
-                                    onPressed: this.running == -1
-                                        ? () async {
-                                            this._runScript(script);
-                                            await this
-                                                .bloc
-                                                .updateScriptUseTime(
-                                                    script.id);
-                                          }
-                                        : null,
-                                    textTheme: ButtonTextTheme.primary,
-                                    // icon:
-                                    icon: this.running == script.id
-                                        ? Padding(
-                                            padding: EdgeInsets.all(4),
-                                            child: SizedBox(
-                                              width: 16,
-                                              height: 16,
-                                              child:
-                                                  CircularProgressIndicator(
-                                                strokeWidth: 2,
-                                                valueColor:
-                                                    new AlwaysStoppedAnimation(
-                                                  Theme.of(context)
-                                                      .disabledColor,
+                        body: Container(
+                          padding: EdgeInsets.only(
+                            bottom: 10,
+                            left: 20,
+                            right: 20,
+                          ),
+                          child: Column(
+                            children: <Widget>[
+                              this._getScriptResult(context, script),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  FlatButton.icon(
+                                      // Disable run button if there is a script running in background
+                                      onPressed: this.running == -1
+                                          ? () async {
+                                              this._runScript(script);
+                                              await this
+                                                  .bloc
+                                                  .updateScriptUseTime(
+                                                      script.id);
+                                            }
+                                          : null,
+                                      textTheme: ButtonTextTheme.primary,
+                                      // icon:
+                                      icon: this.running == script.id
+                                          ? Padding(
+                                              padding: EdgeInsets.all(4),
+                                              child: SizedBox(
+                                                width: 16,
+                                                height: 16,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                  valueColor:
+                                                      new AlwaysStoppedAnimation(
+                                                    Theme.of(context)
+                                                        .disabledColor,
+                                                  ),
                                                 ),
-                                              ),
-                                            ))
-                                        : Icon(Icons.play_arrow),
-                                    label: Text(S.of(context).run)),
-                                Expanded(child: Container()),
-                                IconButton(
-                                  onPressed: () {
-                                    _showScriptDialog(script);
-                                  },
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface,
-                                  icon: Icon(Icons.edit),
-                                  tooltip: S.of(context).edit,
-                                ),
-                                IconButton(
-                                  onPressed: () async =>
-                                      _deleteScript(context, script),
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface,
-                                  icon: Icon(Icons.delete),
-                                  tooltip: S.of(context).delete,
-                                ),
-                                IconButton(
-                                    onPressed: () async {
-                                      await Clipboard.setData(
-                                          ClipboardData(text: script.source));
-                                      _showMessage(context,
-                                          '${S.of(context).script} ${script.name} ${S.of(context).copied}');
+                                              ))
+                                          : Icon(Icons.play_arrow),
+                                      label: Text(S.of(context).run)),
+                                  Expanded(child: Container()),
+                                  IconButton(
+                                    onPressed: () {
+                                      _showScriptDialog(script);
                                     },
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurface,
-                                    icon: Icon(Icons.content_copy),
-                                    tooltip: S.of(context).copy),
-                              ],
-                            ),
-                          ],
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
+                                    icon: Icon(Icons.edit),
+                                    tooltip: S.of(context).edit,
+                                  ),
+                                  IconButton(
+                                    onPressed: () async =>
+                                        _deleteScript(context, script),
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
+                                    icon: Icon(Icons.delete),
+                                    tooltip: S.of(context).delete,
+                                  ),
+                                  IconButton(
+                                      onPressed: () async {
+                                        await Clipboard.setData(
+                                            ClipboardData(text: script.source));
+                                        _showMessage(context,
+                                            '${S.of(context).script} ${script.name} ${S.of(context).copied}');
+                                      },
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface,
+                                      icon: Icon(Icons.content_copy),
+                                      tooltip: S.of(context).copy),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ))
-                .toList(),
-          )
-        );
+                      ))
+                  .toList(),
+            ));
       },
     ));
   }
@@ -532,7 +534,8 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
     if (defaultTargetPlatform == TargetPlatform.android) {
       _showScriptDialogAndroid(id, name, source);
     } else {
-      _showScriptDialogIos(id, name, source);
+      // _showScriptDialogIos(id, name, source);
+      _showScriptDialogAndroid(id, name, source);
     }
   }
 
@@ -598,41 +601,45 @@ class _ScriptsActState extends State<ScriptsAct> with TickerProviderStateMixin, 
           );
         });
   }
-        
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
     final title = Transform.translate(
-      offset: Offset(0, 20 * (1-appbarFloatVal)),
-      child: AppBar(
-        elevation: math.max((appbarFloatVal - 0.8) / 0.2 * 4, 0),
-        backgroundColor: Theme.of(context).primaryColor.withOpacity(appbarFloatVal),
-        title: Text(S.of(context).scriptTabTitle,
-          style: Theme.of(context).primaryTextTheme.headline6.copyWith(
-            fontSize: 20 + 12 * (1-appbarFloatVal),
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.add, color: Theme.of(context).primaryTextTheme.headline5.color),
-            onPressed: _showScriptDialog,
-            tooltip: S.of(context).addScript,
-          ),
-          IconButton(
-            icon: Icon(Icons.help, color: Theme.of(context).primaryTextTheme.headline5.color),
-            tooltip: S.of(context).help,
-            onPressed: () {
-              launch('https://nfsee.nfc.im/js-extension/');
-            },
-          ),
-        ]
-      )
-    );
+        offset: Offset(0, 20 * (1 - appbarFloatVal)),
+        child: AppBar(
+            elevation: math.max((appbarFloatVal - 0.8) / 0.2 * 4, 0),
+            backgroundColor:
+                Theme.of(context).primaryColor.withOpacity(appbarFloatVal),
+            title: Text(
+              S.of(context).scriptTabTitle,
+              style: Theme.of(context).primaryTextTheme.headline6.copyWith(
+                    fontSize: 20 + 12 * (1 - appbarFloatVal),
+                  ),
+            ),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.add,
+                    color: Theme.of(context).primaryTextTheme.headline5.color),
+                onPressed: _showScriptDialog,
+                tooltip: S.of(context).addScript,
+              ),
+              IconButton(
+                icon: Icon(Icons.help,
+                    color: Theme.of(context).primaryTextTheme.headline5.color),
+                tooltip: S.of(context).help,
+                onPressed: () {
+                  launch('https://nfsee.nfc.im/js-extension/');
+                },
+              ),
+            ]));
 
     return Stack(
       children: <Widget>[
         Builder(builder: _buildBody),
-        Column(children: [PreferredSize(child: title, preferredSize: Size.fromHeight(56))]),
+        Column(children: [
+          PreferredSize(child: title, preferredSize: Size.fromHeight(56))
+        ]),
       ],
     );
   }
