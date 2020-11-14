@@ -1,6 +1,6 @@
 PODS:
   - Flutter (1.0.0)
-  - flutter_nfc_kit (0.0.1):
+  - flutter_nfc_kit (2.0.0):
     - Flutter
   - interactive_webview (0.0.1):
     - Flutter
@@ -8,6 +8,24 @@ PODS:
     - Flutter
   - path_provider (0.0.1):
     - Flutter
+  - sqlite3 (3.32.3):
+    - sqlite3/common (= 3.32.3)
+  - sqlite3/common (3.32.3)
+  - sqlite3/fts5 (3.32.3):
+    - sqlite3/common
+  - sqlite3/json1 (3.32.3):
+    - sqlite3/common
+  - sqlite3/perf-threadsafe (3.32.3):
+    - sqlite3/common
+  - sqlite3/rtree (3.32.3):
+    - sqlite3/common
+  - sqlite3_flutter_libs (0.0.1):
+    - Flutter
+    - sqlite3 (~> 3.32.3)
+    - sqlite3/fts5
+    - sqlite3/json1
+    - sqlite3/perf-threadsafe
+    - sqlite3/rtree
   - url_launcher (0.0.1):
     - Flutter
   - webview_flutter (0.0.1):
@@ -19,8 +37,13 @@ DEPENDENCIES:
   - interactive_webview (from `.symlinks/plugins/interactive_webview/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - sqlite3_flutter_libs (from `.symlinks/plugins/sqlite3_flutter_libs/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
   - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
+
+SPEC REPOS:
+  trunk:
+    - sqlite3
 
 EXTERNAL SOURCES:
   Flutter:
@@ -33,6 +56,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/package_info/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
+  sqlite3_flutter_libs:
+    :path: ".symlinks/plugins/sqlite3_flutter_libs/ios"
   url_launcher:
     :path: ".symlinks/plugins/url_launcher/ios"
   webview_flutter:
@@ -40,13 +65,15 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  flutter_nfc_kit: d18b781721ac04dfe8eb8463d44972ed05c9e916
+  flutter_nfc_kit: 965c98c3fa68f5609f1cc89abb968fe1b8ffdbaa
   interactive_webview: 645deb8ecb0f8564ca2017e691338854c5d6a061
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  sqlite3: 8f7d2078ae27778699a622a94b853285793422a2
+  sqlite3_flutter_libs: 5651f8ff48e3b44d910863c4ea5916085b1b245f
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
   webview_flutter: d2b4d6c66968ad042ad94cbb791f5b72b4678a96
 
-PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+PODFILE CHECKSUM: cc1f88378b4bfcf93a6ce00d2c587857c6008d3b
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.10.0
