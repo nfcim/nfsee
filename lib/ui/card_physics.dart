@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
+double CARD_WIDTH = 10000 / 27;
 
-const double CARD_WIDTH = (240 - 20) * (86.0 / 54) + 20;
 
 class CardPhysics extends ScrollPhysics {
   final int cardCount;
-  const CardPhysics({ this.cardCount, parent }) : super(parent: parent);
-
+  const CardPhysics({ this.cardCount, parent}) : super(parent: parent);
   @override
   CardPhysics applyTo(ScrollPhysics parent) {
     return CardPhysics(parent: buildParent(parent));
