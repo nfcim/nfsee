@@ -149,7 +149,7 @@
                     break;
                 let off = 0;
                 let item = {};
-                const century = (new Date).getFullYear().toFixed().slice(2);
+                const century = (new Date).getFullYear().toFixed().slice(0, 2);
                 for (let i = 0; i < log_format.length; i++) {
                     let tag = log_format[i];
                     if ((tag & 0x1F) === 0x1F)
