@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-
 import 'package:nfsee/generated/l10n.dart';
 import 'package:nfsee/models.dart';
 
@@ -158,12 +157,18 @@ List<Detail> parseCardDetails(
   addDetail('pin_retry', S.of(context).pinRetry, Icons.lock);
   // Mifare
   addDetail('mifare_vendor', S.of(context).mifareVendor, Icons.copyright);
-  addDetail('mifare_product_type', S.of(context).mifareProductType, Icons.looks_one);
-  addDetail('mifare_product_subtype', S.of(context).mifareProductSubtype, Icons.looks_two);
-  addDetail('mifare_product_version', S.of(context).mifareProductVersion, Icons.text_fields);
-  addDetail('mifare_product_name', S.of(context).mifareProductName, Icons.branding_watermark);
-  addDetail('mifare_storage_size', S.of(context).mifareStorageSize, Icons.format_size);
-  addDetail('mifare_production_date', S.of(context).mifareProductionDate, Icons.date_range);
+  addDetail(
+      'mifare_product_type', S.of(context).mifareProductType, Icons.looks_one);
+  addDetail('mifare_product_subtype', S.of(context).mifareProductSubtype,
+      Icons.looks_two);
+  addDetail('mifare_product_version', S.of(context).mifareProductVersion,
+      Icons.text_fields);
+  addDetail('mifare_product_name', S.of(context).mifareProductName,
+      Icons.branding_watermark);
+  addDetail('mifare_storage_size', S.of(context).mifareStorageSize,
+      Icons.format_size);
+  addDetail('mifare_production_date', S.of(context).mifareProductionDate,
+      Icons.date_range);
   // all remaining data, clone to avoid concurrent modification
   final remain = {}..addAll(data);
   remain.forEach(

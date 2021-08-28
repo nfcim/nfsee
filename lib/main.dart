@@ -7,19 +7,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
-import 'package:interactive_webview/interactive_webview.dart';
-
+import 'package:interactive_webview_null_safety/interactive_webview.dart';
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';
 import 'package:nfsee/generated/l10n.dart';
 import 'package:nfsee/models.dart';
 import 'package:nfsee/ui/home.dart';
-import 'package:nfsee/utilities.dart';
 import 'package:nfsee/ui/scripts.dart';
 import 'package:nfsee/ui/settings.dart';
+import 'package:nfsee/utilities.dart';
 
 void main() => runApp(NFSeeApp());
 

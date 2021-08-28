@@ -1,7 +1,6 @@
 import 'package:moor/moor.dart';
-
-import 'package:nfsee/models.dart';
 import 'package:nfsee/data/database/database.dart';
+import 'package:nfsee/models.dart';
 
 class NFSeeAppBloc {
   final Database db;

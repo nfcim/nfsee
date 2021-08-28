@@ -12,11 +12,13 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
   final DateTime time;
   final String config;
   final String data;
+
   DumpedRecord(
       {@required this.id,
       @required this.time,
       @required this.config,
       @required this.data});
+
   factory DumpedRecord.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -30,6 +32,7 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
           .mapFromDatabaseResponse(data['${effectivePrefix}data']),
     );
   }
+
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -68,6 +71,7 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
       data: serializer.fromJson<String>(json['data']),
     );
   }
+
   @override
   Map<String, dynamic> toJson({ValueSerializer serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
@@ -86,6 +90,7 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
         config: config ?? this.config,
         data: data ?? this.data,
       );
+
   @override
   String toString() {
     return (StringBuffer('DumpedRecord(')
@@ -100,6 +105,7 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
   @override
   int get hashCode => $mrjf($mrjc(id.hashCode,
       $mrjc(time.hashCode, $mrjc(config.hashCode, data.hashCode))));
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -115,12 +121,14 @@ class DumpedRecordsCompanion extends UpdateCompanion<DumpedRecord> {
   final Value<DateTime> time;
   final Value<String> config;
   final Value<String> data;
+
   const DumpedRecordsCompanion({
     this.id = const Value.absent(),
     this.time = const Value.absent(),
     this.config = const Value.absent(),
     this.data = const Value.absent(),
   });
+
   DumpedRecordsCompanion.insert({
     this.id = const Value.absent(),
     @required DateTime time,
@@ -128,6 +136,7 @@ class DumpedRecordsCompanion extends UpdateCompanion<DumpedRecord> {
     @required String data,
   })  : time = Value(time),
         data = Value(data);
+
   static Insertable<DumpedRecord> custom({
     Expression<int> id,
     Expression<DateTime> time,
@@ -189,9 +198,12 @@ class $DumpedRecordsTable extends DumpedRecords
     with TableInfo<$DumpedRecordsTable, DumpedRecord> {
   final GeneratedDatabase _db;
   final String _alias;
+
   $DumpedRecordsTable(this._db, [this._alias]);
+
   final VerificationMeta _idMeta = const VerificationMeta('id');
   GeneratedColumn<int> _id;
+
   @override
   GeneratedColumn<int> get id =>
       _id ??= GeneratedColumn<int>('id', aliasedName, false,
@@ -200,12 +212,14 @@ class $DumpedRecordsTable extends DumpedRecords
           defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _timeMeta = const VerificationMeta('time');
   GeneratedColumn<DateTime> _time;
+
   @override
   GeneratedColumn<DateTime> get time =>
       _time ??= GeneratedColumn<DateTime>('time', aliasedName, false,
           typeName: 'INTEGER', requiredDuringInsert: true);
   final VerificationMeta _configMeta = const VerificationMeta('config');
   GeneratedColumn<String> _config;
+
   @override
   GeneratedColumn<String> get config =>
       _config ??= GeneratedColumn<String>('config', aliasedName, false,
@@ -214,16 +228,21 @@ class $DumpedRecordsTable extends DumpedRecords
           defaultValue: const Constant(DEFAULT_CONFIG));
   final VerificationMeta _dataMeta = const VerificationMeta('data');
   GeneratedColumn<String> _data;
+
   @override
   GeneratedColumn<String> get data =>
       _data ??= GeneratedColumn<String>('data', aliasedName, false,
           typeName: 'TEXT', requiredDuringInsert: true);
+
   @override
   List<GeneratedColumn> get $columns => [id, time, config, data];
+
   @override
   String get aliasedName => _alias ?? 'dumped_records';
+
   @override
   String get actualTableName => 'dumped_records';
+
   @override
   VerificationContext validateIntegrity(Insertable<DumpedRecord> instance,
       {bool isInserting = false}) {
@@ -253,6 +272,7 @@ class $DumpedRecordsTable extends DumpedRecords
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
+
   @override
   DumpedRecord map(Map<String, dynamic> data, {String tablePrefix}) {
     return DumpedRecord.fromData(data, _db,
@@ -271,12 +291,14 @@ class SavedScript extends DataClass implements Insertable<SavedScript> {
   final String source;
   final DateTime creationTime;
   final DateTime lastUsed;
+
   SavedScript(
       {@required this.id,
       @required this.name,
       @required this.source,
       @required this.creationTime,
       this.lastUsed});
+
   factory SavedScript.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -292,6 +314,7 @@ class SavedScript extends DataClass implements Insertable<SavedScript> {
           .mapFromDatabaseResponse(data['${effectivePrefix}last_used']),
     );
   }
+
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -339,6 +362,7 @@ class SavedScript extends DataClass implements Insertable<SavedScript> {
       lastUsed: serializer.fromJson<DateTime>(json['lastUsed']),
     );
   }
+
   @override
   Map<String, dynamic> toJson({ValueSerializer serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
@@ -364,6 +388,7 @@ class SavedScript extends DataClass implements Insertable<SavedScript> {
         creationTime: creationTime ?? this.creationTime,
         lastUsed: lastUsed ?? this.lastUsed,
       );
+
   @override
   String toString() {
     return (StringBuffer('SavedScript(')
@@ -383,6 +408,7 @@ class SavedScript extends DataClass implements Insertable<SavedScript> {
           name.hashCode,
           $mrjc(source.hashCode,
               $mrjc(creationTime.hashCode, lastUsed.hashCode)))));
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -400,6 +426,7 @@ class SavedScriptsCompanion extends UpdateCompanion<SavedScript> {
   final Value<String> source;
   final Value<DateTime> creationTime;
   final Value<DateTime> lastUsed;
+
   const SavedScriptsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
@@ -407,6 +434,7 @@ class SavedScriptsCompanion extends UpdateCompanion<SavedScript> {
     this.creationTime = const Value.absent(),
     this.lastUsed = const Value.absent(),
   });
+
   SavedScriptsCompanion.insert({
     this.id = const Value.absent(),
     @required String name,
@@ -416,6 +444,7 @@ class SavedScriptsCompanion extends UpdateCompanion<SavedScript> {
   })  : name = Value(name),
         source = Value(source),
         creationTime = Value(creationTime);
+
   static Insertable<SavedScript> custom({
     Expression<int> id,
     Expression<String> name,
@@ -485,9 +514,12 @@ class $SavedScriptsTable extends SavedScripts
     with TableInfo<$SavedScriptsTable, SavedScript> {
   final GeneratedDatabase _db;
   final String _alias;
+
   $SavedScriptsTable(this._db, [this._alias]);
+
   final VerificationMeta _idMeta = const VerificationMeta('id');
   GeneratedColumn<int> _id;
+
   @override
   GeneratedColumn<int> get id =>
       _id ??= GeneratedColumn<int>('id', aliasedName, false,
@@ -496,12 +528,14 @@ class $SavedScriptsTable extends SavedScripts
           defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _nameMeta = const VerificationMeta('name');
   GeneratedColumn<String> _name;
+
   @override
   GeneratedColumn<String> get name =>
       _name ??= GeneratedColumn<String>('name', aliasedName, false,
           typeName: 'TEXT', requiredDuringInsert: true);
   final VerificationMeta _sourceMeta = const VerificationMeta('source');
   GeneratedColumn<String> _source;
+
   @override
   GeneratedColumn<String> get source =>
       _source ??= GeneratedColumn<String>('source', aliasedName, false,
@@ -509,23 +543,29 @@ class $SavedScriptsTable extends SavedScripts
   final VerificationMeta _creationTimeMeta =
       const VerificationMeta('creationTime');
   GeneratedColumn<DateTime> _creationTime;
+
   @override
   GeneratedColumn<DateTime> get creationTime => _creationTime ??=
       GeneratedColumn<DateTime>('creation_time', aliasedName, false,
           typeName: 'INTEGER', requiredDuringInsert: true);
   final VerificationMeta _lastUsedMeta = const VerificationMeta('lastUsed');
   GeneratedColumn<DateTime> _lastUsed;
+
   @override
   GeneratedColumn<DateTime> get lastUsed =>
       _lastUsed ??= GeneratedColumn<DateTime>('last_used', aliasedName, true,
           typeName: 'INTEGER', requiredDuringInsert: false);
+
   @override
   List<GeneratedColumn> get $columns =>
       [id, name, source, creationTime, lastUsed];
+
   @override
   String get aliasedName => _alias ?? 'saved_scripts';
+
   @override
   String get actualTableName => 'saved_scripts';
+
   @override
   VerificationContext validateIntegrity(Insertable<SavedScript> instance,
       {bool isInserting = false}) {
@@ -563,6 +603,7 @@ class $SavedScriptsTable extends SavedScripts
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
+
   @override
   SavedScript map(Map<String, dynamic> data, {String tablePrefix}) {
     return SavedScript.fromData(data, _db,
@@ -578,13 +619,17 @@ class $SavedScriptsTable extends SavedScripts
 abstract class _$Database extends GeneratedDatabase {
   _$Database(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   $DumpedRecordsTable _dumpedRecords;
+
   $DumpedRecordsTable get dumpedRecords =>
       _dumpedRecords ??= $DumpedRecordsTable(this);
   $SavedScriptsTable _savedScripts;
+
   $SavedScriptsTable get savedScripts =>
       _savedScripts ??= $SavedScriptsTable(this);
+
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
+
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
       [dumpedRecords, savedScripts];

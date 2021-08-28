@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';
 import 'package:nfsee/generated/l10n.dart';
@@ -92,8 +91,12 @@ class _SettingsActState extends State<SettingsAct> {
     var items = <Widget>[
       Padding(
         padding: EdgeInsets.all(20),
-        child: Text(S.of(context).settingsTabTitle,
-          style: Theme.of(context).primaryTextTheme.headline6.copyWith(fontSize: 32),
+        child: Text(
+          S.of(context).settingsTabTitle,
+          style: Theme.of(context)
+              .primaryTextTheme
+              .headline6
+              .copyWith(fontSize: 32),
         ),
       ),
       ListTile(
@@ -119,15 +122,13 @@ class _SettingsActState extends State<SettingsAct> {
 
   Widget _buildSettingsBody() {
     return Builder(
-      builder: (context) => SafeArea(
-              child: ListView(
-            children: _buildListItems(context),
-          )));
+        builder: (context) => SafeArea(
+                child: ListView(
+              children: _buildListItems(context),
+            )));
   }
 
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _buildSettingsBody()
-    );
+    return Scaffold(body: _buildSettingsBody());
   }
 }

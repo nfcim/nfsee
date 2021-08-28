@@ -1,19 +1,17 @@
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import 'package:ndef/ndef.dart' as ndef;
-
 import 'package:nfsee/data/database/database.dart';
 import 'package:nfsee/generated/l10n.dart';
 import 'package:nfsee/models.dart';
 import 'package:nfsee/utilities.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 /// A simple widget that builds different things on different platforms.
 class PlatformWidget extends StatelessWidget {
@@ -45,6 +43,7 @@ class PlatformWidget extends StatelessWidget {
 class WebViewTab extends StatelessWidget {
   final String title;
   final String assetUrl;
+
   const WebViewTab({this.title, this.assetUrl});
 
   Widget _buildWebView() {
@@ -154,11 +153,11 @@ class APDUTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            Text("#${this.index+1} - TX",
+            Text("#${this.index + 1} - TX",
                 style: Theme.of(context).textTheme.caption),
             this.hexView(data["tx"], context, Colors.green),
             SizedBox(height: 16),
-            Text("#${this.index+1} - RX",
+            Text("#${this.index + 1} - RX",
                 style: Theme.of(context).textTheme.caption),
             this.hexView(data["rx"], context, Colors.orange),
           ]),
@@ -224,7 +223,7 @@ class TransferTile extends StatelessWidget {
 }
 
 class NDEFTile extends StatelessWidget {
-  NDEFTile({this.raw}): data = NDEFRecordConvert.fromRaw(raw);
+  NDEFTile({this.raw}) : data = NDEFRecordConvert.fromRaw(raw);
 
   final NDEFRawRecord raw;
   final ndef.NDEFRecord data;
@@ -236,11 +235,13 @@ class NDEFTile extends StatelessWidget {
     var icon = Icons.info;
     var details = <Detail>[];
 
-
     // general info
     // add identifier when available
     if (raw.identifier != null && raw.identifier != '') {
-      details.add(Detail(name: S.of(context).identifier, value: raw.identifier, icon: Icons.title));
+      details.add(Detail(
+          name: S.of(context).identifier,
+          value: raw.identifier,
+          icon: Icons.title));
     }
 
     // type & TNF
@@ -248,10 +249,14 @@ class NDEFTile extends StatelessWidget {
         name: "Type Name Format",
         value: enumToString(raw.typeNameFormat),
         icon: Icons.sort_by_alpha));
-    details.add(Detail(name: S.of(context).type, value: data.decodedType, icon: Icons.sort_by_alpha));
+    details.add(Detail(
+        name: S.of(context).type,
+        value: data.decodedType,
+        icon: Icons.sort_by_alpha));
 
     // payload (raw + decoded)
-    details.add(Detail(name: S.of(context).payload, value: raw.payload, icon: Icons.sd_card));
+    details.add(Detail(
+        name: S.of(context).payload, value: raw.payload, icon: Icons.sd_card));
     try {
       final payloadUtf8 = utf8.decode(decodeHexString(raw.payload));
       details.add(Detail(
@@ -267,14 +272,23 @@ class NDEFTile extends StatelessWidget {
       icon = Icons.web;
       title = "URI";
       subtitle = r.uriString;
-      details.add(Detail(name: S.of(context).wellKnownPrefix, value: r.prefix, icon: Icons.tab));
+      details.add(Detail(
+          name: S.of(context).wellKnownPrefix,
+          value: r.prefix,
+          icon: Icons.tab));
     } else if (data is ndef.TextRecord) {
       var r = data as ndef.TextRecord;
       icon = Icons.text_fields;
       title = S.of(context).text;
       subtitle = r.text;
-      details.add(Detail(name: S.of(context).encoding, value: enumToString(r.encoding), icon: Icons.code));
-      details.add(Detail(name: S.of(context).languageCode, value: r.language, icon: Icons.language));
+      details.add(Detail(
+          name: S.of(context).encoding,
+          value: enumToString(r.encoding),
+          icon: Icons.code));
+      details.add(Detail(
+          name: S.of(context).languageCode,
+          value: r.language,
+          icon: Icons.language));
     } else if (data is ndef.MimeRecord) {
       title = S.of(context).mimeMediaRecord;
       subtitle = data.decodedType;

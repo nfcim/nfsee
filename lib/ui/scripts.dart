@@ -9,9 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
+import 'package:interactive_webview_null_safety/interactive_webview.dart';
 import 'package:nfsee/ui/custom_expansion_panel.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:interactive_webview/interactive_webview.dart';
 
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';

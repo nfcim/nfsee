@@ -8,11 +8,10 @@ import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';
 import 'package:nfsee/data/card.dart';
+import 'package:nfsee/generated/l10n.dart';
 import 'package:nfsee/ui/card_physics.dart';
 import 'package:nfsee/ui/widgets.dart';
 import 'package:nfsee/utilities.dart';
-
-import 'package:nfsee/generated/l10n.dart';
 
 const double DETAIL_OFFSET = 300;
 
@@ -154,8 +153,10 @@ class HomeState extends State<HomeAct>
                       IconButton(
                         icon: Icon(
                           Icons.add,
-                          color:
-                              Theme.of(context).primaryTextTheme.headline5.color,
+                          color: Theme.of(context)
+                              .primaryTextTheme
+                              .headline5
+                              .color,
                         ),
                         onPressed: () async {
                           final cardRead = await this.widget.readCard();
@@ -681,6 +682,7 @@ class HomeState extends State<HomeAct>
 
 class HomeBackgrondPainter extends CustomPainter {
   final Color color;
+
   HomeBackgrondPainter({this.color});
 
   @override

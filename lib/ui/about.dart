@@ -1,11 +1,9 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
+import 'package:nfsee/generated/l10n.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import 'package:nfsee/generated/l10n.dart';
 
 import 'widgets.dart';
 
@@ -45,13 +43,12 @@ class _AboutActState extends State<AboutAct> {
                     assetUrl: url,
                   )));
     } else {
-      Navigator.of(context).push<void>(
-          CupertinoPageRoute(
-              builder: (context) => SafeArea(
+      Navigator.of(context).push<void>(CupertinoPageRoute(
+          builder: (context) => SafeArea(
                   child: WebViewTab(
-                    title: title,
-                    assetUrl: url,
-                  ))));
+                title: title,
+                assetUrl: url,
+              ))));
     }
   }
 
