@@ -16,9 +16,9 @@ import 'package:webview_flutter/webview_flutter.dart';
 /// A simple widget that builds different things on different platforms.
 class PlatformWidget extends StatelessWidget {
   const PlatformWidget({
-    Key key,
-    @required this.androidBuilder,
-    @required this.iosBuilder,
+    Key? key,
+    required this.androidBuilder,
+    required this.iosBuilder,
   })  : assert(androidBuilder != null),
         assert(iosBuilder != null),
         super(key: key);
@@ -35,14 +35,14 @@ class PlatformWidget extends StatelessWidget {
         return iosBuilder(context);
       default:
         assert(false, 'Unexpected platform $defaultTargetPlatform');
-        return null;
+        return null as Widget;
     }
   }
 }
 
 class WebViewTab extends StatelessWidget {
-  final String title;
-  final String assetUrl;
+  final String? title;
+  final String? assetUrl;
 
   const WebViewTab({this.title, this.assetUrl});
 
@@ -50,7 +50,7 @@ class WebViewTab extends StatelessWidget {
     return WebView(
       initialUrl: 'about:blank',
       onWebViewCreated: (WebViewController webViewController) async {
-        String fileText = await rootBundle.loadString(assetUrl);
+        String fileText = await rootBundle.loadString(assetUrl!);
         webViewController.loadUrl(Uri.dataFromString(fileText,
                 mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
             .toString());
@@ -61,7 +61,7 @@ class WebViewTab extends StatelessWidget {
   Widget _buildAndroid(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(title!),
       ),
       body: _buildWebView(),
     );
@@ -70,8 +70,8 @@ class WebViewTab extends StatelessWidget {
   Widget _buildIos(BuildContext context) {
     return CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-          middle: Text(title),
-          previousPageTitle: S.of(context).about,
+          middle: Text(title!),
+          previousPageTitle: S.of(context)!.about,
         ),
         child: Padding(
           padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
@@ -91,13 +91,13 @@ class WebViewTab extends StatelessWidget {
 class ReportRowItem extends StatelessWidget {
   const ReportRowItem({this.record, this.onTap});
 
-  final DumpedRecord record;
-  final void Function() onTap;
+  final DumpedRecord? record;
+  final void Function()? onTap;
 
   @override
   Widget build(context) {
-    var data = json.decode(record.data);
-    var config = json.decode(record.config ?? DEFAULT_CONFIG);
+    var data = json.decode(record!.data);
+    var config = json.decode(record!.config ?? DEFAULT_CONFIG);
 
     final type =
         getEnumFromString<CardType>(CardType.values, data["card_type"]);
@@ -137,7 +137,7 @@ class APDUTile extends StatelessWidget {
   const APDUTile({this.data, this.index});
 
   final dynamic data;
-  final int index;
+  final int? index;
 
   @override
   Widget build(context) {
@@ -153,11 +153,11 @@ class APDUTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            Text("#${this.index + 1} - TX",
+            Text("#${this.index! + 1} - TX",
                 style: Theme.of(context).textTheme.caption),
             this.hexView(data["tx"], context, Colors.green),
             SizedBox(height: 16),
-            Text("#${this.index + 1} - RX",
+            Text("#${this.index! + 1} - RX",
                 style: Theme.of(context).textTheme.caption),
             this.hexView(data["rx"], context, Colors.orange),
           ]),
@@ -165,7 +165,7 @@ class APDUTile extends StatelessWidget {
   }
 
   Widget hexView(String str, BuildContext context, Color color) {
-    var segs = List<Widget>();
+    var segs = List<Widget>.empty(growable: true);
 
     for (int i = 0; i < str.length; i += 2) {
       final slice = str.substring(i, i + 2).toUpperCase();
@@ -174,7 +174,7 @@ class APDUTile extends StatelessWidget {
           margin: EdgeInsets.only(right: 5),
           child: Text(
             slice,
-            style: Theme.of(context).textTheme.bodyText2.apply(color: color),
+            style: Theme.of(context).textTheme.bodyText2!.apply(color: color),
           ));
       segs.add(seg);
     }
@@ -186,19 +186,19 @@ class APDUTile extends StatelessWidget {
 class TransferTile extends StatelessWidget {
   const TransferTile({this.data});
 
-  final Map<String, dynamic> data;
+  final Map<String, dynamic>? data;
 
   @override
   Widget build(context) {
     final typePBOC = getEnumFromString<PBOCTransactionType>(
-        PBOCTransactionType.values, data["type"]);
+        PBOCTransactionType.values, data!["type"]);
     final typePPSE =
-        getEnumFromString<ProcessingCode>(ProcessingCode.values, data["type"]);
+        getEnumFromString<ProcessingCode>(ProcessingCode.values, data!["type"]);
 
     var subtitle;
-    if (data["date"] != null && data["time"] != null) {
+    if (data!["date"] != null && data!["time"] != null) {
       subtitle =
-          "${formatTransactionDate(data["date"])} ${formatTransactionTime(data["time"])}";
+          "${formatTransactionDate(data!["date"])} ${formatTransactionTime(data!["time"])}";
     } else {
       subtitle = "";
     }
@@ -208,13 +208,13 @@ class TransferTile extends StatelessWidget {
           ? Icons.attach_money
           : Icons.money_off),
       title: Text(
-          "${formatTransactionBalance(data["amount"])} - ${typePBOC == null ? typePPSE.getName(context) : typePBOC.getName(context)}"),
+          "${formatTransactionBalance(data!["amount"])} - ${typePBOC == null ? typePPSE.getName(context) : typePBOC.getName(context)}"),
       subtitle: Text(subtitle),
-      children: parseTransactionDetails(data, context)
+      children: parseTransactionDetails(data!, context)
           .map((d) => ListTile(
                 dense: true,
-                title: Text(d.name),
-                subtitle: Text(d.value),
+                title: Text(d.name!),
+                subtitle: Text(d.value!),
                 leading: Icon(d.icon ?? Icons.info),
               ))
           .toList(),
@@ -223,44 +223,44 @@ class TransferTile extends StatelessWidget {
 }
 
 class NDEFTile extends StatelessWidget {
-  NDEFTile({this.raw}) : data = NDEFRecordConvert.fromRaw(raw);
+  NDEFTile({this.raw}) : data = NDEFRecordConvert.fromRaw(raw!);
 
-  final NDEFRawRecord raw;
+  final NDEFRawRecord? raw;
   final ndef.NDEFRecord data;
 
   @override
   Widget build(context) {
-    var title = S.of(context).Unknown;
+    var title = S.of(context)!.Unknown;
     var subtitle = "";
     var icon = Icons.info;
     var details = <Detail>[];
 
     // general info
     // add identifier when available
-    if (raw.identifier != null && raw.identifier != '') {
+    if (raw!.identifier != null && raw!.identifier != '') {
       details.add(Detail(
-          name: S.of(context).identifier,
-          value: raw.identifier,
+          name: S.of(context)!.identifier,
+          value: raw!.identifier,
           icon: Icons.title));
     }
 
     // type & TNF
     details.add(Detail(
         name: "Type Name Format",
-        value: enumToString(raw.typeNameFormat),
+        value: enumToString(raw!.typeNameFormat),
         icon: Icons.sort_by_alpha));
     details.add(Detail(
-        name: S.of(context).type,
+        name: S.of(context)!.type,
         value: data.decodedType,
         icon: Icons.sort_by_alpha));
 
     // payload (raw + decoded)
     details.add(Detail(
-        name: S.of(context).payload, value: raw.payload, icon: Icons.sd_card));
+        name: S.of(context)!.payload, value: raw!.payload, icon: Icons.sd_card));
     try {
-      final payloadUtf8 = utf8.decode(decodeHexString(raw.payload));
+      final payloadUtf8 = utf8.decode(decodeHexString(raw!.payload));
       details.add(Detail(
-          name: S.of(context).payload + " (UTF-8)",
+          name: S.of(context)!.payload + " (UTF-8)",
           value: payloadUtf8,
           icon: Icons.text_fields));
     } on FormatException catch (_) {
@@ -271,27 +271,27 @@ class NDEFTile extends StatelessWidget {
       var r = data as ndef.UriRecord;
       icon = Icons.web;
       title = "URI";
-      subtitle = r.uriString;
+      subtitle = r.uriString!;
       details.add(Detail(
-          name: S.of(context).wellKnownPrefix,
+          name: S.of(context)!.wellKnownPrefix,
           value: r.prefix,
           icon: Icons.tab));
     } else if (data is ndef.TextRecord) {
       var r = data as ndef.TextRecord;
       icon = Icons.text_fields;
-      title = S.of(context).text;
-      subtitle = r.text;
+      title = S.of(context)!.text;
+      subtitle = r.text!;
       details.add(Detail(
-          name: S.of(context).encoding,
+          name: S.of(context)!.encoding,
           value: enumToString(r.encoding),
           icon: Icons.code));
       details.add(Detail(
-          name: S.of(context).languageCode,
+          name: S.of(context)!.languageCode,
           value: r.language,
           icon: Icons.language));
     } else if (data is ndef.MimeRecord) {
-      title = S.of(context).mimeMediaRecord;
-      subtitle = data.decodedType;
+      title = S.of(context)!.mimeMediaRecord;
+      subtitle = data.decodedType!;
     }
 
     return ExpansionTile(
@@ -301,8 +301,8 @@ class NDEFTile extends StatelessWidget {
       children: details
           .map((d) => ListTile(
                 dense: true,
-                title: Text(d.name),
-                subtitle: Text(d.value),
+                title: Text(d.name!),
+                subtitle: Text(d.value!),
                 leading: Icon(d.icon ?? Icons.info),
               ))
           .toList(),
@@ -313,14 +313,14 @@ class NDEFTile extends StatelessWidget {
 class TechnologicalDetailTile extends StatelessWidget {
   const TechnologicalDetailTile({this.name, this.value});
 
-  final String name;
-  final String value;
+  final String? name;
+  final String? value;
 
   @override
   Widget build(context) {
     return ListTile(
       dense: true,
-      title: Text(parseTechnologicalDetailKey(name)),
+      title: Text(parseTechnologicalDetailKey(name)!),
       subtitle: Text(value ?? "null"),
       leading: Icon(Icons.info),
     );
@@ -330,14 +330,14 @@ class TechnologicalDetailTile extends StatelessWidget {
 class DataTile extends StatelessWidget {
   const DataTile({this.data});
 
-  final String data;
+  final String? data;
 
   @override
   Widget build(context) {
     var group = 16;
-    var view = List<Widget>();
-    for (int i = 0; i < data.length; i += group) {
-      var segs = List<Widget>();
+    var view = List<Widget>.empty(growable: true);
+    for (int i = 0; i < data!.length; i += group) {
+      var segs = List<Widget>.empty(growable: true);
 
       // addr
       final seg = Container(
@@ -347,7 +347,7 @@ class DataTile extends StatelessWidget {
             "${(i >> 1).toRadixString(16).padLeft(4, '0')}:",
             style: Theme.of(context)
                 .textTheme
-                .bodyText2
+                .bodyText2!
                 .apply(color: Colors.green)
                 .apply(fontFamily: "Courier"), // monospaced
           ));
@@ -357,8 +357,8 @@ class DataTile extends StatelessWidget {
       var dump = "";
       for (int j = i; j < i + group; j += 2) {
         var slice = "";
-        if (j < data.length) {
-          slice = data.substring(j, j + 2).toUpperCase();
+        if (j < data!.length) {
+          slice = data!.substring(j, j + 2).toUpperCase();
         }
 
         final seg = Container(
@@ -368,7 +368,7 @@ class DataTile extends StatelessWidget {
               slice,
               style: Theme.of(context)
                   .textTheme
-                  .bodyText2
+                  .bodyText2!
                   .apply(color: Colors.green)
                   .apply(fontFamily: "Courier"), // monospaced
             ));
@@ -392,7 +392,7 @@ class DataTile extends StatelessWidget {
             dump,
             style: Theme.of(context)
                 .textTheme
-                .bodyText2
+                .bodyText2!
                 .apply(color: Colors.green)
                 .apply(fontFamily: "Courier"), // monospaced
           ));

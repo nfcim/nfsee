@@ -15,22 +15,22 @@ enum CardCategory {
 }
 
 class CardData {
-  int id;
-  final CardCategory category;
-  String name;
-  final CardType cardType;
-  final String cardNo;
+  int? id;
+  final CardCategory? category;
+  String? name;
+  final CardType? cardType;
+  final String? cardNo;
   final dynamic raw;
-  final DateTime time;
+  final DateTime? time;
 
-  bool sameAs(CardData ano) {
+  bool sameAs(CardData? ano) {
     if (ano == null) return false;
     if (id != ano.id) return false;
     if (config != ano.config) return false;
     return true;
   }
 
-  String get formattedTime => new DateFormat("MM/dd HH:mm:ss").format(time);
+  String get formattedTime => new DateFormat("MM/dd HH:mm:ss").format(time!);
 
   CardData(
       {this.id,
@@ -91,12 +91,12 @@ class CardData {
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(this.name ?? S.of(context).unnamedCard,
+                          Text(this.name ?? S.of(context)!.unnamedCard,
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold)),
-                          Text(this.cardType.getName(context),
+                          Text(this.cardType!.getName(context),
                               style: TextStyle(
                                   color: Colors.white70, fontSize: 16)),
                         ]),

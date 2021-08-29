@@ -3,12 +3,12 @@ import 'package:flutter/cupertino.dart';
 const double CARD_WIDTH = (240 - 20) * (86.0 / 54) + 20;
 
 class CardPhysics extends ScrollPhysics {
-  final int cardCount;
+  final int? cardCount;
 
   const CardPhysics({this.cardCount, parent}) : super(parent: parent);
 
   @override
-  CardPhysics applyTo(ScrollPhysics parent) {
+  CardPhysics applyTo(ScrollPhysics? parent) {
     return CardPhysics(parent: buildParent(parent));
   }
 
@@ -38,14 +38,14 @@ class CardPhysics extends ScrollPhysics {
   }
 
   @override
-  Simulation createBallisticSimulation(
+  Simulation? createBallisticSimulation(
       ScrollMetrics position, double velocity) {
     if ((velocity <= 0 && position.pixels <= position.minScrollExtent) ||
         (velocity >= 0 && position.pixels >= position.maxScrollExtent))
       return super.createBallisticSimulation(position, velocity);
 
     final Tolerance tol = this.tolerance;
-    final double target = this._getTargetPixels(position, tol, velocity);
+    final double target = this._getTargetPixels(position as ScrollPosition, tol, velocity);
 
     if (target != position.pixels)
       return ScrollSpringSimulation(spring, position.pixels, target, velocity,

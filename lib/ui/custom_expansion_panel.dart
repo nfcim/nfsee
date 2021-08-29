@@ -6,12 +6,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/src/material/constants.dart';
-import 'package:flutter/src/material/expand_icon.dart';
-import 'package:flutter/src/material/ink_well.dart';
-import 'package:flutter/src/material/material_localizations.dart';
-import 'package:flutter/src/material/mergeable_material.dart';
-import 'package:flutter/src/material/theme.dart';
 import 'package:flutter/widgets.dart';
 
 const double _kPanelHeaderCollapsedHeight = kMinInteractiveDimension;
@@ -82,22 +76,22 @@ class ExpansionPanel {
         assert(canTapOnHeader != null);
 
   /// The widget builder that builds the expansion panels' header.
-  final ExpansionPanelHeaderBuilder headerBuilder;
+  final ExpansionPanelHeaderBuilder? headerBuilder;
 
   /// The body of the expansion panel that's displayed below the header.
   ///
   /// This widget is visible only when the panel is expanded.
-  final Widget body;
+  final Widget? body;
 
   /// Whether the panel is expanded.
   ///
   /// Defaults to false.
-  final bool isExpanded;
+  final bool? isExpanded;
 
   /// Whether tapping on the panel's header will expand/collapse it.
   ///
   /// Defaults to false.
-  final bool canTapOnHeader;
+  final bool? canTapOnHeader;
 }
 
 class NFSeeExpansionPanel {
@@ -107,7 +101,7 @@ class NFSeeExpansionPanel {
   /// The [headerBuilder], [body], and [isExpanded] arguments must not be null.
   NFSeeExpansionPanel({
     @required this.headerBuilder,
-    @required this.body,
+    required this.body,
     this.isExpanded = false,
     this.canTapOnHeader = false,
     this.running = false,
@@ -116,7 +110,7 @@ class NFSeeExpansionPanel {
         assert(isExpanded != null),
         assert(canTapOnHeader != null);
 
-  final ExpansionPanelHeaderBuilder headerBuilder;
+  final ExpansionPanelHeaderBuilder? headerBuilder;
   final Widget body;
   final bool isExpanded;
   final bool canTapOnHeader;
@@ -130,8 +124,8 @@ class NFSeeExpansionPanelRadio extends NFSeeExpansionPanel {
   /// [headerBuilder], [body], [value] must not be null.
   NFSeeExpansionPanelRadio({
     @required this.value,
-    @required ExpansionPanelHeaderBuilder headerBuilder,
-    @required Widget body,
+    @required ExpansionPanelHeaderBuilder? headerBuilder,
+    required Widget body,
     bool canTapOnHeader = false,
     bool running = false,
   })  : assert(value != null),
@@ -144,7 +138,7 @@ class NFSeeExpansionPanelRadio extends NFSeeExpansionPanel {
 
   /// The value that uniquely identifies a radio panel so that the currently
   /// selected radio panel can be identified.
-  final Object value;
+  final Object? value;
 }
 
 class NFSeeExpansionPanelList extends StatefulWidget {
@@ -153,7 +147,7 @@ class NFSeeExpansionPanelList extends StatefulWidget {
   ///
   /// The [children] and [animationDuration] arguments must not be null.
   const NFSeeExpansionPanelList({
-    Key key,
+    Key? key,
     this.children = const <NFSeeExpansionPanel>[],
     this.expansionCallback,
     this.animationDuration = kThemeAnimationDuration,
@@ -165,7 +159,7 @@ class NFSeeExpansionPanelList extends StatefulWidget {
         super(key: key);
 
   const NFSeeExpansionPanelList.radio({
-    Key key,
+    Key? key,
     this.children = const <NFSeeExpansionPanelRadio>[],
     this.expansionCallback,
     this.animationDuration = kThemeAnimationDuration,
@@ -196,7 +190,7 @@ class NFSeeExpansionPanelList extends StatefulWidget {
   ///
   /// This callback is useful in order to keep track of the expanded/collapsed
   /// panels in a parent widget that may need to react to these changes.
-  final ExpansionPanelCallback expansionCallback;
+  final ExpansionPanelCallback? expansionCallback;
 
   /// The duration of the expansion animation.
   final Duration animationDuration;
@@ -207,7 +201,7 @@ class NFSeeExpansionPanelList extends StatefulWidget {
   /// The value of the panel that initially begins open. (This value is
   /// only used when initializing with the [ExpansionPanelList.radio]
   /// constructor.)
-  final Object initialOpenPanelValue;
+  final Object? initialOpenPanelValue;
 
   final int elevation;
 
@@ -216,7 +210,7 @@ class NFSeeExpansionPanelList extends StatefulWidget {
 }
 
 class _NFSeeExpansionPanelListState extends State<NFSeeExpansionPanelList> {
-  NFSeeExpansionPanelRadio _currentOpenPanel;
+  NFSeeExpansionPanelRadio? _currentOpenPanel;
 
   @override
   void initState() {
@@ -226,7 +220,7 @@ class _NFSeeExpansionPanelListState extends State<NFSeeExpansionPanelList> {
           'All ExpansionPanelRadio identifier values must be unique.');
       if (widget.initialOpenPanelValue != null) {
         _currentOpenPanel =
-            searchPanelByValue(widget.children, widget.initialOpenPanelValue);
+            searchPanelByValue(widget.children as List<NFSeeExpansionPanelRadio>, widget.initialOpenPanelValue);
       }
     }
   }
@@ -242,7 +236,7 @@ class _NFSeeExpansionPanelListState extends State<NFSeeExpansionPanelList> {
       // open panel to widget.initialOpenPanelValue
       if (!oldWidget._allowOnlyOnePanelOpen) {
         _currentOpenPanel =
-            searchPanelByValue(widget.children, widget.initialOpenPanelValue);
+            searchPanelByValue(widget.children as List<NFSeeExpansionPanelRadio>, widget.initialOpenPanelValue);
       }
     } else {
       _currentOpenPanel = null;
@@ -250,8 +244,8 @@ class _NFSeeExpansionPanelListState extends State<NFSeeExpansionPanelList> {
   }
 
   bool _allIdentifiersUnique() {
-    final Map<Object, bool> identifierMap = <Object, bool>{};
-    for (NFSeeExpansionPanelRadio child in widget.children) {
+    final Map<Object?, bool> identifierMap = <Object, bool>{};
+    for (NFSeeExpansionPanelRadio child in widget.children as Iterable<NFSeeExpansionPanelRadio>) {
       identifierMap[child.value] = true;
     }
     return identifierMap.length == widget.children.length;
@@ -259,7 +253,7 @@ class _NFSeeExpansionPanelListState extends State<NFSeeExpansionPanelList> {
 
   bool _isChildExpanded(int index) {
     if (widget._allowOnlyOnePanelOpen) {
-      final NFSeeExpansionPanelRadio radioWidget = widget.children[index];
+      final NFSeeExpansionPanelRadio radioWidget = widget.children[index] as NFSeeExpansionPanelRadio;
       return _currentOpenPanel?.value == radioWidget.value;
     }
     return widget.children[index].isExpanded;
@@ -267,21 +261,21 @@ class _NFSeeExpansionPanelListState extends State<NFSeeExpansionPanelList> {
 
   void _handlePressed(bool isExpanded, int index) {
     if (widget.expansionCallback != null)
-      widget.expansionCallback(index, isExpanded);
+      widget.expansionCallback!(index, isExpanded);
 
     if (widget._allowOnlyOnePanelOpen) {
-      final NFSeeExpansionPanelRadio pressedChild = widget.children[index];
+      final NFSeeExpansionPanelRadio pressedChild = widget.children[index] as NFSeeExpansionPanelRadio;
 
       // If another ExpansionPanelRadio was already open, apply its
       // expansionCallback (if any) to false, because it's closing.
       for (int childIndex = 0;
           childIndex < widget.children.length;
           childIndex += 1) {
-        final NFSeeExpansionPanelRadio child = widget.children[childIndex];
+        final NFSeeExpansionPanelRadio child = widget.children[childIndex] as NFSeeExpansionPanelRadio;
         if (widget.expansionCallback != null &&
             childIndex != index &&
             child.value == _currentOpenPanel?.value)
-          widget.expansionCallback(childIndex, false);
+          widget.expansionCallback!(childIndex, false);
       }
 
       setState(() {
@@ -290,8 +284,8 @@ class _NFSeeExpansionPanelListState extends State<NFSeeExpansionPanelList> {
     }
   }
 
-  NFSeeExpansionPanelRadio searchPanelByValue(
-      List<NFSeeExpansionPanelRadio> panels, Object value) {
+  NFSeeExpansionPanelRadio? searchPanelByValue(
+      List<NFSeeExpansionPanelRadio> panels, Object? value) {
     for (NFSeeExpansionPanelRadio panel in panels) {
       if (panel.value == value) return panel;
     }
@@ -310,7 +304,7 @@ class _NFSeeExpansionPanelListState extends State<NFSeeExpansionPanelList> {
             key: _SaltedKey<BuildContext, int>(context, index * 2 - 1)));
 
       final NFSeeExpansionPanel child = widget.children[index];
-      final Widget headerWidget = child.headerBuilder(
+      final Widget headerWidget = child.headerBuilder!(
         context,
         _isChildExpanded(index),
       );
@@ -406,14 +400,14 @@ class _NFSeeExpansionPanelListState extends State<NFSeeExpansionPanelList> {
 
 class _NFSeeMergeableMaterialListBody extends ListBody {
   _NFSeeMergeableMaterialListBody({
-    List<Widget> children,
+    required List<Widget> children,
     Axis mainAxis = Axis.vertical,
     this.items,
     this.boxShadows,
   }) : super(children: children, mainAxis: mainAxis);
 
-  final List<MergeableMaterialItem> items;
-  final List<BoxShadow> boxShadows;
+  final List<MergeableMaterialItem>? items;
+  final List<BoxShadow>? boxShadows;
 
   AxisDirection _getDirection(BuildContext context) {
     return getAxisDirectionFromAxisReverseAndDirectionality(
@@ -431,7 +425,7 @@ class _NFSeeMergeableMaterialListBody extends ListBody {
   @override
   void updateRenderObject(BuildContext context, RenderListBody renderObject) {
     final _NFSeeRenderMergeableMaterialListBody materialRenderListBody =
-        renderObject;
+        renderObject as _NFSeeRenderMergeableMaterialListBody;
     materialRenderListBody
       ..axisDirection = _getDirection(context)
       ..boxShadows = boxShadows;
@@ -440,34 +434,34 @@ class _NFSeeMergeableMaterialListBody extends ListBody {
 
 class _NFSeeRenderMergeableMaterialListBody extends RenderListBody {
   _NFSeeRenderMergeableMaterialListBody({
-    List<RenderBox> children,
+    List<RenderBox>? children,
     AxisDirection axisDirection = AxisDirection.down,
     this.boxShadows,
   }) : super(children: children, axisDirection: axisDirection);
 
-  List<BoxShadow> boxShadows;
+  List<BoxShadow>? boxShadows;
 
   void _paintShadows(Canvas canvas, Rect rect) {
     if (boxShadows == null) return;
 
-    for (BoxShadow boxShadow in boxShadows) {
+    for (BoxShadow boxShadow in boxShadows!) {
       final Paint paint = boxShadow.toPaint();
       // TODO(dragostis): Right now, we are only interpolating the border radii
       // of the visible Material slices, not the shadows; they are not getting
       // interpolated and always have the same rounded radii. Once shadow
       // performance is better, shadows should be redrawn every single time the
       // slices' radii get interpolated and use those radii not the defaults.
-      canvas.drawRRect(kMaterialEdges[MaterialType.card].toRRect(rect), paint);
+      canvas.drawRRect(kMaterialEdges[MaterialType.card]!.toRRect(rect), paint);
     }
   }
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    RenderBox child = firstChild;
+    RenderBox? child = firstChild;
     int i = 0;
 
     while (child != null) {
-      final ListBodyParentData childParentData = child.parentData;
+      final ListBodyParentData childParentData = child.parentData as ListBodyParentData;
       final Rect rect = (childParentData.offset + offset) & child.size;
       if (i % 2 == 0) _paintShadows(context.canvas, rect);
       child = childParentData.nextSibling;
@@ -482,7 +476,7 @@ class _NFSeeRenderMergeableMaterialListBody extends RenderListBody {
 class NFSeeMergeableMaterial extends StatefulWidget {
   /// Creates a mergeable Material list of items.
   const NFSeeMergeableMaterial({
-    Key key,
+    Key? key,
     this.mainAxis = Axis.vertical,
     this.elevation = 2,
     this.hasDividers = false,
@@ -528,10 +522,10 @@ class _AnimationTuple {
     this.gapStart = 0.0,
   });
 
-  final AnimationController controller;
-  final CurvedAnimation startAnimation;
-  final CurvedAnimation endAnimation;
-  final CurvedAnimation gapAnimation;
+  final AnimationController? controller;
+  final CurvedAnimation? startAnimation;
+  final CurvedAnimation? endAnimation;
+  final CurvedAnimation? gapAnimation;
   double gapStart;
 }
 
@@ -558,23 +552,23 @@ class _MergeableMaterialSliceKey extends GlobalKey {
 
 class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
     with TickerProviderStateMixin {
-  List<MergeableMaterialItem> _children;
-  final Map<LocalKey, _AnimationTuple> _animationTuples =
-      <LocalKey, _AnimationTuple>{};
+  List<MergeableMaterialItem>? _children;
+  final Map<LocalKey, _AnimationTuple?> _animationTuples =
+      <LocalKey, _AnimationTuple?>{};
 
   @override
   void initState() {
     super.initState();
     _children = List<MergeableMaterialItem>.from(widget.children);
 
-    for (int i = 0; i < _children.length; i += 1) {
-      if (_children[i] is MaterialGap) {
-        _initGap(_children[i]);
-        _animationTuples[_children[i].key].controller.value =
+    for (int i = 0; i < _children!.length; i += 1) {
+      if (_children![i] is MaterialGap) {
+        _initGap(_children![i] as MaterialGap);
+        _animationTuples[_children![i].key]!.controller!.value =
             1.0; // Gaps are initially full-sized.
       }
     }
-    assert(_debugGapsAreValid(_children));
+    assert(_debugGapsAreValid(_children!));
   }
 
   void _initGap(MaterialGap gap) {
@@ -608,9 +602,9 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
 
   @override
   void dispose() {
-    for (MergeableMaterialItem child in _children) {
+    for (MergeableMaterialItem child in _children!) {
       if (child is MaterialGap)
-        _animationTuples[child.key].controller.dispose();
+        _animationTuples[child.key]!.controller!.dispose();
     }
     super.dispose();
   }
@@ -643,20 +637,20 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
   }
 
   void _insertChild(int index, MergeableMaterialItem child) {
-    _children.insert(index, child);
+    _children!.insert(index, child);
 
     if (child is MaterialGap) _initGap(child);
   }
 
   void _removeChild(int index) {
-    final MergeableMaterialItem child = _children.removeAt(index);
+    final MergeableMaterialItem child = _children!.removeAt(index);
 
     if (child is MaterialGap) _animationTuples[child.key] = null;
   }
 
   bool _isClosingGap(int index) {
-    if (index < _children.length - 1 && _children[index] is MaterialGap) {
-      return _animationTuples[_children[index].key].controller.status ==
+    if (index < _children!.length - 1 && _children![index] is MaterialGap) {
+      return _animationTuples[_children![index].key]!.controller!.status ==
           AnimationStatus.reverse;
     }
 
@@ -666,9 +660,9 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
   void _removeEmptyGaps() {
     int j = 0;
 
-    while (j < _children.length) {
-      if (_children[j] is MaterialGap &&
-          _animationTuples[_children[j].key].controller.status ==
+    while (j < _children!.length) {
+      if (_children![j] is MaterialGap &&
+          _animationTuples[_children![j].key]!.controller!.status ==
               AnimationStatus.dismissed) {
         _removeChild(j);
       } else {
@@ -698,9 +692,9 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
 
     _removeEmptyGaps();
 
-    while (i < newChildren.length && j < _children.length) {
+    while (i < newChildren.length && j < _children!.length) {
       if (newOnly.contains(newChildren[i].key) ||
-          oldOnly.contains(_children[j].key)) {
+          oldOnly.contains(_children![j].key)) {
         final int startNew = i;
         final int startOld = j;
 
@@ -708,21 +702,21 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
         while (newOnly.contains(newChildren[i].key)) i += 1;
 
         // Skip old keys.
-        while (oldOnly.contains(_children[j].key) || _isClosingGap(j)) j += 1;
+        while (oldOnly.contains(_children![j].key) || _isClosingGap(j)) j += 1;
 
         final int newLength = i - startNew;
         final int oldLength = j - startOld;
 
         if (newLength > 0) {
           if (oldLength > 1 ||
-              oldLength == 1 && _children[startOld] is MaterialSlice) {
+              oldLength == 1 && _children![startOld] is MaterialSlice) {
             if (newLength == 1 && newChildren[startNew] is MaterialGap) {
               // Shrink all gaps into the size of the new one.
               double gapSizeSum = 0.0;
 
               while (startOld < j) {
-                if (_children[startOld] is MaterialGap) {
-                  final MaterialGap gap = _children[startOld];
+                if (_children![startOld] is MaterialGap) {
+                  final MaterialGap gap = _children![startOld] as MaterialGap;
                   gapSizeSum += gap.size;
                 }
 
@@ -731,9 +725,9 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
               }
 
               _insertChild(startOld, newChildren[startNew]);
-              _animationTuples[newChildren[startNew].key]
+              _animationTuples[newChildren[startNew].key]!
                 ..gapStart = gapSizeSum
-                ..controller.forward();
+                ..controller!.forward();
 
               j += 1;
             } else {
@@ -747,11 +741,11 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
           } else if (oldLength == 1) {
             if (newLength == 1 &&
                 newChildren[startNew] is MaterialGap &&
-                _children[startOld].key == newChildren[startNew].key) {
+                _children![startOld].key == newChildren[startNew].key) {
               /// Special case: gap added back.
-              _animationTuples[newChildren[startNew].key].controller.forward();
+              _animationTuples[newChildren[startNew].key]!.controller!.forward();
             } else {
-              final double gapSize = _getGapSize(startOld);
+              final double? gapSize = _getGapSize(startOld);
 
               _removeChild(startOld);
 
@@ -763,7 +757,7 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
 
               for (int k = startNew; k < i; k += 1) {
                 if (newChildren[k] is MaterialGap) {
-                  final MaterialGap gap = newChildren[k];
+                  final MaterialGap gap = newChildren[k] as MaterialGap;
                   gapSizeSum += gap.size;
                 }
               }
@@ -772,11 +766,11 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
               // animate to their actual size.
               for (int k = startNew; k < i; k += 1) {
                 if (newChildren[k] is MaterialGap) {
-                  final MaterialGap gap = newChildren[k];
+                  final MaterialGap gap = newChildren[k] as MaterialGap;
 
-                  _animationTuples[gap.key].gapStart =
-                      gapSize * gap.size / gapSizeSum;
-                  _animationTuples[gap.key].controller
+                  _animationTuples[gap.key]!.gapStart =
+                      gapSize! * gap.size / gapSizeSum;
+                  _animationTuples[gap.key]!.controller!
                     ..value = 0.0
                     ..forward();
                 }
@@ -788,8 +782,8 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
               _insertChild(startOld + k, newChildren[startNew + k]);
 
               if (newChildren[startNew + k] is MaterialGap) {
-                final MaterialGap gap = newChildren[startNew + k];
-                _animationTuples[gap.key].controller.forward();
+                final MaterialGap gap = newChildren[startNew + k] as MaterialGap;
+                _animationTuples[gap.key]!.controller!.forward();
               }
             }
 
@@ -798,12 +792,12 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
         } else {
           // If more than a gap disappeared, just remove slices and shrink gaps.
           if (oldLength > 1 ||
-              oldLength == 1 && _children[startOld] is MaterialSlice) {
+              oldLength == 1 && _children![startOld] is MaterialSlice) {
             double gapSizeSum = 0.0;
 
             while (startOld < j) {
-              if (_children[startOld] is MaterialGap) {
-                final MaterialGap gap = _children[startOld];
+              if (_children![startOld] is MaterialGap) {
+                final MaterialGap gap = _children![startOld] as MaterialGap;
                 gapSizeSum += gap.size;
               }
 
@@ -817,8 +811,8 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
                 size: gapSizeSum,
               );
               _insertChild(startOld, gap);
-              _animationTuples[gap.key].gapStart = 0.0;
-              _animationTuples[gap.key].controller
+              _animationTuples[gap.key]!.gapStart = 0.0;
+              _animationTuples[gap.key]!.controller!
                 ..value = 1.0
                 ..reverse();
 
@@ -826,29 +820,29 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
             }
           } else if (oldLength == 1) {
             // Shrink gap.
-            final MaterialGap gap = _children[startOld];
-            _animationTuples[gap.key].gapStart = 0.0;
-            _animationTuples[gap.key].controller.reverse();
+            final MaterialGap gap = _children![startOld] as MaterialGap;
+            _animationTuples[gap.key]!.gapStart = 0.0;
+            _animationTuples[gap.key]!.controller!.reverse();
           }
         }
       } else {
         // Check whether the items are the same type. If they are, it means that
         // their places have been swaped.
-        if ((_children[j] is MaterialGap) == (newChildren[i] is MaterialGap)) {
-          _children[j] = newChildren[i];
+        if ((_children![j] is MaterialGap) == (newChildren[i] is MaterialGap)) {
+          _children![j] = newChildren[i];
 
           i += 1;
           j += 1;
         } else {
           // This is a closing gap which we need to skip.
-          assert(_children[j] is MaterialGap);
+          assert(_children![j] is MaterialGap);
           j += 1;
         }
       }
     }
 
     // Handle remaining items.
-    while (j < _children.length) _removeChild(j);
+    while (j < _children!.length) _removeChild(j);
     while (i < newChildren.length) {
       _insertChild(j, newChildren[i]);
 
@@ -858,52 +852,52 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
   }
 
   BorderRadius _borderRadius(int index, bool start, bool end) {
-    assert(kMaterialEdges[MaterialType.card].topLeft ==
-        kMaterialEdges[MaterialType.card].topRight);
-    assert(kMaterialEdges[MaterialType.card].topLeft ==
-        kMaterialEdges[MaterialType.card].bottomLeft);
-    assert(kMaterialEdges[MaterialType.card].topLeft ==
-        kMaterialEdges[MaterialType.card].bottomRight);
-    final Radius cardRadius = kMaterialEdges[MaterialType.card].topLeft;
+    assert(kMaterialEdges[MaterialType.card]!.topLeft ==
+        kMaterialEdges[MaterialType.card]!.topRight);
+    assert(kMaterialEdges[MaterialType.card]!.topLeft ==
+        kMaterialEdges[MaterialType.card]!.bottomLeft);
+    assert(kMaterialEdges[MaterialType.card]!.topLeft ==
+        kMaterialEdges[MaterialType.card]!.bottomRight);
+    final Radius cardRadius = kMaterialEdges[MaterialType.card]!.topLeft;
 
-    Radius startRadius = Radius.zero;
-    Radius endRadius = Radius.zero;
+    Radius? startRadius = Radius.zero;
+    Radius? endRadius = Radius.zero;
 
-    if (index > 0 && _children[index - 1] is MaterialGap) {
+    if (index > 0 && _children![index - 1] is MaterialGap) {
       startRadius = Radius.lerp(
         Radius.zero,
         cardRadius,
-        _animationTuples[_children[index - 1].key].startAnimation.value,
+        _animationTuples[_children![index - 1].key]!.startAnimation!.value,
       );
     }
-    if (index < _children.length - 2 && _children[index + 1] is MaterialGap) {
+    if (index < _children!.length - 2 && _children![index + 1] is MaterialGap) {
       endRadius = Radius.lerp(
         Radius.zero,
         cardRadius,
-        _animationTuples[_children[index + 1].key].endAnimation.value,
+        _animationTuples[_children![index + 1].key]!.endAnimation!.value,
       );
     }
 
     if (widget.mainAxis == Axis.vertical) {
       return BorderRadius.vertical(
-        top: start ? cardRadius : startRadius,
-        bottom: end ? cardRadius : endRadius,
+        top: start ? cardRadius : startRadius!,
+        bottom: end ? cardRadius : endRadius!,
       );
     } else {
       return BorderRadius.horizontal(
-        left: start ? cardRadius : startRadius,
-        right: end ? cardRadius : endRadius,
+        left: start ? cardRadius : startRadius!,
+        right: end ? cardRadius : endRadius!,
       );
     }
   }
 
-  double _getGapSize(int index) {
-    final MaterialGap gap = _children[index];
+  double? _getGapSize(int index) {
+    final MaterialGap gap = _children![index] as MaterialGap;
 
     return lerpDouble(
-      _animationTuples[gap.key].gapStart,
+      _animationTuples[gap.key]!.gapStart,
       gap.size,
-      _animationTuples[gap.key].gapAnimation.value,
+      _animationTuples[gap.key]!.gapAnimation!.value,
     );
   }
 
@@ -925,8 +919,8 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
     List<Widget> slices = <Widget>[];
     int i;
 
-    for (i = 0; i < _children.length; i += 1) {
-      if (_children[i] is MaterialGap) {
+    for (i = 0; i < _children!.length; i += 1) {
+      if (_children![i] is MaterialGap) {
         assert(slices.isNotEmpty);
         widgets.add(
           Container(
@@ -950,7 +944,7 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
           ),
         );
       } else {
-        final MaterialSlice slice = _children[i];
+        final MaterialSlice slice = _children![i] as MaterialSlice;
         Widget child = slice.child;
 
         if (widget.hasDividers) {
@@ -970,7 +964,7 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
               top: divider,
               bottom: hasBottomDivider ? divider : BorderSide.none,
             );
-          } else if (i == _children.length - 1) {
+          } else if (i == _children!.length - 1) {
             border = Border(
               top: hasTopDivider ? divider : BorderSide.none,
               bottom: divider,
@@ -985,7 +979,7 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
           assert(border != null);
 
           child = AnimatedContainer(
-            key: _MergeableMaterialSliceKey(_children[i].key),
+            key: _MergeableMaterialSliceKey(_children![i].key),
             decoration: BoxDecoration(border: border),
             duration: kThemeAnimationDuration,
             curve: Curves.fastOutSlowIn,

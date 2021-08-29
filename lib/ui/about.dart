@@ -75,37 +75,37 @@ class _AboutActState extends State<AboutAct> {
               style: Theme.of(context).textTheme.bodyText2,
             ),
             ListTile(
-              title: Text(S.of(context).homepage),
+              title: Text(S.of(context)!.homepage),
               onTap: () => launch('https://nfsee.nfc.im'),
             ),
             Divider(
               height: 0,
             ),
             ListTile(
-              title: Text(S.of(context).sourceCode),
+              title: Text(S.of(context)!.sourceCode),
               onTap: () => launch('https://github.com/nfcim/nfsee'),
             ),
             Divider(
               height: 0,
             ),
             ListTile(
-              title: Text(S.of(context).privacyPolicy),
-              onTap: () => launchAssetPage(S.of(context).privacyPolicy,
-                  S.of(context).privacyPolicyContent),
+              title: Text(S.of(context)!.privacyPolicy),
+              onTap: () => launchAssetPage(S.of(context)!.privacyPolicy,
+                  S.of(context)!.privacyPolicyContent),
             ),
             Divider(
               height: 0,
             ),
             ListTile(
-              title: Text(S.of(context).openSourceLicenses),
-              onTap: () => launchAssetPage(S.of(context).openSourceLicenses,
-                  S.of(context).thirdPartyLicenseContent),
+              title: Text(S.of(context)!.openSourceLicenses),
+              onTap: () => launchAssetPage(S.of(context)!.openSourceLicenses,
+                  S.of(context)!.thirdPartyLicenseContent),
             ),
             Divider(
               height: 0,
             ),
             ListTile(
-              title: Text(S.of(context).contactUs),
+              title: Text(S.of(context)!.contactUs),
               onTap: () => launch('mailto:nfsee@nfc.im'),
             )
           ],
@@ -128,7 +128,7 @@ class _AboutActState extends State<AboutAct> {
   Widget _buildAndroid(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).about),
+        title: Text(S.of(context)!.about),
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
@@ -139,8 +139,8 @@ class _AboutActState extends State<AboutAct> {
   Widget _buildIos(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: Text(S.of(context).about),
-        previousPageTitle: S.of(context).settingsTabTitle,
+        middle: Text(S.of(context)!.about),
+        previousPageTitle: S.of(context)!.settingsTabTitle,
       ),
       child: _buildAboutBody(),
     );

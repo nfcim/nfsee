@@ -27,7 +27,7 @@ class NFSeeApp extends StatefulWidget {
 }
 
 class _NFSeeAppState extends State<NFSeeApp> {
-  NFSeeAppBloc bloc;
+  NFSeeAppBloc? bloc;
 
   @override
   void initState() {
@@ -49,7 +49,7 @@ class _NFSeeAppState extends State<NFSeeApp> {
         ],
         supportedLocales: S.delegate.supportedLocales,
         onGenerateTitle: (context) {
-          return S.of(context).homeScreenTitle;
+          return S.of(context)!.homeScreenTitle;
         },
         theme: ThemeData(
           brightness: Brightness.light,
@@ -94,17 +94,17 @@ class PlatformAdaptingHomePage extends StatefulWidget {
 }
 
 class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
-  HomeAct home;
+  late HomeAct home;
   final _webView = InteractiveWebView();
-  StreamSubscription _webViewListener;
+  StreamSubscription? _webViewListener;
   var _reading = false;
-  Exception error;
+  Exception? error;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  PageController topController;
+  PageController? topController;
   int currentTop = 1;
 
-  NFSeeAppBloc get bloc => BlocProvider.provideBloc(context);
+  NFSeeAppBloc? get bloc => BlocProvider.provideBloc(context);
 
   @override
   void initState() {
@@ -127,9 +127,9 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
   @override
   void dispose() {
-    _webViewListener.cancel();
+    _webViewListener!.cancel();
     _webViewListener = null;
-    topController.dispose();
+    topController!.dispose();
     super.dispose();
   }
 
@@ -145,13 +145,13 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   }
 
   Future<void> _addWebViewHandler() async {
-    if (_webViewListener != null) _webViewListener.cancel();
+    if (_webViewListener != null) _webViewListener!.cancel();
     _webViewListener = _webView.didReceiveMessage.listen(_onReceivedMessage);
   }
 
   void showSnackbar(SnackBar snackBar) {
     if (_scaffoldKey.currentState != null) {
-      _scaffoldKey.currentState.showSnackBar(snackBar);
+      _scaffoldKey.currentState!.showSnackBar(snackBar);
     }
   }
 
@@ -166,7 +166,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         error = null;
         try {
           final tag = await FlutterNfcKit.poll(
-              iosAlertMessage: S.of(context).waitForCard);
+              iosAlertMessage: S.of(context)!.waitForCard);
           final json = tag.toJson();
 
           // try to read ndef and insert into json
@@ -180,7 +180,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           }
 
           _webView.evalJavascript("pollCallback(${jsonEncode(json)})");
-          FlutterNfcKit.setIosAlertMessage(S.of(context).cardPolled);
+          FlutterNfcKit.setIosAlertMessage(S.of(context)!.cardPolled);
         } on PlatformException catch (e) {
           error = e;
           // no need to do anything with FlutterNfcKit, which will reset itself
@@ -188,7 +188,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           _closeReadModal(this.context);
           showSnackbar(SnackBar(
               content:
-                  Text('${S.of(context).readFailed}: ${e.toDetailString()}')));
+                  Text('${S.of(context)!.readFailed}: ${e.toDetailString()}')));
           // reject the promise
           _webView.evalJavascript("pollErrorCallback(${e.toJsonString()})");
         }
@@ -210,7 +210,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           _closeReadModal(this.context);
           showSnackbar(SnackBar(
               content:
-                  Text('${S.of(context).readFailed}: ${e.toDetailString()}')));
+                  Text('${S.of(context)!.readFailed}: ${e.toDetailString()}')));
           _webView
               .evalJavascript("transceiveErrorCallback(${e.toJsonString()})");
         }
@@ -218,17 +218,17 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
       case 'report':
         _closeReadModal(this.context);
-        final id = await bloc.addDumpedRecord(jsonEncode(scriptModel.data));
+        final id = await bloc!.addDumpedRecord(jsonEncode(scriptModel.data));
         home.scrollToNewCard();
         break;
 
       case 'finish':
         if (error != null) {
-          await FlutterNfcKit.finish(iosErrorMessage: S.of(context).readFailed);
+          await FlutterNfcKit.finish(iosErrorMessage: S.of(context)!.readFailed);
           error = null;
         } else {
           await FlutterNfcKit.finish(
-              iosAlertMessage: S.of(context).readSucceeded);
+              iosAlertMessage: S.of(context)!.readSucceeded);
         }
         break;
 
@@ -255,21 +255,21 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         else
           webviewOwner = WebViewOwner.Main;
         await this._reloadWebview();
-        this.topController.animateToPage(e,
+        this.topController!.animateToPage(e,
             duration: Duration(milliseconds: 500), curve: Curves.ease);
       },
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.code),
-          label: S.of(context).scriptTabTitle,
+          label: S.of(context)!.scriptTabTitle,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.nfc),
-          label: S.of(context).scanTabTitle,
+          label: S.of(context)!.scanTabTitle,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.settings),
-          label: S.of(context).settingsTabTitle,
+          label: S.of(context)!.settingsTabTitle,
         ),
       ],
     );
@@ -346,7 +346,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
-                  S.of(context).waitForCard,
+                  S.of(context)!.waitForCard,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 18),
                 ),

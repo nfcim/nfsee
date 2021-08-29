@@ -14,7 +14,7 @@ class SettingsAct extends StatefulWidget {
 }
 
 class _SettingsActState extends State<SettingsAct> {
-  NFSeeAppBloc get bloc => BlocProvider.provideBloc(context);
+  NFSeeAppBloc? get bloc => BlocProvider.provideBloc(context);
 
   @override
   void initState() {
@@ -22,16 +22,16 @@ class _SettingsActState extends State<SettingsAct> {
   }
 
   void _onTapDelete(BuildContext context, BuildContext outerCtx) async {
-    bool delRecords = false;
-    bool delScripts = false;
+    bool? delRecords = false;
+    bool? delScripts = false;
 
-    final recordCount = await bloc.countRecords();
-    final scriptCount = await bloc.countScripts();
+    final recordCount = await bloc!.countRecords();
+    final scriptCount = await bloc!.countScripts();
 
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: Text(S.of(context).deleteDataDialog),
+              title: Text(S.of(context)!.deleteDataDialog),
               content: StatefulBuilder(
                 builder: (context, setState) => Column(
                   mainAxisSize: MainAxisSize.min,
@@ -43,9 +43,9 @@ class _SettingsActState extends State<SettingsAct> {
                         });
                       },
                       value: delRecords,
-                      title: Text(S.of(context).record),
+                      title: Text(S.of(context)!.record),
                       subtitle:
-                          Text("${S.of(context).dataCount}: $recordCount"),
+                          Text("${S.of(context)!.dataCount}: $recordCount"),
                     ),
                     CheckboxListTile(
                       onChanged: (v) {
@@ -54,9 +54,9 @@ class _SettingsActState extends State<SettingsAct> {
                         });
                       },
                       value: delScripts,
-                      title: Text(S.of(context).script),
+                      title: Text(S.of(context)!.script),
                       subtitle:
-                          Text("${S.of(context).dataCount}: $scriptCount"),
+                          Text("${S.of(context)!.dataCount}: $scriptCount"),
                     ),
                   ],
                 ),
@@ -72,16 +72,16 @@ class _SettingsActState extends State<SettingsAct> {
                 ),
                 FlatButton(
                   onPressed: () {
-                    if (delRecords) bloc.delAllDumpedRecord();
-                    if (delScripts) bloc.delAllScripts();
+                    if (delRecords!) bloc!.delAllDumpedRecord();
+                    if (delScripts!) bloc!.delAllScripts();
                     Navigator.of(context).pop();
                     Scaffold.of(outerCtx).showSnackBar(SnackBar(
                       behavior: SnackBarBehavior.floating,
-                      content: Text(S.of(context).deletedHint),
+                      content: Text(S.of(context)!.deletedHint),
                       duration: Duration(seconds: 1),
                     ));
                   },
-                  child: Text(S.of(context).delete.toUpperCase()),
+                  child: Text(S.of(context)!.delete.toUpperCase()),
                 ),
               ],
             ));
@@ -92,16 +92,16 @@ class _SettingsActState extends State<SettingsAct> {
       Padding(
         padding: EdgeInsets.all(20),
         child: Text(
-          S.of(context).settingsTabTitle,
+          S.of(context)!.settingsTabTitle,
           style: Theme.of(context)
               .primaryTextTheme
-              .headline6
+              .headline6!
               .copyWith(fontSize: 32),
         ),
       ),
       ListTile(
         leading: Icon(Icons.delete_sweep),
-        title: Text(S.of(context).deleteData),
+        title: Text(S.of(context)!.deleteData),
         onTap: () async {
           _onTapDelete(context, outerCtx);
         },
@@ -109,7 +109,7 @@ class _SettingsActState extends State<SettingsAct> {
       Divider(height: 0),
       ListTile(
         leading: Icon(Icons.info_outline),
-        title: Text(S.of(context).about),
+        title: Text(S.of(context)!.about),
         onTap: () {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => AboutAct()));
