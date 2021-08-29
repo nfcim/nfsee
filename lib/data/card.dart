@@ -15,13 +15,13 @@ enum CardCategory {
 }
 
 class CardData {
-  int? id;
-  final CardCategory? category;
+  int id;
+  final CardCategory category;
   String? name;
-  final CardType? cardType;
-  final String? cardNo;
+  CardType? cardType;
+  String? cardNo;
   final dynamic raw;
-  final DateTime? time;
+  final DateTime time;
 
   bool sameAs(CardData? ano) {
     if (ano == null) return false;
@@ -30,16 +30,16 @@ class CardData {
     return true;
   }
 
-  String get formattedTime => new DateFormat("MM/dd HH:mm:ss").format(time!);
+  String get formattedTime => new DateFormat("MM/dd HH:mm:ss").format(time);
 
   CardData(
-      {this.id,
-      this.category,
+      {required this.id,
+      required this.category,
       this.name,
       this.cardNo,
       this.cardType,
       this.raw,
-      this.time});
+      required this.time});
 
   factory CardData.fromDumpedRecord(DumpedRecord rec) {
     final data = jsonDecode(rec.data);

@@ -72,8 +72,7 @@ class ExpansionPanel {
     this.canTapOnHeader = false,
   })  : assert(headerBuilder != null),
         assert(body != null),
-        assert(isExpanded != null),
-        assert(canTapOnHeader != null);
+        assert(isExpanded != null);
 
   /// The widget builder that builds the expansion panels' header.
   final ExpansionPanelHeaderBuilder? headerBuilder;
@@ -91,7 +90,7 @@ class ExpansionPanel {
   /// Whether tapping on the panel's header will expand/collapse it.
   ///
   /// Defaults to false.
-  final bool? canTapOnHeader;
+  final bool canTapOnHeader;
 }
 
 class NFSeeExpansionPanel {

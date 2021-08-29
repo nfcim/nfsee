@@ -27,7 +27,7 @@ class NFSeeApp extends StatefulWidget {
 }
 
 class _NFSeeAppState extends State<NFSeeApp> {
-  NFSeeAppBloc? bloc;
+  late NFSeeAppBloc bloc;
 
   @override
   void initState() {
@@ -104,7 +104,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   PageController? topController;
   int currentTop = 1;
 
-  NFSeeAppBloc? get bloc => BlocProvider.provideBloc(context);
+  NFSeeAppBloc get bloc => BlocProvider.provideBloc(context);
 
   @override
   void initState() {

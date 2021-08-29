@@ -22,8 +22,8 @@ class _SettingsActState extends State<SettingsAct> {
   }
 
   void _onTapDelete(BuildContext context, BuildContext outerCtx) async {
-    bool? delRecords = false;
-    bool? delScripts = false;
+    bool delRecords = false;
+    bool delScripts = false;
 
     final recordCount = await bloc!.countRecords();
     final scriptCount = await bloc!.countScripts();
@@ -39,7 +39,7 @@ class _SettingsActState extends State<SettingsAct> {
                     CheckboxListTile(
                       onChanged: (v) {
                         setState(() {
-                          delRecords = v;
+                          delRecords = v!;
                         });
                       },
                       value: delRecords,
@@ -50,7 +50,7 @@ class _SettingsActState extends State<SettingsAct> {
                     CheckboxListTile(
                       onChanged: (v) {
                         setState(() {
-                          delScripts = v;
+                          delScripts = v!;
                         });
                       },
                       value: delScripts,
