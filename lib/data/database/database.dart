@@ -15,7 +15,7 @@ class DumpedRecords extends Table {
 
   DateTimeColumn get time => dateTime()();
 
-  TextColumn get config => text()
+  TextColumn? get config => text()
       .withDefault(const Constant(DEFAULT_CONFIG))(); // Name, color, etc...
   TextColumn get data => text()();
 }

@@ -17,7 +17,7 @@ const double DETAIL_OFFSET = 300;
 
 class HomeAct extends StatefulWidget {
   final Future<bool> Function() readCard;
-  late HomeState state;
+  late final HomeState state;
 
   HomeAct({required this.readCard});
 

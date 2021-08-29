@@ -105,10 +105,7 @@ class NFSeeExpansionPanel {
     this.isExpanded = false,
     this.canTapOnHeader = false,
     this.running = false,
-  })  : assert(headerBuilder != null),
-        assert(body != null),
-        assert(isExpanded != null),
-        assert(canTapOnHeader != null);
+  })  : assert(headerBuilder != null);
 
   final ExpansionPanelHeaderBuilder? headerBuilder;
   final Widget body;
@@ -152,9 +149,7 @@ class NFSeeExpansionPanelList extends StatefulWidget {
     this.expansionCallback,
     this.animationDuration = kThemeAnimationDuration,
     this.elevation = 2,
-  })  : assert(children != null),
-        assert(animationDuration != null),
-        _allowOnlyOnePanelOpen = false,
+  })  : _allowOnlyOnePanelOpen = false,
         initialOpenPanelValue = null,
         super(key: key);
 
@@ -165,9 +160,7 @@ class NFSeeExpansionPanelList extends StatefulWidget {
     this.animationDuration = kThemeAnimationDuration,
     this.initialOpenPanelValue,
     this.elevation = 2,
-  })  : assert(children != null),
-        assert(animationDuration != null),
-        _allowOnlyOnePanelOpen = true,
+  })  : _allowOnlyOnePanelOpen = true,
         super(key: key);
 
   /// The children of the expansion panel list. They are laid out in a similar
@@ -976,7 +969,6 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
             );
           }
 
-          assert(border != null);
 
           child = AnimatedContainer(
             key: _MergeableMaterialSliceKey(_children![i].key),

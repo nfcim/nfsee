@@ -19,9 +19,7 @@ class PlatformWidget extends StatelessWidget {
     Key? key,
     required this.androidBuilder,
     required this.iosBuilder,
-  })  : assert(androidBuilder != null),
-        assert(iosBuilder != null),
-        super(key: key);
+  })  : super(key: key);
 
   final WidgetBuilder androidBuilder;
   final WidgetBuilder iosBuilder;
@@ -237,7 +235,7 @@ class NDEFTile extends StatelessWidget {
 
     // general info
     // add identifier when available
-    if (raw!.identifier != null && raw!.identifier != '') {
+    if (raw!.identifier != '') {
       details.add(Detail(
           name: S.of(context)!.identifier,
           value: raw!.identifier,
