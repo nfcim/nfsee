@@ -72,8 +72,8 @@ class _SettingsActState extends State<SettingsAct> {
                 ),
                 FlatButton(
                   onPressed: () {
-                    if (delRecords!) bloc!.delAllDumpedRecord();
-                    if (delScripts!) bloc!.delAllScripts();
+                    if (delRecords) bloc!.delAllDumpedRecord();
+                    if (delScripts) bloc!.delAllScripts();
                     Navigator.of(context).pop();
                     Scaffold.of(outerCtx).showSnackBar(SnackBar(
                       behavior: SnackBarBehavior.floating,

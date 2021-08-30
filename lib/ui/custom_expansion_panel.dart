@@ -544,7 +544,7 @@ class _MergeableMaterialSliceKey extends GlobalKey {
 
 class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
     with TickerProviderStateMixin {
-  List<MergeableMaterialItem>? _children;
+  late List<MergeableMaterialItem> _children;
   final Map<LocalKey, _AnimationTuple?> _animationTuples =
       <LocalKey, _AnimationTuple?>{};
 
@@ -553,14 +553,14 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
     super.initState();
     _children = List<MergeableMaterialItem>.from(widget.children);
 
-    for (int i = 0; i < _children!.length; i += 1) {
-      if (_children![i] is MaterialGap) {
-        _initGap(_children![i] as MaterialGap);
-        _animationTuples[_children![i].key]!.controller!.value =
+    for (int i = 0; i < _children.length; i += 1) {
+      if (_children[i] is MaterialGap) {
+        _initGap(_children[i] as MaterialGap);
+        _animationTuples[_children[i].key]!.controller!.value =
             1.0; // Gaps are initially full-sized.
       }
     }
-    assert(_debugGapsAreValid(_children!));
+    assert(_debugGapsAreValid(_children));
   }
 
   void _initGap(MaterialGap gap) {
@@ -594,7 +594,7 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
 
   @override
   void dispose() {
-    for (MergeableMaterialItem child in _children!) {
+    for (MergeableMaterialItem child in _children) {
       if (child is MaterialGap)
         _animationTuples[child.key]!.controller!.dispose();
     }
@@ -629,20 +629,20 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
   }
 
   void _insertChild(int index, MergeableMaterialItem child) {
-    _children!.insert(index, child);
+    _children.insert(index, child);
 
     if (child is MaterialGap) _initGap(child);
   }
 
   void _removeChild(int index) {
-    final MergeableMaterialItem child = _children!.removeAt(index);
+    final MergeableMaterialItem child = _children.removeAt(index);
 
     if (child is MaterialGap) _animationTuples[child.key] = null;
   }
 
   bool _isClosingGap(int index) {
-    if (index < _children!.length - 1 && _children![index] is MaterialGap) {
-      return _animationTuples[_children![index].key]!.controller!.status ==
+    if (index < _children.length - 1 && _children[index] is MaterialGap) {
+      return _animationTuples[_children[index].key]!.controller!.status ==
           AnimationStatus.reverse;
     }
 
@@ -652,9 +652,9 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
   void _removeEmptyGaps() {
     int j = 0;
 
-    while (j < _children!.length) {
-      if (_children![j] is MaterialGap &&
-          _animationTuples[_children![j].key]!.controller!.status ==
+    while (j < _children.length) {
+      if (_children[j] is MaterialGap &&
+          _animationTuples[_children[j].key]!.controller!.status ==
               AnimationStatus.dismissed) {
         _removeChild(j);
       } else {
@@ -684,9 +684,9 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
 
     _removeEmptyGaps();
 
-    while (i < newChildren.length && j < _children!.length) {
+    while (i < newChildren.length && j < _children.length) {
       if (newOnly.contains(newChildren[i].key) ||
-          oldOnly.contains(_children![j].key)) {
+          oldOnly.contains(_children[j].key)) {
         final int startNew = i;
         final int startOld = j;
 
@@ -694,21 +694,21 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
         while (newOnly.contains(newChildren[i].key)) i += 1;
 
         // Skip old keys.
-        while (oldOnly.contains(_children![j].key) || _isClosingGap(j)) j += 1;
+        while (oldOnly.contains(_children[j].key) || _isClosingGap(j)) j += 1;
 
         final int newLength = i - startNew;
         final int oldLength = j - startOld;
 
         if (newLength > 0) {
           if (oldLength > 1 ||
-              oldLength == 1 && _children![startOld] is MaterialSlice) {
+              oldLength == 1 && _children[startOld] is MaterialSlice) {
             if (newLength == 1 && newChildren[startNew] is MaterialGap) {
               // Shrink all gaps into the size of the new one.
               double gapSizeSum = 0.0;
 
               while (startOld < j) {
-                if (_children![startOld] is MaterialGap) {
-                  final MaterialGap gap = _children![startOld] as MaterialGap;
+                if (_children[startOld] is MaterialGap) {
+                  final MaterialGap gap = _children[startOld] as MaterialGap;
                   gapSizeSum += gap.size;
                 }
 
@@ -733,7 +733,7 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
           } else if (oldLength == 1) {
             if (newLength == 1 &&
                 newChildren[startNew] is MaterialGap &&
-                _children![startOld].key == newChildren[startNew].key) {
+                _children[startOld].key == newChildren[startNew].key) {
               /// Special case: gap added back.
               _animationTuples[newChildren[startNew].key]!.controller!.forward();
             } else {
@@ -784,12 +784,12 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
         } else {
           // If more than a gap disappeared, just remove slices and shrink gaps.
           if (oldLength > 1 ||
-              oldLength == 1 && _children![startOld] is MaterialSlice) {
+              oldLength == 1 && _children[startOld] is MaterialSlice) {
             double gapSizeSum = 0.0;
 
             while (startOld < j) {
-              if (_children![startOld] is MaterialGap) {
-                final MaterialGap gap = _children![startOld] as MaterialGap;
+              if (_children[startOld] is MaterialGap) {
+                final MaterialGap gap = _children[startOld] as MaterialGap;
                 gapSizeSum += gap.size;
               }
 
@@ -812,7 +812,7 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
             }
           } else if (oldLength == 1) {
             // Shrink gap.
-            final MaterialGap gap = _children![startOld] as MaterialGap;
+            final MaterialGap gap = _children[startOld] as MaterialGap;
             _animationTuples[gap.key]!.gapStart = 0.0;
             _animationTuples[gap.key]!.controller!.reverse();
           }
@@ -820,21 +820,21 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
       } else {
         // Check whether the items are the same type. If they are, it means that
         // their places have been swaped.
-        if ((_children![j] is MaterialGap) == (newChildren[i] is MaterialGap)) {
-          _children![j] = newChildren[i];
+        if ((_children[j] is MaterialGap) == (newChildren[i] is MaterialGap)) {
+          _children[j] = newChildren[i];
 
           i += 1;
           j += 1;
         } else {
           // This is a closing gap which we need to skip.
-          assert(_children![j] is MaterialGap);
+          assert(_children[j] is MaterialGap);
           j += 1;
         }
       }
     }
 
     // Handle remaining items.
-    while (j < _children!.length) _removeChild(j);
+    while (j < _children.length) _removeChild(j);
     while (i < newChildren.length) {
       _insertChild(j, newChildren[i]);
 
@@ -855,18 +855,18 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
     Radius? startRadius = Radius.zero;
     Radius? endRadius = Radius.zero;
 
-    if (index > 0 && _children![index - 1] is MaterialGap) {
+    if (index > 0 && _children[index - 1] is MaterialGap) {
       startRadius = Radius.lerp(
         Radius.zero,
         cardRadius,
-        _animationTuples[_children![index - 1].key]!.startAnimation!.value,
+        _animationTuples[_children[index - 1].key]!.startAnimation!.value,
       );
     }
-    if (index < _children!.length - 2 && _children![index + 1] is MaterialGap) {
+    if (index < _children.length - 2 && _children[index + 1] is MaterialGap) {
       endRadius = Radius.lerp(
         Radius.zero,
         cardRadius,
-        _animationTuples[_children![index + 1].key]!.endAnimation!.value,
+        _animationTuples[_children[index + 1].key]!.endAnimation!.value,
       );
     }
 
@@ -884,7 +884,7 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
   }
 
   double? _getGapSize(int index) {
-    final MaterialGap gap = _children![index] as MaterialGap;
+    final MaterialGap gap = _children[index] as MaterialGap;
 
     return lerpDouble(
       _animationTuples[gap.key]!.gapStart,
@@ -911,8 +911,8 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
     List<Widget> slices = <Widget>[];
     int i;
 
-    for (i = 0; i < _children!.length; i += 1) {
-      if (_children![i] is MaterialGap) {
+    for (i = 0; i < _children.length; i += 1) {
+      if (_children[i] is MaterialGap) {
         assert(slices.isNotEmpty);
         widgets.add(
           Container(
@@ -936,7 +936,7 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
           ),
         );
       } else {
-        final MaterialSlice slice = _children![i] as MaterialSlice;
+        final MaterialSlice slice = _children[i] as MaterialSlice;
         Widget child = slice.child;
 
         if (widget.hasDividers) {
@@ -956,7 +956,7 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
               top: divider,
               bottom: hasBottomDivider ? divider : BorderSide.none,
             );
-          } else if (i == _children!.length - 1) {
+          } else if (i == _children.length - 1) {
             border = Border(
               top: hasTopDivider ? divider : BorderSide.none,
               bottom: divider,
@@ -970,7 +970,7 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
 
 
           child = AnimatedContainer(
-            key: _MergeableMaterialSliceKey(_children![i].key),
+            key: _MergeableMaterialSliceKey(_children[i].key),
             decoration: BoxDecoration(border: border),
             duration: kThemeAnimationDuration,
             curve: Curves.fastOutSlowIn,

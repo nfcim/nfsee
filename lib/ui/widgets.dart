@@ -111,10 +111,7 @@ class ReportRowItem extends StatelessWidget {
       subtitle = data["detail"]["card_number"];
     }
     if (config["name"] != null && config["name"] != "") {
-      if (subtitle == null)
-        subtitle = typestr;
-      else
-        subtitle = typestr + " - " + subtitle;
+      subtitle = typestr + " - " + subtitle;
       title = config["name"];
     }
 
@@ -124,7 +121,7 @@ class ReportRowItem extends StatelessWidget {
         child: Icon(Icons.credit_card),
       ),
       title: Text(title),
-      subtitle: subtitle != null ? Text(subtitle) : null,
+      subtitle: Text(subtitle),
       onTap: this.onTap,
       trailing: Icon(CupertinoIcons.right_chevron),
     );

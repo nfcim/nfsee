@@ -10,7 +10,7 @@ part of 'database.dart';
 class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
   final int id;
   final DateTime time;
-  final String config;
+  final String? config;
   final String data;
   DumpedRecord(
       {required this.id,
@@ -36,7 +36,7 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['time'] = Variable<DateTime>(time);
-    map['config'] = Variable<String>(config);
+    map['config'] = Variable<String>(config!);
     map['data'] = Variable<String>(data);
     return map;
   }
@@ -45,7 +45,7 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
     return DumpedRecordsCompanion(
       id: Value(id),
       time: Value(time),
-      config: Value(config),
+      config: Value(config!),
       data: Value(data),
     );
   }
@@ -66,7 +66,7 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'time': serializer.toJson<DateTime>(time),
-      'config': serializer.toJson<String>(config),
+      'config': serializer.toJson<String>(config!),
       'data': serializer.toJson<String>(data),
     };
   }

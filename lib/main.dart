@@ -218,7 +218,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
       case 'report':
         _closeReadModal(this.context);
-        final id = await bloc!.addDumpedRecord(jsonEncode(scriptModel.data));
+        final id = await bloc.addDumpedRecord(jsonEncode(scriptModel.data));
         home.scrollToNewCard();
         break;
 

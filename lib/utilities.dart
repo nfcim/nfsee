@@ -112,7 +112,7 @@ List<Detail> parseCardDetails(
 
   void addDetail(String fieldName, String parsedName,
       [IconData? icon, transformer]) {
-    _addDetail(data, details, fieldName, parsedName, icon!, transformer);
+    _addDetail(data, details, fieldName, parsedName, icon, transformer);
   }
 
   // all cards
