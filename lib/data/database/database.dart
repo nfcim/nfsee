@@ -67,13 +67,13 @@ class Database extends _$Database {
     return select(dumpedRecords).get().then((l) => l.length);
   }
 
-  Future<bool> writeDumpedRecord(int? id, DumpedRecordsCompanion entry) {
+  Future<bool> writeDumpedRecord(int id, DumpedRecordsCompanion entry) {
     return (update(dumpedRecords)..where((u) => u.id.equals(id)))
         .write(entry)
         .then((count) => count > 0);
   }
 
-  Future<int> deleteDumpedRecord(int? id) {
+  Future<int> deleteDumpedRecord(int id) {
     return (delete(dumpedRecords)..where((t) => t.id.equals(id))).go();
   }
 

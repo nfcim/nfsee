@@ -25,7 +25,7 @@ class NFSeeAppBloc {
         config: Value(config ?? DEFAULT_CONFIG)));
   }
 
-  void updateDumpedRecordConfig(int? id, String config) {
+  void updateDumpedRecordConfig(int id, String config) {
     db.writeDumpedRecord(
         id,
         DumpedRecordsCompanion(
@@ -33,7 +33,7 @@ class NFSeeAppBloc {
         ));
   }
 
-  Future<void> delDumpedRecord(int? id) async {
+  Future<void> delDumpedRecord(int id) async {
     await db.deleteDumpedRecord(id);
   }
 
