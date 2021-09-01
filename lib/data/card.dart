@@ -91,12 +91,12 @@ class CardData {
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(this.name ?? S.of(context)!.unnamedCard,
+                          Text(this.name ?? S.of(context).unnamedCard,
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold)),
-                          Text(this.cardType!.getName(context),
+                          Text(this.cardType.getName(context),
                               style: TextStyle(
                                   color: Colors.white70, fontSize: 16)),
                         ]),

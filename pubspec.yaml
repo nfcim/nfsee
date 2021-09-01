@@ -21,6 +21,7 @@ dependencies:
   path_provider: "^2.0.2"
   path: "^1.6.4"
   intl: "^0.17.0"
+  intl_generator: "^0.2.0+0"
   package_info: "^2.0.2"
   url_launcher: "^6.0.9"
   webview_flutter: "^2.0.12"

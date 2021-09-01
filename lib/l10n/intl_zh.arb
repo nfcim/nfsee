@@ -1,4 +1,5 @@
 {
+    "@@locale": "zh",
     "scriptTabTitle": "执行脚本",
     "scanTabTitle": "读卡",
     "settingsTabTitle": "设置",

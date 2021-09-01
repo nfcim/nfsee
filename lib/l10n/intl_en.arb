@@ -1,4 +1,5 @@
 {
+    "@@locale": "en",
     "scriptTabTitle": "Run Script",
     "scanTabTitle": "Scan",
     "settingsTabTitle": "Settings",

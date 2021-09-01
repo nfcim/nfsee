@@ -143,7 +143,7 @@ class HomeState extends State<HomeAct>
                   Row(
                     children: <Widget>[
                       Text(
-                        S.of(context)!.scanHistory,
+                        S.of(context).scanHistory,
                         style: Theme.of(context)
                             .primaryTextTheme
                             .headline6!
@@ -171,7 +171,7 @@ class HomeState extends State<HomeAct>
                     data == null
                         ? "加载中..."
                         : S
-                            .of(context)!
+                            .of(context)
                             .historyCount
                             .replaceAll("\$", data.length.toString()),
                     style: Theme.of(context)
@@ -377,7 +377,7 @@ class HomeState extends State<HomeAct>
           child: AppBar(
             primary: true,
             backgroundColor: Color.fromARGB(255, 85, 69, 177),
-            title: Text(detail!.name ?? S.of(context)!.unnamedCard,
+            title: Text(detail!.name ?? S.of(context).unnamedCard,
                 style: Theme.of(context)
                     .textTheme
                     .headline6!
@@ -404,7 +404,7 @@ class HomeState extends State<HomeAct>
                 icon: Icon(Icons.more_vert, color: Colors.white),
                 itemBuilder: (context) => [
                   PopupMenuItem(
-                      value: "delete", child: Text(S.of(context)!.delete)),
+                      value: "delete", child: Text(S.of(context).delete)),
                 ],
               ),
             ],
@@ -439,8 +439,8 @@ class HomeState extends State<HomeAct>
             children: <Widget>[
               ListTile(
                 title: Text(
-                    "${S.of(context)!.addedAt} ${this.detail!.formattedTime}"),
-                subtitle: Text(S.of(context)!.detailHint),
+                    "${S.of(context).addedAt} ${this.detail!.formattedTime}"),
+                subtitle: Text(S.of(context).detailHint),
                 leading: Icon(Icons.access_time),
               ),
               detailTiles.length == 0 ? Container() : Divider(),
@@ -508,10 +508,10 @@ class HomeState extends State<HomeAct>
                 color: iconColor,
               ),
             ),
-            title: Text(S.of(context)!.transactionHistory),
+            title: Text(S.of(context).transactionHistory),
             subtitle: transferTiles == null
-                ? Text(S.of(context)!.notSupported)
-                : Text("${transferTiles.length} ${S.of(context)!.recordCount}"),
+                ? Text(S.of(context).notSupported)
+                : Text("${transferTiles.length} ${S.of(context).recordCount}"),
             children: transferTiles ?? [],
           ),
         ),
@@ -526,10 +526,10 @@ class HomeState extends State<HomeAct>
                 color: iconColor,
               ),
             ),
-            title: Text(S.of(context)!.ndefRecords),
+            title: Text(S.of(context).ndefRecords),
             subtitle: ndefTiles == null
-                ? Text(S.of(context)!.notSupported)
-                : Text("${ndefTiles.length} ${S.of(context)!.recordCount}"),
+                ? Text(S.of(context).notSupported)
+                : Text("${ndefTiles.length} ${S.of(context).recordCount}"),
             children: ndefTiles ?? [],
           ),
         ),
@@ -544,7 +544,7 @@ class HomeState extends State<HomeAct>
                 color: iconColor,
               ),
             ),
-            title: Text(S.of(context)!.technologicalDetails),
+            title: Text(S.of(context).technologicalDetails),
             subtitle: Text(data['tag']['standard']),
             children: technologyDetailTiles,
           ),
@@ -560,11 +560,11 @@ class HomeState extends State<HomeAct>
                 color: iconColor,
               ),
             ),
-            title: Text(S.of(context)!.memoryData),
+            title: Text(S.of(context).memoryData),
             subtitle: data["detail"]["data"] == null
-                ? Text(S.of(context)!.unavailable)
+                ? Text(S.of(context).unavailable)
                 : Text(
-                    "${data["detail"]["data"].length >> 1} ${S.of(context)!.byteCount}"),
+                    "${data["detail"]["data"].length >> 1} ${S.of(context).byteCount}"),
             children: dataTiles,
           ),
         ),
@@ -579,9 +579,9 @@ class HomeState extends State<HomeAct>
                 color: iconColor,
               ),
             ),
-            title: Text(S.of(context)!.apduLogs),
+            title: Text(S.of(context).apduLogs),
             subtitle: Text(
-                "${data["apdu_history"].length} ${S.of(context)!.recordCount}"),
+                "${data["apdu_history"].length} ${S.of(context).recordCount}"),
             children: apduTiles,
           ),
         ),
@@ -593,7 +593,7 @@ class HomeState extends State<HomeAct>
 
   void _delFocused() async {
     final message =
-        '${S.of(context)!.record} ${this.detail!.id} ${S.of(context)!.deleted}';
+        '${S.of(context).record} ${this.detail!.id} ${S.of(context).deleted}';
     log('Record ${this.detail!.id} deleted');
 
     final deleted = this.detail;
@@ -609,7 +609,7 @@ class HomeState extends State<HomeAct>
             content: Text(message),
             duration: Duration(seconds: 5),
             action: SnackBarAction(
-              label: S.of(context)!.undo,
+              label: S.of(context).undo,
               onPressed: () {},
             )))
         .closed
@@ -640,7 +640,7 @@ class HomeState extends State<HomeAct>
             TextFormField(
               decoration: InputDecoration(
                 filled: true,
-                labelText: S.of(context)!.cardName,
+                labelText: S.of(context).cardName,
               ),
               maxLines: 1,
               initialValue: pendingName,
