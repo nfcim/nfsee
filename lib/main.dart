@@ -44,12 +44,14 @@ class _NFSeeAppState extends State<NFSeeApp> {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         localizationsDelegates: [
-          S.delegate,
+          AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
         ],
-        supportedLocales: S.delegate.supportedLocales,
+        supportedLocales: AppLocalizations.supportedLocales,
         onGenerateTitle: (context) {
-          return S.of(context).homeScreenTitle;
+          return AppLocalizations.of(context)!.homeScreenTitle;
         },
         theme: ThemeData(
           brightness: Brightness.light,
@@ -166,7 +168,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         error = null;
         try {
           final tag = await FlutterNfcKit.poll(
-              iosAlertMessage: S.of(context).waitForCard);
+              iosAlertMessage: AppLocalizations.of(context)!.waitForCard);
           final json = tag.toJson();
 
           // try to read ndef and insert into json
@@ -180,7 +182,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           }
 
           _webView.evalJavascript("pollCallback(${jsonEncode(json)})");
-          FlutterNfcKit.setIosAlertMessage(S.of(context).cardPolled);
+          FlutterNfcKit.setIosAlertMessage(AppLocalizations.of(context)!.cardPolled);
         } on PlatformException catch (e) {
           error = e;
           // no need to do anything with FlutterNfcKit, which will reset itself
@@ -188,7 +190,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           _closeReadModal(this.context);
           showSnackbar(SnackBar(
               content:
-                  Text('${S.of(context).readFailed}: ${e.toDetailString()}')));
+                  Text('${AppLocalizations.of(context)!.readFailed}: ${e.toDetailString()}')));
           // reject the promise
           _webView.evalJavascript("pollErrorCallback(${e.toJsonString()})");
         }
@@ -210,7 +212,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           _closeReadModal(this.context);
           showSnackbar(SnackBar(
               content:
-                  Text('${S.of(context).readFailed}: ${e.toDetailString()}')));
+                  Text('${AppLocalizations.of(context)!.readFailed}: ${e.toDetailString()}')));
           _webView
               .evalJavascript("transceiveErrorCallback(${e.toJsonString()})");
         }
@@ -224,11 +226,11 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
       case 'finish':
         if (error != null) {
-          await FlutterNfcKit.finish(iosErrorMessage: S.of(context).readFailed);
+          await FlutterNfcKit.finish(iosErrorMessage: AppLocalizations.of(context)!.readFailed);
           error = null;
         } else {
           await FlutterNfcKit.finish(
-              iosAlertMessage: S.of(context).readSucceeded);
+              iosAlertMessage: AppLocalizations.of(context)!.readSucceeded);
         }
         break;
 
@@ -261,15 +263,15 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.code),
-          label: S.of(context).scriptTabTitle,
+          label: AppLocalizations.of(context)!.scriptTabTitle,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.nfc),
-          label: S.of(context).scanTabTitle,
+          label: AppLocalizations.of(context)!.scanTabTitle,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.settings),
-          label: S.of(context).settingsTabTitle,
+          label: AppLocalizations.of(context)!.settingsTabTitle,
         ),
       ],
     );
@@ -346,7 +348,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
-                  S.of(context).waitForCard,
+                  AppLocalizations.of(context)!.waitForCard,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 18),
                 ),
