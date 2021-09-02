@@ -12,12 +12,13 @@ import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:interactive_webview_null_safety/interactive_webview.dart';
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';
-import 'package:nfsee/generated/l10n.dart';
 import 'package:nfsee/models.dart';
 import 'package:nfsee/ui/home.dart';
 import 'package:nfsee/ui/scripts.dart';
 import 'package:nfsee/ui/settings.dart';
 import 'package:nfsee/utilities.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() => runApp(NFSeeApp());
 

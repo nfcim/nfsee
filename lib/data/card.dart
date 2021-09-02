@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:nfsee/data/database/database.dart';
-import 'package:nfsee/generated/l10n.dart';
 import 'package:nfsee/models.dart';
 import 'package:nfsee/utilities.dart';
 

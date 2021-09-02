@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:nfsee/generated/l10n.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Detail {
   const Detail({this.name, this.value, this.icon});

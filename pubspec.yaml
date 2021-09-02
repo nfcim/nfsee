@@ -41,9 +41,6 @@ flutter:
     - assets/icons/
     - assets/html/
 
-flutter_intl:
-  enabled: true
-
 flutter_icons:
   android: false
   ios: true
