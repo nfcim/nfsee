@@ -30,7 +30,7 @@
     "togglePlatform": "Toggle UI Platform (debug only)",
     "upCredit": "UnionPay Credit",
     "upDebit": "UnionPay Debit",
-    "uPSecuredCredit": "UnionPay Secured Credit",
+    "upSecuredCredit": "UnionPay Secured Credit",
     "visa": "Visa",
     "mc": "MasterCard",
     "amex": "American Express",

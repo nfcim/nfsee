@@ -98,7 +98,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get upDebit => 'UnionPay Debit';
 
   @override
-  String get uPSecuredCredit => 'UnionPay Secured Credit';
+  String get upSecuredCredit => 'UnionPay Secured Credit';
 
   @override
   String get visa => 'Visa';

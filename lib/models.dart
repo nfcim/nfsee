@@ -54,7 +54,7 @@ extension CardTypeExtension on CardType? {
       case CardType.UPDebit:
         return AppLocalizations.of(context)!.upDebit;
       case CardType.UPSecuredCredit:
-        return AppLocalizations.of(context)!.uPSecuredCredit;
+        return AppLocalizations.of(context)!.upSecuredCredit;
       case CardType.Visa:
         return AppLocalizations.of(context)!.visa;
       case CardType.MC:

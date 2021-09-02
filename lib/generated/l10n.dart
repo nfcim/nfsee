@@ -274,11 +274,11 @@ abstract class AppLocalizations {
   /// **'UnionPay Debit'**
   String get upDebit;
 
-  /// No description provided for @uPSecuredCredit.
+  /// No description provided for @upSecuredCredit.
   ///
   /// In en, this message translates to:
   /// **'UnionPay Secured Credit'**
-  String get uPSecuredCredit;
+  String get upSecuredCredit;
 
   /// No description provided for @visa.
   ///

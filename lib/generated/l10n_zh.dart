@@ -92,58 +92,58 @@ class AppLocalizationsZh extends AppLocalizations {
   String get togglePlatform => '切换 UI 平台（仅用于调试）';
 
   @override
-  String get upCredit => 'UnionPay Credit';
+  String get upCredit => '银联信用卡';
 
   @override
-  String get upDebit => 'UnionPay Debit';
+  String get upDebit => '银联借记卡';
 
   @override
-  String get uPSecuredCredit => 'UnionPay Secured Credit';
+  String get upSecuredCredit => '银联准贷记卡';
 
   @override
-  String get visa => 'Visa';
+  String get visa => '维萨卡';
 
   @override
-  String get mc => 'MasterCard';
+  String get mc => '万事达卡';
 
   @override
-  String get amex => 'American Express';
+  String get amex => '美国运通卡';
 
   @override
-  String get jcb => 'JCB';
+  String get jcb => 'JCB卡';
 
   @override
-  String get discover => 'Discover';
+  String get discover => '发现卡';
 
   @override
-  String get cityUnion => 'City Union';
+  String get cityUnion => '城市一卡通';
 
   @override
-  String get tUnion => 'T Union';
+  String get tUnion => '交通联合卡';
 
   @override
-  String get bmac => 'Beijing Yikatong';
+  String get bmac => '北京一卡通';
 
   @override
-  String get lingnanPass => 'Lingnan Pass';
+  String get lingnanPass => '岭南通';
 
   @override
-  String get shenzhenTong => 'Shenzhen Tong';
+  String get shenzhenTong => '深圳通';
 
   @override
-  String get wuhanTong => 'Wuhan Tong';
+  String get wuhanTong => '武汉通';
 
   @override
   String get tMoney => 'T-Money';
 
   @override
-  String get octopus => 'Octopus';
+  String get octopus => '八达通';
 
   @override
-  String get tsinghua => 'Tsinghua University Campus Card';
+  String get tsinghua => '清华大学校园卡';
 
   @override
-  String get chinaResidentIDGen2 => 'China Resident ID Card';
+  String get chinaResidentIDGen2 => '二代居民身份证';
 
   @override
   String get mifareUltralight => 'MIFARE Ultralight';
@@ -158,31 +158,31 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mifareClassic => 'MIFARE Classic';
 
   @override
-  String get unknown => 'Unknown';
+  String get unknown => '未知';
 
   @override
-  String get authorization => 'Authorization';
+  String get authorization => '授权';
 
   @override
-  String get balanceInquiry => 'Balance Inquiry';
+  String get balanceInquiry => '查询余额';
 
   @override
-  String get cash => 'Cash';
+  String get cash => '现金';
 
   @override
-  String get strVoid => 'Void';
+  String get strVoid => '无';
 
   @override
-  String get mobileTopup => 'Mobile Topup';
+  String get mobileTopup => '移动充值';
 
   @override
-  String get strLoad => 'Load';
+  String get strLoad => '充值';
 
   @override
-  String get purchase => 'Purchase';
+  String get purchase => '消费';
 
   @override
-  String get compoundPurchase => 'Compound Purchase';
+  String get compoundPurchase => '复合消费';
 
   @override
   String get unnamedCard => '未命名卡片';
@@ -236,7 +236,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get validUntil => '有效期';
 
   @override
-  String get atc => 'Transaction Counter';
+  String get atc => '交易计数器';
 
   @override
   String get pinRetry => '剩余 PIN 重试次数';
@@ -272,67 +272,67 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mgmtNumber => '卡体管理号';
 
   @override
-  String get line1 => 'Line 1';
+  String get line1 => '1号线';
 
   @override
-  String get line2 => 'Line 2';
+  String get line2 => '2号线';
 
   @override
-  String get line4 => 'Line 4';
+  String get line4 => '4号线';
 
   @override
-  String get line5 => 'Line 5';
+  String get line5 => '5号线';
 
   @override
-  String get line6 => 'Line 6';
+  String get line6 => '6号线';
 
   @override
-  String get line7 => 'Line 7';
+  String get line7 => '7号线';
 
   @override
-  String get line8 => 'Line 8';
+  String get line8 => '8号线';
 
   @override
-  String get line9 => 'Line 9';
+  String get line9 => '9号线';
 
   @override
-  String get line10 => 'Line 10';
+  String get line10 => '10号线';
 
   @override
-  String get line13 => 'Line 13';
+  String get line13 => '13号线';
 
   @override
-  String get line14 => 'Line 14';
+  String get line14 => '14号线';
 
   @override
-  String get line15 => 'Line 15';
+  String get line15 => '15号线';
 
   @override
-  String get line16 => 'Line 16';
+  String get line16 => '16号线';
 
   @override
-  String get xijiao => 'Xijiao Line';
+  String get xijiao => '西郊线';
 
   @override
-  String get daxingAirport => 'Daxing Airport Line';
+  String get daxingAirport => '大兴机场线';
 
   @override
-  String get daxing => 'Daxing Line';
+  String get daxing => '大兴线';
 
   @override
-  String get changping => 'Changping Line';
+  String get changping => '昌平线';
 
   @override
-  String get fangshan => 'Fangshan Line';
+  String get fangshan => '房山线';
 
   @override
-  String get yizhuang => 'Yizhuang Line';
+  String get yizhuang => '亦庄线';
 
   @override
-  String get batong => 'Batong Line';
+  String get batong => '八通线';
 
   @override
-  String get capitalAirport => 'Capital Airport Line';
+  String get capitalAirport => '首都机场线';
 
   @override
   String get deletedHint => '数据已删除';
