@@ -79,23 +79,23 @@ List<Detail> parseTransactionDetails(
     _addDetail(data, details, fieldName, parsedName, icon, transformer);
   }
 
-  addDetail('number', AppLocalizations.of(context)!.transactionNumber, Icons.bookmark);
-  addDetail('terminal', AppLocalizations.of(context)!.terminal, Icons.place);
+  addDetail('number', S(context).transactionNumber, Icons.bookmark);
+  addDetail('terminal', S(context).terminal, Icons.place);
   addDetail(
       'subway_exit',
-      AppLocalizations.of(context)!.subwayExit,
+      S(context).subwayExit,
       Icons.subway,
       (s) => (getEnumFromString<BeijingSubway>(BeijingSubway.values, s))!
           .getName(context));
-  addDetail('type', AppLocalizations.of(context)!.type);
-  addDetail('country_code', AppLocalizations.of(context)!.countryCode, Icons.map);
-  addDetail('currency', AppLocalizations.of(context)!.currency, Icons.local_atm);
-  addDetail('amount_other', AppLocalizations.of(context)!.amountOther, Icons.attach_money);
+  addDetail('type', S(context).type);
+  addDetail('country_code', S(context).countryCode, Icons.map);
+  addDetail('currency', S(context).currency, Icons.local_atm);
+  addDetail('amount_other', S(context).amountOther, Icons.attach_money);
 
   // all remaining data, clone to avoid concurrent modificationL
   final remain = {}..addAll(data);
   remain.forEach(
-      (k, _) => addDetail(k, '${AppLocalizations.of(context)!.rawData}: $k', Icons.error));
+      (k, _) => addDetail(k, '${S(context).rawData}: $k', Icons.error));
 
   return details;
 }
@@ -116,63 +116,63 @@ List<Detail> parseCardDetails(
   }
 
   // all cards
-  addDetail('card_number', AppLocalizations.of(context)!.cardNumber, Icons.credit_card);
+  addDetail('card_number', S(context).cardNumber, Icons.credit_card);
   // THU
-  addDetail('internal_number', AppLocalizations.of(context)!.internalNumber, Icons.credit_card);
+  addDetail('internal_number', S(context).internalNumber, Icons.credit_card);
   // China ID
-  addDetail('ic_serial', AppLocalizations.of(context)!.icSerial, Icons.sim_card);
+  addDetail('ic_serial', S(context).icSerial, Icons.sim_card);
   // China ID
-  addDetail('mgmt_number', AppLocalizations.of(context)!.mgmtNumber, Icons.credit_card);
+  addDetail('mgmt_number', S(context).mgmtNumber, Icons.credit_card);
   // PBOC
-  addDetail('name', AppLocalizations.of(context)!.holderName, Icons.person);
+  addDetail('name', S(context).holderName, Icons.person);
   // PBOC
-  addDetail('balance', AppLocalizations.of(context)!.balance, Icons.account_balance,
+  addDetail('balance', S(context).balance, Icons.account_balance,
       formatTransactionBalance);
   // T Union
-  addDetail('province_code', AppLocalizations.of(context)!.provinceCode, Icons.home);
+  addDetail('province_code', S(context).provinceCode, Icons.home);
   // T Union
-  addDetail('tu_type', AppLocalizations.of(context)!.tuType, Icons.person);
+  addDetail('tu_type', S(context).tuType, Icons.person);
   // City Union / TUnion
-  addDetail('city', AppLocalizations.of(context)!.city, Icons.home);
+  addDetail('city', S(context).city, Icons.home);
   // City Union
-  addDetail('issue_date', AppLocalizations.of(context)!.issueDate, Icons.calendar_today,
+  addDetail('issue_date', S(context).issueDate, Icons.calendar_today,
       formatTransactionDate);
   // PBOC
-  addDetail('expiry_date', AppLocalizations.of(context)!.expiryDate, Icons.calendar_today,
+  addDetail('expiry_date', S(context).expiryDate, Icons.calendar_today,
       formatTransactionDate);
   // THU
-  addDetail('display_expiry_date', AppLocalizations.of(context)!.displayExpiryDate,
+  addDetail('display_expiry_date', S(context).displayExpiryDate,
       Icons.calendar_today, formatTransactionDate);
   // PPSE
-  addDetail('expiration', AppLocalizations.of(context)!.validUntil, Icons.calendar_today);
+  addDetail('expiration', S(context).validUntil, Icons.calendar_today);
   // PBOC
-  addDetail('purchase_atc', '${AppLocalizations.of(context)!.atc} (${AppLocalizations.of(context)!.purchase})',
+  addDetail('purchase_atc', '${S(context).atc} (${S(context).purchase})',
       Icons.exposure_neg_1);
   // PBOC
-  addDetail('load_atc', '${AppLocalizations.of(context)!.atc} (${AppLocalizations.of(context)!.strLoad})',
+  addDetail('load_atc', '${S(context).atc} (${S(context).strLoad})',
       Icons.exposure_plus_1);
   // PPSE
-  addDetail('atc', AppLocalizations.of(context)!.atc, Icons.exposure_plus_1);
+  addDetail('atc', S(context).atc, Icons.exposure_plus_1);
   // PPSE
-  addDetail('pin_retry', AppLocalizations.of(context)!.pinRetry, Icons.lock);
+  addDetail('pin_retry', S(context).pinRetry, Icons.lock);
   // Mifare
-  addDetail('mifare_vendor', AppLocalizations.of(context)!.mifareVendor, Icons.copyright);
+  addDetail('mifare_vendor', S(context).mifareVendor, Icons.copyright);
   addDetail(
-      'mifare_product_type', AppLocalizations.of(context)!.mifareProductType, Icons.looks_one);
-  addDetail('mifare_product_subtype', AppLocalizations.of(context)!.mifareProductSubtype,
+      'mifare_product_type', S(context).mifareProductType, Icons.looks_one);
+  addDetail('mifare_product_subtype', S(context).mifareProductSubtype,
       Icons.looks_two);
-  addDetail('mifare_product_version', AppLocalizations.of(context)!.mifareProductVersion,
+  addDetail('mifare_product_version', S(context).mifareProductVersion,
       Icons.text_fields);
-  addDetail('mifare_product_name', AppLocalizations.of(context)!.mifareProductName,
+  addDetail('mifare_product_name', S(context).mifareProductName,
       Icons.branding_watermark);
-  addDetail('mifare_storage_size', AppLocalizations.of(context)!.mifareStorageSize,
+  addDetail('mifare_storage_size', S(context).mifareStorageSize,
       Icons.format_size);
-  addDetail('mifare_production_date', AppLocalizations.of(context)!.mifareProductionDate,
+  addDetail('mifare_production_date', S(context).mifareProductionDate,
       Icons.date_range);
   // all remaining data, clone to avoid concurrent modification
   final remain = {}..addAll(data);
   remain.forEach(
-      (k, _) => addDetail(k, '${AppLocalizations.of(context)!.rawData}: $k', Icons.error));
+      (k, _) => addDetail(k, '${S(context).rawData}: $k', Icons.error));
 
   return details;
 }
@@ -232,4 +232,8 @@ String? parseTechnologicalDetailKey(String? key) {
     default:
       return key;
   }
+}
+
+AppLocalizations S(BuildContext context) {
+  return AppLocalizations.of(context)!;
 }

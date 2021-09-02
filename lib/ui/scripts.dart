@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:interactive_webview_null_safety/interactive_webview.dart';
@@ -171,9 +170,9 @@ class _ScriptsActState extends State<ScriptsAct>
       case 'poll':
         try {
           final tag = await FlutterNfcKit.poll(
-              iosAlertMessage: AppLocalizations.of(context)!.waitForCard);
+              iosAlertMessage: S(context).waitForCard);
           _webView.evalJavascript("pollCallback(${jsonEncode(tag)})");
-          FlutterNfcKit.setIosAlertMessage(AppLocalizations.of(context)!.executingScript);
+          FlutterNfcKit.setIosAlertMessage(S(context).executingScript);
         } on PlatformException catch (e) {
           log('Poll exception: ${e.toDetailString()}');
           _webView.evalJavascript("pollErrorCallback(${e.toJsonString()})");
@@ -213,10 +212,10 @@ class _ScriptsActState extends State<ScriptsAct>
 
       case 'finish':
         if (this.errors[this.running] == true) {
-          await FlutterNfcKit.finish(iosErrorMessage: AppLocalizations.of(context)!.readFailed);
+          await FlutterNfcKit.finish(iosErrorMessage: S(context).readFailed);
         } else {
           await FlutterNfcKit.finish(
-              iosAlertMessage: AppLocalizations.of(context)!.readSucceeded);
+              iosAlertMessage: S(context).readSucceeded);
         }
         log("Reseting running state");
         setState(() {
@@ -291,7 +290,7 @@ class _ScriptsActState extends State<ScriptsAct>
     await this.bloc!.delScript(script.id);
     log('Script ${script.name} deleted');
     final message =
-        '${AppLocalizations.of(context)!.script} ${script.name} ${AppLocalizations.of(context)!.deleted}';
+        '${S(context).script} ${script.name} ${S(context).deleted}';
 
     if (defaultTargetPlatform == TargetPlatform.android) {
       var scaffold = Scaffold.of(context);
@@ -302,7 +301,7 @@ class _ScriptsActState extends State<ScriptsAct>
             content: Text(message),
             duration: Duration(seconds: 5),
             action: SnackBarAction(
-              label: AppLocalizations.of(context)!.undo,
+              label: S(context).undo,
               onPressed: () {},
             ),
           ))
@@ -355,7 +354,7 @@ class _ScriptsActState extends State<ScriptsAct>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Image.asset('assets/empty.png', height: 200),
-                  Text(AppLocalizations.of(context)!.noHistoryFound),
+                  Text(S(context).noHistoryFound),
                 ],
               ));
         }
@@ -375,13 +374,13 @@ class _ScriptsActState extends State<ScriptsAct>
                         canTapOnHeader: true,
                         headerBuilder: (context, open) => Opacity(
                           child: ListTile(
-                            subtitle: Text(AppLocalizations.of(context)!.lastExecutionTime +
+                            subtitle: Text(S(context).lastExecutionTime +
                                 ': ' +
                                 (script.lastUsed != null
                                     ? script.lastUsed
                                         .toString()
                                         .split('.')[0] // remove part before ms
-                                    : AppLocalizations.of(context)!.never)),
+                                    : S(context).never)),
                             title: Text(script.name),
                           ),
                           opacity:
@@ -429,7 +428,7 @@ class _ScriptsActState extends State<ScriptsAct>
                                                 ),
                                               ))
                                           : Icon(Icons.play_arrow),
-                                      label: Text(AppLocalizations.of(context)!.run)),
+                                      label: Text(S(context).run)),
                                   Expanded(child: Container()),
                                   IconButton(
                                     onPressed: () {
@@ -438,7 +437,7 @@ class _ScriptsActState extends State<ScriptsAct>
                                     color:
                                         Theme.of(context).colorScheme.onSurface,
                                     icon: Icon(Icons.edit),
-                                    tooltip: AppLocalizations.of(context)!.edit,
+                                    tooltip: S(context).edit,
                                   ),
                                   IconButton(
                                     onPressed: () async =>
@@ -446,20 +445,20 @@ class _ScriptsActState extends State<ScriptsAct>
                                     color:
                                         Theme.of(context).colorScheme.onSurface,
                                     icon: Icon(Icons.delete),
-                                    tooltip: AppLocalizations.of(context)!.delete,
+                                    tooltip: S(context).delete,
                                   ),
                                   IconButton(
                                       onPressed: () async {
                                         await Clipboard.setData(
                                             ClipboardData(text: script.source));
                                         _showMessage(context,
-                                            '${AppLocalizations.of(context)!.script} ${script.name} ${AppLocalizations.of(context)!.copied}');
+                                            '${S(context).script} ${script.name} ${S(context).copied}');
                                       },
                                       color: Theme.of(context)
                                           .colorScheme
                                           .onSurface,
                                       icon: Icon(Icons.content_copy),
-                                      tooltip: AppLocalizations.of(context)!.copy),
+                                      tooltip: S(context).copy),
                                 ],
                               ),
                             ],
@@ -505,7 +504,7 @@ class _ScriptsActState extends State<ScriptsAct>
         initialValue: this.currentName,
         decoration: InputDecoration(
           border: OutlineInputBorder(),
-          hintText: AppLocalizations.of(context)!.name,
+          hintText: S(context).name,
         ),
         maxLines: 1,
         onChanged: (cont) {
@@ -516,7 +515,7 @@ class _ScriptsActState extends State<ScriptsAct>
       TextFormField(
         initialValue: this.currentSource,
         decoration: InputDecoration(
-            border: OutlineInputBorder(), hintText: AppLocalizations.of(context)!.code),
+            border: OutlineInputBorder(), hintText: S(context).code),
         minLines: 3,
         maxLines: null,
         onChanged: (cont) {
@@ -553,8 +552,8 @@ class _ScriptsActState extends State<ScriptsAct>
         builder: (context) {
           return AlertDialog(
             title: Text(id == -1
-                ? AppLocalizations.of(context)!.addScript
-                : AppLocalizations.of(context)!.modifyScript),
+                ? S(context).addScript
+                : S(context).modifyScript),
             content: _buildAddScriptDialogContent(),
             actions: <Widget>[
               FlatButton(
@@ -582,7 +581,7 @@ class _ScriptsActState extends State<ScriptsAct>
         context: context,
         builder: (context) {
           return CupertinoAlertDialog(
-            title: Text(AppLocalizations.of(context)!.addScript),
+            title: Text(S(context).addScript),
             content: _buildAddScriptDialogContent(),
             actions: <Widget>[
               CupertinoButton(
@@ -611,7 +610,7 @@ class _ScriptsActState extends State<ScriptsAct>
             backgroundColor:
                 Theme.of(context).primaryColor.withOpacity(appbarFloatVal),
             title: Text(
-              AppLocalizations.of(context)!.scriptTabTitle,
+              S(context).scriptTabTitle,
               style: Theme.of(context).primaryTextTheme.headline6!.copyWith(
                     fontSize: 20 + 12 * (1 - appbarFloatVal),
                   ),
@@ -621,12 +620,12 @@ class _ScriptsActState extends State<ScriptsAct>
                 icon: Icon(Icons.add,
                     color: Theme.of(context).primaryTextTheme.headline5!.color),
                 onPressed: _showScriptDialog,
-                tooltip: AppLocalizations.of(context)!.addScript,
+                tooltip: S(context).addScript,
               ),
               IconButton(
                 icon: Icon(Icons.help,
                     color: Theme.of(context).primaryTextTheme.headline5!.color),
-                tooltip: AppLocalizations.of(context)!.help,
+                tooltip: S(context).help,
                 onPressed: () {
                   launch('https://nfsee.nfc.im/js-extension/');
                 },
@@ -667,7 +666,7 @@ class _ScriptsActState extends State<ScriptsAct>
       margin: EdgeInsets.only(bottom: 10),
       child: Center(
           child: Text(
-        AppLocalizations.of(context)!.pressRun,
+        S(context).pressRun,
         style: TextStyle(color: Theme.of(context).disabledColor),
       )),
     );

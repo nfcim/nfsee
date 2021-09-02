@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'widgets.dart';
+import 'package:nfsee/utilities.dart';
 
 class AboutAct extends StatefulWidget {
   @override
@@ -75,37 +75,37 @@ class _AboutActState extends State<AboutAct> {
               style: Theme.of(context).textTheme.bodyText2,
             ),
             ListTile(
-              title: Text(AppLocalizations.of(context)!.homepage),
+              title: Text(S(context).homepage),
               onTap: () => launch('https://nfsee.nfc.im'),
             ),
             Divider(
               height: 0,
             ),
             ListTile(
-              title: Text(AppLocalizations.of(context)!.sourceCode),
+              title: Text(S(context).sourceCode),
               onTap: () => launch('https://github.com/nfcim/nfsee'),
             ),
             Divider(
               height: 0,
             ),
             ListTile(
-              title: Text(AppLocalizations.of(context)!.privacyPolicy),
-              onTap: () => launchAssetPage(AppLocalizations.of(context)!.privacyPolicy,
-                  AppLocalizations.of(context)!.privacyPolicyContent),
+              title: Text(S(context).privacyPolicy),
+              onTap: () => launchAssetPage(S(context).privacyPolicy,
+                  S(context).privacyPolicyContent),
             ),
             Divider(
               height: 0,
             ),
             ListTile(
-              title: Text(AppLocalizations.of(context)!.openSourceLicenses),
-              onTap: () => launchAssetPage(AppLocalizations.of(context)!.openSourceLicenses,
-                  AppLocalizations.of(context)!.thirdPartyLicenseContent),
+              title: Text(S(context).openSourceLicenses),
+              onTap: () => launchAssetPage(S(context).openSourceLicenses,
+                  S(context).thirdPartyLicenseContent),
             ),
             Divider(
               height: 0,
             ),
             ListTile(
-              title: Text(AppLocalizations.of(context)!.contactUs),
+              title: Text(S(context).contactUs),
               onTap: () => launch('mailto:nfsee@nfc.im'),
             )
           ],
@@ -128,7 +128,7 @@ class _AboutActState extends State<AboutAct> {
   Widget _buildAndroid(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.about),
+        title: Text(S(context).about),
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
@@ -139,8 +139,8 @@ class _AboutActState extends State<AboutAct> {
   Widget _buildIos(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        middle: Text(AppLocalizations.of(context)!.about),
-        previousPageTitle: AppLocalizations.of(context)!.settingsTabTitle,
+        middle: Text(S(context).about),
+        previousPageTitle: S(context).settingsTabTitle,
       ),
       child: _buildAboutBody(),
     );

@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';
+import 'package:nfsee/utilities.dart';
 
 import 'about.dart';
 
@@ -32,7 +32,7 @@ class _SettingsActState extends State<SettingsAct> {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: Text(AppLocalizations.of(context)!.deleteDataDialog),
+              title: Text(S(context).deleteDataDialog),
               content: StatefulBuilder(
                 builder: (context, setState) => Column(
                   mainAxisSize: MainAxisSize.min,
@@ -44,9 +44,9 @@ class _SettingsActState extends State<SettingsAct> {
                         });
                       },
                       value: delRecords,
-                      title: Text(AppLocalizations.of(context)!.record),
+                      title: Text(S(context).record),
                       subtitle:
-                          Text("${AppLocalizations.of(context)!.dataCount}: $recordCount"),
+                          Text("${S(context).dataCount}: $recordCount"),
                     ),
                     CheckboxListTile(
                       onChanged: (v) {
@@ -55,9 +55,9 @@ class _SettingsActState extends State<SettingsAct> {
                         });
                       },
                       value: delScripts,
-                      title: Text(AppLocalizations.of(context)!.script),
+                      title: Text(S(context).script),
                       subtitle:
-                          Text("${AppLocalizations.of(context)!.dataCount}: $scriptCount"),
+                          Text("${S(context).dataCount}: $scriptCount"),
                     ),
                   ],
                 ),
@@ -78,11 +78,11 @@ class _SettingsActState extends State<SettingsAct> {
                     Navigator.of(context).pop();
                     Scaffold.of(outerCtx).showSnackBar(SnackBar(
                       behavior: SnackBarBehavior.floating,
-                      content: Text(AppLocalizations.of(context)!.deletedHint),
+                      content: Text(S(context).deletedHint),
                       duration: Duration(seconds: 1),
                     ));
                   },
-                  child: Text(AppLocalizations.of(context)!.delete.toUpperCase()),
+                  child: Text(S(context).delete.toUpperCase()),
                 ),
               ],
             ));
@@ -93,7 +93,7 @@ class _SettingsActState extends State<SettingsAct> {
       Padding(
         padding: EdgeInsets.all(20),
         child: Text(
-          AppLocalizations.of(context)!.settingsTabTitle,
+          S(context).settingsTabTitle,
           style: Theme.of(context)
               .primaryTextTheme
               .headline6!
@@ -102,7 +102,7 @@ class _SettingsActState extends State<SettingsAct> {
       ),
       ListTile(
         leading: Icon(Icons.delete_sweep),
-        title: Text(AppLocalizations.of(context)!.deleteData),
+        title: Text(S(context).deleteData),
         onTap: () async {
           _onTapDelete(context, outerCtx);
         },
@@ -110,7 +110,7 @@ class _SettingsActState extends State<SettingsAct> {
       Divider(height: 0),
       ListTile(
         leading: Icon(Icons.info_outline),
-        title: Text(AppLocalizations.of(context)!.about),
+        title: Text(S(context).about),
         onTap: () {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => AboutAct()));

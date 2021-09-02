@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:nfsee/utilities.dart';
 
 class Detail {
   const Detail({this.name, this.value, this.icon});
@@ -50,52 +50,52 @@ extension CardTypeExtension on CardType? {
   String getName(BuildContext context) {
     switch (this) {
       case CardType.UPCredit:
-        return AppLocalizations.of(context)!.upCredit;
+        return S(context).upCredit;
       case CardType.UPDebit:
-        return AppLocalizations.of(context)!.upDebit;
+        return S(context).upDebit;
       case CardType.UPSecuredCredit:
-        return AppLocalizations.of(context)!.upSecuredCredit;
+        return S(context).upSecuredCredit;
       case CardType.Visa:
-        return AppLocalizations.of(context)!.visa;
+        return S(context).visa;
       case CardType.MC:
-        return AppLocalizations.of(context)!.mc;
+        return S(context).mc;
       case CardType.AMEX:
-        return AppLocalizations.of(context)!.amex;
+        return S(context).amex;
       case CardType.JCB:
-        return AppLocalizations.of(context)!.jcb;
+        return S(context).jcb;
       case CardType.Discover:
-        return AppLocalizations.of(context)!.discover;
+        return S(context).discover;
       case CardType.CityUnion:
-        return AppLocalizations.of(context)!.cityUnion;
+        return S(context).cityUnion;
       case CardType.TUnion:
-        return AppLocalizations.of(context)!.tUnion;
+        return S(context).tUnion;
       case CardType.BMAC:
-        return AppLocalizations.of(context)!.bmac;
+        return S(context).bmac;
       case CardType.LingnanPass:
-        return AppLocalizations.of(context)!.lingnanPass;
+        return S(context).lingnanPass;
       case CardType.ShenzhenTong:
-        return AppLocalizations.of(context)!.shenzhenTong;
+        return S(context).shenzhenTong;
       case CardType.WuhanTong:
-        return AppLocalizations.of(context)!.wuhanTong;
+        return S(context).wuhanTong;
       case CardType.TMoney:
-        return AppLocalizations.of(context)!.tMoney;
+        return S(context).tMoney;
       case CardType.Octopus:
-        return AppLocalizations.of(context)!.octopus;
+        return S(context).octopus;
       case CardType.Tsinghua:
-        return AppLocalizations.of(context)!.tsinghua;
+        return S(context).tsinghua;
       case CardType.ChinaResidentIDGen2:
-        return AppLocalizations.of(context)!.chinaResidentIDGen2;
+        return S(context).chinaResidentIDGen2;
       case CardType.MifareUltralight:
-        return AppLocalizations.of(context)!.mifareUltralight;
+        return S(context).mifareUltralight;
       case CardType.MifarePlus:
-        return AppLocalizations.of(context)!.mifarePlus;
+        return S(context).mifarePlus;
       case CardType.MifareDESFire:
-        return AppLocalizations.of(context)!.mifareDESFire;
+        return S(context).mifareDESFire;
       case CardType.MifareClassic:
-        return AppLocalizations.of(context)!.mifareClassic;
+        return S(context).mifareClassic;
       case CardType.Unknown:
       default:
-        return AppLocalizations.of(context)!.unknown;
+        return S(context).unknown;
     }
   }
 }
@@ -106,17 +106,17 @@ extension ProcessingCodeExtension on ProcessingCode? {
   String getName(BuildContext context) {
     switch (this) {
       case ProcessingCode.Authorization:
-        return AppLocalizations.of(context)!.authorization;
+        return S(context).authorization;
       case ProcessingCode.BalanceInquiry:
-        return AppLocalizations.of(context)!.balanceInquiry;
+        return S(context).balanceInquiry;
       case ProcessingCode.Cash:
-        return AppLocalizations.of(context)!.cash;
+        return S(context).cash;
       case ProcessingCode.MobileTopup:
-        return AppLocalizations.of(context)!.mobileTopup;
+        return S(context).mobileTopup;
       case ProcessingCode.Void:
-        return AppLocalizations.of(context)!.strVoid;
+        return S(context).strVoid;
       default:
-        return AppLocalizations.of(context)!.unknown;
+        return S(context).unknown;
     }
   }
 }
@@ -127,13 +127,13 @@ extension PBOCTransactionTypeExtension on PBOCTransactionType {
   String getName(BuildContext context) {
     switch (this) {
       case PBOCTransactionType.Load:
-        return AppLocalizations.of(context)!.strLoad;
+        return S(context).strLoad;
       case PBOCTransactionType.Purchase:
-        return AppLocalizations.of(context)!.purchase;
+        return S(context).purchase;
       case PBOCTransactionType.CompoundPurchase:
-        return AppLocalizations.of(context)!.compoundPurchase;
+        return S(context).compoundPurchase;
       default:
-        return AppLocalizations.of(context)!.unknown;
+        return S(context).unknown;
     }
   }
 }
@@ -166,47 +166,47 @@ extension BeijingSubwayExtension on BeijingSubway {
   String getName(BuildContext context) {
     switch (this) {
       case BeijingSubway.Line1:
-        return AppLocalizations.of(context)!.line1;
+        return S(context).line1;
       case BeijingSubway.Line2:
-        return AppLocalizations.of(context)!.line2;
+        return S(context).line2;
       case BeijingSubway.Line4:
-        return AppLocalizations.of(context)!.line4;
+        return S(context).line4;
       case BeijingSubway.Line5:
-        return AppLocalizations.of(context)!.line5;
+        return S(context).line5;
       case BeijingSubway.Line6:
-        return AppLocalizations.of(context)!.line6;
+        return S(context).line6;
       case BeijingSubway.Line7:
-        return AppLocalizations.of(context)!.line7;
+        return S(context).line7;
       case BeijingSubway.Line8:
-        return AppLocalizations.of(context)!.line8;
+        return S(context).line8;
       case BeijingSubway.Line9:
-        return AppLocalizations.of(context)!.line9;
+        return S(context).line9;
       case BeijingSubway.Line10:
-        return AppLocalizations.of(context)!.line10;
+        return S(context).line10;
       case BeijingSubway.Line13:
-        return AppLocalizations.of(context)!.line13;
+        return S(context).line13;
       case BeijingSubway.Line14:
-        return AppLocalizations.of(context)!.line14;
+        return S(context).line14;
       case BeijingSubway.Line15:
-        return AppLocalizations.of(context)!.line15;
+        return S(context).line15;
       case BeijingSubway.Line16:
-        return AppLocalizations.of(context)!.line16;
+        return S(context).line16;
       case BeijingSubway.Xijiao:
-        return AppLocalizations.of(context)!.xijiao;
+        return S(context).xijiao;
       case BeijingSubway.DaxingAirport:
-        return AppLocalizations.of(context)!.daxingAirport;
+        return S(context).daxingAirport;
       case BeijingSubway.Daxing:
-        return AppLocalizations.of(context)!.daxing;
+        return S(context).daxing;
       case BeijingSubway.Changping:
-        return AppLocalizations.of(context)!.changping;
+        return S(context).changping;
       case BeijingSubway.Fangshan:
-        return AppLocalizations.of(context)!.fangshan;
+        return S(context).fangshan;
       case BeijingSubway.Yizhuang:
-        return AppLocalizations.of(context)!.yizhuang;
+        return S(context).yizhuang;
       case BeijingSubway.Batong:
-        return AppLocalizations.of(context)!.batong;
+        return S(context).batong;
       case BeijingSubway.CapitalAirport:
-        return AppLocalizations.of(context)!.capitalAirport;
+        return S(context).capitalAirport;
       default:
         return "Unknown";
     }

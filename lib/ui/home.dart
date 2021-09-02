@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:nfsee/data/blocs/bloc.dart';
@@ -144,7 +143,7 @@ class HomeState extends State<HomeAct>
                   Row(
                     children: <Widget>[
                       Text(
-                        AppLocalizations.of(context)!.scanHistory,
+                        S(context).scanHistory,
                         style: Theme.of(context)
                             .primaryTextTheme
                             .headline6!
@@ -171,10 +170,9 @@ class HomeState extends State<HomeAct>
                   Text(
                     data == null
                         ? "加载中..."
-                        : AppLocalizations
-                            .of(context)!
-                            .historyCount
-                            .replaceAll("\$", data.length.toString()),
+                        : S(context)
+                          .historyCount
+                          .replaceAll("\$", data.length.toString()),
                     style: Theme.of(context)
                         .primaryTextTheme
                         .caption!
@@ -378,7 +376,7 @@ class HomeState extends State<HomeAct>
           child: AppBar(
             primary: true,
             backgroundColor: Color.fromARGB(255, 85, 69, 177),
-            title: Text(detail!.name ?? AppLocalizations.of(context)!.unnamedCard,
+            title: Text(detail!.name ?? S(context).unnamedCard,
                 style: Theme.of(context)
                     .textTheme
                     .headline6!
@@ -405,7 +403,7 @@ class HomeState extends State<HomeAct>
                 icon: Icon(Icons.more_vert, color: Colors.white),
                 itemBuilder: (context) => [
                   PopupMenuItem(
-                      value: "delete", child: Text(AppLocalizations.of(context)!.delete)),
+                      value: "delete", child: Text(S(context).delete)),
                 ],
               ),
             ],
@@ -440,8 +438,8 @@ class HomeState extends State<HomeAct>
             children: <Widget>[
               ListTile(
                 title: Text(
-                    "${AppLocalizations.of(context)!.addedAt} ${this.detail!.formattedTime}"),
-                subtitle: Text(AppLocalizations.of(context)!.detailHint),
+                    "${S(context).addedAt} ${this.detail!.formattedTime}"),
+                subtitle: Text(S(context).detailHint),
                 leading: Icon(Icons.access_time),
               ),
               detailTiles.length == 0 ? Container() : Divider(),
@@ -509,10 +507,10 @@ class HomeState extends State<HomeAct>
                 color: iconColor,
               ),
             ),
-            title: Text(AppLocalizations.of(context)!.transactionHistory),
+            title: Text(S(context).transactionHistory),
             subtitle: transferTiles == null
-                ? Text(AppLocalizations.of(context)!.notSupported)
-                : Text("${transferTiles.length} ${AppLocalizations.of(context)!.recordCount}"),
+                ? Text(S(context).notSupported)
+                : Text("${transferTiles.length} ${S(context).recordCount}"),
             children: transferTiles ?? [],
           ),
         ),
@@ -527,10 +525,10 @@ class HomeState extends State<HomeAct>
                 color: iconColor,
               ),
             ),
-            title: Text(AppLocalizations.of(context)!.ndefRecords),
+            title: Text(S(context).ndefRecords),
             subtitle: ndefTiles == null
-                ? Text(AppLocalizations.of(context)!.notSupported)
-                : Text("${ndefTiles.length} ${AppLocalizations.of(context)!.recordCount}"),
+                ? Text(S(context).notSupported)
+                : Text("${ndefTiles.length} ${S(context).recordCount}"),
             children: ndefTiles ?? [],
           ),
         ),
@@ -545,7 +543,7 @@ class HomeState extends State<HomeAct>
                 color: iconColor,
               ),
             ),
-            title: Text(AppLocalizations.of(context)!.technologicalDetails),
+            title: Text(S(context).technologicalDetails),
             subtitle: Text(data['tag']['standard']),
             children: technologyDetailTiles,
           ),
@@ -561,11 +559,11 @@ class HomeState extends State<HomeAct>
                 color: iconColor,
               ),
             ),
-            title: Text(AppLocalizations.of(context)!.memoryData),
+            title: Text(S(context).memoryData),
             subtitle: data["detail"]["data"] == null
-                ? Text(AppLocalizations.of(context)!.unavailable)
+                ? Text(S(context).unavailable)
                 : Text(
-                    "${data["detail"]["data"].length >> 1} ${AppLocalizations.of(context)!.byteCount}"),
+                    "${data["detail"]["data"].length >> 1} ${S(context).byteCount}"),
             children: dataTiles,
           ),
         ),
@@ -580,9 +578,9 @@ class HomeState extends State<HomeAct>
                 color: iconColor,
               ),
             ),
-            title: Text(AppLocalizations.of(context)!.apduLogs),
+            title: Text(S(context).apduLogs),
             subtitle: Text(
-                "${data["apdu_history"].length} ${AppLocalizations.of(context)!.recordCount}"),
+                "${data["apdu_history"].length} ${S(context).recordCount}"),
             children: apduTiles,
           ),
         ),
@@ -594,7 +592,7 @@ class HomeState extends State<HomeAct>
 
   void _delFocused() async {
     final message =
-        '${AppLocalizations.of(context)!.record} ${this.detail!.id} ${AppLocalizations.of(context)!.deleted}';
+        '${S(context).record} ${this.detail!.id} ${S(context).deleted}';
     log('Record ${this.detail!.id} deleted');
 
     final deleted = this.detail;
@@ -610,7 +608,7 @@ class HomeState extends State<HomeAct>
             content: Text(message),
             duration: Duration(seconds: 5),
             action: SnackBarAction(
-              label: AppLocalizations.of(context)!.undo,
+              label: S(context).undo,
               onPressed: () {},
             )))
         .closed
@@ -641,7 +639,7 @@ class HomeState extends State<HomeAct>
             TextFormField(
               decoration: InputDecoration(
                 filled: true,
-                labelText: AppLocalizations.of(context)!.cardName,
+                labelText: S(context).cardName,
               ),
               maxLines: 1,
               initialValue: pendingName,

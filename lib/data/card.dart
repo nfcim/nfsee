@@ -91,7 +91,7 @@ class CardData {
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(this.name ?? AppLocalizations.of(context)!.unnamedCard,
+                          Text(this.name ?? S(context).unnamedCard,
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 24,

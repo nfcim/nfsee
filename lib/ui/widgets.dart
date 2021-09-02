@@ -70,7 +70,7 @@ class WebViewTab extends StatelessWidget {
     return CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
           middle: Text(title!),
-          previousPageTitle: AppLocalizations.of(context)!.about,
+          previousPageTitle: S(context).about,
         ),
         child: Padding(
           padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
@@ -226,7 +226,7 @@ class NDEFTile extends StatelessWidget {
 
   @override
   Widget build(context) {
-    var title = AppLocalizations.of(context)!.unknown;
+    var title = S(context).unknown;
     var subtitle = "";
     var icon = Icons.info;
     var details = <Detail>[];
@@ -235,7 +235,7 @@ class NDEFTile extends StatelessWidget {
     // add identifier when available
     if (raw!.identifier != '') {
       details.add(Detail(
-          name: AppLocalizations.of(context)!.identifier,
+          name: S(context).identifier,
           value: raw!.identifier,
           icon: Icons.title));
     }
@@ -246,17 +246,17 @@ class NDEFTile extends StatelessWidget {
         value: enumToString(raw!.typeNameFormat),
         icon: Icons.sort_by_alpha));
     details.add(Detail(
-        name: AppLocalizations.of(context)!.type,
+        name: S(context).type,
         value: data.decodedType,
         icon: Icons.sort_by_alpha));
 
     // payload (raw + decoded)
     details.add(Detail(
-        name: AppLocalizations.of(context)!.payload, value: raw!.payload, icon: Icons.sd_card));
+        name: S(context).payload, value: raw!.payload, icon: Icons.sd_card));
     try {
       final payloadUtf8 = utf8.decode(decodeHexString(raw!.payload));
       details.add(Detail(
-          name: AppLocalizations.of(context)!.payload + " (UTF-8)",
+          name: S(context).payload + " (UTF-8)",
           value: payloadUtf8,
           icon: Icons.text_fields));
     } on FormatException catch (_) {
@@ -269,24 +269,24 @@ class NDEFTile extends StatelessWidget {
       title = "URI";
       subtitle = r.uriString!;
       details.add(Detail(
-          name: AppLocalizations.of(context)!.wellKnownPrefix,
+          name: S(context).wellKnownPrefix,
           value: r.prefix,
           icon: Icons.tab));
     } else if (data is ndef.TextRecord) {
       var r = data as ndef.TextRecord;
       icon = Icons.text_fields;
-      title = AppLocalizations.of(context)!.text;
+      title = S(context).text;
       subtitle = r.text!;
       details.add(Detail(
-          name: AppLocalizations.of(context)!.encoding,
+          name: S(context).encoding,
           value: enumToString(r.encoding),
           icon: Icons.code));
       details.add(Detail(
-          name: AppLocalizations.of(context)!.languageCode,
+          name: S(context).languageCode,
           value: r.language,
           icon: Icons.language));
     } else if (data is ndef.MimeRecord) {
-      title = AppLocalizations.of(context)!.mimeMediaRecord;
+      title = S(context).mimeMediaRecord;
       subtitle = data.decodedType!;
     }
 

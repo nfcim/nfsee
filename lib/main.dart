@@ -52,7 +52,7 @@ class _NFSeeAppState extends State<NFSeeApp> {
         ],
         supportedLocales: AppLocalizations.supportedLocales,
         onGenerateTitle: (context) {
-          return AppLocalizations.of(context)!.homeScreenTitle;
+          return S(context).homeScreenTitle;
         },
         theme: ThemeData(
           brightness: Brightness.light,
@@ -169,7 +169,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         error = null;
         try {
           final tag = await FlutterNfcKit.poll(
-              iosAlertMessage: AppLocalizations.of(context)!.waitForCard);
+              iosAlertMessage: S(context).waitForCard);
           final json = tag.toJson();
 
           // try to read ndef and insert into json
@@ -183,7 +183,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           }
 
           _webView.evalJavascript("pollCallback(${jsonEncode(json)})");
-          FlutterNfcKit.setIosAlertMessage(AppLocalizations.of(context)!.cardPolled);
+          FlutterNfcKit.setIosAlertMessage(S(context).cardPolled);
         } on PlatformException catch (e) {
           error = e;
           // no need to do anything with FlutterNfcKit, which will reset itself
@@ -191,7 +191,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           _closeReadModal(this.context);
           showSnackbar(SnackBar(
               content:
-                  Text('${AppLocalizations.of(context)!.readFailed}: ${e.toDetailString()}')));
+                  Text('${S(context).readFailed}: ${e.toDetailString()}')));
           // reject the promise
           _webView.evalJavascript("pollErrorCallback(${e.toJsonString()})");
         }
@@ -213,7 +213,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           _closeReadModal(this.context);
           showSnackbar(SnackBar(
               content:
-                  Text('${AppLocalizations.of(context)!.readFailed}: ${e.toDetailString()}')));
+                  Text('${S(context).readFailed}: ${e.toDetailString()}')));
           _webView
               .evalJavascript("transceiveErrorCallback(${e.toJsonString()})");
         }
@@ -227,11 +227,11 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
       case 'finish':
         if (error != null) {
-          await FlutterNfcKit.finish(iosErrorMessage: AppLocalizations.of(context)!.readFailed);
+          await FlutterNfcKit.finish(iosErrorMessage: S(context).readFailed);
           error = null;
         } else {
           await FlutterNfcKit.finish(
-              iosAlertMessage: AppLocalizations.of(context)!.readSucceeded);
+              iosAlertMessage: S(context).readSucceeded);
         }
         break;
 
@@ -264,15 +264,15 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.code),
-          label: AppLocalizations.of(context)!.scriptTabTitle,
+          label: S(context).scriptTabTitle,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.nfc),
-          label: AppLocalizations.of(context)!.scanTabTitle,
+          label: S(context).scanTabTitle,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.settings),
-          label: AppLocalizations.of(context)!.settingsTabTitle,
+          label: S(context).settingsTabTitle,
         ),
       ],
     );
@@ -349,7 +349,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
-                  AppLocalizations.of(context)!.waitForCard,
+                  S(context).waitForCard,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 18),
                 ),
