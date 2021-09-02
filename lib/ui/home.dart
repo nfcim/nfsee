@@ -4,6 +4,8 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';
@@ -12,15 +14,13 @@ import 'package:nfsee/ui/card_physics.dart';
 import 'package:nfsee/ui/widgets.dart';
 import 'package:nfsee/utilities.dart';
 
-import 'package:nfsee/generated/l10n.dart';
-
 const double DETAIL_OFFSET = 300;
 
 class HomeAct extends StatefulWidget {
   final Future<bool> Function() readCard;
-  HomeState state;
+  late final HomeState state;
 
-  HomeAct({@required this.readCard});
+  HomeAct({required this.readCard});
 
   @override
   HomeState createState() {
@@ -33,28 +33,28 @@ class HomeAct extends StatefulWidget {
 
 class HomeState extends State<HomeAct>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-  CardPhysics cardPhysics;
-  ScrollController cardController;
+  CardPhysics? cardPhysics;
+  ScrollController? cardController;
   bool dragging = false;
   bool scrolling = false;
   int scrollingTicket = 0;
   int currentIdx = 0;
 
   bool hidden = false;
-  Animation<double> detailHide;
+  late Animation<double> detailHide;
   double detailHideVal = 0;
-  AnimationController detailHideTrans;
+  late AnimationController detailHideTrans;
 
   bool expanded = false;
   bool expanding = false; // Expanding or collapsing
-  ScrollController detailScroll;
-  Animation<double> detailExpand;
+  ScrollController? detailScroll;
+  late Animation<double> detailExpand;
   double detailExpandVal = 0;
-  AnimationController detailExpandTrans;
+  late AnimationController detailExpandTrans;
 
-  CardData detail;
+  CardData? detail;
 
-  NFSeeAppBloc get bloc => BlocProvider.provideBloc(context);
+  NFSeeAppBloc? get bloc => BlocProvider.provideBloc(context);
 
   @override
   void initState() {
@@ -100,14 +100,14 @@ class HomeState extends State<HomeAct>
     });
   }
 
-  void _refreshPhysics(List<CardData> cards) {
+  void _refreshPhysics(List<CardData>? cards) {
     if (cards == null) return;
     if (this.cardPhysics?.cardCount == cards.length) return;
-    if (this.cardController != null) this.cardController.dispose();
+    if (this.cardController != null) this.cardController!.dispose();
 
     this.cardPhysics = CardPhysics(cardCount: cards.length);
     this.cardController = ScrollController();
-    this.cardController.addListener(() {
+    this.cardController!.addListener(() {
       final ticket = this.scrollingTicket + 1;
       this.scrollingTicket = ticket;
 
@@ -144,18 +144,20 @@ class HomeState extends State<HomeAct>
                   Row(
                     children: <Widget>[
                       Text(
-                        S.of(context).scanHistory,
+                        AppLocalizations.of(context)!.scanHistory,
                         style: Theme.of(context)
                             .primaryTextTheme
-                            .headline6
+                            .headline6!
                             .copyWith(fontSize: 32),
                       ),
                       Spacer(),
                       IconButton(
                         icon: Icon(
                           Icons.add,
-                          color:
-                              Theme.of(context).primaryTextTheme.headline5.color,
+                          color: Theme.of(context)
+                              .primaryTextTheme
+                              .headline5!
+                              .color,
                         ),
                         onPressed: () async {
                           final cardRead = await this.widget.readCard();
@@ -169,13 +171,13 @@ class HomeState extends State<HomeAct>
                   Text(
                     data == null
                         ? "加载中..."
-                        : S
-                            .of(context)
+                        : AppLocalizations
+                            .of(context)!
                             .historyCount
                             .replaceAll("\$", data.length.toString()),
                     style: Theme.of(context)
                         .primaryTextTheme
-                        .caption
+                        .caption!
                         .copyWith(fontSize: 14),
                   ),
                 ])),
@@ -254,7 +256,7 @@ class HomeState extends State<HomeAct>
     this.expanding = true;
 
     final fut1 = this.detailExpandTrans.animateBack(0);
-    final fut2 = this.detailScroll.animateTo(0,
+    final fut2 = this.detailScroll!.animateTo(0,
         duration: Duration(milliseconds: 100), curve: ElasticOutCurve());
     this.setState(() {
       this.expanded = false;
@@ -267,7 +269,7 @@ class HomeState extends State<HomeAct>
     return true;
   }
 
-  void _updateDetailHide(List<CardData> cards) async {
+  void _updateDetailHide(List<CardData>? cards) async {
     if (this.scrolling) {
       if (this.hidden) return;
       this.hidden = true;
@@ -284,10 +286,10 @@ class HomeState extends State<HomeAct>
     }
   }
 
-  void _updateDetailInst(List<CardData> cards) {
+  void _updateDetailInst(List<CardData>? cards) {
     int targetIdx =
-        this.cardController != null && this.cardController.hasClients
-            ? this.cardPhysics.getItemIdx(this.cardController.position)
+        this.cardController != null && this.cardController!.hasClients
+            ? this.cardPhysics!.getItemIdx(this.cardController!.position)
             : 0;
     final next =
         (cards == null || targetIdx >= cards.length) ? null : cards[targetIdx];
@@ -300,14 +302,14 @@ class HomeState extends State<HomeAct>
 
   void addCard() async {
     await Future.delayed(const Duration(milliseconds: 10));
-    this.cardController.animateTo(this.cardController.position.maxScrollExtent,
+    this.cardController!.animateTo(this.cardController!.position.maxScrollExtent,
         duration: const Duration(microseconds: 500), curve: ElasticOutCurve());
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final cardStream = bloc.dumpedRecords.map(
+    final cardStream = bloc!.dumpedRecords!.map(
         (records) => records.map((r) => CardData.fromDumpedRecord(r)).toList());
     final navForeground = StreamBuilder(
       stream: cardStream,
@@ -356,13 +358,13 @@ class HomeState extends State<HomeAct>
 
   Widget _buildDetail(BuildContext ctx) {
     if (detail == null) return Container();
-    var data = detail.raw;
+    var data = detail!.raw;
 
     final detailTiles = parseCardDetails(data["detail"], context)
         .map((d) => ListTile(
               dense: true,
-              title: Text(d.name),
-              subtitle: Text(d.value),
+              title: Text(d.name!),
+              subtitle: Text(d.value!),
               leading: Icon(d.icon ?? Icons.info),
             ))
         .toList();
@@ -376,10 +378,10 @@ class HomeState extends State<HomeAct>
           child: AppBar(
             primary: true,
             backgroundColor: Color.fromARGB(255, 85, 69, 177),
-            title: Text(detail.name ?? S.of(context).unnamedCard,
+            title: Text(detail!.name ?? AppLocalizations.of(context)!.unnamedCard,
                 style: Theme.of(context)
                     .textTheme
-                    .headline6
+                    .headline6!
                     .apply(color: Colors.white)),
             leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -391,7 +393,7 @@ class HomeState extends State<HomeAct>
               IconButton(
                 icon: Icon(Icons.edit, color: Colors.white),
                 onPressed: () {
-                  this._editCardName(this.detail);
+                  this._editCardName(this.detail!);
                 },
               ),
               PopupMenuButton<String>(
@@ -403,7 +405,7 @@ class HomeState extends State<HomeAct>
                 icon: Icon(Icons.more_vert, color: Colors.white),
                 itemBuilder: (context) => [
                   PopupMenuItem(
-                      value: "delete", child: Text(S.of(context).delete)),
+                      value: "delete", child: Text(AppLocalizations.of(context)!.delete)),
                 ],
               ),
             ],
@@ -438,8 +440,8 @@ class HomeState extends State<HomeAct>
             children: <Widget>[
               ListTile(
                 title: Text(
-                    "${S.of(context).addedAt} ${this.detail.formattedTime}"),
-                subtitle: Text(S.of(context).detailHint),
+                    "${AppLocalizations.of(context)!.addedAt} ${this.detail!.formattedTime}"),
+                subtitle: Text(AppLocalizations.of(context)!.detailHint),
                 leading: Icon(Icons.access_time),
               ),
               detailTiles.length == 0 ? Container() : Divider(),
@@ -484,7 +486,7 @@ class HomeState extends State<HomeAct>
 
     final rawTdata = Theme.of(context);
     final tdata = rawTdata.copyWith(
-      accentColor: rawTdata.textTheme.subtitle1.color,
+      accentColor: rawTdata.textTheme.subtitle1!.color,
       dividerColor: Colors.transparent,
     );
 
@@ -507,10 +509,10 @@ class HomeState extends State<HomeAct>
                 color: iconColor,
               ),
             ),
-            title: Text(S.of(context).transactionHistory),
+            title: Text(AppLocalizations.of(context)!.transactionHistory),
             subtitle: transferTiles == null
-                ? Text(S.of(context).notSupported)
-                : Text("${transferTiles.length} ${S.of(context).recordCount}"),
+                ? Text(AppLocalizations.of(context)!.notSupported)
+                : Text("${transferTiles.length} ${AppLocalizations.of(context)!.recordCount}"),
             children: transferTiles ?? [],
           ),
         ),
@@ -525,10 +527,10 @@ class HomeState extends State<HomeAct>
                 color: iconColor,
               ),
             ),
-            title: Text(S.of(context).ndefRecords),
+            title: Text(AppLocalizations.of(context)!.ndefRecords),
             subtitle: ndefTiles == null
-                ? Text(S.of(context).notSupported)
-                : Text("${ndefTiles.length} ${S.of(context).recordCount}"),
+                ? Text(AppLocalizations.of(context)!.notSupported)
+                : Text("${ndefTiles.length} ${AppLocalizations.of(context)!.recordCount}"),
             children: ndefTiles ?? [],
           ),
         ),
@@ -543,7 +545,7 @@ class HomeState extends State<HomeAct>
                 color: iconColor,
               ),
             ),
-            title: Text(S.of(context).technologicalDetails),
+            title: Text(AppLocalizations.of(context)!.technologicalDetails),
             subtitle: Text(data['tag']['standard']),
             children: technologyDetailTiles,
           ),
@@ -559,11 +561,11 @@ class HomeState extends State<HomeAct>
                 color: iconColor,
               ),
             ),
-            title: Text(S.of(context).memoryData),
+            title: Text(AppLocalizations.of(context)!.memoryData),
             subtitle: data["detail"]["data"] == null
-                ? Text(S.of(context).unavailable)
+                ? Text(AppLocalizations.of(context)!.unavailable)
                 : Text(
-                    "${data["detail"]["data"].length >> 1} ${S.of(context).byteCount}"),
+                    "${data["detail"]["data"].length >> 1} ${AppLocalizations.of(context)!.byteCount}"),
             children: dataTiles,
           ),
         ),
@@ -578,9 +580,9 @@ class HomeState extends State<HomeAct>
                 color: iconColor,
               ),
             ),
-            title: Text(S.of(context).apduLogs),
+            title: Text(AppLocalizations.of(context)!.apduLogs),
             subtitle: Text(
-                "${data["apdu_history"].length} ${S.of(context).recordCount}"),
+                "${data["apdu_history"].length} ${AppLocalizations.of(context)!.recordCount}"),
             children: apduTiles,
           ),
         ),
@@ -592,12 +594,12 @@ class HomeState extends State<HomeAct>
 
   void _delFocused() async {
     final message =
-        '${S.of(context).record} ${this.detail.id} ${S.of(context).deleted}';
-    log('Record ${this.detail.id} deleted');
+        '${AppLocalizations.of(context)!.record} ${this.detail!.id} ${AppLocalizations.of(context)!.deleted}';
+    log('Record ${this.detail!.id} deleted');
 
     final deleted = this.detail;
 
-    await this.bloc.delDumpedRecord(deleted.id);
+    await this.bloc!.delDumpedRecord(deleted!.id);
 
     this._tryCollapseDetail();
 
@@ -608,7 +610,7 @@ class HomeState extends State<HomeAct>
             content: Text(message),
             duration: Duration(seconds: 5),
             action: SnackBarAction(
-              label: S.of(context).undo,
+              label: AppLocalizations.of(context)!.undo,
               onPressed: () {},
             )))
         .closed
@@ -616,7 +618,7 @@ class HomeState extends State<HomeAct>
       switch (reason) {
         case SnackBarClosedReason.action:
           // user cancelled deletion, restore it
-          await this.bloc.addDumpedRecord(
+          await this.bloc!.addDumpedRecord(
               jsonEncode(deleted.raw), deleted.time, deleted.config);
           log('Record ${deleted.id} restored');
           break;
@@ -639,7 +641,7 @@ class HomeState extends State<HomeAct>
             TextFormField(
               decoration: InputDecoration(
                 filled: true,
-                labelText: S.of(context).cardName,
+                labelText: AppLocalizations.of(context)!.cardName,
               ),
               maxLines: 1,
               initialValue: pendingName,
@@ -659,7 +661,7 @@ class HomeState extends State<HomeAct>
                 } else {
                   data.name = pendingName;
                 }
-                bloc.updateDumpedRecordConfig(data.id, data.config);
+                bloc!.updateDumpedRecordConfig(data.id, data.config);
                 Navigator.of(context).pop();
               });
             },
@@ -680,7 +682,8 @@ class HomeState extends State<HomeAct>
 }
 
 class HomeBackgrondPainter extends CustomPainter {
-  final Color color;
+  final Color? color;
+
   HomeBackgrondPainter({this.color});
 
   @override
@@ -697,7 +700,7 @@ class HomeBackgrondPainter extends CustomPainter {
 
     final paint = Paint()
       ..style = PaintingStyle.fill
-      ..color = this.color;
+      ..color = this.color!;
 
     canvas.drawShadow(path, Colors.black, 2, false);
     canvas.drawPath(path, paint);

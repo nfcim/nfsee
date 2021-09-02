@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:nfsee/data/database/database.dart';
-import 'package:nfsee/generated/l10n.dart';
 import 'package:nfsee/models.dart';
 import 'package:nfsee/utilities.dart';
 
@@ -17,28 +17,36 @@ enum CardCategory {
 class CardData {
   int id;
   final CardCategory category;
-  String name;
-  final CardType cardType;
-  final String cardNo;
+  String? name;
+  CardType? cardType;
+  String? cardNo;
   final dynamic raw;
   final DateTime time;
 
-  bool sameAs(CardData ano) {
-    if(ano == null) return false;
-    if(id != ano.id) return false;
-    if(config != ano.config) return false;
+  bool sameAs(CardData? ano) {
+    if (ano == null) return false;
+    if (id != ano.id) return false;
+    if (config != ano.config) return false;
     return true;
   }
 
   String get formattedTime => new DateFormat("MM/dd HH:mm:ss").format(time);
 
-  CardData({ this.id, this.category, this.name, this.cardNo, this.cardType, this.raw, this.time });
+  CardData(
+      {required this.id,
+      required this.category,
+      this.name,
+      this.cardNo,
+      this.cardType,
+      this.raw,
+      required this.time});
 
   factory CardData.fromDumpedRecord(DumpedRecord rec) {
     final data = jsonDecode(rec.data);
     final config = jsonDecode(rec.config ?? DEFAULT_CONFIG);
 
-    final cardType = getEnumFromString<CardType>(CardType.values, data['card_type']);
+    final cardType =
+        getEnumFromString<CardType>(CardType.values, data['card_type']);
 
     final id = rec.id;
     final category = CardCategory.access;
@@ -77,25 +85,26 @@ class CardData {
               child: Column(
                 children: <Widget>[
                   Spacer(),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Column(
+                  Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+                    Column(
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-
-                        Text(this.name ?? S.of(context).unnamedCard, style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
-                        Text(this.cardType.getName(context), style: TextStyle(color: Colors.white70, fontSize: 16)),
-                      ]),
-                    ]
-                  ),
+                          Text(this.name ?? AppLocalizations.of(context)!.unnamedCard,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold)),
+                          Text(this.cardType.getName(context),
+                              style: TextStyle(
+                                  color: Colors.white70, fontSize: 16)),
+                        ]),
+                  ]),
                 ],
               ),
             ),
           ),
-
         ],
       ),
     );

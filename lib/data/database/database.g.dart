@@ -10,58 +10,48 @@ part of 'database.dart';
 class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
   final int id;
   final DateTime time;
-  final String config;
+  final String? config;
   final String data;
   DumpedRecord(
-      {@required this.id,
-      @required this.time,
-      @required this.config,
-      @required this.data});
+      {required this.id,
+      required this.time,
+      required this.config,
+      required this.data});
   factory DumpedRecord.fromData(Map<String, dynamic> data, GeneratedDatabase db,
-      {String prefix}) {
+      {String? prefix}) {
     final effectivePrefix = prefix ?? '';
-    final intType = db.typeSystem.forDartType<int>();
-    final dateTimeType = db.typeSystem.forDartType<DateTime>();
-    final stringType = db.typeSystem.forDartType<String>();
     return DumpedRecord(
-      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
-      time:
-          dateTimeType.mapFromDatabaseResponse(data['${effectivePrefix}time']),
-      config:
-          stringType.mapFromDatabaseResponse(data['${effectivePrefix}config']),
-      data: stringType.mapFromDatabaseResponse(data['${effectivePrefix}data']),
+      id: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
+      time: const DateTimeType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}time'])!,
+      config: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}config'])!,
+      data: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}data'])!,
     );
   }
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (!nullToAbsent || id != null) {
-      map['id'] = Variable<int>(id);
-    }
-    if (!nullToAbsent || time != null) {
-      map['time'] = Variable<DateTime>(time);
-    }
-    if (!nullToAbsent || config != null) {
-      map['config'] = Variable<String>(config);
-    }
-    if (!nullToAbsent || data != null) {
-      map['data'] = Variable<String>(data);
-    }
+    map['id'] = Variable<int>(id);
+    map['time'] = Variable<DateTime>(time);
+    map['config'] = Variable<String>(config!);
+    map['data'] = Variable<String>(data);
     return map;
   }
 
   DumpedRecordsCompanion toCompanion(bool nullToAbsent) {
     return DumpedRecordsCompanion(
-      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
-      time: time == null && nullToAbsent ? const Value.absent() : Value(time),
-      config:
-          config == null && nullToAbsent ? const Value.absent() : Value(config),
-      data: data == null && nullToAbsent ? const Value.absent() : Value(data),
+      id: Value(id),
+      time: Value(time),
+      config: Value(config!),
+      data: Value(data),
     );
   }
 
   factory DumpedRecord.fromJson(Map<String, dynamic> json,
-      {ValueSerializer serializer}) {
+      {ValueSerializer? serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return DumpedRecord(
       id: serializer.fromJson<int>(json['id']),
@@ -71,17 +61,18 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
     );
   }
   @override
-  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'time': serializer.toJson<DateTime>(time),
-      'config': serializer.toJson<String>(config),
+      'config': serializer.toJson<String>(config!),
       'data': serializer.toJson<String>(data),
     };
   }
 
-  DumpedRecord copyWith({int id, DateTime time, String config, String data}) =>
+  DumpedRecord copyWith(
+          {int? id, DateTime? time, String? config, String? data}) =>
       DumpedRecord(
         id: id ?? this.id,
         time: time ?? this.time,
@@ -103,7 +94,7 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
   int get hashCode => $mrjf($mrjc(id.hashCode,
       $mrjc(time.hashCode, $mrjc(config.hashCode, data.hashCode))));
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
       (other is DumpedRecord &&
           other.id == this.id &&
@@ -125,16 +116,16 @@ class DumpedRecordsCompanion extends UpdateCompanion<DumpedRecord> {
   });
   DumpedRecordsCompanion.insert({
     this.id = const Value.absent(),
-    @required DateTime time,
+    required DateTime time,
     this.config = const Value.absent(),
-    @required String data,
+    required String data,
   })  : time = Value(time),
         data = Value(data);
   static Insertable<DumpedRecord> custom({
-    Expression<int> id,
-    Expression<DateTime> time,
-    Expression<String> config,
-    Expression<String> data,
+    Expression<int>? id,
+    Expression<DateTime>? time,
+    Expression<String>? config,
+    Expression<String>? data,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -145,10 +136,10 @@ class DumpedRecordsCompanion extends UpdateCompanion<DumpedRecord> {
   }
 
   DumpedRecordsCompanion copyWith(
-      {Value<int> id,
-      Value<DateTime> time,
-      Value<String> config,
-      Value<String> data}) {
+      {Value<int>? id,
+      Value<DateTime>? time,
+      Value<String>? config,
+      Value<String>? data}) {
     return DumpedRecordsCompanion(
       id: id ?? this.id,
       time: time ?? this.time,
@@ -190,79 +181,55 @@ class DumpedRecordsCompanion extends UpdateCompanion<DumpedRecord> {
 class $DumpedRecordsTable extends DumpedRecords
     with TableInfo<$DumpedRecordsTable, DumpedRecord> {
   final GeneratedDatabase _db;
-  final String _alias;
+  final String? _alias;
   $DumpedRecordsTable(this._db, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
-  GeneratedIntColumn _id;
-  @override
-  GeneratedIntColumn get id => _id ??= _constructId();
-  GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false,
-        hasAutoIncrement: true, declaredAsPrimaryKey: true);
-  }
-
+  late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
+      'id', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: false,
+      defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _timeMeta = const VerificationMeta('time');
-  GeneratedDateTimeColumn _time;
-  @override
-  GeneratedDateTimeColumn get time => _time ??= _constructTime();
-  GeneratedDateTimeColumn _constructTime() {
-    return GeneratedDateTimeColumn(
-      'time',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<DateTime?> time = GeneratedColumn<DateTime?>(
+      'time', aliasedName, false,
+      typeName: 'INTEGER', requiredDuringInsert: true);
   final VerificationMeta _configMeta = const VerificationMeta('config');
-  GeneratedTextColumn _config;
-  @override
-  GeneratedTextColumn get config => _config ??= _constructConfig();
-  GeneratedTextColumn _constructConfig() {
-    return GeneratedTextColumn('config', $tableName, false,
-        defaultValue: const Constant(DEFAULT_CONFIG));
-  }
-
+  late final GeneratedColumn<String?> config = GeneratedColumn<String?>(
+      'config', aliasedName, false,
+      typeName: 'TEXT',
+      requiredDuringInsert: false,
+      defaultValue: const Constant(DEFAULT_CONFIG));
   final VerificationMeta _dataMeta = const VerificationMeta('data');
-  GeneratedTextColumn _data;
-  @override
-  GeneratedTextColumn get data => _data ??= _constructData();
-  GeneratedTextColumn _constructData() {
-    return GeneratedTextColumn(
-      'data',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<String?> data = GeneratedColumn<String?>(
+      'data', aliasedName, false,
+      typeName: 'TEXT', requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [id, time, config, data];
   @override
-  $DumpedRecordsTable get asDslTable => this;
+  String get aliasedName => _alias ?? 'dumped_records';
   @override
-  String get $tableName => _alias ?? 'dumped_records';
-  @override
-  final String actualTableName = 'dumped_records';
+  String get actualTableName => 'dumped_records';
   @override
   VerificationContext validateIntegrity(Insertable<DumpedRecord> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('time')) {
       context.handle(
-          _timeMeta, time.isAcceptableOrUnknown(data['time'], _timeMeta));
+          _timeMeta, time.isAcceptableOrUnknown(data['time']!, _timeMeta));
     } else if (isInserting) {
       context.missing(_timeMeta);
     }
     if (data.containsKey('config')) {
       context.handle(_configMeta,
-          config.isAcceptableOrUnknown(data['config'], _configMeta));
+          config.isAcceptableOrUnknown(data['config']!, _configMeta));
     }
     if (data.containsKey('data')) {
       context.handle(
-          _dataMeta, this.data.isAcceptableOrUnknown(data['data'], _dataMeta));
+          _dataMeta, this.data.isAcceptableOrUnknown(data['data']!, _dataMeta));
     } else if (isInserting) {
       context.missing(_dataMeta);
     }
@@ -272,9 +239,9 @@ class $DumpedRecordsTable extends DumpedRecords
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  DumpedRecord map(Map<String, dynamic> data, {String tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return DumpedRecord.fromData(data, _db, prefix: effectivePrefix);
+  DumpedRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    return DumpedRecord.fromData(data, _db,
+        prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
@@ -288,60 +255,48 @@ class SavedScript extends DataClass implements Insertable<SavedScript> {
   final String name;
   final String source;
   final DateTime creationTime;
-  final DateTime lastUsed;
+  final DateTime? lastUsed;
   SavedScript(
-      {@required this.id,
-      @required this.name,
-      @required this.source,
-      @required this.creationTime,
+      {required this.id,
+      required this.name,
+      required this.source,
+      required this.creationTime,
       this.lastUsed});
   factory SavedScript.fromData(Map<String, dynamic> data, GeneratedDatabase db,
-      {String prefix}) {
+      {String? prefix}) {
     final effectivePrefix = prefix ?? '';
-    final intType = db.typeSystem.forDartType<int>();
-    final stringType = db.typeSystem.forDartType<String>();
-    final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return SavedScript(
-      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
-      name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
-      source:
-          stringType.mapFromDatabaseResponse(data['${effectivePrefix}source']),
-      creationTime: dateTimeType
-          .mapFromDatabaseResponse(data['${effectivePrefix}creation_time']),
-      lastUsed: dateTimeType
+      id: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
+      name: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}name'])!,
+      source: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}source'])!,
+      creationTime: const DateTimeType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}creation_time'])!,
+      lastUsed: const DateTimeType()
           .mapFromDatabaseResponse(data['${effectivePrefix}last_used']),
     );
   }
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (!nullToAbsent || id != null) {
-      map['id'] = Variable<int>(id);
-    }
-    if (!nullToAbsent || name != null) {
-      map['name'] = Variable<String>(name);
-    }
-    if (!nullToAbsent || source != null) {
-      map['source'] = Variable<String>(source);
-    }
-    if (!nullToAbsent || creationTime != null) {
-      map['creation_time'] = Variable<DateTime>(creationTime);
-    }
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['source'] = Variable<String>(source);
+    map['creation_time'] = Variable<DateTime>(creationTime);
     if (!nullToAbsent || lastUsed != null) {
-      map['last_used'] = Variable<DateTime>(lastUsed);
+      map['last_used'] = Variable<DateTime?>(lastUsed);
     }
     return map;
   }
 
   SavedScriptsCompanion toCompanion(bool nullToAbsent) {
     return SavedScriptsCompanion(
-      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
-      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
-      source:
-          source == null && nullToAbsent ? const Value.absent() : Value(source),
-      creationTime: creationTime == null && nullToAbsent
-          ? const Value.absent()
-          : Value(creationTime),
+      id: Value(id),
+      name: Value(name),
+      source: Value(source),
+      creationTime: Value(creationTime),
       lastUsed: lastUsed == null && nullToAbsent
           ? const Value.absent()
           : Value(lastUsed),
@@ -349,34 +304,34 @@ class SavedScript extends DataClass implements Insertable<SavedScript> {
   }
 
   factory SavedScript.fromJson(Map<String, dynamic> json,
-      {ValueSerializer serializer}) {
+      {ValueSerializer? serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return SavedScript(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       source: serializer.fromJson<String>(json['source']),
       creationTime: serializer.fromJson<DateTime>(json['creationTime']),
-      lastUsed: serializer.fromJson<DateTime>(json['lastUsed']),
+      lastUsed: serializer.fromJson<DateTime?>(json['lastUsed']),
     );
   }
   @override
-  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'source': serializer.toJson<String>(source),
       'creationTime': serializer.toJson<DateTime>(creationTime),
-      'lastUsed': serializer.toJson<DateTime>(lastUsed),
+      'lastUsed': serializer.toJson<DateTime?>(lastUsed),
     };
   }
 
   SavedScript copyWith(
-          {int id,
-          String name,
-          String source,
-          DateTime creationTime,
-          DateTime lastUsed}) =>
+          {int? id,
+          String? name,
+          String? source,
+          DateTime? creationTime,
+          DateTime? lastUsed}) =>
       SavedScript(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -404,7 +359,7 @@ class SavedScript extends DataClass implements Insertable<SavedScript> {
           $mrjc(source.hashCode,
               $mrjc(creationTime.hashCode, lastUsed.hashCode)))));
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
       (other is SavedScript &&
           other.id == this.id &&
@@ -419,7 +374,7 @@ class SavedScriptsCompanion extends UpdateCompanion<SavedScript> {
   final Value<String> name;
   final Value<String> source;
   final Value<DateTime> creationTime;
-  final Value<DateTime> lastUsed;
+  final Value<DateTime?> lastUsed;
   const SavedScriptsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
@@ -429,19 +384,19 @@ class SavedScriptsCompanion extends UpdateCompanion<SavedScript> {
   });
   SavedScriptsCompanion.insert({
     this.id = const Value.absent(),
-    @required String name,
-    @required String source,
-    @required DateTime creationTime,
+    required String name,
+    required String source,
+    required DateTime creationTime,
     this.lastUsed = const Value.absent(),
   })  : name = Value(name),
         source = Value(source),
         creationTime = Value(creationTime);
   static Insertable<SavedScript> custom({
-    Expression<int> id,
-    Expression<String> name,
-    Expression<String> source,
-    Expression<DateTime> creationTime,
-    Expression<DateTime> lastUsed,
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? source,
+    Expression<DateTime>? creationTime,
+    Expression<DateTime?>? lastUsed,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -453,11 +408,11 @@ class SavedScriptsCompanion extends UpdateCompanion<SavedScript> {
   }
 
   SavedScriptsCompanion copyWith(
-      {Value<int> id,
-      Value<String> name,
-      Value<String> source,
-      Value<DateTime> creationTime,
-      Value<DateTime> lastUsed}) {
+      {Value<int>? id,
+      Value<String>? name,
+      Value<String>? source,
+      Value<DateTime>? creationTime,
+      Value<DateTime?>? lastUsed}) {
     return SavedScriptsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -483,7 +438,7 @@ class SavedScriptsCompanion extends UpdateCompanion<SavedScript> {
       map['creation_time'] = Variable<DateTime>(creationTime.value);
     }
     if (lastUsed.present) {
-      map['last_used'] = Variable<DateTime>(lastUsed.value);
+      map['last_used'] = Variable<DateTime?>(lastUsed.value);
     }
     return map;
   }
@@ -504,93 +459,55 @@ class SavedScriptsCompanion extends UpdateCompanion<SavedScript> {
 class $SavedScriptsTable extends SavedScripts
     with TableInfo<$SavedScriptsTable, SavedScript> {
   final GeneratedDatabase _db;
-  final String _alias;
+  final String? _alias;
   $SavedScriptsTable(this._db, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
-  GeneratedIntColumn _id;
-  @override
-  GeneratedIntColumn get id => _id ??= _constructId();
-  GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false,
-        hasAutoIncrement: true, declaredAsPrimaryKey: true);
-  }
-
+  late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
+      'id', aliasedName, false,
+      typeName: 'INTEGER',
+      requiredDuringInsert: false,
+      defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _nameMeta = const VerificationMeta('name');
-  GeneratedTextColumn _name;
-  @override
-  GeneratedTextColumn get name => _name ??= _constructName();
-  GeneratedTextColumn _constructName() {
-    return GeneratedTextColumn(
-      'name',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<String?> name = GeneratedColumn<String?>(
+      'name', aliasedName, false,
+      typeName: 'TEXT', requiredDuringInsert: true);
   final VerificationMeta _sourceMeta = const VerificationMeta('source');
-  GeneratedTextColumn _source;
-  @override
-  GeneratedTextColumn get source => _source ??= _constructSource();
-  GeneratedTextColumn _constructSource() {
-    return GeneratedTextColumn(
-      'source',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<String?> source = GeneratedColumn<String?>(
+      'source', aliasedName, false,
+      typeName: 'TEXT', requiredDuringInsert: true);
   final VerificationMeta _creationTimeMeta =
       const VerificationMeta('creationTime');
-  GeneratedDateTimeColumn _creationTime;
-  @override
-  GeneratedDateTimeColumn get creationTime =>
-      _creationTime ??= _constructCreationTime();
-  GeneratedDateTimeColumn _constructCreationTime() {
-    return GeneratedDateTimeColumn(
-      'creation_time',
-      $tableName,
-      false,
-    );
-  }
-
+  late final GeneratedColumn<DateTime?> creationTime =
+      GeneratedColumn<DateTime?>('creation_time', aliasedName, false,
+          typeName: 'INTEGER', requiredDuringInsert: true);
   final VerificationMeta _lastUsedMeta = const VerificationMeta('lastUsed');
-  GeneratedDateTimeColumn _lastUsed;
-  @override
-  GeneratedDateTimeColumn get lastUsed => _lastUsed ??= _constructLastUsed();
-  GeneratedDateTimeColumn _constructLastUsed() {
-    return GeneratedDateTimeColumn(
-      'last_used',
-      $tableName,
-      true,
-    );
-  }
-
+  late final GeneratedColumn<DateTime?> lastUsed = GeneratedColumn<DateTime?>(
+      'last_used', aliasedName, true,
+      typeName: 'INTEGER', requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns =>
       [id, name, source, creationTime, lastUsed];
   @override
-  $SavedScriptsTable get asDslTable => this;
+  String get aliasedName => _alias ?? 'saved_scripts';
   @override
-  String get $tableName => _alias ?? 'saved_scripts';
-  @override
-  final String actualTableName = 'saved_scripts';
+  String get actualTableName => 'saved_scripts';
   @override
   VerificationContext validateIntegrity(Insertable<SavedScript> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('name')) {
       context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name'], _nameMeta));
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
     if (data.containsKey('source')) {
       context.handle(_sourceMeta,
-          source.isAcceptableOrUnknown(data['source'], _sourceMeta));
+          source.isAcceptableOrUnknown(data['source']!, _sourceMeta));
     } else if (isInserting) {
       context.missing(_sourceMeta);
     }
@@ -598,13 +515,13 @@ class $SavedScriptsTable extends SavedScripts
       context.handle(
           _creationTimeMeta,
           creationTime.isAcceptableOrUnknown(
-              data['creation_time'], _creationTimeMeta));
+              data['creation_time']!, _creationTimeMeta));
     } else if (isInserting) {
       context.missing(_creationTimeMeta);
     }
     if (data.containsKey('last_used')) {
       context.handle(_lastUsedMeta,
-          lastUsed.isAcceptableOrUnknown(data['last_used'], _lastUsedMeta));
+          lastUsed.isAcceptableOrUnknown(data['last_used']!, _lastUsedMeta));
     }
     return context;
   }
@@ -612,9 +529,9 @@ class $SavedScriptsTable extends SavedScripts
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  SavedScript map(Map<String, dynamic> data, {String tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return SavedScript.fromData(data, _db, prefix: effectivePrefix);
+  SavedScript map(Map<String, dynamic> data, {String? tablePrefix}) {
+    return SavedScript.fromData(data, _db,
+        prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
@@ -625,12 +542,8 @@ class $SavedScriptsTable extends SavedScripts
 
 abstract class _$Database extends GeneratedDatabase {
   _$Database(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
-  $DumpedRecordsTable _dumpedRecords;
-  $DumpedRecordsTable get dumpedRecords =>
-      _dumpedRecords ??= $DumpedRecordsTable(this);
-  $SavedScriptsTable _savedScripts;
-  $SavedScriptsTable get savedScripts =>
-      _savedScripts ??= $SavedScriptsTable(this);
+  late final $DumpedRecordsTable dumpedRecords = $DumpedRecordsTable(this);
+  late final $SavedScriptsTable savedScripts = $SavedScriptsTable(this);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override

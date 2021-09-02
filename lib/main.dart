@@ -7,19 +7,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
-import 'package:interactive_webview/interactive_webview.dart';
-
+import 'package:interactive_webview_null_safety/interactive_webview.dart';
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';
-import 'package:nfsee/generated/l10n.dart';
 import 'package:nfsee/models.dart';
 import 'package:nfsee/ui/home.dart';
-import 'package:nfsee/utilities.dart';
 import 'package:nfsee/ui/scripts.dart';
 import 'package:nfsee/ui/settings.dart';
+import 'package:nfsee/utilities.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() => runApp(NFSeeApp());
 
@@ -29,7 +28,7 @@ class NFSeeApp extends StatefulWidget {
 }
 
 class _NFSeeAppState extends State<NFSeeApp> {
-  NFSeeAppBloc bloc;
+  late NFSeeAppBloc bloc;
 
   @override
   void initState() {
@@ -46,12 +45,14 @@ class _NFSeeAppState extends State<NFSeeApp> {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         localizationsDelegates: [
-          S.delegate,
+          AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
         ],
-        supportedLocales: S.delegate.supportedLocales,
+        supportedLocales: AppLocalizations.supportedLocales,
         onGenerateTitle: (context) {
-          return S.of(context).homeScreenTitle;
+          return AppLocalizations.of(context)!.homeScreenTitle;
         },
         theme: ThemeData(
           brightness: Brightness.light,
@@ -96,14 +97,14 @@ class PlatformAdaptingHomePage extends StatefulWidget {
 }
 
 class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
-  HomeAct home;
+  late HomeAct home;
   final _webView = InteractiveWebView();
-  StreamSubscription _webViewListener;
+  StreamSubscription? _webViewListener;
   var _reading = false;
-  Exception error;
+  Exception? error;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  PageController topController;
+  PageController? topController;
   int currentTop = 1;
 
   NFSeeAppBloc get bloc => BlocProvider.provideBloc(context);
@@ -129,9 +130,9 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
   @override
   void dispose() {
-    _webViewListener.cancel();
+    _webViewListener!.cancel();
     _webViewListener = null;
-    topController.dispose();
+    topController!.dispose();
     super.dispose();
   }
 
@@ -147,13 +148,13 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   }
 
   Future<void> _addWebViewHandler() async {
-    if (_webViewListener != null) _webViewListener.cancel();
+    if (_webViewListener != null) _webViewListener!.cancel();
     _webViewListener = _webView.didReceiveMessage.listen(_onReceivedMessage);
   }
 
   void showSnackbar(SnackBar snackBar) {
     if (_scaffoldKey.currentState != null) {
-      _scaffoldKey.currentState.showSnackBar(snackBar);
+      _scaffoldKey.currentState!.showSnackBar(snackBar);
     }
   }
 
@@ -168,7 +169,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         error = null;
         try {
           final tag = await FlutterNfcKit.poll(
-              iosAlertMessage: S.of(context).waitForCard);
+              iosAlertMessage: AppLocalizations.of(context)!.waitForCard);
           final json = tag.toJson();
 
           // try to read ndef and insert into json
@@ -182,7 +183,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           }
 
           _webView.evalJavascript("pollCallback(${jsonEncode(json)})");
-          FlutterNfcKit.setIosAlertMessage(S.of(context).cardPolled);
+          FlutterNfcKit.setIosAlertMessage(AppLocalizations.of(context)!.cardPolled);
         } on PlatformException catch (e) {
           error = e;
           // no need to do anything with FlutterNfcKit, which will reset itself
@@ -190,7 +191,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           _closeReadModal(this.context);
           showSnackbar(SnackBar(
               content:
-                  Text('${S.of(context).readFailed}: ${e.toDetailString()}')));
+                  Text('${AppLocalizations.of(context)!.readFailed}: ${e.toDetailString()}')));
           // reject the promise
           _webView.evalJavascript("pollErrorCallback(${e.toJsonString()})");
         }
@@ -212,7 +213,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           _closeReadModal(this.context);
           showSnackbar(SnackBar(
               content:
-                  Text('${S.of(context).readFailed}: ${e.toDetailString()}')));
+                  Text('${AppLocalizations.of(context)!.readFailed}: ${e.toDetailString()}')));
           _webView
               .evalJavascript("transceiveErrorCallback(${e.toJsonString()})");
         }
@@ -226,11 +227,11 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
       case 'finish':
         if (error != null) {
-          await FlutterNfcKit.finish(iosErrorMessage: S.of(context).readFailed);
+          await FlutterNfcKit.finish(iosErrorMessage: AppLocalizations.of(context)!.readFailed);
           error = null;
         } else {
           await FlutterNfcKit.finish(
-              iosAlertMessage: S.of(context).readSucceeded);
+              iosAlertMessage: AppLocalizations.of(context)!.readSucceeded);
         }
         break;
 
@@ -257,21 +258,21 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         else
           webviewOwner = WebViewOwner.Main;
         await this._reloadWebview();
-        this.topController.animateToPage(e,
+        this.topController!.animateToPage(e,
             duration: Duration(milliseconds: 500), curve: Curves.ease);
       },
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.code),
-          label: S.of(context).scriptTabTitle,
+          label: AppLocalizations.of(context)!.scriptTabTitle,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.nfc),
-          label: S.of(context).scanTabTitle,
+          label: AppLocalizations.of(context)!.scanTabTitle,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.settings),
-          label: S.of(context).settingsTabTitle,
+          label: AppLocalizations.of(context)!.settingsTabTitle,
         ),
       ],
     );
@@ -348,7 +349,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
-                  S.of(context).waitForCard,
+                  AppLocalizations.of(context)!.waitForCard,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 18),
                 ),

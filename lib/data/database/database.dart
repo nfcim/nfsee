@@ -1,12 +1,11 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
-import 'package:moor_ffi/moor_ffi.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as path;
-
 import 'package:nfsee/models.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 
 part 'database.g.dart';
 
@@ -16,7 +15,7 @@ class DumpedRecords extends Table {
 
   DateTimeColumn get time => dateTime()();
 
-  TextColumn get config => text()
+  TextColumn? get config => text()
       .withDefault(const Constant(DEFAULT_CONFIG))(); // Name, color, etc...
   TextColumn get data => text()();
 }
@@ -30,6 +29,7 @@ class SavedScripts extends Table {
   TextColumn get source => text()();
 
   DateTimeColumn get creationTime => dateTime()();
+
   DateTimeColumn get lastUsed => dateTime().nullable()();
 }
 

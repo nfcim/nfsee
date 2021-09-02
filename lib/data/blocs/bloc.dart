@@ -1,17 +1,16 @@
 import 'package:moor/moor.dart';
-
-import 'package:nfsee/models.dart';
 import 'package:nfsee/data/database/database.dart';
+import 'package:nfsee/models.dart';
 
 class NFSeeAppBloc {
   final Database db;
 
-  Stream<List<DumpedRecord>> _dumpedRecords;
-  Stream<List<SavedScript>> _savedScripts;
+  Stream<List<DumpedRecord>>? _dumpedRecords;
+  Stream<List<SavedScript>>? _savedScripts;
 
-  Stream<List<DumpedRecord>> get dumpedRecords => _dumpedRecords;
+  Stream<List<DumpedRecord>>? get dumpedRecords => _dumpedRecords;
 
-  Stream<List<SavedScript>> get savedScripts => _savedScripts;
+  Stream<List<SavedScript>>? get savedScripts => _savedScripts;
 
   NFSeeAppBloc() : db = constructDb() {
     _dumpedRecords = db.watchDumpedRecords();
@@ -19,7 +18,7 @@ class NFSeeAppBloc {
   }
 
   Future<int> addDumpedRecord(String data,
-      [DateTime time, String config]) async {
+      [DateTime? time, String? config]) async {
     return await db.addDumpedRecord(DumpedRecordsCompanion().copyWith(
         data: Value(data),
         time: Value(time ?? DateTime.now()),
@@ -43,7 +42,7 @@ class NFSeeAppBloc {
   }
 
   Future<void> addScript(String name, String source,
-      [DateTime creationTime]) async {
+      [DateTime? creationTime]) async {
     await db.addSavedScript(SavedScriptsCompanion.insert(
       name: name,
       source: source,
@@ -56,7 +55,7 @@ class NFSeeAppBloc {
       id: Value(id),
       name: Value(name),
       source: Value(source),
-      lastUsed: Value(null),
+      lastUsed: Value(null as DateTime),
     ));
   }
 

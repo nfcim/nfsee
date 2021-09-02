@@ -2,26 +2,26 @@ PODS:
   - Flutter (1.0.0)
   - flutter_nfc_kit (2.0.0):
     - Flutter
-  - interactive_webview (0.0.1):
+  - interactive_webview_null_safety (0.2.4):
     - Flutter
   - package_info (0.0.1):
     - Flutter
   - path_provider (0.0.1):
     - Flutter
-  - sqlite3 (3.32.3):
-    - sqlite3/common (= 3.32.3)
-  - sqlite3/common (3.32.3)
-  - sqlite3/fts5 (3.32.3):
+  - sqlite3 (3.35.5):
+    - sqlite3/common (= 3.35.5)
+  - sqlite3/common (3.35.5)
+  - sqlite3/fts5 (3.35.5):
     - sqlite3/common
-  - sqlite3/json1 (3.32.3):
+  - sqlite3/json1 (3.35.5):
     - sqlite3/common
-  - sqlite3/perf-threadsafe (3.32.3):
+  - sqlite3/perf-threadsafe (3.35.5):
     - sqlite3/common
-  - sqlite3/rtree (3.32.3):
+  - sqlite3/rtree (3.35.5):
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - Flutter
-    - sqlite3 (~> 3.32.3)
+    - sqlite3 (~> 3.35.4)
     - sqlite3/fts5
     - sqlite3/json1
     - sqlite3/perf-threadsafe
@@ -34,7 +34,7 @@ PODS:
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_nfc_kit (from `.symlinks/plugins/flutter_nfc_kit/ios`)
-  - interactive_webview (from `.symlinks/plugins/interactive_webview/ios`)
+  - interactive_webview_null_safety (from `.symlinks/plugins/interactive_webview_null_safety/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - sqlite3_flutter_libs (from `.symlinks/plugins/sqlite3_flutter_libs/ios`)
@@ -50,8 +50,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_nfc_kit:
     :path: ".symlinks/plugins/flutter_nfc_kit/ios"
-  interactive_webview:
-    :path: ".symlinks/plugins/interactive_webview/ios"
+  interactive_webview_null_safety:
+    :path: ".symlinks/plugins/interactive_webview_null_safety/ios"
   package_info:
     :path: ".symlinks/plugins/package_info/ios"
   path_provider:
@@ -64,16 +64,16 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter/ios"
 
 SPEC CHECKSUMS:
-  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   flutter_nfc_kit: 965c98c3fa68f5609f1cc89abb968fe1b8ffdbaa
-  interactive_webview: 645deb8ecb0f8564ca2017e691338854c5d6a061
+  interactive_webview_null_safety: 8c9a4a70f3e4630a01f31f581e6da8c54df161f3
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
-  sqlite3: 8f7d2078ae27778699a622a94b853285793422a2
-  sqlite3_flutter_libs: 5651f8ff48e3b44d910863c4ea5916085b1b245f
+  sqlite3: 75da32fd4e3574f6c38566a9f0114cfe792c8db5
+  sqlite3_flutter_libs: aedb7b6ba191f9a052dcef77691cf5d37437431c
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
-  webview_flutter: d2b4d6c66968ad042ad94cbb791f5b72b4678a96
+  webview_flutter: 3603125dfd3bcbc9d8d418c3f80aeecf331c068b
 
 PODFILE CHECKSUM: cc1f88378b4bfcf93a6ce00d2c587857c6008d3b
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.10.1
