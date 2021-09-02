@@ -76,7 +76,7 @@ List<Detail> parseTransactionDetails(
 
   void addDetail(String fieldName, String parsedName,
       [IconData? icon, transformer]) {
-    _addDetail(data, details, fieldName, parsedName, icon!, transformer);
+    _addDetail(data, details, fieldName, parsedName, icon, transformer);
   }
 
   addDetail('number', AppLocalizations.of(context)!.transactionNumber, Icons.bookmark);
