@@ -35,6 +35,7 @@ enum CardType {
   LingnanPass,
   ShenzhenTong,
   WuhanTong,
+  MacauPass,
   TMoney,
   Octopus,
   Tsinghua,
@@ -77,6 +78,8 @@ extension CardTypeExtension on CardType? {
         return S(context).shenzhenTong;
       case CardType.WuhanTong:
         return S(context).wuhanTong;
+      case CardType.MacauPass:
+        return S(context).macauPass;
       case CardType.TMoney:
         return S(context).tMoney;
       case CardType.Octopus:
