@@ -289,6 +289,30 @@
         };
     };
 
+    let ReadMacauPass = async (fci) => {
+        let r = await BasicInfoFile(fci);
+        if (!r) return {};
+        const number = r.slice(70, 80);
+        const issue_date = r.slice(40, 48);
+        const expiry_date = r.slice(48, 56);
+        const balance_atc_trans = await ReadPBOCBalanceATCAndTrans();
+        const balance = balance_atc_trans[0] * 10 - 1000;
+        const trans = balance_atc_trans[3];
+        for (let i in trans) {
+            trans[i].amount *= 10; // in $0.01
+        }
+        return {
+            'card_type': 'MacauPass',
+            'card_number': number,
+            'balance': balance,
+            'purchase_atc': balance_atc_trans[1],
+            'load_atc': balance_atc_trans[2],
+            'transactions': trans,
+            'issue_date': issue_date,
+            'expiry_date': expiry_date,
+        };
+    };
+
     let ReadTransWuhan = async () => {
         const balance_atc_trans = await ReadPBOCBalanceATCAndTrans();
         let mf = await _transceive('00A40000023F00');
@@ -818,6 +842,10 @@
                 r = r.slice(0, -4);
                 let DFName = ExtractFromTLV(r, ['6F', '84']);
                 if (DFName) {
+                    const DFNameHex = buf2hex(DFName);
+                    // log("DFName in hex: " + DFNameHex);
+                    if (DFNameHex === 'B0C4C3C5CDA8C7AEB0FC')
+                        return await ReadMacauPass(r);
                     DFName = GBKDecoder.decode(DFName);
                     if (DFName.startsWith('PAY.SZT'))
                         return await ReadTransShenzhen(r);
