@@ -64,7 +64,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter/ios"
 
 SPEC CHECKSUMS:
-  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_nfc_kit: 965c98c3fa68f5609f1cc89abb968fe1b8ffdbaa
   interactive_webview_null_safety: 8c9a4a70f3e4630a01f31f581e6da8c54df161f3
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
@@ -76,4 +76,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: cc1f88378b4bfcf93a6ce00d2c587857c6008d3b
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.2
