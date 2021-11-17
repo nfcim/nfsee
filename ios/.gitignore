@@ -1,6 +1,10 @@
 fastlane/Appfile
 .bundle/
 vendor/
+*.ipa
+*.cer
+*.zip
+*.mobileprovision
 
 *.mode1v3
 *.mode2v3
