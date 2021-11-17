@@ -1,4 +1,6 @@
 fastlane/Appfile
+.bundle/
+vendor/
 
 *.mode1v3
 *.mode2v3
