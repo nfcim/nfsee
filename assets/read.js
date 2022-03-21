@@ -414,8 +414,9 @@
         const province = f17.slice(8, 12);
         let city = f17.slice(12, 16);
         let type = parseInt(f17.slice(20, 22), 16);
-        type = (type in TUnionDF11Type) ? TUnionDF11Type[type] : `未知(${type})`;
-        city = (city in UnionPayRegion) ? UnionPayRegion[city] : `未知代码${city}`;
+        type = (type in TUnionDF11Type) ? TUnionDF11Type[type] : `(${type})`;
+        city = (city in UnionPayRegion) ? UnionPayRegion[city] : `(${city})`;
+        province = (province in UnionPayRegion) ? UnionPayRegion[province] : `(${province})`;
         return {
             'card_type': 'TUnion',
             'card_number': number.replace(/^0+/, ''),
@@ -423,7 +424,7 @@
             'purchase_atc': balance_atc_trans[1],
             'load_atc': balance_atc_trans[2],
             'transactions': balance_atc_trans[3],
-            'province_code': province,
+            'province': province,
             'city': city,
             'tu_type': type,
             'issue_date': issue_date,

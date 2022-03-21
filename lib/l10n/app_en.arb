@@ -70,7 +70,7 @@
     "internalNumber": "Internal Number",
     "holderName": "Holder Name",
     "balance": "Balance",
-    "provinceCode": "Province Code",
+    "province": "Province",
     "tuType": "TUnion Card Type",
     "city": "City",
     "issueDate": "Issue Date",

@@ -70,7 +70,7 @@
     "internalNumber": "内部卡号",
     "holderName": "持有者姓名",
     "balance": "余额",
-    "provinceCode": "省市代码",
+    "province": "省份",
     "tuType": "交通联合卡类型",
     "city": "城市",
     "issueDate": "发行日期",

@@ -25,7 +25,8 @@ String formatTransactionBalance(int raw) {
 }
 
 T? getEnumFromString<T>(Iterable<T> values, String value) {
-  return values.firstWhereOrNull((type) => type.toString().split(".").last == value);
+  return values
+      .firstWhereOrNull((type) => type.toString().split(".").last == value);
 }
 
 String enumToString<T>(T value) {
@@ -129,7 +130,7 @@ List<Detail> parseCardDetails(
   addDetail('balance', S(context).balance, Icons.account_balance,
       formatTransactionBalance);
   // T Union
-  addDetail('province_code', S(context).provinceCode, Icons.home);
+  addDetail('province', S(context).province, Icons.home);
   // T Union
   addDetail('tu_type', S(context).tuType, Icons.person);
   // City Union / TUnion
@@ -165,8 +166,8 @@ List<Detail> parseCardDetails(
       Icons.text_fields);
   addDetail('mifare_product_name', S(context).mifareProductName,
       Icons.branding_watermark);
-  addDetail('mifare_storage_size', S(context).mifareStorageSize,
-      Icons.format_size);
+  addDetail(
+      'mifare_storage_size', S(context).mifareStorageSize, Icons.format_size);
   addDetail('mifare_production_date', S(context).mifareProductionDate,
       Icons.date_range);
   // all remaining data, clone to avoid concurrent modification
