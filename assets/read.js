@@ -411,7 +411,7 @@
         const number = f15.slice(20, 40);
         const issue_date = f15.slice(40, 48);
         const expiry_date = f15.slice(48, 56);
-        const province = f17.slice(8, 12);
+        let province = f17.slice(8, 12);
         let city = f17.slice(12, 16);
         let type = parseInt(f17.slice(20, 22), 16);
         type = (type in TUnionDF11Type) ? TUnionDF11Type[type] : `(${type})`;
