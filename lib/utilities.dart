@@ -130,12 +130,12 @@ List<Detail> parseCardDetails(
   addDetail('balance', S(context).balance, Icons.account_balance,
       formatTransactionBalance);
   // T Union
-  addDetail('province', S(context).province, Icons.home);
-  // T Union
   addDetail('tu_type', S(context).tuType, Icons.person);
-  // City Union / TUnion
+  // T Union
+  addDetail('province', S(context).province, Icons.home);
+  // City Union / T Union
   addDetail('city', S(context).city, Icons.home);
-  // City Union
+  // City Union / T Union
   addDetail('issue_date', S(context).issueDate, Icons.calendar_today,
       formatTransactionDate);
   // PBOC
