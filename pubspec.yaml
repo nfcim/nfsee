@@ -19,11 +19,11 @@ dependencies:
   moor: "^4.5.0"
   sqlite3_flutter_libs: "^0.5.0"
   path_provider: "^2.0.2"
-  path: "^1.6.4"
+  path: "^1.8.0"
   intl: "^0.17.0"
   package_info: "^2.0.2"
   url_launcher: "^6.0.9"
-  webview_flutter: "^2.0.12"
+  webview_flutter: ^3.0.3
 
 dev_dependencies:
   flutter_test:
