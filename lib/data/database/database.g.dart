@@ -10,7 +10,7 @@ part of 'database.dart';
 class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
   final int id;
   final DateTime time;
-  final String? config;
+  final String config;
   final String data;
   DumpedRecord(
       {required this.id,
@@ -36,7 +36,7 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['time'] = Variable<DateTime>(time);
-    map['config'] = Variable<String>(config!);
+    map['config'] = Variable<String>(config);
     map['data'] = Variable<String>(data);
     return map;
   }
@@ -45,7 +45,7 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
     return DumpedRecordsCompanion(
       id: Value(id),
       time: Value(time),
-      config: Value(config!),
+      config: Value(config),
       data: Value(data),
     );
   }
@@ -66,7 +66,7 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'time': serializer.toJson<DateTime>(time),
-      'config': serializer.toJson<String>(config!),
+      'config': serializer.toJson<String>(config),
       'data': serializer.toJson<String>(data),
     };
   }
@@ -91,8 +91,7 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(id.hashCode,
-      $mrjc(time.hashCode, $mrjc(config.hashCode, data.hashCode))));
+  int get hashCode => Object.hash(id, time, config, data);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -180,29 +179,34 @@ class DumpedRecordsCompanion extends UpdateCompanion<DumpedRecord> {
 
 class $DumpedRecordsTable extends DumpedRecords
     with TableInfo<$DumpedRecordsTable, DumpedRecord> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $DumpedRecordsTable(this._db, [this._alias]);
+  $DumpedRecordsTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
   late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
       'id', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const IntType(),
       requiredDuringInsert: false,
       defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _timeMeta = const VerificationMeta('time');
+  @override
   late final GeneratedColumn<DateTime?> time = GeneratedColumn<DateTime?>(
       'time', aliasedName, false,
-      typeName: 'INTEGER', requiredDuringInsert: true);
+      type: const IntType(), requiredDuringInsert: true);
   final VerificationMeta _configMeta = const VerificationMeta('config');
+  @override
   late final GeneratedColumn<String?> config = GeneratedColumn<String?>(
       'config', aliasedName, false,
-      typeName: 'TEXT',
+      type: const StringType(),
       requiredDuringInsert: false,
       defaultValue: const Constant(DEFAULT_CONFIG));
   final VerificationMeta _dataMeta = const VerificationMeta('data');
+  @override
   late final GeneratedColumn<String?> data = GeneratedColumn<String?>(
       'data', aliasedName, false,
-      typeName: 'TEXT', requiredDuringInsert: true);
+      type: const StringType(), requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [id, time, config, data];
   @override
@@ -240,13 +244,13 @@ class $DumpedRecordsTable extends DumpedRecords
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   DumpedRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return DumpedRecord.fromData(data, _db,
+    return DumpedRecord.fromData(data, attachedDatabase,
         prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
   $DumpedRecordsTable createAlias(String alias) {
-    return $DumpedRecordsTable(_db, alias);
+    return $DumpedRecordsTable(attachedDatabase, alias);
   }
 }
 
@@ -352,12 +356,7 @@ class SavedScript extends DataClass implements Insertable<SavedScript> {
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(
-      id.hashCode,
-      $mrjc(
-          name.hashCode,
-          $mrjc(source.hashCode,
-              $mrjc(creationTime.hashCode, lastUsed.hashCode)))));
+  int get hashCode => Object.hash(id, name, source, creationTime, lastUsed);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -458,32 +457,38 @@ class SavedScriptsCompanion extends UpdateCompanion<SavedScript> {
 
 class $SavedScriptsTable extends SavedScripts
     with TableInfo<$SavedScriptsTable, SavedScript> {
-  final GeneratedDatabase _db;
+  @override
+  final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $SavedScriptsTable(this._db, [this._alias]);
+  $SavedScriptsTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
   late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
       'id', aliasedName, false,
-      typeName: 'INTEGER',
+      type: const IntType(),
       requiredDuringInsert: false,
       defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
   final VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
   late final GeneratedColumn<String?> name = GeneratedColumn<String?>(
       'name', aliasedName, false,
-      typeName: 'TEXT', requiredDuringInsert: true);
+      type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
   late final GeneratedColumn<String?> source = GeneratedColumn<String?>(
       'source', aliasedName, false,
-      typeName: 'TEXT', requiredDuringInsert: true);
+      type: const StringType(), requiredDuringInsert: true);
   final VerificationMeta _creationTimeMeta =
       const VerificationMeta('creationTime');
+  @override
   late final GeneratedColumn<DateTime?> creationTime =
       GeneratedColumn<DateTime?>('creation_time', aliasedName, false,
-          typeName: 'INTEGER', requiredDuringInsert: true);
+          type: const IntType(), requiredDuringInsert: true);
   final VerificationMeta _lastUsedMeta = const VerificationMeta('lastUsed');
+  @override
   late final GeneratedColumn<DateTime?> lastUsed = GeneratedColumn<DateTime?>(
       'last_used', aliasedName, true,
-      typeName: 'INTEGER', requiredDuringInsert: false);
+      type: const IntType(), requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns =>
       [id, name, source, creationTime, lastUsed];
@@ -530,13 +535,13 @@ class $SavedScriptsTable extends SavedScripts
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   SavedScript map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return SavedScript.fromData(data, _db,
+    return SavedScript.fromData(data, attachedDatabase,
         prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
   $SavedScriptsTable createAlias(String alias) {
-    return $SavedScriptsTable(_db, alias);
+    return $SavedScriptsTable(attachedDatabase, alias);
   }
 }
 

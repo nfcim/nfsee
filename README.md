@@ -1,6 +1,6 @@
 # NFSee
 
-![Build Android App](https://github.com/nfcim/flutter_nfc_kit/workflows/Build%20Android%20App/badge.svg)
+![Build Android App](https://github.com/nfcim/nfsee/workflows/Build%20Android%20App/badge.svg)
 
 NFSee is a flutter application that can dump data from various types of NFC tags & cards.
 
