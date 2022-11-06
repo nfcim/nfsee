@@ -102,7 +102,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   StreamSubscription? _webViewListener;
   var _reading = false;
   Exception? error;
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey = new GlobalKey<ScaffoldMessengerState>();
 
   PageController? topController;
   int currentTop = 1;
@@ -153,8 +153,8 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   }
 
   void showSnackbar(SnackBar snackBar) {
-    if (_scaffoldKey.currentState != null) {
-      _scaffoldKey.currentState!.showSnackBar(snackBar);
+    if (_scaffoldMessengerKey.currentState != null) {
+      _scaffoldMessengerKey.currentState!.showSnackBar(snackBar);
     }
   }
 
