@@ -110,7 +110,7 @@ class HomeState extends State<HomeAct>
       final ticket = this.scrollingTicket + 1;
       this.scrollingTicket = ticket;
 
-      Future fut = Future.delayed(const Duration(milliseconds: 100)).then((_) {
+      Future.delayed(const Duration(milliseconds: 100)).then((_) {
         if (this.scrollingTicket != ticket) return;
         this.setState(() {
           this.scrolling = false;
@@ -407,7 +407,6 @@ class HomeState extends State<HomeAct>
                 ],
               ),
             ],
-            brightness: Brightness.light,
           ),
         ),
       ),
@@ -484,7 +483,6 @@ class HomeState extends State<HomeAct>
 
     final rawTdata = Theme.of(context);
     final tdata = rawTdata.copyWith(
-      accentColor: rawTdata.textTheme.subtitle1!.color,
       dividerColor: Colors.transparent,
     );
 
@@ -601,8 +599,8 @@ class HomeState extends State<HomeAct>
 
     this._tryCollapseDetail();
 
-    Scaffold.of(context).hideCurrentSnackBar();
-    Scaffold.of(context)
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(
             behavior: SnackBarBehavior.floating,
             content: Text(message),
@@ -650,7 +648,7 @@ class HomeState extends State<HomeAct>
           ],
         ),
         actions: <Widget>[
-          FlatButton(
+          TextButton(
             child: Text(MaterialLocalizations.of(context).okButtonLabel),
             onPressed: () {
               setState(() {
@@ -664,7 +662,7 @@ class HomeState extends State<HomeAct>
               });
             },
           ),
-          FlatButton(
+          TextButton(
             child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
             onPressed: () {
               Navigator.of(context).pop();

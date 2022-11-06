@@ -63,7 +63,7 @@ class _SettingsActState extends State<SettingsAct> {
                 ),
               ),
               actions: <Widget>[
-                FlatButton(
+                TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -71,12 +71,12 @@ class _SettingsActState extends State<SettingsAct> {
                       .cancelButtonLabel
                       .toUpperCase()),
                 ),
-                FlatButton(
+                TextButton(
                   onPressed: () {
                     if (delRecords) bloc!.delAllDumpedRecord();
                     if (delScripts) bloc!.delAllScripts();
                     Navigator.of(context).pop();
-                    Scaffold.of(outerCtx).showSnackBar(SnackBar(
+                    ScaffoldMessenger.of(outerCtx).showSnackBar(SnackBar(
                       behavior: SnackBarBehavior.floating,
                       content: Text(S(context).deletedHint),
                       duration: Duration(seconds: 1),

@@ -150,8 +150,8 @@ class _ScriptsActState extends State<ScriptsAct>
   @override
   void dispose() {
     log("DISPOSE");
-    _webViewListener!.cancel();
-    _webViewReloadListener!.cancel();
+    if (_webViewListener != null) _webViewListener!.cancel();
+    if (_webViewReloadListener != null) _webViewReloadListener!.cancel();
     _webViewListener = null;
     _webViewReloadListener = null;
     this.appbarFloatTrans.dispose();
@@ -259,9 +259,9 @@ class _ScriptsActState extends State<ScriptsAct>
 
   void _showMessage(BuildContext context, String message) {
     if (defaultTargetPlatform == TargetPlatform.android) {
-      var scaffold = Scaffold.of(context);
-      scaffold.hideCurrentSnackBar();
-      scaffold.showSnackBar(SnackBar(
+      var scaffoldMsg = ScaffoldMessenger.of(context);
+      scaffoldMsg.hideCurrentSnackBar();
+      scaffoldMsg.showSnackBar(SnackBar(
         behavior: SnackBarBehavior.floating,
         content: Text(message),
         duration: Duration(seconds: 1),
@@ -293,9 +293,9 @@ class _ScriptsActState extends State<ScriptsAct>
         '${S(context).script} ${script.name} ${S(context).deleted}';
 
     if (defaultTargetPlatform == TargetPlatform.android) {
-      var scaffold = Scaffold.of(context);
-      scaffold.hideCurrentSnackBar();
-      scaffold
+      var scaffoldMsg = ScaffoldMessenger.of(context);
+      scaffoldMsg.hideCurrentSnackBar();
+      scaffoldMsg
           .showSnackBar(SnackBar(
             behavior: SnackBarBehavior.floating,
             content: Text(message),
@@ -398,7 +398,7 @@ class _ScriptsActState extends State<ScriptsAct>
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
-                                  FlatButton.icon(
+                                  TextButton.icon(
                                       // Disable run button if there is a script running in background
                                       onPressed: this.running == -1
                                           ? () async {
@@ -409,7 +409,9 @@ class _ScriptsActState extends State<ScriptsAct>
                                                       script.id);
                                             }
                                           : null,
-                                      textTheme: ButtonTextTheme.primary,
+                                      style: TextButton.styleFrom(
+                                        foregroundColor: Theme.of(context).primaryColor
+                                      ),
                                       // icon:
                                       icon: this.running == script.id
                                           ? Padding(
@@ -556,14 +558,14 @@ class _ScriptsActState extends State<ScriptsAct>
                 : S(context).modifyScript),
             content: _buildAddScriptDialogContent(),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child:
                     Text(MaterialLocalizations.of(context).cancelButtonLabel),
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop();
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text(MaterialLocalizations.of(context).okButtonLabel),
                 onPressed: _addOrModifyScript,
               ),
@@ -627,7 +629,7 @@ class _ScriptsActState extends State<ScriptsAct>
                     color: Theme.of(context).primaryTextTheme.headline5!.color),
                 tooltip: S(context).help,
                 onPressed: () {
-                  launch('https://nfsee.nfc.im/js-extension/');
+                  launchUrl(Uri.parse('https://nfsee.nfc.im/js-extension/'));
                 },
               ),
             ]));

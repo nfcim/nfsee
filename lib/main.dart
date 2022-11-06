@@ -57,13 +57,11 @@ class _NFSeeAppState extends State<NFSeeApp> {
         theme: ThemeData(
           brightness: Brightness.light,
           primarySwatch: Colors.orange,
-          accentColor: Colors.deepOrange,
           platform: TargetPlatform.android,
         ),
         darkTheme: ThemeData(
           brightness: Brightness.dark,
           primarySwatch: Colors.orange,
-          accentColor: Colors.deepOrange,
           platform: TargetPlatform.android,
         ),
         builder: (context, child) {
