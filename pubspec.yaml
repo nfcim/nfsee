@@ -12,7 +12,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  flutter_nfc_kit: "^3.0.0"
+  flutter_nfc_kit: "^3.3.1"
   interactive_webview_null_safety: "^0.2.4"
   collection: "^1.15.0"
   cupertino_icons: "^1.0.3"
