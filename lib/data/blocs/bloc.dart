@@ -55,7 +55,7 @@ class NFSeeAppBloc {
       id: Value(id),
       name: Value(name),
       source: Value(source),
-      lastUsed: Value(null as DateTime),
+      lastUsed: Value.absent(),
     ));
   }
 

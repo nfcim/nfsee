@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:async';
+import 'dart:developer';
 
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/material.dart';
@@ -6,6 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:nfsee/models.dart';
+import 'package:webview_flutter/platform_interface.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 String formatTransactionDate(String raw) {
   return "${raw.substring(0, 4)}-${raw.substring(4, 6)}-${raw.substring(6, 8)}";
@@ -64,6 +68,65 @@ extension PlatformExceptionExtension on PlatformException {
 enum WebViewOwner { Main, Script }
 
 WebViewOwner webviewOwner = WebViewOwner.Main;
+
+// Actually this should be an ADT, but Dart doesn't have that (yet)
+class WebViewEvent {
+  final String? message;
+  final bool reload;
+
+  WebViewEvent({this.reload = false, this.message});
+}
+
+class WebViewManager {
+  Map<WebViewOwner, StreamController<WebViewEvent>> _streams = {
+    for (final owner in WebViewOwner.values) owner: StreamController.broadcast()
+  };
+  WebViewController? _cont;
+
+  late JavascriptChannel channel =
+      JavascriptChannel(name: "nfsee", onMessageReceived: _dispatch);
+
+  _dispatch(JavascriptMessage msg) {
+    log("[Webview] Incoming msg ${msg.message}");
+    final ev = WebViewEvent(message: msg.message);
+    _streams[webviewOwner]?.add(ev);
+  }
+
+  onWebviewInit(WebViewController cont) {
+    log("[Webview] Init");
+    _cont = cont;
+  }
+
+  onWebviewPageLoad(String _url) {
+    for (final stream in _streams.values)
+      stream.add(WebViewEvent(reload: true));
+  }
+
+  Future<void> reload() async {
+    if (_cont == null) return;
+    WebViewController cont = _cont!;
+    await cont.loadHtmlString("<!DOCTYPE html>");
+    await cont.runJavascript(await rootBundle.loadString('assets/ber-tlv.js'));
+    await cont
+        .runJavascript(await rootBundle.loadString('assets/crypto-js.js'));
+    await cont.runJavascript(await rootBundle.loadString('assets/crypto.js'));
+    await cont.runJavascript(await rootBundle.loadString('assets/reader.js'));
+    await cont.runJavascript(await rootBundle.loadString('assets/felica.js'));
+    await cont.runJavascript(await rootBundle.loadString('assets/codes.js'));
+  }
+
+  Future<String> run(String js) async {
+    if (_cont == null) throw "Not initialized";
+    log("[Webview] Run script $js");
+    String result = await _cont!.runJavascriptReturningResult(js);
+    log("[Webview] Result: $result");
+    return result;
+  }
+
+  Stream<WebViewEvent> stream(WebViewOwner owner) {
+    return this._streams[owner]!.stream;
+  }
+}
 
 List<Detail> parseTransactionDetails(
     Map<String, dynamic> _data, BuildContext context) {

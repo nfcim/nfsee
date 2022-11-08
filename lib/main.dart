@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -9,14 +10,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
-import 'package:interactive_webview_null_safety/interactive_webview.dart';
 import 'package:nfsee/data/blocs/bloc.dart';
 import 'package:nfsee/data/blocs/provider.dart';
 import 'package:nfsee/models.dart';
 import 'package:nfsee/ui/home.dart';
 import 'package:nfsee/ui/scripts.dart';
 import 'package:nfsee/ui/settings.dart';
+import 'package:nfsee/ui/widgets.dart';
 import 'package:nfsee/utilities.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -96,13 +98,14 @@ class PlatformAdaptingHomePage extends StatefulWidget {
 
 class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   late HomeAct home;
-  final _webView = InteractiveWebView();
-  StreamSubscription? _webViewListener;
   var _reading = false;
   Exception? error;
-  final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey = new GlobalKey<ScaffoldMessengerState>();
+  final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
+      new GlobalKey<ScaffoldMessengerState>();
 
   PageController? topController;
+  WebViewManager webview = WebViewManager();
+  StreamSubscription? _webViewListener;
   int currentTop = 1;
 
   NFSeeAppBloc get bloc => BlocProvider.provideBloc(context);
@@ -120,34 +123,19 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   }
 
   void _initSelf() async {
+    _webViewListener =
+        webview.stream(WebViewOwner.Main).listen(_onReceivedMessage);
     topController = PageController(
       initialPage: this.currentTop,
     );
-    await this._reloadWebview();
   }
 
   @override
   void dispose() {
-    _webViewListener!.cancel();
-    _webViewListener = null;
     topController!.dispose();
     super.dispose();
-  }
-
-  Future<void> _reloadWebview() async {
-    // _webView.loadHTML("<!DOCTYPE html>");
-    _webView.evalJavascript(await rootBundle.loadString('assets/ber-tlv.js'));
-    _webView.evalJavascript(await rootBundle.loadString('assets/crypto-js.js'));
-    _webView.evalJavascript(await rootBundle.loadString('assets/crypto.js'));
-    _webView.evalJavascript(await rootBundle.loadString('assets/reader.js'));
-    _webView.evalJavascript(await rootBundle.loadString('assets/felica.js'));
-    _webView.evalJavascript(await rootBundle.loadString('assets/codes.js'));
-    await this._addWebViewHandler();
-  }
-
-  Future<void> _addWebViewHandler() async {
-    if (_webViewListener != null) _webViewListener!.cancel();
-    _webViewListener = _webView.didReceiveMessage.listen(_onReceivedMessage);
+    _webViewListener?.cancel();
+    _webViewListener = null;
   }
 
   void showSnackbar(SnackBar snackBar) {
@@ -156,18 +144,18 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     }
   }
 
-  void _onReceivedMessage(WebkitMessage message) async {
-    if (webviewOwner != WebViewOwner.Main) {
-      return;
-    }
-    var scriptModel = ScriptDataModel.fromJson(message.data);
+  void _onReceivedMessage(WebViewEvent ev) async {
+    if (ev.reload) return; // Main doesn't care about reload events
+    assert(ev.message != null);
+
+    var scriptModel = ScriptDataModel.fromJson(json.decode(ev.message!));
     log('[Main] Received action ${scriptModel.action} from script');
     switch (scriptModel.action) {
       case 'poll':
         error = null;
         try {
-          final tag = await FlutterNfcKit.poll(
-              iosAlertMessage: S(context).waitForCard);
+          final tag =
+              await FlutterNfcKit.poll(iosAlertMessage: S(context).waitForCard);
           final json = tag.toJson();
 
           // try to read ndef and insert into json
@@ -180,7 +168,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
             log('Silent readNDEF error: ${e.toDetailString()}');
           }
 
-          _webView.evalJavascript("pollCallback(${jsonEncode(json)})");
+          webview.run("pollCallback(${jsonEncode(json)})");
           FlutterNfcKit.setIosAlertMessage(S(context).cardPolled);
         } on PlatformException catch (e) {
           error = e;
@@ -191,7 +179,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
               content:
                   Text('${S(context).readFailed}: ${e.toDetailString()}')));
           // reject the promise
-          _webView.evalJavascript("pollErrorCallback(${e.toJsonString()})");
+          webview.run("pollErrorCallback(${e.toJsonString()})");
         }
         break;
 
@@ -201,7 +189,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           final rapdu =
               await FlutterNfcKit.transceive(scriptModel.data as String);
           log('RX: $rapdu');
-          _webView.evalJavascript("transceiveCallback('$rapdu')");
+          webview.run("transceiveCallback('$rapdu')");
         } on PlatformException catch (e) {
           error = e;
           // we need to explicitly finish the reader session now **in the script** to stop any following operations,
@@ -212,8 +200,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           showSnackbar(SnackBar(
               content:
                   Text('${S(context).readFailed}: ${e.toDetailString()}')));
-          _webView
-              .evalJavascript("transceiveErrorCallback(${e.toJsonString()})");
+          webview.run("transceiveErrorCallback(${e.toJsonString()})");
         }
         break;
 
@@ -228,8 +215,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           await FlutterNfcKit.finish(iosErrorMessage: S(context).readFailed);
           error = null;
         } else {
-          await FlutterNfcKit.finish(
-              iosAlertMessage: S(context).readSucceeded);
+          await FlutterNfcKit.finish(iosAlertMessage: S(context).readSucceeded);
         }
         break;
 
@@ -255,7 +241,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           webviewOwner = WebViewOwner.Script;
         else
           webviewOwner = WebViewOwner.Main;
-        await this._reloadWebview();
+        await webview.reload();
         this.topController!.animateToPage(e,
             duration: Duration(milliseconds: 500), curve: Curves.ease);
       },
@@ -276,15 +262,27 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     );
 
     final top = this._buildTop(context);
+    final stack = Stack(children: <Widget>[
+      Offstage(
+        offstage: true,
+        child: WebView(
+          onWebViewCreated: webview.onWebviewInit,
+          onPageFinished: webview.onWebviewPageLoad,
+          javascriptMode: JavascriptMode.unrestricted,
+          javascriptChannels: {webview.channel},
+        ),
+      ),
+      top
+    ]);
 
     return Scaffold(
-      body: top,
+      body: stack,
       bottomNavigationBar: bottom,
     );
   }
 
   Widget _buildTop(context) {
-    final scripts = ScriptsAct();
+    final scripts = ScriptsAct(webview: this.webview);
     final home = HomeAct(readCard: () {
       return this._readTag(this.context);
     });
@@ -318,13 +316,13 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     }
 
     final script = await rootBundle.loadString('assets/read.js');
-    _webView.evalJavascript(script);
+    webview.run(script);
     // this._mockRead();
 
     bool cardRead = true;
     if ((await modal) != true) {
       // closed by user, reject the promise
-      _webView.evalJavascript("pollErrorCallback('User cancelled operation')");
+      webview.run("pollErrorCallback('User cancelled operation')");
       cardRead = false;
     }
 
