@@ -168,7 +168,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
             log('Silent readNDEF error: ${e.toDetailString()}');
           }
 
-          webview.run("pollCallback(${jsonEncode(json)})");
+          await webview.run("pollCallback(${jsonEncode(json)})");
           FlutterNfcKit.setIosAlertMessage(S(context).cardPolled);
         } on PlatformException catch (e) {
           error = e;
@@ -179,7 +179,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
               content:
                   Text('${S(context).readFailed}: ${e.toDetailString()}')));
           // reject the promise
-          webview.run("pollErrorCallback(${e.toJsonString()})");
+          await webview.run("pollErrorCallback(${e.toJsonString()})");
         }
         break;
 
@@ -189,7 +189,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           final rapdu =
               await FlutterNfcKit.transceive(scriptModel.data as String);
           log('RX: $rapdu');
-          webview.run("transceiveCallback('$rapdu')");
+          await webview.run("transceiveCallback('$rapdu')");
         } on PlatformException catch (e) {
           error = e;
           // we need to explicitly finish the reader session now **in the script** to stop any following operations,
@@ -200,7 +200,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           showSnackbar(SnackBar(
               content:
                   Text('${S(context).readFailed}: ${e.toDetailString()}')));
-          webview.run("transceiveErrorCallback(${e.toJsonString()})");
+          await webview.run("transceiveErrorCallback(${e.toJsonString()})");
         }
         break;
 
@@ -316,13 +316,13 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     }
 
     final script = await rootBundle.loadString('assets/read.js');
-    webview.run(script);
+    await webview.run(script);
     // this._mockRead();
 
     bool cardRead = true;
     if ((await modal) != true) {
       // closed by user, reject the promise
-      webview.run("pollErrorCallback('User cancelled operation')");
+      await webview.run("pollErrorCallback('User cancelled operation')");
       cardRead = false;
     }
 
