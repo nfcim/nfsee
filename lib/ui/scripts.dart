@@ -524,19 +524,8 @@ class _ScriptsActState extends State<ScriptsAct>
     var id = script?.id ?? -1;
     var name = script?.name ?? '';
     var source = script?.source ?? '';
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      _showScriptDialogAndroid(id, name, source);
-    } else {
-      // _showScriptDialogIos(id, name, source);
-      _showScriptDialogAndroid(id, name, source);
-    }
-  }
 
-  // ===========================================================================
-  // Non-shared code below because we're using different scaffolds.
-  // ===========================================================================
-
-  void _showScriptDialogAndroid(int id, String name, String source) {
+    // These variables are not used in rendering, so we don't need to setState here
     this.currentId = id;
     this.currentSource = source;
     this.currentName = name;
@@ -560,34 +549,6 @@ class _ScriptsActState extends State<ScriptsAct>
               TextButton(
                 child: Text(MaterialLocalizations.of(context).okButtonLabel),
                 onPressed: _addOrModifyScript,
-              ),
-            ],
-          );
-        });
-  }
-
-  void _showScriptDialogIos(int id, String name, String source) {
-    this.currentId = id;
-    this.currentSource = source;
-    this.currentName = name;
-
-    showCupertinoDialog(
-        context: context,
-        builder: (context) {
-          return CupertinoAlertDialog(
-            title: Text(S(context).addScript),
-            content: _buildAddScriptDialogContent(),
-            actions: <Widget>[
-              CupertinoButton(
-                child: Text(MaterialLocalizations.of(context).okButtonLabel),
-                onPressed: _addOrModifyScript,
-              ),
-              CupertinoButton(
-                child:
-                    Text(MaterialLocalizations.of(context).cancelButtonLabel),
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true).pop();
-                },
               ),
             ],
           );

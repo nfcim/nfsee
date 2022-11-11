@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
-import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -16,7 +14,6 @@ import 'package:nfsee/models.dart';
 import 'package:nfsee/ui/home.dart';
 import 'package:nfsee/ui/scripts.dart';
 import 'package:nfsee/ui/settings.dart';
-import 'package:nfsee/ui/widgets.dart';
 import 'package:nfsee/utilities.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -207,7 +204,8 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
       case 'report':
         _closeReadModal(this.context);
-        final id = await bloc.addDumpedRecord(jsonEncode(scriptModel.data));
+        /* final id = */ await bloc
+            .addDumpedRecord(jsonEncode(scriptModel.data));
         home.scrollToNewCard();
         break;
 

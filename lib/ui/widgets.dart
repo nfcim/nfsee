@@ -1,12 +1,10 @@
 import 'dart:convert';
-import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:ndef/ndef.dart' as ndef;
 import 'package:nfsee/data/database/database.dart';
@@ -20,7 +18,7 @@ class PlatformWidget extends StatelessWidget {
     Key? key,
     required this.androidBuilder,
     required this.iosBuilder,
-  })  : super(key: key);
+  }) : super(key: key);
 
   final WidgetBuilder androidBuilder;
   final WidgetBuilder iosBuilder;
@@ -269,9 +267,7 @@ class NDEFTile extends StatelessWidget {
       title = "URI";
       subtitle = r.uriString!;
       details.add(Detail(
-          name: S(context).wellKnownPrefix,
-          value: r.prefix,
-          icon: Icons.tab));
+          name: S(context).wellKnownPrefix, value: r.prefix, icon: Icons.tab));
     } else if (data is ndef.TextRecord) {
       var r = data as ndef.TextRecord;
       icon = Icons.text_fields;

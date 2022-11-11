@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -171,8 +170,8 @@ class HomeState extends State<HomeAct>
                     data == null
                         ? "加载中..."
                         : S(context)
-                          .historyCount
-                          .replaceAll("\$", data.length.toString()),
+                            .historyCount
+                            .replaceAll("\$", data.length.toString()),
                     style: Theme.of(context)
                         .primaryTextTheme
                         .caption!
@@ -300,8 +299,10 @@ class HomeState extends State<HomeAct>
 
   void addCard() async {
     await Future.delayed(const Duration(milliseconds: 10));
-    this.cardController!.animateTo(this.cardController!.position.maxScrollExtent,
-        duration: const Duration(microseconds: 500), curve: ElasticOutCurve());
+    this.cardController!.animateTo(
+        this.cardController!.position.maxScrollExtent,
+        duration: const Duration(microseconds: 500),
+        curve: ElasticOutCurve());
   }
 
   @override
@@ -436,8 +437,8 @@ class HomeState extends State<HomeAct>
           child: Column(
             children: <Widget>[
               ListTile(
-                title: Text(
-                    "${S(context).addedAt} ${this.detail!.formattedTime}"),
+                title:
+                    Text("${S(context).addedAt} ${this.detail!.formattedTime}"),
                 subtitle: Text(S(context).detailHint),
                 leading: Icon(Icons.access_time),
               ),

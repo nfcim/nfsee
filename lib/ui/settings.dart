@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:nfsee/data/blocs/bloc.dart';
@@ -45,8 +44,7 @@ class _SettingsActState extends State<SettingsAct> {
                       },
                       value: delRecords,
                       title: Text(S(context).record),
-                      subtitle:
-                          Text("${S(context).dataCount}: $recordCount"),
+                      subtitle: Text("${S(context).dataCount}: $recordCount"),
                     ),
                     CheckboxListTile(
                       onChanged: (v) {
@@ -56,8 +54,7 @@ class _SettingsActState extends State<SettingsAct> {
                       },
                       value: delScripts,
                       title: Text(S(context).script),
-                      subtitle:
-                          Text("${S(context).dataCount}: $scriptCount"),
+                      subtitle: Text("${S(context).dataCount}: $scriptCount"),
                     ),
                   ],
                 ),
