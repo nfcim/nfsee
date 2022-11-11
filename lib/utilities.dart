@@ -115,12 +115,10 @@ class WebViewManager {
     await cont.runJavascript(await rootBundle.loadString('assets/codes.js'));
   }
 
-  Future<String> run(String js) async {
+  Future<void> run(String js) async {
     if (_cont == null) throw "Not initialized";
     log("[Webview] Run script $js");
-    String result = await _cont!.runJavascriptReturningResult(js);
-    log("[Webview] Result: $result");
-    return result;
+    await _cont!.runJavascript(js);
   }
 
   Stream<WebViewEvent> stream(WebViewOwner owner) {

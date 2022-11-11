@@ -123,6 +123,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   }
 
   void _initSelf() async {
+    await webview.reload();
     _webViewListener =
         webview.stream(WebViewOwner.Main).listen(_onReceivedMessage);
     topController = PageController(
