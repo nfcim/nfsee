@@ -356,7 +356,18 @@ class HomeState extends State<HomeAct>
   }
 
   Widget _buildDetail(BuildContext ctx) {
-    if (detail == null) return Container();
+    if (detail == null)
+      return Container(
+          height: double.infinity,
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Image.asset('assets/empty.png', height: 200),
+              Text(S(context).noHistoryFound),
+            ],
+          ));
     var data = detail!.raw;
 
     final detailTiles = parseCardDetails(data["detail"], context)

@@ -241,9 +241,12 @@ class _ScriptsActState extends State<ScriptsAct>
     log('[Script] Run script: ${script.source}');
 
     try {
+      final wrapped = "(async function() {${script.source}})()";
+      final encoded = json.encode(wrapped);
       await webview.run('''
           (async function() {
-            ${script.source}
+            let source = $encoded;
+            await eval(source);
           })().catch((e) => error(e.toString())).finally(finish);
       ''');
     } catch (e) {
@@ -347,7 +350,7 @@ class _ScriptsActState extends State<ScriptsAct>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Image.asset('assets/empty.png', height: 200),
-                  Text(S(context).noHistoryFound),
+                  Text(S(context).noScriptFound),
                 ],
               ));
         }
@@ -403,8 +406,9 @@ class _ScriptsActState extends State<ScriptsAct>
                                             }
                                           : null,
                                       style: TextButton.styleFrom(
-                                          foregroundColor:
-                                              Theme.of(context).primaryColor),
+                                          foregroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .primary),
                                       // icon:
                                       icon: this.running == script.id
                                           ? Padding(

@@ -10,6 +10,7 @@
     "readSucceeded": "Read succeeded",
     "readFailed": "Read failed",
     "noHistoryFound": "No history found",
+    "noScriptFound": "No script added",
     "cardName": "Card name",
     "lastExecutionTime": "Last execution time",
     "never": "Never",

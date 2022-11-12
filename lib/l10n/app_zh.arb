@@ -10,6 +10,7 @@
     "readSucceeded": "读卡成功",
     "readFailed": "读卡失败",
     "noHistoryFound": "暂无历史记录",
+    "noScriptFound": "暂无已添加的脚本",
     "cardName": "卡片名称",
     "lastExecutionTime": "上次执行时间",
     "never": "从未",
