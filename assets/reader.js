@@ -1,6 +1,6 @@
 class NativeCaller {
   constructor() {
-    this.communicator = window.native || webkit.messageHandlers.native;
+    this.communicator = nfsee || window.nfsee || window.messageHandlers.nfsee || window.native || webkit.messageHandlers.native;
   }
 
   postMessage(action, data) {

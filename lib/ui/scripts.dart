@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
-import 'package:interactive_webview_null_safety/interactive_webview.dart';
 import 'package:nfsee/ui/custom_expansion_panel.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -23,15 +22,18 @@ class ScriptsAct extends StatefulWidget {
   static const androidIcon = Icon(Icons.code);
   static const iosIcon = Icon(Icons.code);
 
+  final WebViewManager webview;
+
+  ScriptsAct({required this.webview});
+
   @override
-  _ScriptsActState createState() => _ScriptsActState();
+  _ScriptsActState createState() => _ScriptsActState(webview: this.webview);
 }
 
 class _ScriptsActState extends State<ScriptsAct>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-  final _webView = InteractiveWebView();
+  final WebViewManager webview;
   StreamSubscription? _webViewListener;
-  StreamSubscription? _webViewReloadListener;
 
   NFSeeAppBloc? get bloc => BlocProvider.provideBloc(context);
 
@@ -65,6 +67,8 @@ class _ScriptsActState extends State<ScriptsAct>
   late Animation<double> runningOpacity;
   double runningOpacityVal = 0;
   late AnimationController runningOpacityTrans;
+
+  _ScriptsActState({required this.webview});
 
   @override
   void initState() {
@@ -126,67 +130,58 @@ class _ScriptsActState extends State<ScriptsAct>
   }
 
   void _reloadWebviewListener() {
-    if (_webViewListener != null) _webViewListener!.cancel();
-    if (_webViewReloadListener != null) _webViewReloadListener!.cancel();
+    _webViewListener?.cancel();
 
     _webViewListener =
-        _webView.didReceiveMessage.listen(this._onReceivedMessage);
-    _webViewReloadListener = _webView.stateChanged.listen((e) async {
-      log(e.type.toString());
-      if (e.type == WebViewState.didFinish) {
-        log("reload detected");
-        // Reload
-        setState(() {
-          this.running = -1;
-          this.lastRunning = -1;
-        });
-
-        log("Reset listener");
-        this._reloadWebviewListener();
-      }
-    });
+        webview.stream(WebViewOwner.Script).listen(this._onReceivedMessage);
   }
 
   @override
   void dispose() {
     log("DISPOSE");
-    _webViewListener!.cancel();
-    _webViewReloadListener!.cancel();
-    _webViewListener = null;
-    _webViewReloadListener = null;
     this.appbarFloatTrans.dispose();
     this.runningOpacityTrans.dispose();
     super.dispose();
   }
 
-  void _onReceivedMessage(WebkitMessage message) async {
-    log(webviewOwner.toString());
-    if (webviewOwner != WebViewOwner.Script) {
+  void _onReceivedMessage(WebViewEvent ev) async {
+    if (ev.reload) {
+      log("[Script] Reload detected");
+      // Reload
+      setState(() {
+        this.running = -1;
+        this.lastRunning = -1;
+      });
+
+      // With the new stream, we never need to reset listeners.
+      // log("Reset listener");
+      // this._reloadWebviewListener();
       return;
     }
-    var scriptModel = ScriptDataModel.fromJson(message.data);
+
+    assert(ev.message != null);
+    var scriptModel = ScriptDataModel.fromJson(json.decode(ev.message!));
     log('[Script] Received action ${scriptModel.action} from script');
     switch (scriptModel.action) {
       case 'poll':
         try {
-          final tag = await FlutterNfcKit.poll(
-              iosAlertMessage: S(context).waitForCard);
-          _webView.evalJavascript("pollCallback(${jsonEncode(tag)})");
+          final tag =
+              await FlutterNfcKit.poll(iosAlertMessage: S(context).waitForCard);
+          await webview.run("pollCallback(${jsonEncode(tag)})");
           FlutterNfcKit.setIosAlertMessage(S(context).executingScript);
         } on PlatformException catch (e) {
           log('Poll exception: ${e.toDetailString()}');
-          _webView.evalJavascript("pollErrorCallback(${e.toJsonString()})");
+          await webview.run("pollErrorCallback(${e.toJsonString()})");
         }
         break;
 
       case 'transceive':
         try {
           final rapdu = await FlutterNfcKit.transceive(scriptModel.data);
-          _webView.evalJavascript("transceiveCallback('$rapdu')");
+          await webview.run("transceiveCallback('$rapdu')");
         } on PlatformException catch (e) {
           log('Transceive exception: ${e.toDetailString()}');
-          _webView
-              .evalJavascript("transceiveErrorCallback(${e.toJsonString()})");
+          await webview.run("transceiveErrorCallback(${e.toJsonString()})");
         }
         break;
 
@@ -203,9 +198,12 @@ class _ScriptsActState extends State<ScriptsAct>
       case 'report':
         setState(() {
           if (this.running != -1) {
-            this.results[this.running] = (scriptModel.data.toString() + '\n') + this.results[this.running]!;
+            this.results[this.running] = (scriptModel.data.toString() + '\n') +
+                this.results[this.running]!;
           } else if (this.lastRunning != -1) {
-            this.results[this.lastRunning] = (scriptModel.data.toString() + '\n') + this.results[this.lastRunning]!;
+            this.results[this.lastRunning] =
+                (scriptModel.data.toString() + '\n') +
+                    this.results[this.lastRunning]!;
           }
         });
         break;
@@ -214,8 +212,7 @@ class _ScriptsActState extends State<ScriptsAct>
         if (this.errors[this.running] == true) {
           await FlutterNfcKit.finish(iosErrorMessage: S(context).readFailed);
         } else {
-          await FlutterNfcKit.finish(
-              iosAlertMessage: S(context).readSucceeded);
+          await FlutterNfcKit.finish(iosAlertMessage: S(context).readSucceeded);
         }
         log("Reseting running state");
         setState(() {
@@ -241,27 +238,27 @@ class _ScriptsActState extends State<ScriptsAct>
       this.running = script.id;
     });
 
-    log('Run script: ${script.source}');
+    log('[Script] Run script: ${script.source}');
 
     try {
       final wrapped = "(async function() {${script.source}})()";
       final encoded = json.encode(wrapped);
-      _webView.evalJavascript('''
+      await webview.run('''
           (async function() {
             let source = $encoded;
             await eval(source);
           })().catch((e) => error(e.toString())).finally(finish);
       ''');
     } catch (e) {
-      log(e as String);
+      log('[Script] Error: ${e as String}');
     }
   }
 
   void _showMessage(BuildContext context, String message) {
     if (defaultTargetPlatform == TargetPlatform.android) {
-      var scaffold = Scaffold.of(context);
-      scaffold.hideCurrentSnackBar();
-      scaffold.showSnackBar(SnackBar(
+      var scaffoldMsg = ScaffoldMessenger.of(context);
+      scaffoldMsg.hideCurrentSnackBar();
+      scaffoldMsg.showSnackBar(SnackBar(
         behavior: SnackBarBehavior.floating,
         content: Text(message),
         duration: Duration(seconds: 1),
@@ -289,13 +286,12 @@ class _ScriptsActState extends State<ScriptsAct>
     // first hide the script
     await this.bloc!.delScript(script.id);
     log('Script ${script.name} deleted');
-    final message =
-        '${S(context).script} ${script.name} ${S(context).deleted}';
+    final message = '${S(context).script} ${script.name} ${S(context).deleted}';
 
     if (defaultTargetPlatform == TargetPlatform.android) {
-      var scaffold = Scaffold.of(context);
-      scaffold.hideCurrentSnackBar();
-      scaffold
+      var scaffoldMsg = ScaffoldMessenger.of(context);
+      scaffoldMsg.hideCurrentSnackBar();
+      scaffoldMsg
           .showSnackBar(SnackBar(
             behavior: SnackBarBehavior.floating,
             content: Text(message),
@@ -354,7 +350,7 @@ class _ScriptsActState extends State<ScriptsAct>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Image.asset('assets/empty.png', height: 200),
-                  Text(S(context).noHistoryFound),
+                  Text(S(context).noScriptFound),
                 ],
               ));
         }
@@ -398,7 +394,7 @@ class _ScriptsActState extends State<ScriptsAct>
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
-                                  FlatButton.icon(
+                                  TextButton.icon(
                                       // Disable run button if there is a script running in background
                                       onPressed: this.running == -1
                                           ? () async {
@@ -409,7 +405,10 @@ class _ScriptsActState extends State<ScriptsAct>
                                                       script.id);
                                             }
                                           : null,
-                                      textTheme: ButtonTextTheme.primary,
+                                      style: TextButton.styleFrom(
+                                          foregroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .primary),
                                       // icon:
                                       icon: this.running == script.id
                                           ? Padding(
@@ -529,19 +528,8 @@ class _ScriptsActState extends State<ScriptsAct>
     var id = script?.id ?? -1;
     var name = script?.name ?? '';
     var source = script?.source ?? '';
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      _showScriptDialogAndroid(id, name, source);
-    } else {
-      // _showScriptDialogIos(id, name, source);
-      _showScriptDialogAndroid(id, name, source);
-    }
-  }
 
-  // ===========================================================================
-  // Non-shared code below because we're using different scaffolds.
-  // ===========================================================================
-
-  void _showScriptDialogAndroid(int id, String name, String source) {
+    // These variables are not used in rendering, so we don't need to setState here
     this.currentId = id;
     this.currentSource = source;
     this.currentName = name;
@@ -551,49 +539,20 @@ class _ScriptsActState extends State<ScriptsAct>
         barrierDismissible: false,
         builder: (context) {
           return AlertDialog(
-            title: Text(id == -1
-                ? S(context).addScript
-                : S(context).modifyScript),
+            title:
+                Text(id == -1 ? S(context).addScript : S(context).modifyScript),
             content: _buildAddScriptDialogContent(),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child:
                     Text(MaterialLocalizations.of(context).cancelButtonLabel),
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop();
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text(MaterialLocalizations.of(context).okButtonLabel),
                 onPressed: _addOrModifyScript,
-              ),
-            ],
-          );
-        });
-  }
-
-  void _showScriptDialogIos(int id, String name, String source) {
-    this.currentId = id;
-    this.currentSource = source;
-    this.currentName = name;
-
-    showCupertinoDialog(
-        context: context,
-        builder: (context) {
-          return CupertinoAlertDialog(
-            title: Text(S(context).addScript),
-            content: _buildAddScriptDialogContent(),
-            actions: <Widget>[
-              CupertinoButton(
-                child: Text(MaterialLocalizations.of(context).okButtonLabel),
-                onPressed: _addOrModifyScript,
-              ),
-              CupertinoButton(
-                child:
-                    Text(MaterialLocalizations.of(context).cancelButtonLabel),
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true).pop();
-                },
               ),
             ],
           );
@@ -627,7 +586,7 @@ class _ScriptsActState extends State<ScriptsAct>
                     color: Theme.of(context).primaryTextTheme.headline5!.color),
                 tooltip: S(context).help,
                 onPressed: () {
-                  launch('https://nfsee.nfc.im/js-extension/');
+                  launchUrl(Uri.parse('https://nfsee.nfc.im/js-extension/'));
                 },
               ),
             ]));
@@ -655,8 +614,9 @@ class _ScriptsActState extends State<ScriptsAct>
         child: SelectableText(
           result,
           style: TextStyle(
-              color:
-                  error! ? Colors.red : Theme.of(context).colorScheme.onSurface),
+              color: error!
+                  ? Colors.red
+                  : Theme.of(context).colorScheme.onSurface),
         ),
       );
     }

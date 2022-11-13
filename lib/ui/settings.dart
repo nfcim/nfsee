@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:nfsee/data/blocs/bloc.dart';
@@ -45,8 +44,7 @@ class _SettingsActState extends State<SettingsAct> {
                       },
                       value: delRecords,
                       title: Text(S(context).record),
-                      subtitle:
-                          Text("${S(context).dataCount}: $recordCount"),
+                      subtitle: Text("${S(context).dataCount}: $recordCount"),
                     ),
                     CheckboxListTile(
                       onChanged: (v) {
@@ -56,14 +54,13 @@ class _SettingsActState extends State<SettingsAct> {
                       },
                       value: delScripts,
                       title: Text(S(context).script),
-                      subtitle:
-                          Text("${S(context).dataCount}: $scriptCount"),
+                      subtitle: Text("${S(context).dataCount}: $scriptCount"),
                     ),
                   ],
                 ),
               ),
               actions: <Widget>[
-                FlatButton(
+                TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -71,12 +68,12 @@ class _SettingsActState extends State<SettingsAct> {
                       .cancelButtonLabel
                       .toUpperCase()),
                 ),
-                FlatButton(
+                TextButton(
                   onPressed: () {
                     if (delRecords) bloc!.delAllDumpedRecord();
                     if (delScripts) bloc!.delAllScripts();
                     Navigator.of(context).pop();
-                    Scaffold.of(outerCtx).showSnackBar(SnackBar(
+                    ScaffoldMessenger.of(outerCtx).showSnackBar(SnackBar(
                       behavior: SnackBarBehavior.floating,
                       content: Text(S(context).deletedHint),
                       duration: Duration(seconds: 1),

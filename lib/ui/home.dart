@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -110,7 +109,7 @@ class HomeState extends State<HomeAct>
       final ticket = this.scrollingTicket + 1;
       this.scrollingTicket = ticket;
 
-      Future fut = Future.delayed(const Duration(milliseconds: 100)).then((_) {
+      Future.delayed(const Duration(milliseconds: 100)).then((_) {
         if (this.scrollingTicket != ticket) return;
         this.setState(() {
           this.scrolling = false;
@@ -171,8 +170,8 @@ class HomeState extends State<HomeAct>
                     data == null
                         ? "加载中..."
                         : S(context)
-                          .historyCount
-                          .replaceAll("\$", data.length.toString()),
+                            .historyCount
+                            .replaceAll("\$", data.length.toString()),
                     style: Theme.of(context)
                         .primaryTextTheme
                         .caption!
@@ -300,8 +299,10 @@ class HomeState extends State<HomeAct>
 
   void addCard() async {
     await Future.delayed(const Duration(milliseconds: 10));
-    this.cardController!.animateTo(this.cardController!.position.maxScrollExtent,
-        duration: const Duration(microseconds: 500), curve: ElasticOutCurve());
+    this.cardController!.animateTo(
+        this.cardController!.position.maxScrollExtent,
+        duration: const Duration(microseconds: 500),
+        curve: ElasticOutCurve());
   }
 
   @override
@@ -355,7 +356,18 @@ class HomeState extends State<HomeAct>
   }
 
   Widget _buildDetail(BuildContext ctx) {
-    if (detail == null) return Container();
+    if (detail == null)
+      return Container(
+          height: double.infinity,
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Image.asset('assets/empty.png', height: 200),
+              Text(S(context).noHistoryFound),
+            ],
+          ));
     var data = detail!.raw;
 
     final detailTiles = parseCardDetails(data["detail"], context)
@@ -407,7 +419,6 @@ class HomeState extends State<HomeAct>
                 ],
               ),
             ],
-            brightness: Brightness.light,
           ),
         ),
       ),
@@ -437,8 +448,8 @@ class HomeState extends State<HomeAct>
           child: Column(
             children: <Widget>[
               ListTile(
-                title: Text(
-                    "${S(context).addedAt} ${this.detail!.formattedTime}"),
+                title:
+                    Text("${S(context).addedAt} ${this.detail!.formattedTime}"),
                 subtitle: Text(S(context).detailHint),
                 leading: Icon(Icons.access_time),
               ),
@@ -484,7 +495,6 @@ class HomeState extends State<HomeAct>
 
     final rawTdata = Theme.of(context);
     final tdata = rawTdata.copyWith(
-      accentColor: rawTdata.textTheme.subtitle1!.color,
       dividerColor: Colors.transparent,
     );
 
@@ -601,8 +611,8 @@ class HomeState extends State<HomeAct>
 
     this._tryCollapseDetail();
 
-    Scaffold.of(context).hideCurrentSnackBar();
-    Scaffold.of(context)
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(
             behavior: SnackBarBehavior.floating,
             content: Text(message),
@@ -650,7 +660,7 @@ class HomeState extends State<HomeAct>
           ],
         ),
         actions: <Widget>[
-          FlatButton(
+          TextButton(
             child: Text(MaterialLocalizations.of(context).okButtonLabel),
             onPressed: () {
               setState(() {
@@ -664,7 +674,7 @@ class HomeState extends State<HomeAct>
               });
             },
           ),
-          FlatButton(
+          TextButton(
             child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
             onPressed: () {
               Navigator.of(context).pop();

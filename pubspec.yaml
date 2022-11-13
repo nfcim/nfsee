@@ -13,7 +13,6 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_nfc_kit: "^3.3.1"
-  interactive_webview_null_safety: "^0.2.4"
   collection: "^1.15.0"
   cupertino_icons: "^1.0.3"
   moor: "^4.5.0"
@@ -23,7 +22,7 @@ dependencies:
   intl: "^0.17.0"
   package_info: "^2.0.2"
   url_launcher: "^6.0.9"
-  webview_flutter: ^3.0.3
+  webview_flutter: ^3.0.4
 
 dev_dependencies:
   flutter_test:

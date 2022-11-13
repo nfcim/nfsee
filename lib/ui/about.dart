@@ -76,14 +76,14 @@ class _AboutActState extends State<AboutAct> {
             ),
             ListTile(
               title: Text(S(context).homepage),
-              onTap: () => launch('https://nfsee.nfc.im'),
+              onTap: () => launchUrl(Uri.parse('https://nfsee.nfc.im')),
             ),
             Divider(
               height: 0,
             ),
             ListTile(
               title: Text(S(context).sourceCode),
-              onTap: () => launch('https://github.com/nfcim/nfsee'),
+              onTap: () => launchUrl(Uri.parse('https://github.com/nfcim/nfsee')),
             ),
             Divider(
               height: 0,
@@ -106,7 +106,7 @@ class _AboutActState extends State<AboutAct> {
             ),
             ListTile(
               title: Text(S(context).contactUs),
-              onTap: () => launch('mailto:nfsee@nfc.im'),
+              onTap: () => launchUrl(Uri.parse('mailto:nfsee@nfc.im')),
             )
           ],
         )),
