@@ -93,6 +93,8 @@ class WebViewManager {
   onWebviewInit(WebViewController cont) {
     log("[Webview] Init");
     _cont = cont;
+    // Fire and forget
+    this.reload();
   }
 
   onWebviewPageLoad(String _url) {

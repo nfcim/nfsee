@@ -115,17 +115,18 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
   @override
   void reassemble() {
-    this._initSelf();
     super.reassemble();
+    this._initSelf();
   }
 
-  void _initSelf() async {
-    await webview.reload();
+  void _initSelf() {
     _webViewListener =
         webview.stream(WebViewOwner.Main).listen(_onReceivedMessage);
     topController = PageController(
       initialPage: this.currentTop,
     );
+    // Webview should reload when it's initialized. So we don't need to call reload here
+    // webview.reload();
   }
 
   @override
@@ -315,6 +316,8 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     }
 
     final script = await rootBundle.loadString('assets/read.js');
+    // Reload before read to ensure an clear state
+    await webview.reload();
     await webview.run(script);
     // this._mockRead();
 
