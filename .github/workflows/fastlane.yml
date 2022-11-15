@@ -1,0 +1,11 @@
+name: Verify fastlane metadata
+on: [push, pull_request]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - use: actions/checkout@v3
+      - uses: ashutoshgngwr/validate-fastlane-supply-metadata@v2
+        with:
+          usePlayStoreLocales: true
