@@ -22,6 +22,7 @@ jobs:
     - uses: actions/setup-java@v1
       with:
         java-version: '12.x'
+    - run: git config --global --add safe.directory %(prefix)/.flutter
     - run: .flutter/bin/flutter pub get
     #- run: flutter test
     - run: .flutter/bin/flutter build apk --debug --verbose
