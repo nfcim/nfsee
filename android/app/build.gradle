@@ -88,3 +88,16 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 }
+
+20300
+
+ext.abiCodes = ["x86_64": 1, "armeabi-v7a": 2, "arm64-v8a": 3]
+import com.android.build.OutputFile
+android.applicationVariants.all { variant ->
+  variant.outputs.each { output ->
+    def abiVersionCode = project.ext.abiCodes.get(output.getFilter(OutputFile.ABI))
+    if (abiVersionCode != null) {
+      output.versionCodeOverride = variant.versionCode + abiVersionCode * 1000000
+    }
+  }
+}
