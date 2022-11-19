@@ -20,12 +20,9 @@ jobs:
     - uses: actions/setup-java@v1
       with:
         java-version: '12.x'
-    - uses: subosito/flutter-action@v1
-      with:
-        channel: 'stable' # or: 'dev' or 'beta'
-    - run: flutter pub get
+    - run: .flutter/bin/flutter pub get
     #- run: flutter test
-    - run: flutter build apk --debug --verbose
+    - run: .flutter/bin/flutter build apk --debug --verbose
     - uses: actions/upload-artifact@v1
       with:
         name: apk-debug
