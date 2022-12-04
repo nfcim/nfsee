@@ -6,7 +6,12 @@ NFSee is a flutter application that can dump data from various types of NFC tags
 
 Currently NFSee can run on Android and iOS powered by Flutter.
 
-You can get NFSee on [Google Play](https://play.google.com/store/apps/details?id=im.nfc.nfsee).
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/im.nfc.nfsee/)
+[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
+     alt="Get it on Google Play"
+     height="80">](https://play.google.com/store/apps/details?id=im.nfc.nfsee)
 
 ## Build
 
