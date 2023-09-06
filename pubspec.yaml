@@ -4,7 +4,7 @@ description: An NFC data dumper.
 version: 2.3.0+20301
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.12.0 <4.0.0"
   flutter: ">=3.0.0 <4.0.0"
 
 dependencies:
@@ -13,23 +13,23 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_nfc_kit: "^3.3.1"
-  collection: "^1.15.0"
+  collection: "^1.17.2"
   cupertino_icons: "^1.0.3"
   moor: "^4.5.0"
   sqlite3_flutter_libs: "^0.5.0"
   path_provider: "^2.0.2"
   path: "^1.8.0"
-  intl: "^0.17.0"
+  intl: 0.18.1
   package_info: "^2.0.2"
   url_launcher: "^6.0.9"
-  webview_flutter: ^3.0.4
+  webview_flutter: ^4.2.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   moor_generator: "^4.0.0"
   build_runner: "^2.1.1"
-  flutter_launcher_icons: "^0.9.2"
+  flutter_launcher_icons: ^0.12.0
 
 flutter:
   uses-material-design: true
