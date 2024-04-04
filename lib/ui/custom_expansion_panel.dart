@@ -104,7 +104,7 @@ class NFSeeExpansionPanel {
     this.isExpanded = false,
     this.canTapOnHeader = false,
     this.running = false,
-  })  : assert(headerBuilder != null);
+  }) : assert(headerBuilder != null);
 
   final ExpansionPanelHeaderBuilder? headerBuilder;
   final Widget body;
@@ -211,8 +211,9 @@ class _NFSeeExpansionPanelListState extends State<NFSeeExpansionPanelList> {
       assert(_allIdentifiersUnique(),
           'All ExpansionPanelRadio identifier values must be unique.');
       if (widget.initialOpenPanelValue != null) {
-        _currentOpenPanel =
-            searchPanelByValue(widget.children as List<NFSeeExpansionPanelRadio>, widget.initialOpenPanelValue);
+        _currentOpenPanel = searchPanelByValue(
+            widget.children as List<NFSeeExpansionPanelRadio>,
+            widget.initialOpenPanelValue);
       }
     }
   }
@@ -227,8 +228,9 @@ class _NFSeeExpansionPanelListState extends State<NFSeeExpansionPanelList> {
       // If the previous widget was non-radio ExpansionPanelList, initialize the
       // open panel to widget.initialOpenPanelValue
       if (!oldWidget._allowOnlyOnePanelOpen) {
-        _currentOpenPanel =
-            searchPanelByValue(widget.children as List<NFSeeExpansionPanelRadio>, widget.initialOpenPanelValue);
+        _currentOpenPanel = searchPanelByValue(
+            widget.children as List<NFSeeExpansionPanelRadio>,
+            widget.initialOpenPanelValue);
       }
     } else {
       _currentOpenPanel = null;
@@ -237,7 +239,8 @@ class _NFSeeExpansionPanelListState extends State<NFSeeExpansionPanelList> {
 
   bool _allIdentifiersUnique() {
     final Map<Object?, bool> identifierMap = <Object, bool>{};
-    for (NFSeeExpansionPanelRadio child in widget.children as Iterable<NFSeeExpansionPanelRadio>) {
+    for (NFSeeExpansionPanelRadio child
+        in widget.children as Iterable<NFSeeExpansionPanelRadio>) {
       identifierMap[child.value] = true;
     }
     return identifierMap.length == widget.children.length;
@@ -245,7 +248,8 @@ class _NFSeeExpansionPanelListState extends State<NFSeeExpansionPanelList> {
 
   bool _isChildExpanded(int index) {
     if (widget._allowOnlyOnePanelOpen) {
-      final NFSeeExpansionPanelRadio radioWidget = widget.children[index] as NFSeeExpansionPanelRadio;
+      final NFSeeExpansionPanelRadio radioWidget =
+          widget.children[index] as NFSeeExpansionPanelRadio;
       return _currentOpenPanel?.value == radioWidget.value;
     }
     return widget.children[index].isExpanded;
@@ -256,14 +260,16 @@ class _NFSeeExpansionPanelListState extends State<NFSeeExpansionPanelList> {
       widget.expansionCallback!(index, isExpanded);
 
     if (widget._allowOnlyOnePanelOpen) {
-      final NFSeeExpansionPanelRadio pressedChild = widget.children[index] as NFSeeExpansionPanelRadio;
+      final NFSeeExpansionPanelRadio pressedChild =
+          widget.children[index] as NFSeeExpansionPanelRadio;
 
       // If another ExpansionPanelRadio was already open, apply its
       // expansionCallback (if any) to false, because it's closing.
       for (int childIndex = 0;
           childIndex < widget.children.length;
           childIndex += 1) {
-        final NFSeeExpansionPanelRadio child = widget.children[childIndex] as NFSeeExpansionPanelRadio;
+        final NFSeeExpansionPanelRadio child =
+            widget.children[childIndex] as NFSeeExpansionPanelRadio;
         if (widget.expansionCallback != null &&
             childIndex != index &&
             child.value == _currentOpenPanel?.value)
@@ -453,7 +459,8 @@ class _NFSeeRenderMergeableMaterialListBody extends RenderListBody {
     int i = 0;
 
     while (child != null) {
-      final ListBodyParentData childParentData = child.parentData as ListBodyParentData;
+      final ListBodyParentData childParentData =
+          child.parentData as ListBodyParentData;
       final Rect rect = (childParentData.offset + offset) & child.size;
       if (i % 2 == 0) _paintShadows(context.canvas, rect);
       child = childParentData.nextSibling;
@@ -735,7 +742,9 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
                 newChildren[startNew] is MaterialGap &&
                 _children[startOld].key == newChildren[startNew].key) {
               /// Special case: gap added back.
-              _animationTuples[newChildren[startNew].key]!.controller!.forward();
+              _animationTuples[newChildren[startNew].key]!
+                  .controller!
+                  .forward();
             } else {
               final double? gapSize = _getGapSize(startOld);
 
@@ -774,7 +783,8 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
               _insertChild(startOld + k, newChildren[startNew + k]);
 
               if (newChildren[startNew + k] is MaterialGap) {
-                final MaterialGap gap = newChildren[startNew + k] as MaterialGap;
+                final MaterialGap gap =
+                    newChildren[startNew + k] as MaterialGap;
                 _animationTuples[gap.key]!.controller!.forward();
               }
             }
@@ -967,7 +977,6 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
               bottom: hasBottomDivider ? divider : BorderSide.none,
             );
           }
-
 
           child = AnimatedContainer(
             key: _MergeableMaterialSliceKey(_children[i].key),

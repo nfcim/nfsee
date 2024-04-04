@@ -45,7 +45,8 @@ class CardPhysics extends ScrollPhysics {
       return super.createBallisticSimulation(position, velocity);
 
     final Tolerance tol = this.tolerance;
-    final double target = this._getTargetPixels(position as ScrollPosition, tol, velocity);
+    final double target =
+        this._getTargetPixels(position as ScrollPosition, tol, velocity);
 
     if (target != position.pixels)
       return ScrollSpringSimulation(spring, position.pixels, target, velocity,

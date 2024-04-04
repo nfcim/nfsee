@@ -83,15 +83,16 @@ class _AboutActState extends State<AboutAct> {
             ),
             ListTile(
               title: Text(S(context).sourceCode),
-              onTap: () => launchUrl(Uri.parse('https://github.com/nfcim/nfsee')),
+              onTap: () =>
+                  launchUrl(Uri.parse('https://github.com/nfcim/nfsee')),
             ),
             Divider(
               height: 0,
             ),
             ListTile(
               title: Text(S(context).privacyPolicy),
-              onTap: () => launchAssetPage(S(context).privacyPolicy,
-                  S(context).privacyPolicyContent),
+              onTap: () => launchAssetPage(
+                  S(context).privacyPolicy, S(context).privacyPolicyContent),
             ),
             Divider(
               height: 0,
