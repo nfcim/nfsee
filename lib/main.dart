@@ -98,7 +98,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   var _reading = false;
   Exception? error;
   final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
-      new GlobalKey<ScaffoldMessengerState>();
+      GlobalKey<ScaffoldMessengerState>();
 
   PageController? topController;
   WebViewManager webview = WebViewManager();
@@ -110,20 +110,20 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   @override
   void initState() {
     super.initState();
-    this._initSelf();
+    _initSelf();
   }
 
   @override
   void reassemble() {
     super.reassemble();
-    this._initSelf();
+    _initSelf();
   }
 
   void _initSelf() {
     _webViewListener =
         webview.stream(WebViewOwner.Main).listen(_onReceivedMessage);
     topController = PageController(
-      initialPage: this.currentTop,
+      initialPage: currentTop,
     );
     // Webview should reload when it's initialized. So we don't need to call reload here
     // webview.reload();
@@ -173,7 +173,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           error = e;
           // no need to do anything with FlutterNfcKit, which will reset itself
           log('Poll error: ${e.toDetailString()}');
-          _closeReadModal(this.context);
+          _closeReadModal(context);
           showSnackbar(SnackBar(
               content:
                   Text('${S(context).readFailed}: ${e.toDetailString()}')));
@@ -195,7 +195,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
           // otherwise a following poll might crash the entire application,
           // because ReaderMode is still enabled, and the obselete MethodChannel.Result will be re-used.
           log('Transceive error: ${e.toDetailString()}');
-          _closeReadModal(this.context);
+          _closeReadModal(context);
           showSnackbar(SnackBar(
               content:
                   Text('${S(context).readFailed}: ${e.toDetailString()}')));
@@ -204,7 +204,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         break;
 
       case 'report':
-        _closeReadModal(this.context);
+        _closeReadModal(context);
         /* final id = */ await bloc
             .addDumpedRecord(jsonEncode(scriptModel.data));
         home.scrollToNewCard();
@@ -232,17 +232,18 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   @override
   Widget build(BuildContext context) {
     final bottom = BottomNavigationBar(
-      currentIndex: this.currentTop,
+      currentIndex: currentTop,
       onTap: (e) async {
         setState(() {
-          this.currentTop = e;
+          currentTop = e;
         });
-        if (e == 0)
+        if (e == 0) {
           webviewOwner = WebViewOwner.Script;
-        else
+        } else {
           webviewOwner = WebViewOwner.Main;
+        }
         await webview.reload();
-        this.topController!.animateToPage(e,
+        topController!.animateToPage(e,
             duration: Duration(milliseconds: 500), curve: Curves.ease);
       },
       items: <BottomNavigationBarItem>[
@@ -261,7 +262,7 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
       ],
     );
 
-    final top = this._buildTop(context);
+    final top = _buildTop(context);
     final stack = Stack(children: <Widget>[
       Offstage(
         offstage: true,
@@ -282,9 +283,9 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
   }
 
   Widget _buildTop(context) {
-    final scripts = ScriptsAct(webview: this.webview);
+    final scripts = ScriptsAct(webview: webview);
     final home = HomeAct(readCard: () {
-      return this._readTag(this.context);
+      return _readTag(this.context);
     });
     this.home = home;
     final settings = SettingsAct();
@@ -293,8 +294,8 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
       physics: NeverScrollableScrollPhysics(),
       children: <Widget>[scripts, home, settings],
       onPageChanged: (page) {
-        this.setState(() {
-          this.currentTop = page;
+        setState(() {
+          currentTop = page;
         });
       },
     );
@@ -305,11 +306,11 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     assert(!_reading);
 
     _reading = true;
-    var modal;
+    Future modal;
     if (defaultTargetPlatform == TargetPlatform.android) {
       modal = showModalBottomSheet(
         context: context,
-        builder: this._buildReadModal,
+        builder: _buildReadModal,
       );
     } else {
       modal = Future.value(true);

@@ -37,7 +37,7 @@ class SavedScripts extends Table {
   tables: [DumpedRecords, SavedScripts],
 )
 class Database extends _$Database {
-  Database(QueryExecutor e) : super(e);
+  Database(super.e);
 
   @override
   int get schemaVersion => 6;

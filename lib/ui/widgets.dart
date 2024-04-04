@@ -15,10 +15,10 @@ import 'package:webview_flutter/webview_flutter.dart';
 /// A simple widget that builds different things on different platforms.
 class PlatformWidget extends StatelessWidget {
   const PlatformWidget({
-    Key? key,
+    super.key,
     required this.androidBuilder,
     required this.iosBuilder,
-  }) : super(key: key);
+  });
 
   final WidgetBuilder androidBuilder;
   final WidgetBuilder iosBuilder;
@@ -99,7 +99,7 @@ class ReportRowItem extends StatelessWidget {
     final type =
         getEnumFromString<CardType>(CardType.values, data["card_type"]);
 
-    var typestr = '${type.getName(context)}';
+    var typestr = type.getName(context);
     if (type == CardType.Unknown) {
       typestr += ' (${data["tag"]["standard"]})';
     }
@@ -110,7 +110,7 @@ class ReportRowItem extends StatelessWidget {
       subtitle = data["detail"]["card_number"];
     }
     if (config["name"] != null && config["name"] != "") {
-      subtitle = typestr + " - " + subtitle;
+      subtitle = "$typestr - $subtitle";
       title = config["name"];
     }
 
@@ -121,7 +121,7 @@ class ReportRowItem extends StatelessWidget {
       ),
       title: Text(title),
       subtitle: Text(subtitle),
-      onTap: this.onTap,
+      onTap: onTap,
       trailing: Icon(CupertinoIcons.right_chevron),
     );
   }
@@ -147,13 +147,13 @@ class APDUTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            Text("#${this.index! + 1} - TX",
+            Text("#${index! + 1} - TX",
                 style: Theme.of(context).textTheme.bodySmall),
-            this.hexView(data["tx"], context, Colors.green),
+            hexView(data["tx"], context, Colors.green),
             SizedBox(height: 16),
-            Text("#${this.index! + 1} - RX",
+            Text("#${index! + 1} - RX",
                 style: Theme.of(context).textTheme.bodySmall),
-            this.hexView(data["rx"], context, Colors.orange),
+            hexView(data["rx"], context, Colors.orange),
           ]),
     );
   }
@@ -189,7 +189,7 @@ class TransferTile extends StatelessWidget {
     final typePPSE =
         getEnumFromString<ProcessingCode>(ProcessingCode.values, data!["type"]);
 
-    var subtitle;
+    String subtitle;
     if (data!["date"] != null && data!["time"] != null) {
       subtitle =
           "${formatTransactionDate(data!["date"])} ${formatTransactionTime(data!["time"])}";
@@ -254,7 +254,7 @@ class NDEFTile extends StatelessWidget {
     try {
       final payloadUtf8 = utf8.decode(decodeHexString(raw!.payload));
       details.add(Detail(
-          name: S(context).payload + " (UTF-8)",
+          name: "${S(context).payload} (UTF-8)",
           value: payloadUtf8,
           icon: Icons.text_fields));
     } on FormatException catch (_) {

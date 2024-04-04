@@ -18,12 +18,12 @@ String formatTransactionTime(String raw) {
 }
 
 String formatTransactionBalance(int raw) {
-  if (raw == 0)
+  if (raw == 0) {
     return "0.00";
-  else if (raw > 0)
+  } else if (raw > 0)
     return "${(raw / 100).floor()}.${(raw % 100).toString().padLeft(2, "0")}";
   else
-    return "-" + formatTransactionBalance(-raw);
+    return "-${formatTransactionBalance(-raw)}";
 }
 
 T? getEnumFromString<T>(Iterable<T> values, String value) {
@@ -46,18 +46,18 @@ List<int> decodeHexString(String hex) {
 extension PlatformExceptionExtension on PlatformException {
   Map<String, dynamic> asMap() {
     return {
-      "code": this.code,
-      "message": this.message,
-      "details": this.details.toString()
+      "code": code,
+      "message": message,
+      "details": details.toString()
     };
   }
 
-  String toJsonString() => jsonEncode(this.asMap());
+  String toJsonString() => jsonEncode(asMap());
 
   String toDetailString() {
-    var result = '${this.code} ${this.message}';
-    if (this.details != null) {
-      result += ' (${this.details.toString()})';
+    var result = '$code $message';
+    if (details != null) {
+      result += ' (${details.toString()})';
     }
     return result;
   }
@@ -76,7 +76,7 @@ class WebViewEvent {
 }
 
 class WebViewManager {
-  Map<WebViewOwner, StreamController<WebViewEvent>> _streams = {
+  final Map<WebViewOwner, StreamController<WebViewEvent>> _streams = {
     for (final owner in WebViewOwner.values) owner: StreamController.broadcast()
   };
   WebViewController? _cont;
@@ -94,12 +94,13 @@ class WebViewManager {
     log("[Webview] Init");
     _cont = cont;
     // Fire and forget
-    this.reload();
+    reload();
   }
 
-  onWebviewPageLoad(String _url) {
-    for (final stream in _streams.values)
+  onWebviewPageLoad(String url) {
+    for (final stream in _streams.values) {
       stream.add(WebViewEvent(reload: true));
+    }
   }
 
   Future<void> reload() async {
@@ -122,14 +123,14 @@ class WebViewManager {
   }
 
   Stream<WebViewEvent> stream(WebViewOwner owner) {
-    return this._streams[owner]!.stream;
+    return _streams[owner]!.stream;
   }
 }
 
 List<Detail> parseTransactionDetails(
-    Map<String, dynamic> _data, BuildContext context) {
+    Map<String, dynamic> data, BuildContext context) {
   // make a copy
-  var data = {}..addAll(_data);
+  var data = {}..addAll(data);
   data.remove('amount');
   data.remove('date');
   data.remove('time');
@@ -163,9 +164,9 @@ List<Detail> parseTransactionDetails(
 }
 
 List<Detail> parseCardDetails(
-    Map<String, dynamic> _data, BuildContext context) {
+    Map<String, dynamic> data, BuildContext context) {
   // make a copy and remove transactions & ndef, the remaining fields are all details
-  var data = {}..addAll(_data);
+  var data = {}..addAll(data);
   data.remove('transactions');
   data.remove('ndef');
   data.remove('data');
@@ -243,10 +244,8 @@ void _addDetail(Map<dynamic, dynamic> data, List<Detail> details,
     String fieldName, String parsedName,
     [IconData? icon, transformer]) {
   // optional parameters
-  if (icon == null) icon = Icons.list;
-  if (transformer == null) {
-    transformer = (s) => "$s";
-  }
+  icon ??= Icons.list;
+  transformer ??= (s) => "$s";
   // check existence and add to list
   if (data[fieldName] != null) {
     details.add(Detail(

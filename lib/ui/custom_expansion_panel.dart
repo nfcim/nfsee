@@ -119,17 +119,11 @@ class NFSeeExpansionPanelRadio extends NFSeeExpansionPanel {
   /// [headerBuilder], [body], [value] must not be null.
   NFSeeExpansionPanelRadio({
     @required this.value,
-    @required ExpansionPanelHeaderBuilder? headerBuilder,
-    required Widget body,
-    bool canTapOnHeader = false,
-    bool running = false,
-  })  : assert(value != null),
-        super(
-          body: body,
-          headerBuilder: headerBuilder,
-          canTapOnHeader: canTapOnHeader,
-          running: running,
-        );
+    @required super.headerBuilder,
+    required super.body,
+    super.canTapOnHeader,
+    super.running,
+  })  : assert(value != null);
 
   /// The value that uniquely identifies a radio panel so that the currently
   /// selected radio panel can be identified.
@@ -142,24 +136,22 @@ class NFSeeExpansionPanelList extends StatefulWidget {
   ///
   /// The [children] and [animationDuration] arguments must not be null.
   const NFSeeExpansionPanelList({
-    Key? key,
+    super.key,
     this.children = const <NFSeeExpansionPanel>[],
     this.expansionCallback,
     this.animationDuration = kThemeAnimationDuration,
     this.elevation = 2,
   })  : _allowOnlyOnePanelOpen = false,
-        initialOpenPanelValue = null,
-        super(key: key);
+        initialOpenPanelValue = null;
 
   const NFSeeExpansionPanelList.radio({
-    Key? key,
+    super.key,
     this.children = const <NFSeeExpansionPanelRadio>[],
     this.expansionCallback,
     this.animationDuration = kThemeAnimationDuration,
     this.initialOpenPanelValue,
     this.elevation = 2,
-  })  : _allowOnlyOnePanelOpen = true,
-        super(key: key);
+  })  : _allowOnlyOnePanelOpen = true;
 
   /// The children of the expansion panel list. They are laid out in a similar
   /// fashion to [ListBody].
@@ -255,8 +247,9 @@ class _NFSeeExpansionPanelListState extends State<NFSeeExpansionPanelList> {
   }
 
   void _handlePressed(bool isExpanded, int index) {
-    if (widget.expansionCallback != null)
+    if (widget.expansionCallback != null) {
       widget.expansionCallback!(index, isExpanded);
+    }
 
     if (widget._allowOnlyOnePanelOpen) {
       final NFSeeExpansionPanelRadio pressedChild =
@@ -271,8 +264,9 @@ class _NFSeeExpansionPanelListState extends State<NFSeeExpansionPanelList> {
             widget.children[childIndex] as NFSeeExpansionPanelRadio;
         if (widget.expansionCallback != null &&
             childIndex != index &&
-            child.value == _currentOpenPanel?.value)
+            child.value == _currentOpenPanel?.value) {
           widget.expansionCallback!(childIndex, false);
+        }
       }
 
       setState(() {
@@ -296,9 +290,10 @@ class _NFSeeExpansionPanelListState extends State<NFSeeExpansionPanelList> {
         vertical: _kPanelHeaderExpandedHeight - _kPanelHeaderCollapsedHeight);
 
     for (int index = 0; index < widget.children.length; index += 1) {
-      if (_isChildExpanded(index) && index != 0 && !_isChildExpanded(index - 1))
+      if (_isChildExpanded(index) && index != 0 && !_isChildExpanded(index - 1)) {
         items.add(MaterialGap(
             key: _SaltedKey<BuildContext, int>(context, index * 2 - 1)));
+      }
 
       final NFSeeExpansionPanel child = widget.children[index];
       final Widget headerWidget = child.headerBuilder!(
@@ -382,26 +377,27 @@ class _NFSeeExpansionPanelListState extends State<NFSeeExpansionPanelList> {
         ),
       );
 
-      if (_isChildExpanded(index) && index != widget.children.length - 1)
+      if (_isChildExpanded(index) && index != widget.children.length - 1) {
         items.add(MaterialGap(
             key: _SaltedKey<BuildContext, int>(context, index * 2 + 1)));
+      }
     }
 
     return NFSeeMergeableMaterial(
       hasDividers: false,
       children: items,
-      elevation: this.widget.elevation,
+      elevation: widget.elevation,
     );
   }
 }
 
 class _NFSeeMergeableMaterialListBody extends ListBody {
   _NFSeeMergeableMaterialListBody({
-    required List<Widget> children,
-    Axis mainAxis = Axis.vertical,
+    required super.children,
+    super.mainAxis,
     this.items,
     this.boxShadows,
-  }) : super(children: children, mainAxis: mainAxis);
+  });
 
   final List<MergeableMaterialItem>? items;
   final List<BoxShadow>? boxShadows;
@@ -431,10 +427,9 @@ class _NFSeeMergeableMaterialListBody extends ListBody {
 
 class _NFSeeRenderMergeableMaterialListBody extends RenderListBody {
   _NFSeeRenderMergeableMaterialListBody({
-    List<RenderBox>? children,
-    AxisDirection axisDirection = AxisDirection.down,
+    super.axisDirection,
     this.boxShadows,
-  }) : super(children: children, axisDirection: axisDirection);
+  });
 
   List<BoxShadow>? boxShadows;
 
@@ -474,12 +469,12 @@ class _NFSeeRenderMergeableMaterialListBody extends RenderListBody {
 class NFSeeMergeableMaterial extends StatefulWidget {
   /// Creates a mergeable Material list of items.
   const NFSeeMergeableMaterial({
-    Key? key,
+    super.key,
     this.mainAxis = Axis.vertical,
     this.elevation = 2,
     this.hasDividers = false,
     this.children = const <MergeableMaterialItem>[],
-  }) : super(key: key);
+  });
 
   /// The children of the [MergeableMaterial].
   final List<MergeableMaterialItem> children;
@@ -523,7 +518,7 @@ class _AnimationTuple {
   final CurvedAnimation? startAnimation;
   final CurvedAnimation? endAnimation;
   final CurvedAnimation? gapAnimation;
-  double gapStart;
+  late double gapStart;
 }
 
 class _MergeableMaterialSliceKey extends GlobalKey {
@@ -600,8 +595,9 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
   @override
   void dispose() {
     for (MergeableMaterialItem child in _children) {
-      if (child is MaterialGap)
+      if (child is MaterialGap) {
         _animationTuples[child.key]!.controller!.dispose();
+      }
     }
     super.dispose();
   }
@@ -626,8 +622,9 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
 
     // First and last children must not be gaps.
     if (children.isNotEmpty) {
-      if (children.first is MaterialGap || children.last is MaterialGap)
+      if (children.first is MaterialGap || children.last is MaterialGap) {
         return false;
+      }
     }
 
     return true;
@@ -696,10 +693,14 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
         final int startOld = j;
 
         // Skip new keys.
-        while (newOnly.contains(newChildren[i].key)) i += 1;
+        while (newOnly.contains(newChildren[i].key)) {
+          i += 1;
+        }
 
         // Skip old keys.
-        while (oldOnly.contains(_children[j].key) || _isClosingGap(j)) j += 1;
+        while (oldOnly.contains(_children[j].key) || _isClosingGap(j)) {
+          j += 1;
+        }
 
         final int newLength = i - startNew;
         final int oldLength = j - startOld;
@@ -729,9 +730,12 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
               j += 1;
             } else {
               // No animation if replaced items are more than one.
-              for (int k = 0; k < oldLength; k += 1) _removeChild(startOld);
-              for (int k = 0; k < newLength; k += 1)
+              for (int k = 0; k < oldLength; k += 1) {
+                _removeChild(startOld);
+              }
+              for (int k = 0; k < newLength; k += 1) {
                 _insertChild(startOld + k, newChildren[startNew + k]);
+              }
 
               j += newLength - oldLength;
             }
@@ -748,8 +752,9 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
 
               _removeChild(startOld);
 
-              for (int k = 0; k < newLength; k += 1)
+              for (int k = 0; k < newLength; k += 1) {
                 _insertChild(startOld + k, newChildren[startNew + k]);
+              }
 
               j += newLength - 1;
               double gapSizeSum = 0.0;
@@ -842,7 +847,9 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
     }
 
     // Handle remaining items.
-    while (j < _children.length) _removeChild(j);
+    while (j < _children.length) {
+      _removeChild(j);
+    }
     while (i < newChildren.length) {
       _insertChild(j, newChildren[i]);
 

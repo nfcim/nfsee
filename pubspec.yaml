@@ -23,14 +23,13 @@ dependencies:
   url_launcher: "^6.0.9"
   webview_flutter: ^3.0.4
   package_info_plus: ^6.0.0
-
-  flutter_gen: any
   ndef: any
 dependency_overrides:
   js: "^0.6.4" # flutter_nfc_kit requires js 0.7 but not really uses it
 
 dev_dependencies:
   analyzer: ^6.4.1
+  lints: ^3.0.0
   flutter_test:
     sdk: flutter
   drift_dev: ^2.16.0

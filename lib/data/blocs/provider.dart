@@ -5,8 +5,7 @@ import 'bloc.dart';
 class BlocProvider extends InheritedWidget {
   final NFSeeAppBloc bloc;
 
-  BlocProvider({required this.bloc, required Widget child})
-      : super(child: child);
+  BlocProvider({required this.bloc, required super.child});
 
   @override
   bool updateShouldNotify(BlocProvider oldWidget) {

@@ -126,6 +126,7 @@ class _SettingsActState extends State<SettingsAct> {
             )));
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(body: _buildSettingsBody());
   }

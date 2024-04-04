@@ -22,11 +22,11 @@ class HomeAct extends StatefulWidget {
 
   @override
   HomeState createState() {
-    this.state = HomeState();
-    return this.state;
+    state = HomeState();
+    return state;
   }
 
-  void scrollToNewCard() => this.state.addCard();
+  void scrollToNewCard() => state.addCard();
 }
 
 class HomeState extends State<HomeAct>
@@ -57,7 +57,7 @@ class HomeState extends State<HomeAct>
   @override
   void initState() {
     super.initState();
-    this._initSelf();
+    _initSelf();
   }
 
   void _initSelf() {
@@ -67,7 +67,7 @@ class HomeState extends State<HomeAct>
     detailExpandTrans = AnimationController(
         duration: const Duration(milliseconds: 200), vsync: this);
 
-    this._refreshDetailScroll();
+    _refreshDetailScroll();
 
     detailHide = Tween<double>(
       begin: 0,
@@ -78,8 +78,8 @@ class HomeState extends State<HomeAct>
     ));
 
     detailHide.addListener(() {
-      this.setState(() {
-        this.detailHideVal = detailHide.value;
+      setState(() {
+        detailHideVal = detailHide.value;
       });
     });
 
@@ -92,34 +92,34 @@ class HomeState extends State<HomeAct>
     ));
 
     detailExpand.addListener(() {
-      this.setState(() {
-        this.detailExpandVal = detailExpand.value;
+      setState(() {
+        detailExpandVal = detailExpand.value;
       });
     });
   }
 
   void _refreshPhysics(List<CardData>? cards) {
     if (cards == null) return;
-    if (this.cardPhysics?.cardCount == cards.length) return;
-    if (this.cardController != null) this.cardController!.dispose();
+    if (cardPhysics?.cardCount == cards.length) return;
+    if (cardController != null) cardController!.dispose();
 
-    this.cardPhysics = CardPhysics(cardCount: cards.length);
-    this.cardController = ScrollController();
-    this.cardController!.addListener(() {
-      final ticket = this.scrollingTicket + 1;
-      this.scrollingTicket = ticket;
+    cardPhysics = CardPhysics(cardCount: cards.length);
+    cardController = ScrollController();
+    cardController!.addListener(() {
+      final ticket = scrollingTicket + 1;
+      scrollingTicket = ticket;
 
       Future.delayed(const Duration(milliseconds: 100)).then((_) {
-        if (this.scrollingTicket != ticket) return;
-        this.setState(() {
-          this.scrolling = false;
-          this._updateDetailHide(cards);
+        if (scrollingTicket != ticket) return;
+        setState(() {
+          scrolling = false;
+          _updateDetailHide(cards);
         });
       });
 
-      this.setState(() {
-        this.scrolling = true;
-        this._updateDetailHide(cards);
+      setState(() {
+        scrolling = true;
+        _updateDetailHide(cards);
       });
     });
   }
@@ -128,8 +128,8 @@ class HomeState extends State<HomeAct>
       BuildContext context, AsyncSnapshot<List<CardData>> snapshot) {
     // log(snapshot.toString());
     final data = snapshot.data;
-    this._refreshPhysics(data);
-    this._updateDetailInst(data);
+    _refreshPhysics(data);
+    _updateDetailInst(data);
 
     return Column(
       children: <Widget>[
@@ -158,7 +158,7 @@ class HomeState extends State<HomeAct>
                               .color,
                         ),
                         onPressed: () async {
-                          final cardRead = await this.widget.readCard();
+                          final cardRead = await widget.readCard();
                           if (!cardRead) return;
                           // this.addCard();
                           log("CARD read");
@@ -185,15 +185,15 @@ class HomeState extends State<HomeAct>
             height: 240,
             child: Listener(
                 onPointerDown: (_) {
-                  this.setState(() {
-                    this.dragging = true;
-                    this._updateDetailHide(data);
+                  setState(() {
+                    dragging = true;
+                    _updateDetailHide(data);
                   });
                 },
                 onPointerUp: (_) {
-                  this.setState(() {
-                    this.dragging = false;
-                    this._updateDetailHide(data);
+                  setState(() {
+                    dragging = false;
+                    _updateDetailHide(data);
                   });
                 },
                 child: ListView(
@@ -206,7 +206,7 @@ class HomeState extends State<HomeAct>
                   children: (data ?? [])
                       .map((c) => GestureDetector(
                             child: c.homepageCard(context),
-                            onTap: this._tryExpandDetail,
+                            onTap: _tryExpandDetail,
                           ))
                       .toList(),
                 ))),
@@ -215,92 +215,92 @@ class HomeState extends State<HomeAct>
   }
 
   void _refreshDetailScroll() {
-    this.detailScroll = ScrollController();
+    detailScroll = ScrollController();
   }
 
   @override
   void reassemble() {
-    this._initSelf();
+    _initSelf();
     super.reassemble();
   }
 
   @override
   void dispose() {
-    this.detailExpandTrans.dispose();
-    this.detailHideTrans.dispose();
+    detailExpandTrans.dispose();
+    detailHideTrans.dispose();
     super.dispose();
   }
 
   bool _tryExpandDetail() {
-    if (this.expanding) return false;
-    if (this.expanded) return false;
+    if (expanding) return false;
+    if (expanded) return false;
 
-    this.expanding = true;
+    expanding = true;
 
-    this.detailExpandTrans.animateTo(1).then((_) {
-      this.expanding = false;
+    detailExpandTrans.animateTo(1).then((_) {
+      expanding = false;
     });
-    this.setState(() {
-      this.expanded = true;
+    setState(() {
+      expanded = true;
     });
     return true;
   }
 
   bool _tryCollapseDetail() {
-    if (this.expanding) return false;
-    if (!this.expanded) return false;
+    if (expanding) return false;
+    if (!expanded) return false;
 
-    this.expanding = true;
+    expanding = true;
 
-    final fut1 = this.detailExpandTrans.animateBack(0);
-    final fut2 = this.detailScroll!.animateTo(0,
+    final fut1 = detailExpandTrans.animateBack(0);
+    final fut2 = detailScroll!.animateTo(0,
         duration: Duration(milliseconds: 100), curve: ElasticOutCurve());
-    this.setState(() {
-      this.expanded = false;
+    setState(() {
+      expanded = false;
     });
 
     Future.wait([fut1, fut2]).then((_) {
-      this.expanding = false;
+      expanding = false;
     });
 
     return true;
   }
 
   void _updateDetailHide(List<CardData>? cards) async {
-    if (this.scrolling) {
-      if (this.hidden) return;
-      this.hidden = true;
+    if (scrolling) {
+      if (hidden) return;
+      hidden = true;
       await Future.delayed(const Duration(milliseconds: 100));
-      if (this.hidden != true) return;
-      this.detailHideTrans.animateTo(1);
-    } else if (!this.scrolling && !this.dragging) {
-      if (!this.hidden) return;
-      this.hidden = false;
+      if (hidden != true) return;
+      detailHideTrans.animateTo(1);
+    } else if (!scrolling && !dragging) {
+      if (!hidden) return;
+      hidden = false;
       await Future.delayed(const Duration(milliseconds: 100));
-      if (this.hidden != false) return;
-      this.detailHideTrans.animateBack(0);
-      this._updateDetailInst(cards);
+      if (hidden != false) return;
+      detailHideTrans.animateBack(0);
+      _updateDetailInst(cards);
     }
   }
 
   void _updateDetailInst(List<CardData>? cards) {
     int targetIdx =
-        this.cardController != null && this.cardController!.hasClients
-            ? this.cardPhysics!.getItemIdx(this.cardController!.position)
+        cardController != null && cardController!.hasClients
+            ? cardPhysics!.getItemIdx(cardController!.position)
             : 0;
     final next =
         (cards == null || targetIdx >= cards.length) ? null : cards[targetIdx];
-    if (next == this.detail) return;
-    if (next != null && next.sameAs(this.detail)) return;
+    if (next == detail) return;
+    if (next != null && next.sameAs(detail)) return;
     Future.delayed(Duration(seconds: 0))
-        .then((_) => setState(() => this.detail = next));
+        .then((_) => setState(() => detail = next));
     log("TIDX: $targetIdx");
   }
 
   void addCard() async {
     await Future.delayed(const Duration(milliseconds: 10));
-    this.cardController!.animateTo(
-        this.cardController!.position.maxScrollExtent,
+    cardController!.animateTo(
+        cardController!.position.maxScrollExtent,
         duration: const Duration(microseconds: 500),
         curve: ElasticOutCurve());
   }
@@ -312,51 +312,51 @@ class HomeState extends State<HomeAct>
         (records) => records.map((r) => CardData.fromDumpedRecord(r)).toList());
     final navForeground = StreamBuilder(
       stream: cardStream,
-      builder: this._rerenderNavForeground,
+      builder: _rerenderNavForeground,
     );
 
     final nav = Stack(
       children: <Widget>[
-        new Positioned(
-          child: new CustomPaint(
+        Positioned(
+          child: CustomPaint(
             painter:
-                new HomeBackgrondPainter(color: Theme.of(context).primaryColor),
+                HomeBackgrondPainter(color: Theme.of(context).primaryColor),
           ),
           bottom: 0,
           top: 0,
           left: 0,
           right: 0,
         ),
-        new SafeArea(child: navForeground),
+        SafeArea(child: navForeground),
       ],
     );
 
-    final detail = this._buildDetail(context);
+    final detail = _buildDetail(context);
 
     final top = Stack(
       children: <Widget>[
         Transform.translate(
-          offset: Offset(0, -DETAIL_OFFSET * this.detailExpandVal),
+          offset: Offset(0, -DETAIL_OFFSET * detailExpandVal),
           child: nav,
         ),
         Transform.translate(
-          offset: Offset(0, DETAIL_OFFSET * (1 - this.detailExpandVal)),
+          offset: Offset(0, DETAIL_OFFSET * (1 - detailExpandVal)),
           child: Transform.translate(
-              child: Opacity(child: detail, opacity: (1 - this.detailHideVal)),
-              offset: Offset(0, 50 * this.detailHideVal)),
+              child: Opacity(child: detail, opacity: (1 - detailHideVal)),
+              offset: Offset(0, 50 * detailHideVal)),
         )
       ],
     );
 
     return WillPopScope(
         onWillPop: () {
-          return Future.value(!this._tryCollapseDetail());
+          return Future.value(!_tryCollapseDetail());
         },
         child: top);
   }
 
   Widget _buildDetail(BuildContext ctx) {
-    if (detail == null)
+    if (detail == null) {
       return Container(
           height: double.infinity,
           width: double.infinity,
@@ -368,6 +368,7 @@ class HomeState extends State<HomeAct>
               Text(S(context).noHistoryFound),
             ],
           ));
+    }
     var data = detail!.raw;
 
     final detailTiles = parseCardDetails(data["detail"], context)
@@ -382,9 +383,9 @@ class HomeState extends State<HomeAct>
     final disp = Container(
         child: Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
       IgnorePointer(
-        ignoring: !this.expanded,
+        ignoring: !expanded,
         child: Opacity(
-          opacity: this.detailExpandVal,
+          opacity: detailExpandVal,
           child: AppBar(
             primary: true,
             backgroundColor: Color.fromARGB(255, 85, 69, 177),
@@ -396,20 +397,20 @@ class HomeState extends State<HomeAct>
             leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () {
-                this._tryCollapseDetail();
+                _tryCollapseDetail();
               },
             ),
             actions: <Widget>[
               IconButton(
                 icon: Icon(Icons.edit, color: Colors.white),
                 onPressed: () {
-                  this._editCardName(this.detail!);
+                  _editCardName(detail!);
                 },
               ),
               PopupMenuButton<String>(
                 onSelected: (act) {
                   if (act == "delete") {
-                    this._delFocused();
+                    _delFocused();
                   }
                 },
                 icon: Icon(Icons.more_vert, color: Colors.white),
@@ -428,7 +429,7 @@ class HomeState extends State<HomeAct>
             UserScrollNotification usnotif = notif;
             if (usnotif.depth == 0 &&
                 usnotif.direction == ScrollDirection.reverse) {
-              this._tryExpandDetail();
+              _tryExpandDetail();
             }
           }
 
@@ -437,7 +438,7 @@ class HomeState extends State<HomeAct>
             if (onotif.depth == 0 &&
                 onotif.velocity == 0 &&
                 onotif.metrics.pixels == 0) {
-              this._tryCollapseDetail();
+              _tryCollapseDetail();
             }
           }
           return false;
@@ -449,15 +450,15 @@ class HomeState extends State<HomeAct>
             children: <Widget>[
               ListTile(
                 title:
-                    Text("${S(context).addedAt} ${this.detail!.formattedTime}"),
+                    Text("${S(context).addedAt} ${detail!.formattedTime}"),
                 subtitle: Text(S(context).detailHint),
                 leading: Icon(Icons.access_time),
               ),
-              detailTiles.length == 0 ? Container() : Divider(),
+              detailTiles.isEmpty ? Container() : Divider(),
               Column(children: detailTiles),
               Divider(),
-              this._buildMisc(context, data),
-              SizedBox(height: this.expanded ? 0 : DETAIL_OFFSET),
+              _buildMisc(context, data),
+              SizedBox(height: expanded ? 0 : DETAIL_OFFSET),
             ],
           ),
         )),
@@ -602,14 +603,14 @@ class HomeState extends State<HomeAct>
 
   void _delFocused() async {
     final message =
-        '${S(context).record} ${this.detail!.id} ${S(context).deleted}';
-    log('Record ${this.detail!.id} deleted');
+        '${S(context).record} ${detail!.id} ${S(context).deleted}';
+    log('Record ${detail!.id} deleted');
 
-    final deleted = this.detail;
+    final deleted = detail;
 
-    await this.bloc!.delDumpedRecord(deleted!.id);
+    await bloc!.delDumpedRecord(deleted!.id);
 
-    this._tryCollapseDetail();
+    _tryCollapseDetail();
 
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context)
@@ -626,7 +627,7 @@ class HomeState extends State<HomeAct>
       switch (reason) {
         case SnackBarClosedReason.action:
           // user cancelled deletion, restore it
-          await this.bloc!.addDumpedRecord(
+          await bloc!.addDumpedRecord(
               jsonEncode(deleted.raw), deleted.time, deleted.config);
           log('Record ${deleted.id} restored');
           break;
@@ -704,11 +705,11 @@ class HomeBackgrondPainter extends CustomPainter {
       size.topRight(Offset.zero),
     ];
 
-    final path = new Path()..addPolygon(points, true);
+    final path = Path()..addPolygon(points, true);
 
     final paint = Paint()
       ..style = PaintingStyle.fill
-      ..color = this.color!;
+      ..color = color!;
 
     canvas.drawShadow(path, Colors.black, 2, false);
     canvas.drawPath(path, paint);

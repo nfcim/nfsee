@@ -26,9 +26,9 @@ class CardPhysics extends ScrollPhysics {
 
   double _getTargetPixels(ScrollPosition pos, Tolerance tol, double v) {
     double page = _posToItem(pos);
-    if (v < -tol.velocity)
+    if (v < -tol.velocity) {
       page -= 0.5;
-    else if (v > tol.velocity) page += 0.5;
+    } else if (v > tol.velocity) page += 0.5;
 
     // TODO: why is cardCount always null?
     // if(page > cardCount - 1.0) page = cardCount - 1.0;
@@ -41,16 +41,18 @@ class CardPhysics extends ScrollPhysics {
   Simulation? createBallisticSimulation(
       ScrollMetrics position, double velocity) {
     if ((velocity <= 0 && position.pixels <= position.minScrollExtent) ||
-        (velocity >= 0 && position.pixels >= position.maxScrollExtent))
+        (velocity >= 0 && position.pixels >= position.maxScrollExtent)) {
       return super.createBallisticSimulation(position, velocity);
+    }
 
-    final Tolerance tol = this.tolerance;
+    final Tolerance tol = tolerance;
     final double target =
-        this._getTargetPixels(position as ScrollPosition, tol, velocity);
+        _getTargetPixels(position as ScrollPosition, tol, velocity);
 
-    if (target != position.pixels)
+    if (target != position.pixels) {
       return ScrollSpringSimulation(spring, position.pixels, target, velocity,
           tolerance: tol);
+    }
     return null;
   }
 }

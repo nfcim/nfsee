@@ -27,7 +27,7 @@ class ScriptsAct extends StatefulWidget {
   ScriptsAct({required this.webview});
 
   @override
-  _ScriptsActState createState() => _ScriptsActState(webview: this.webview);
+  _ScriptsActState createState() => _ScriptsActState(webview: webview);
 }
 
 class _ScriptsActState extends State<ScriptsAct>
@@ -38,10 +38,10 @@ class _ScriptsActState extends State<ScriptsAct>
   NFSeeAppBloc? get bloc => BlocProvider.provideBloc(context);
 
   /// Result from webkit
-  Map<int, String> results = Map();
+  Map<int, String> results = {};
 
   /// Whether last run has error
-  Map<int, bool> errors = Map();
+  Map<int, bool> errors = {};
 
   /// Running script
   int running = -1;
@@ -73,11 +73,11 @@ class _ScriptsActState extends State<ScriptsAct>
   @override
   void initState() {
     super.initState();
-    this._initSelf();
+    _initSelf();
   }
 
   void _initSelf() {
-    this._reloadWebviewListener();
+    _reloadWebviewListener();
 
     appbarFloatTrans = AnimationController(
         duration: const Duration(milliseconds: 100), vsync: this);
@@ -95,8 +95,8 @@ class _ScriptsActState extends State<ScriptsAct>
     ));
 
     appbarFloat.addListener(() {
-      this.setState(() {
-        this.appbarFloatVal = appbarFloat.value;
+      setState(() {
+        appbarFloatVal = appbarFloat.value;
       });
     });
 
@@ -109,23 +109,24 @@ class _ScriptsActState extends State<ScriptsAct>
     ));
 
     runningOpacity.addListener(() {
-      this.setState(() {
-        this.runningOpacityVal = runningOpacity.value;
+      setState(() {
+        runningOpacityVal = runningOpacity.value;
       });
     });
 
     scroll = ScrollController();
     scroll!.addListener(() {
-      if (scroll!.position.pixels != 0)
-        this.appbarFloatTrans.animateTo(1);
-      else
-        this.appbarFloatTrans.animateBack(0);
+      if (scroll!.position.pixels != 0) {
+        appbarFloatTrans.animateTo(1);
+      } else {
+        appbarFloatTrans.animateBack(0);
+      }
     });
   }
 
   @override
   void reassemble() {
-    this._initSelf();
+    _initSelf();
     super.reassemble();
   }
 
@@ -133,14 +134,14 @@ class _ScriptsActState extends State<ScriptsAct>
     _webViewListener?.cancel();
 
     _webViewListener =
-        webview.stream(WebViewOwner.Script).listen(this._onReceivedMessage);
+        webview.stream(WebViewOwner.Script).listen(_onReceivedMessage);
   }
 
   @override
   void dispose() {
     log("DISPOSE");
-    this.appbarFloatTrans.dispose();
-    this.runningOpacityTrans.dispose();
+    appbarFloatTrans.dispose();
+    runningOpacityTrans.dispose();
     super.dispose();
   }
 
@@ -149,8 +150,8 @@ class _ScriptsActState extends State<ScriptsAct>
       log("[Script] Reload detected");
       // Reload
       setState(() {
-        this.running = -1;
-        this.lastRunning = -1;
+        running = -1;
+        lastRunning = -1;
       });
 
       // With the new stream, we never need to reset listeners.
@@ -187,37 +188,37 @@ class _ScriptsActState extends State<ScriptsAct>
 
       case 'error':
         setState(() {
-          if (this.running != -1) {
-            this.errors[this.running] = true;
-          } else if (this.lastRunning != -1) {
-            this.errors[this.lastRunning] = true;
+          if (running != -1) {
+            errors[running] = true;
+          } else if (lastRunning != -1) {
+            errors[lastRunning] = true;
           }
         });
         continue report;
       report:
       case 'report':
         setState(() {
-          if (this.running != -1) {
-            this.results[this.running] = (scriptModel.data.toString() + '\n') +
-                this.results[this.running]!;
-          } else if (this.lastRunning != -1) {
-            this.results[this.lastRunning] =
-                (scriptModel.data.toString() + '\n') +
-                    this.results[this.lastRunning]!;
+          if (running != -1) {
+            results[running] = ('${scriptModel.data}\n') +
+                results[running]!;
+          } else if (lastRunning != -1) {
+            results[lastRunning] =
+                ('${scriptModel.data}\n') +
+                    results[lastRunning]!;
           }
         });
         break;
 
       case 'finish':
-        if (this.errors[this.running] == true) {
+        if (errors[running] == true) {
           await FlutterNfcKit.finish(iosErrorMessage: S(context).readFailed);
         } else {
           await FlutterNfcKit.finish(iosAlertMessage: S(context).readSucceeded);
         }
         log("Reseting running state");
         setState(() {
-          this.lastRunning = this.running;
-          this.running = -1;
+          lastRunning = running;
+          running = -1;
         });
         break;
 
@@ -232,10 +233,10 @@ class _ScriptsActState extends State<ScriptsAct>
   }
 
   void _runScript(SavedScript script) async {
-    this.setState(() {
-      this.errors[script.id] = false;
-      this.results[script.id] = "";
-      this.running = script.id;
+    setState(() {
+      errors[script.id] = false;
+      results[script.id] = "";
+      running = script.id;
     });
 
     log('[Script] Run script: ${script.source}');
@@ -284,7 +285,7 @@ class _ScriptsActState extends State<ScriptsAct>
 
   void _deleteScript(BuildContext context, SavedScript script) async {
     // first hide the script
-    await this.bloc!.delScript(script.id);
+    await bloc!.delScript(script.id);
     log('Script ${script.name} deleted');
     final message = '${S(context).script} ${script.name} ${S(context).deleted}';
 
@@ -306,8 +307,7 @@ class _ScriptsActState extends State<ScriptsAct>
         switch (reason) {
           case SnackBarClosedReason.action:
             // user cancelled deletion
-            await this
-                .bloc!
+            await bloc!
                 .addScript(script.name, script.source, script.creationTime);
             log('Script ${script.name} restored');
             break;
@@ -316,7 +316,7 @@ class _ScriptsActState extends State<ScriptsAct>
         }
       });
     } else {
-      await this.bloc!.delScript(script.id);
+      await bloc!.delScript(script.id);
       showCupertinoDialog(
           context: context,
           builder: (context) {
@@ -340,7 +340,7 @@ class _ScriptsActState extends State<ScriptsAct>
         child: StreamBuilder<List<SavedScript>>(
       stream: bloc!.savedScripts,
       builder: (context, snapshot) {
-        if (!snapshot.hasData || snapshot.data!.length == 0) {
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return Container(
               width: double.infinity,
               height: double.infinity,
@@ -365,22 +365,20 @@ class _ScriptsActState extends State<ScriptsAct>
               elevation: 1,
               children: scripts
                   .map((script) => NFSeeExpansionPanelRadio(
-                        running: this.running == script.id,
+                        running: running == script.id,
                         value: script.id,
                         canTapOnHeader: true,
                         headerBuilder: (context, open) => Opacity(
                           child: ListTile(
-                            subtitle: Text(S(context).lastExecutionTime +
-                                ': ' +
-                                (script.lastUsed != null
+                            subtitle: Text('${S(context).lastExecutionTime}: ${script.lastUsed != null
                                     ? script.lastUsed
                                         .toString()
                                         .split('.')[0] // remove part before ms
-                                    : S(context).never)),
+                                    : S(context).never}'),
                             title: Text(script.name),
                           ),
                           opacity:
-                              this.running == script.id ? runningOpacityVal : 1,
+                              running == script.id ? runningOpacityVal : 1,
                         ),
                         body: Container(
                           padding: EdgeInsets.only(
@@ -390,17 +388,16 @@ class _ScriptsActState extends State<ScriptsAct>
                           ),
                           child: Column(
                             children: <Widget>[
-                              this._getScriptResult(context, script),
+                              _getScriptResult(context, script),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
                                   TextButton.icon(
                                       // Disable run button if there is a script running in background
-                                      onPressed: this.running == -1
+                                      onPressed: running == -1
                                           ? () async {
-                                              this._runScript(script);
-                                              await this
-                                                  .bloc!
+                                              _runScript(script);
+                                              await bloc!
                                                   .updateScriptUseTime(
                                                       script.id);
                                             }
@@ -410,7 +407,7 @@ class _ScriptsActState extends State<ScriptsAct>
                                               .colorScheme
                                               .primary),
                                       // icon:
-                                      icon: this.running == script.id
+                                      icon: running == script.id
                                           ? Padding(
                                               padding: EdgeInsets.all(4),
                                               child: SizedBox(
@@ -420,7 +417,7 @@ class _ScriptsActState extends State<ScriptsAct>
                                                     CircularProgressIndicator(
                                                   strokeWidth: 2,
                                                   valueColor:
-                                                      new AlwaysStoppedAnimation(
+                                                      AlwaysStoppedAnimation(
                                                     Theme.of(context)
                                                         .disabledColor,
                                                   ),
@@ -471,26 +468,26 @@ class _ScriptsActState extends State<ScriptsAct>
   }
 
   void _addOrModifyScript() async {
-    if (this.currentSource == '') {
+    if (currentSource == '') {
       return;
     }
-    if (this.currentId == -1) {
-      log("Adding script: ${this.currentName}");
+    if (currentId == -1) {
+      log("Adding script: $currentName");
 
-      await this.bloc!.addScript(
-          this.currentName == '' ? 'Script' : this.currentName,
-          this.currentSource);
+      await bloc!.addScript(
+          currentName == '' ? 'Script' : currentName,
+          currentSource);
     } else {
-      log("Modifying script: ${this.currentName}");
-      await this.bloc!.updateScriptContent(
-          this.currentId,
-          this.currentName == '' ? 'Script' : this.currentName,
-          this.currentSource);
+      log("Modifying script: $currentName");
+      await bloc!.updateScriptContent(
+          currentId,
+          currentName == '' ? 'Script' : currentName,
+          currentSource);
     }
 
-    this.currentId = -1;
-    this.currentName = '';
-    this.currentSource = '';
+    currentId = -1;
+    currentName = '';
+    currentSource = '';
 
     // Close alert dialog
     Navigator.of(context, rootNavigator: true).pop();
@@ -500,25 +497,25 @@ class _ScriptsActState extends State<ScriptsAct>
     return SingleChildScrollView(
         child: ListBody(children: <Widget>[
       TextFormField(
-        initialValue: this.currentName,
+        initialValue: currentName,
         decoration: InputDecoration(
           border: OutlineInputBorder(),
           hintText: S(context).name,
         ),
         maxLines: 1,
         onChanged: (cont) {
-          this.currentName = cont;
+          currentName = cont;
         },
       ),
       SizedBox(height: 10),
       TextFormField(
-        initialValue: this.currentSource,
+        initialValue: currentSource,
         decoration: InputDecoration(
             border: OutlineInputBorder(), hintText: S(context).code),
         minLines: 3,
         maxLines: null,
         onChanged: (cont) {
-          this.currentSource = cont;
+          currentSource = cont;
         },
       )
     ]));
@@ -530,9 +527,9 @@ class _ScriptsActState extends State<ScriptsAct>
     var source = script?.source ?? '';
 
     // These variables are not used in rendering, so we don't need to setState here
-    this.currentId = id;
-    this.currentSource = source;
-    this.currentName = name;
+    currentId = id;
+    currentSource = source;
+    currentName = name;
 
     showDialog(
         context: context,
@@ -602,8 +599,8 @@ class _ScriptsActState extends State<ScriptsAct>
   }
 
   Widget _getScriptResult(BuildContext context, SavedScript script) {
-    final result = this.results[script.id];
-    final error = this.errors[script.id];
+    final result = results[script.id];
+    final error = errors[script.id];
 
     if (result != null && result != "") {
       return Container(

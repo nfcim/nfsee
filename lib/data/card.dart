@@ -29,7 +29,7 @@ class CardData {
     return true;
   }
 
-  String get formattedTime => new DateFormat("MM/dd HH:mm:ss").format(time);
+  String get formattedTime => DateFormat("MM/dd HH:mm:ss").format(time);
 
   CardData(
       {required this.id,
@@ -52,7 +52,7 @@ class CardData {
 
     return CardData(
       id: id,
-      name: config["name"] ?? null,
+      name: config["name"],
       category: category,
       cardType: cardType,
       raw: data,
@@ -61,8 +61,8 @@ class CardData {
   }
 
   String get config {
-    final m = Map();
-    m.putIfAbsent("name", () => this.name);
+    final m = {};
+    m.putIfAbsent("name", () => name);
     return jsonEncode(m);
   }
 
@@ -90,12 +90,12 @@ class CardData {
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(this.name ?? S(context).unnamedCard,
+                          Text(name ?? S(context).unnamedCard,
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold)),
-                          Text(this.cardType.getName(context),
+                          Text(cardType.getName(context),
                               style: TextStyle(
                                   color: Colors.white70, fontSize: 16)),
                         ]),
