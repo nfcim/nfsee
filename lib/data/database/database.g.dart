@@ -2,35 +2,106 @@
 
 part of 'database.dart';
 
-// **************************************************************************
-// MoorGenerator
-// **************************************************************************
+// ignore_for_file: type=lint
+class $DumpedRecordsTable extends DumpedRecords
+    with TableInfo<$DumpedRecordsTable, DumpedRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DumpedRecordsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _timeMeta = const VerificationMeta('time');
+  @override
+  late final GeneratedColumn<DateTime> time = GeneratedColumn<DateTime>(
+      'time', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _configMeta = const VerificationMeta('config');
+  @override
+  late final GeneratedColumn<String> config = GeneratedColumn<String>(
+      'config', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(DEFAULT_CONFIG));
+  static const VerificationMeta _dataMeta = const VerificationMeta('data');
+  @override
+  late final GeneratedColumn<String> data = GeneratedColumn<String>(
+      'data', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, time, config, data];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'dumped_records';
+  @override
+  VerificationContext validateIntegrity(Insertable<DumpedRecord> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('time')) {
+      context.handle(
+          _timeMeta, time.isAcceptableOrUnknown(data['time']!, _timeMeta));
+    } else if (isInserting) {
+      context.missing(_timeMeta);
+    }
+    if (data.containsKey('config')) {
+      context.handle(_configMeta,
+          config.isAcceptableOrUnknown(data['config']!, _configMeta));
+    }
+    if (data.containsKey('data')) {
+      context.handle(
+          _dataMeta, this.data.isAcceptableOrUnknown(data['data']!, _dataMeta));
+    } else if (isInserting) {
+      context.missing(_dataMeta);
+    }
+    return context;
+  }
 
-// ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DumpedRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DumpedRecord(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      time: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}time'])!,
+      config: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}config'])!,
+      data: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}data'])!,
+    );
+  }
+
+  @override
+  $DumpedRecordsTable createAlias(String alias) {
+    return $DumpedRecordsTable(attachedDatabase, alias);
+  }
+}
+
 class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
   final int id;
   final DateTime time;
   final String config;
   final String data;
-  DumpedRecord(
+  const DumpedRecord(
       {required this.id,
       required this.time,
       required this.config,
       required this.data});
-  factory DumpedRecord.fromData(Map<String, dynamic> data, GeneratedDatabase db,
-      {String? prefix}) {
-    final effectivePrefix = prefix ?? '';
-    return DumpedRecord(
-      id: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
-      time: const DateTimeType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}time'])!,
-      config: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}config'])!,
-      data: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}data'])!,
-    );
-  }
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -52,7 +123,7 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
 
   factory DumpedRecord.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return DumpedRecord(
       id: serializer.fromJson<int>(json['id']),
       time: serializer.fromJson<DateTime>(json['time']),
@@ -62,7 +133,7 @@ class DumpedRecord extends DataClass implements Insertable<DumpedRecord> {
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'time': serializer.toJson<DateTime>(time),
@@ -177,65 +248,82 @@ class DumpedRecordsCompanion extends UpdateCompanion<DumpedRecord> {
   }
 }
 
-class $DumpedRecordsTable extends DumpedRecords
-    with TableInfo<$DumpedRecordsTable, DumpedRecord> {
+class $SavedScriptsTable extends SavedScripts
+    with TableInfo<$SavedScriptsTable, SavedScript> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $DumpedRecordsTable(this.attachedDatabase, [this._alias]);
-  final VerificationMeta _idMeta = const VerificationMeta('id');
+  $SavedScriptsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
-      type: const IntType(),
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
-  final VerificationMeta _timeMeta = const VerificationMeta('time');
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
-  late final GeneratedColumn<DateTime?> time = GeneratedColumn<DateTime?>(
-      'time', aliasedName, false,
-      type: const IntType(), requiredDuringInsert: true);
-  final VerificationMeta _configMeta = const VerificationMeta('config');
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
   @override
-  late final GeneratedColumn<String?> config = GeneratedColumn<String?>(
-      'config', aliasedName, false,
-      type: const StringType(),
-      requiredDuringInsert: false,
-      defaultValue: const Constant(DEFAULT_CONFIG));
-  final VerificationMeta _dataMeta = const VerificationMeta('data');
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+      'source', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _creationTimeMeta =
+      const VerificationMeta('creationTime');
   @override
-  late final GeneratedColumn<String?> data = GeneratedColumn<String?>(
-      'data', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
+  late final GeneratedColumn<DateTime> creationTime = GeneratedColumn<DateTime>(
+      'creation_time', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _lastUsedMeta =
+      const VerificationMeta('lastUsed');
   @override
-  List<GeneratedColumn> get $columns => [id, time, config, data];
+  late final GeneratedColumn<DateTime> lastUsed = GeneratedColumn<DateTime>(
+      'last_used', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
   @override
-  String get aliasedName => _alias ?? 'dumped_records';
+  List<GeneratedColumn> get $columns =>
+      [id, name, source, creationTime, lastUsed];
   @override
-  String get actualTableName => 'dumped_records';
+  String get aliasedName => _alias ?? actualTableName;
   @override
-  VerificationContext validateIntegrity(Insertable<DumpedRecord> instance,
+  String get actualTableName => $name;
+  static const String $name = 'saved_scripts';
+  @override
+  VerificationContext validateIntegrity(Insertable<SavedScript> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    if (data.containsKey('time')) {
+    if (data.containsKey('name')) {
       context.handle(
-          _timeMeta, time.isAcceptableOrUnknown(data['time']!, _timeMeta));
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     } else if (isInserting) {
-      context.missing(_timeMeta);
+      context.missing(_nameMeta);
     }
-    if (data.containsKey('config')) {
-      context.handle(_configMeta,
-          config.isAcceptableOrUnknown(data['config']!, _configMeta));
+    if (data.containsKey('source')) {
+      context.handle(_sourceMeta,
+          source.isAcceptableOrUnknown(data['source']!, _sourceMeta));
+    } else if (isInserting) {
+      context.missing(_sourceMeta);
     }
-    if (data.containsKey('data')) {
+    if (data.containsKey('creation_time')) {
       context.handle(
-          _dataMeta, this.data.isAcceptableOrUnknown(data['data']!, _dataMeta));
+          _creationTimeMeta,
+          creationTime.isAcceptableOrUnknown(
+              data['creation_time']!, _creationTimeMeta));
     } else if (isInserting) {
-      context.missing(_dataMeta);
+      context.missing(_creationTimeMeta);
+    }
+    if (data.containsKey('last_used')) {
+      context.handle(_lastUsedMeta,
+          lastUsed.isAcceptableOrUnknown(data['last_used']!, _lastUsedMeta));
     }
     return context;
   }
@@ -243,14 +331,25 @@ class $DumpedRecordsTable extends DumpedRecords
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  DumpedRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return DumpedRecord.fromData(data, attachedDatabase,
-        prefix: tablePrefix != null ? '$tablePrefix.' : null);
+  SavedScript map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SavedScript(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      source: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}source'])!,
+      creationTime: attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime, data['${effectivePrefix}creation_time'])!,
+      lastUsed: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}last_used']),
+    );
   }
 
   @override
-  $DumpedRecordsTable createAlias(String alias) {
-    return $DumpedRecordsTable(attachedDatabase, alias);
+  $SavedScriptsTable createAlias(String alias) {
+    return $SavedScriptsTable(attachedDatabase, alias);
   }
 }
 
@@ -260,28 +359,12 @@ class SavedScript extends DataClass implements Insertable<SavedScript> {
   final String source;
   final DateTime creationTime;
   final DateTime? lastUsed;
-  SavedScript(
+  const SavedScript(
       {required this.id,
       required this.name,
       required this.source,
       required this.creationTime,
       this.lastUsed});
-  factory SavedScript.fromData(Map<String, dynamic> data, GeneratedDatabase db,
-      {String? prefix}) {
-    final effectivePrefix = prefix ?? '';
-    return SavedScript(
-      id: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
-      name: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}name'])!,
-      source: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}source'])!,
-      creationTime: const DateTimeType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}creation_time'])!,
-      lastUsed: const DateTimeType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}last_used']),
-    );
-  }
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -290,7 +373,7 @@ class SavedScript extends DataClass implements Insertable<SavedScript> {
     map['source'] = Variable<String>(source);
     map['creation_time'] = Variable<DateTime>(creationTime);
     if (!nullToAbsent || lastUsed != null) {
-      map['last_used'] = Variable<DateTime?>(lastUsed);
+      map['last_used'] = Variable<DateTime>(lastUsed);
     }
     return map;
   }
@@ -309,7 +392,7 @@ class SavedScript extends DataClass implements Insertable<SavedScript> {
 
   factory SavedScript.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return SavedScript(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
@@ -320,7 +403,7 @@ class SavedScript extends DataClass implements Insertable<SavedScript> {
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
@@ -335,13 +418,13 @@ class SavedScript extends DataClass implements Insertable<SavedScript> {
           String? name,
           String? source,
           DateTime? creationTime,
-          DateTime? lastUsed}) =>
+          Value<DateTime?> lastUsed = const Value.absent()}) =>
       SavedScript(
         id: id ?? this.id,
         name: name ?? this.name,
         source: source ?? this.source,
         creationTime: creationTime ?? this.creationTime,
-        lastUsed: lastUsed ?? this.lastUsed,
+        lastUsed: lastUsed.present ? lastUsed.value : this.lastUsed,
       );
   @override
   String toString() {
@@ -395,7 +478,7 @@ class SavedScriptsCompanion extends UpdateCompanion<SavedScript> {
     Expression<String>? name,
     Expression<String>? source,
     Expression<DateTime>? creationTime,
-    Expression<DateTime?>? lastUsed,
+    Expression<DateTime>? lastUsed,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -437,7 +520,7 @@ class SavedScriptsCompanion extends UpdateCompanion<SavedScript> {
       map['creation_time'] = Variable<DateTime>(creationTime.value);
     }
     if (lastUsed.present) {
-      map['last_used'] = Variable<DateTime?>(lastUsed.value);
+      map['last_used'] = Variable<DateTime>(lastUsed.value);
     }
     return map;
   }
@@ -455,102 +538,13 @@ class SavedScriptsCompanion extends UpdateCompanion<SavedScript> {
   }
 }
 
-class $SavedScriptsTable extends SavedScripts
-    with TableInfo<$SavedScriptsTable, SavedScript> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $SavedScriptsTable(this.attachedDatabase, [this._alias]);
-  final VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int?> id = GeneratedColumn<int?>(
-      'id', aliasedName, false,
-      type: const IntType(),
-      requiredDuringInsert: false,
-      defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
-  final VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String?> name = GeneratedColumn<String?>(
-      'name', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
-  final VerificationMeta _sourceMeta = const VerificationMeta('source');
-  @override
-  late final GeneratedColumn<String?> source = GeneratedColumn<String?>(
-      'source', aliasedName, false,
-      type: const StringType(), requiredDuringInsert: true);
-  final VerificationMeta _creationTimeMeta =
-      const VerificationMeta('creationTime');
-  @override
-  late final GeneratedColumn<DateTime?> creationTime =
-      GeneratedColumn<DateTime?>('creation_time', aliasedName, false,
-          type: const IntType(), requiredDuringInsert: true);
-  final VerificationMeta _lastUsedMeta = const VerificationMeta('lastUsed');
-  @override
-  late final GeneratedColumn<DateTime?> lastUsed = GeneratedColumn<DateTime?>(
-      'last_used', aliasedName, true,
-      type: const IntType(), requiredDuringInsert: false);
-  @override
-  List<GeneratedColumn> get $columns =>
-      [id, name, source, creationTime, lastUsed];
-  @override
-  String get aliasedName => _alias ?? 'saved_scripts';
-  @override
-  String get actualTableName => 'saved_scripts';
-  @override
-  VerificationContext validateIntegrity(Insertable<SavedScript> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('name')) {
-      context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
-    } else if (isInserting) {
-      context.missing(_nameMeta);
-    }
-    if (data.containsKey('source')) {
-      context.handle(_sourceMeta,
-          source.isAcceptableOrUnknown(data['source']!, _sourceMeta));
-    } else if (isInserting) {
-      context.missing(_sourceMeta);
-    }
-    if (data.containsKey('creation_time')) {
-      context.handle(
-          _creationTimeMeta,
-          creationTime.isAcceptableOrUnknown(
-              data['creation_time']!, _creationTimeMeta));
-    } else if (isInserting) {
-      context.missing(_creationTimeMeta);
-    }
-    if (data.containsKey('last_used')) {
-      context.handle(_lastUsedMeta,
-          lastUsed.isAcceptableOrUnknown(data['last_used']!, _lastUsedMeta));
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  SavedScript map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return SavedScript.fromData(data, attachedDatabase,
-        prefix: tablePrefix != null ? '$tablePrefix.' : null);
-  }
-
-  @override
-  $SavedScriptsTable createAlias(String alias) {
-    return $SavedScriptsTable(attachedDatabase, alias);
-  }
-}
-
 abstract class _$Database extends GeneratedDatabase {
-  _$Database(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
+  _$Database(QueryExecutor e) : super(e);
   late final $DumpedRecordsTable dumpedRecords = $DumpedRecordsTable(this);
   late final $SavedScriptsTable savedScripts = $SavedScriptsTable(this);
   @override
-  Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
+  Iterable<TableInfo<Table, Object?>> get allTables =>
+      allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
       [dumpedRecords, savedScripts];
