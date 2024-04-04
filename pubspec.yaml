@@ -12,17 +12,20 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  flutter_nfc_kit: "^3.3.3"
+  flutter_nfc_kit: "^3.5.0"
   collection: "^1.17.2"
   cupertino_icons: "^1.0.3"
   moor: "^4.5.0"
-  sqlite3_flutter_libs: "0.5.13" # DO NOT UPGRADE OR ANDROID BUILD WILL FAIL
+  sqlite3_flutter_libs: "0.5.20" # DO NOT UPGRADE OR ANDROID BUILD WILL FAIL
   path_provider: "^2.0.2"
   path: "^1.8.0"
   intl: "^0.18.1"
   url_launcher: "^6.0.9"
   webview_flutter: ^3.0.4
   package_info_plus: ^4.1.0
+
+dependency_overrides:
+  js: "^0.6.4" # flutter_nfc_kit requires js 0.7 but not really uses it
 
 dev_dependencies:
   flutter_test:
