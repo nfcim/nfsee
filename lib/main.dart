@@ -23,7 +23,7 @@ void main() => runApp(NFSeeApp());
 
 class NFSeeApp extends StatefulWidget {
   @override
-  _NFSeeAppState createState() => _NFSeeAppState();
+  State<NFSeeApp> createState() => _NFSeeAppState();
 }
 
 class _NFSeeAppState extends State<NFSeeApp> {
@@ -89,7 +89,7 @@ class _NFSeeAppState extends State<NFSeeApp> {
 // depending on the app and content.
 class PlatformAdaptingHomePage extends StatefulWidget {
   @override
-  _PlatformAdaptingHomePageState createState() =>
+  State<PlatformAdaptingHomePage> createState() =>
       _PlatformAdaptingHomePageState();
 }
 

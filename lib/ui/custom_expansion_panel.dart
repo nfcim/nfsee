@@ -123,7 +123,7 @@ class NFSeeExpansionPanelRadio extends NFSeeExpansionPanel {
     required super.body,
     super.canTapOnHeader,
     super.running,
-  })  : assert(value != null);
+  }) : assert(value != null);
 
   /// The value that uniquely identifies a radio panel so that the currently
   /// selected radio panel can be identified.
@@ -151,7 +151,7 @@ class NFSeeExpansionPanelList extends StatefulWidget {
     this.animationDuration = kThemeAnimationDuration,
     this.initialOpenPanelValue,
     this.elevation = 2,
-  })  : _allowOnlyOnePanelOpen = true;
+  }) : _allowOnlyOnePanelOpen = true;
 
   /// The children of the expansion panel list. They are laid out in a similar
   /// fashion to [ListBody].
@@ -290,7 +290,9 @@ class _NFSeeExpansionPanelListState extends State<NFSeeExpansionPanelList> {
         vertical: _kPanelHeaderExpandedHeight - _kPanelHeaderCollapsedHeight);
 
     for (int index = 0; index < widget.children.length; index += 1) {
-      if (_isChildExpanded(index) && index != 0 && !_isChildExpanded(index - 1)) {
+      if (_isChildExpanded(index) &&
+          index != 0 &&
+          !_isChildExpanded(index - 1)) {
         items.add(MaterialGap(
             key: _SaltedKey<BuildContext, int>(context, index * 2 - 1)));
       }
@@ -503,7 +505,7 @@ class NFSeeMergeableMaterial extends StatefulWidget {
   }
 
   @override
-  _NFSeeMergeableMaterialState createState() => _NFSeeMergeableMaterialState();
+  State<NFSeeMergeableMaterial> createState() => _NFSeeMergeableMaterialState();
 }
 
 class _AnimationTuple {
@@ -527,7 +529,7 @@ class _MergeableMaterialSliceKey extends GlobalKey {
   final LocalKey value;
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     if (other is! _MergeableMaterialSliceKey) return false;
     final _MergeableMaterialSliceKey typedOther = other;
     return value == typedOther.value;

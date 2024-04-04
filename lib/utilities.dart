@@ -20,10 +20,11 @@ String formatTransactionTime(String raw) {
 String formatTransactionBalance(int raw) {
   if (raw == 0) {
     return "0.00";
-  } else if (raw > 0)
+  } else if (raw > 0) {
     return "${(raw / 100).floor()}.${(raw % 100).toString().padLeft(2, "0")}";
-  else
+  } else {
     return "-${formatTransactionBalance(-raw)}";
+  }
 }
 
 T? getEnumFromString<T>(Iterable<T> values, String value) {
@@ -45,11 +46,7 @@ List<int> decodeHexString(String hex) {
 
 extension PlatformExceptionExtension on PlatformException {
   Map<String, dynamic> asMap() {
-    return {
-      "code": code,
-      "message": message,
-      "details": details.toString()
-    };
+    return {"code": code, "message": message, "details": details.toString()};
   }
 
   String toJsonString() => jsonEncode(asMap());
@@ -130,16 +127,16 @@ class WebViewManager {
 List<Detail> parseTransactionDetails(
     Map<String, dynamic> data, BuildContext context) {
   // make a copy
-  var data = {}..addAll(data);
-  data.remove('amount');
-  data.remove('date');
-  data.remove('time');
+  var d = {}..addAll(data);
+  d.remove('amount');
+  d.remove('date');
+  d.remove('time');
 
   var details = <Detail>[];
 
   void addDetail(String fieldName, String parsedName,
       [IconData? icon, transformer]) {
-    _addDetail(data, details, fieldName, parsedName, icon, transformer);
+    _addDetail(d, details, fieldName, parsedName, icon, transformer);
   }
 
   addDetail('number', S(context).transactionNumber, Icons.bookmark);
@@ -163,19 +160,18 @@ List<Detail> parseTransactionDetails(
   return details;
 }
 
-List<Detail> parseCardDetails(
-    Map<String, dynamic> data, BuildContext context) {
+List<Detail> parseCardDetails(Map<String, dynamic> data, BuildContext context) {
   // make a copy and remove transactions & ndef, the remaining fields are all details
-  var data = {}..addAll(data);
-  data.remove('transactions');
-  data.remove('ndef');
-  data.remove('data');
+  var d = {}..addAll(data);
+  d.remove('transactions');
+  d.remove('ndef');
+  d.remove('data');
 
   var details = <Detail>[];
 
   void addDetail(String fieldName, String parsedName,
       [IconData? icon, transformer]) {
-    _addDetail(data, details, fieldName, parsedName, icon, transformer);
+    _addDetail(d, details, fieldName, parsedName, icon, transformer);
   }
 
   // all cards

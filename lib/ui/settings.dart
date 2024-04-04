@@ -10,7 +10,7 @@ class SettingsAct extends StatefulWidget {
   const SettingsAct();
 
   @override
-  _SettingsActState createState() => _SettingsActState();
+  State<SettingsAct> createState() => _SettingsActState();
 }
 
 class _SettingsActState extends State<SettingsAct> {

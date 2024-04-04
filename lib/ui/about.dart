@@ -9,7 +9,7 @@ import 'package:nfsee/utilities.dart';
 
 class AboutAct extends StatefulWidget {
   @override
-  _AboutActState createState() => _AboutActState();
+  State<AboutAct> createState() => _AboutActState();
 }
 
 class _AboutActState extends State<AboutAct> {

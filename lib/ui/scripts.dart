@@ -27,7 +27,7 @@ class ScriptsAct extends StatefulWidget {
   ScriptsAct({required this.webview});
 
   @override
-  _ScriptsActState createState() => _ScriptsActState(webview: webview);
+  State<ScriptsAct> createState() => _ScriptsActState(webview: webview);
 }
 
 class _ScriptsActState extends State<ScriptsAct>
@@ -199,12 +199,10 @@ class _ScriptsActState extends State<ScriptsAct>
       case 'report':
         setState(() {
           if (running != -1) {
-            results[running] = ('${scriptModel.data}\n') +
-                results[running]!;
+            results[running] = ('${scriptModel.data}\n') + results[running]!;
           } else if (lastRunning != -1) {
             results[lastRunning] =
-                ('${scriptModel.data}\n') +
-                    results[lastRunning]!;
+                ('${scriptModel.data}\n') + results[lastRunning]!;
           }
         });
         break;
@@ -370,15 +368,12 @@ class _ScriptsActState extends State<ScriptsAct>
                         canTapOnHeader: true,
                         headerBuilder: (context, open) => Opacity(
                           child: ListTile(
-                            subtitle: Text('${S(context).lastExecutionTime}: ${script.lastUsed != null
-                                    ? script.lastUsed
-                                        .toString()
-                                        .split('.')[0] // remove part before ms
+                            subtitle: Text(
+                                '${S(context).lastExecutionTime}: ${script.lastUsed != null ? script.lastUsed.toString().split('.')[0] // remove part before ms
                                     : S(context).never}'),
                             title: Text(script.name),
                           ),
-                          opacity:
-                              running == script.id ? runningOpacityVal : 1,
+                          opacity: running == script.id ? runningOpacityVal : 1,
                         ),
                         body: Container(
                           padding: EdgeInsets.only(
@@ -397,9 +392,8 @@ class _ScriptsActState extends State<ScriptsAct>
                                       onPressed: running == -1
                                           ? () async {
                                               _runScript(script);
-                                              await bloc!
-                                                  .updateScriptUseTime(
-                                                      script.id);
+                                              await bloc!.updateScriptUseTime(
+                                                  script.id);
                                             }
                                           : null,
                                       style: TextButton.styleFrom(
@@ -474,15 +468,12 @@ class _ScriptsActState extends State<ScriptsAct>
     if (currentId == -1) {
       log("Adding script: $currentName");
 
-      await bloc!.addScript(
-          currentName == '' ? 'Script' : currentName,
-          currentSource);
+      await bloc!
+          .addScript(currentName == '' ? 'Script' : currentName, currentSource);
     } else {
       log("Modifying script: $currentName");
       await bloc!.updateScriptContent(
-          currentId,
-          currentName == '' ? 'Script' : currentName,
-          currentSource);
+          currentId, currentName == '' ? 'Script' : currentName, currentSource);
     }
 
     currentId = -1;
@@ -574,13 +565,19 @@ class _ScriptsActState extends State<ScriptsAct>
             actions: [
               IconButton(
                 icon: Icon(Icons.add,
-                    color: Theme.of(context).primaryTextTheme.headlineSmall!.color),
+                    color: Theme.of(context)
+                        .primaryTextTheme
+                        .headlineSmall!
+                        .color),
                 onPressed: _showScriptDialog,
                 tooltip: S(context).addScript,
               ),
               IconButton(
                 icon: Icon(Icons.help,
-                    color: Theme.of(context).primaryTextTheme.headlineSmall!.color),
+                    color: Theme.of(context)
+                        .primaryTextTheme
+                        .headlineSmall!
+                        .color),
                 tooltip: S(context).help,
                 onPressed: () {
                   launchUrl(Uri.parse('https://nfsee.nfc.im/js-extension/'));

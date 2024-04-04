@@ -284,10 +284,9 @@ class HomeState extends State<HomeAct>
   }
 
   void _updateDetailInst(List<CardData>? cards) {
-    int targetIdx =
-        cardController != null && cardController!.hasClients
-            ? cardPhysics!.getItemIdx(cardController!.position)
-            : 0;
+    int targetIdx = cardController != null && cardController!.hasClients
+        ? cardPhysics!.getItemIdx(cardController!.position)
+        : 0;
     final next =
         (cards == null || targetIdx >= cards.length) ? null : cards[targetIdx];
     if (next == detail) return;
@@ -299,10 +298,8 @@ class HomeState extends State<HomeAct>
 
   void addCard() async {
     await Future.delayed(const Duration(milliseconds: 10));
-    cardController!.animateTo(
-        cardController!.position.maxScrollExtent,
-        duration: const Duration(microseconds: 500),
-        curve: ElasticOutCurve());
+    cardController!.animateTo(cardController!.position.maxScrollExtent,
+        duration: const Duration(microseconds: 500), curve: ElasticOutCurve());
   }
 
   @override
@@ -348,11 +345,7 @@ class HomeState extends State<HomeAct>
       ],
     );
 
-    return WillPopScope(
-        onWillPop: () {
-          return Future.value(!_tryCollapseDetail());
-        },
-        child: top);
+    return PopScope(canPop: !_tryCollapseDetail(), child: top);
   }
 
   Widget _buildDetail(BuildContext ctx) {
@@ -449,8 +442,7 @@ class HomeState extends State<HomeAct>
           child: Column(
             children: <Widget>[
               ListTile(
-                title:
-                    Text("${S(context).addedAt} ${detail!.formattedTime}"),
+                title: Text("${S(context).addedAt} ${detail!.formattedTime}"),
                 subtitle: Text(S(context).detailHint),
                 leading: Icon(Icons.access_time),
               ),
@@ -602,8 +594,7 @@ class HomeState extends State<HomeAct>
   }
 
   void _delFocused() async {
-    final message =
-        '${S(context).record} ${detail!.id} ${S(context).deleted}';
+    final message = '${S(context).record} ${detail!.id} ${S(context).deleted}';
     log('Record ${detail!.id} deleted');
 
     final deleted = detail;

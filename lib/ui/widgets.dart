@@ -31,8 +31,7 @@ class PlatformWidget extends StatelessWidget {
       case TargetPlatform.iOS:
         return iosBuilder(context);
       default:
-        assert(false, 'Unexpected platform $defaultTargetPlatform');
-        return null as Widget;
+        throw ArgumentError('Unexpected platform $defaultTargetPlatform');
     }
   }
 }
@@ -94,7 +93,7 @@ class ReportRowItem extends StatelessWidget {
   @override
   Widget build(context) {
     var data = json.decode(record!.data);
-    var config = json.decode(record!.config ?? DEFAULT_CONFIG);
+    var config = json.decode(record!.config);
 
     final type =
         getEnumFromString<CardType>(CardType.values, data["card_type"]);
