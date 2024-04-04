@@ -64,15 +64,15 @@ class _AboutActState extends State<AboutAct> {
             Image.asset('assets/icons/icon_square.png', width: 100),
             Text(
               _appName,
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             Text(
               _appId,
-              style: Theme.of(context).textTheme.bodyText2,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             Text(
               '$_projectVersion ($_projectCode)',
-              style: Theme.of(context).textTheme.bodyText2,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             ListTile(
               title: Text(S(context).homepage),

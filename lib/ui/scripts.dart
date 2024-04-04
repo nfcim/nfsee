@@ -570,20 +570,20 @@ class _ScriptsActState extends State<ScriptsAct>
                 Theme.of(context).primaryColor.withOpacity(appbarFloatVal),
             title: Text(
               S(context).scriptTabTitle,
-              style: Theme.of(context).primaryTextTheme.headline6!.copyWith(
+              style: Theme.of(context).primaryTextTheme.titleLarge!.copyWith(
                     fontSize: 20 + 12 * (1 - appbarFloatVal),
                   ),
             ),
             actions: [
               IconButton(
                 icon: Icon(Icons.add,
-                    color: Theme.of(context).primaryTextTheme.headline5!.color),
+                    color: Theme.of(context).primaryTextTheme.headlineSmall!.color),
                 onPressed: _showScriptDialog,
                 tooltip: S(context).addScript,
               ),
               IconButton(
                 icon: Icon(Icons.help,
-                    color: Theme.of(context).primaryTextTheme.headline5!.color),
+                    color: Theme.of(context).primaryTextTheme.headlineSmall!.color),
                 tooltip: S(context).help,
                 onPressed: () {
                   launchUrl(Uri.parse('https://nfsee.nfc.im/js-extension/'));

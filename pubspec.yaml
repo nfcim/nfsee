@@ -24,6 +24,8 @@ dependencies:
   webview_flutter: ^3.0.4
   package_info_plus: ^6.0.0
 
+  flutter_gen: any
+  ndef: any
 dependency_overrides:
   js: "^0.6.4" # flutter_nfc_kit requires js 0.7 but not really uses it
 

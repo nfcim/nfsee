@@ -93,7 +93,7 @@ class _SettingsActState extends State<SettingsAct> {
           S(context).settingsTabTitle,
           style: Theme.of(context)
               .primaryTextTheme
-              .headline6!
+              .titleLarge!
               .copyWith(fontSize: 32),
         ),
       ),

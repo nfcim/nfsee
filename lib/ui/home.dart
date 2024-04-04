@@ -145,7 +145,7 @@ class HomeState extends State<HomeAct>
                         S(context).scanHistory,
                         style: Theme.of(context)
                             .primaryTextTheme
-                            .headline6!
+                            .titleLarge!
                             .copyWith(fontSize: 32),
                       ),
                       Spacer(),
@@ -154,7 +154,7 @@ class HomeState extends State<HomeAct>
                           Icons.add,
                           color: Theme.of(context)
                               .primaryTextTheme
-                              .headline5!
+                              .headlineSmall!
                               .color,
                         ),
                         onPressed: () async {
@@ -174,7 +174,7 @@ class HomeState extends State<HomeAct>
                             .replaceAll("\$", data.length.toString()),
                     style: Theme.of(context)
                         .primaryTextTheme
-                        .caption!
+                        .bodySmall!
                         .copyWith(fontSize: 14),
                   ),
                 ])),
@@ -391,7 +391,7 @@ class HomeState extends State<HomeAct>
             title: Text(detail!.name ?? S(context).unnamedCard,
                 style: Theme.of(context)
                     .textTheme
-                    .headline6!
+                    .titleLarge!
                     .apply(color: Colors.white)),
             leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white),

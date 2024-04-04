@@ -42,7 +42,7 @@ class CardData {
 
   factory CardData.fromDumpedRecord(DumpedRecord rec) {
     final data = jsonDecode(rec.data);
-    final config = jsonDecode(rec.config ?? DEFAULT_CONFIG);
+    final config = jsonDecode(rec.config);
 
     final cardType =
         getEnumFromString<CardType>(CardType.values, data['card_type']);

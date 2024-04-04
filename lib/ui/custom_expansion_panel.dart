@@ -6,7 +6,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 
 const double _kPanelHeaderCollapsedHeight = kMinInteractiveDimension;
 const double _kPanelHeaderExpandedHeight = 64.0;
@@ -18,9 +17,9 @@ class _SaltedKey<S, V> extends LocalKey {
   final V value;
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     if (other.runtimeType != runtimeType) return false;
-    final _SaltedKey<S, V> typedOther = other;
+    final typedOther = other as _SaltedKey<S, V>;
     return salt == typedOther.salt && value == typedOther.value;
   }
 
@@ -518,7 +517,6 @@ class _AnimationTuple {
     this.startAnimation,
     this.endAnimation,
     this.gapAnimation,
-    this.gapStart = 0.0,
   });
 
   final AnimationController? controller;
