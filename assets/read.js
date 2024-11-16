@@ -918,7 +918,7 @@
         var detail = {};
         _transceive = getWrappedTransceive(apdu_history, tag.type);
         try {
-            var { card_type, ..._detail } = await ReadAnyCard(tag);
+            let { card_type, ..._detail } = await ReadAnyCard(tag);
             Object.assign(detail, _detail);
             // pass ndef struct to detail
             detail["ndef"] = tag["ndef"];
