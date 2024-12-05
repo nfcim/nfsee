@@ -104,19 +104,19 @@ class WebViewManager {
     if (_cont == null) return;
     WebViewController cont = _cont!;
     await cont.loadHtmlString("<!DOCTYPE html>");
-    await cont.runJavascript(await rootBundle.loadString('assets/ber-tlv.js'));
-    await cont
-        .runJavascript(await rootBundle.loadString('assets/crypto-js.js'));
-    await cont.runJavascript(await rootBundle.loadString('assets/crypto.js'));
-    await cont.runJavascript(await rootBundle.loadString('assets/reader.js'));
-    await cont.runJavascript(await rootBundle.loadString('assets/felica.js'));
-    await cont.runJavascript(await rootBundle.loadString('assets/codes.js'));
+    await run(await rootBundle.loadString('assets/ber-tlv.js'));
+    await run(await rootBundle.loadString('assets/crypto-js.js'));
+    await run(await rootBundle.loadString('assets/crypto.js'));
+    await run(await rootBundle.loadString('assets/reader.js'));
+    await run(await rootBundle.loadString('assets/felica.js'));
+    await run(await rootBundle.loadString('assets/codes.js'));
   }
 
   Future<void> run(String js) async {
     if (_cont == null) throw "Not initialized";
     log("[Webview] Run script $js");
-    await _cont!.runJavascript(js);
+    // https://stackoverflow.com/questions/42887438/wkwebview-evaluatejavascript-returns-unsupported-type-error
+    await _cont!.runJavascript("$js;\n(function() {})();");
   }
 
   Stream<WebViewEvent> stream(WebViewOwner owner) {
