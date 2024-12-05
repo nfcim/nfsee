@@ -279,10 +279,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_nfc_kit
-      sha256: c980e18b6c559604e6a6c043fdfaeb631b5e21b342bbee010f1ac47128654fd0
+      sha256: fe0b86f4883e4a0ebeb6d1fbbc5a86123b95969a4d225bc5a760acda5e3f42e8
       url: "https://pub.dev"
     source: hosted
-    version: "3.5.0"
+    version: "3.5.2"
   flutter_test:
     dependency: "direct dev"
     description: flutter
