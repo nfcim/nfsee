@@ -19,7 +19,7 @@ dependencies:
   sqlite3_flutter_libs: "0.5.20"
   path_provider: "^2.0.2"
   path: "^1.8.0"
-  intl: "^0.18.1"
+  intl: ^0.19.0
   url_launcher: "^6.0.9"
   webview_flutter: ^3.0.4
   package_info_plus: ^6.0.0
