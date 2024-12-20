@@ -914,11 +914,14 @@
         const tag = await poll();
         log(tag);
         // read detailed information
-        var card_type = 'Unknown';
+        var _card_type = 'Unknown';
         var detail = {};
         _transceive = getWrappedTransceive(apdu_history, tag.type);
         try {
             let { card_type, ..._detail } = await ReadAnyCard(tag);
+            if (card_type) {
+                _card_type = card_type;
+            }
             Object.assign(detail, _detail);
             // pass ndef struct to detail
             detail["ndef"] = tag["ndef"];
@@ -929,7 +932,7 @@
         // return to invoker
         const result = {
             tag,
-            card_type,
+            card_type: _card_type,
             detail,
             apdu_history
         };
