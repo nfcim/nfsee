@@ -265,7 +265,8 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     final top = _buildTop(context);
     final webviewController = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..addJavaScriptChannel("nfsee", onMessageReceived: webview.javaScriptCallback)
+      ..addJavaScriptChannel("nfsee",
+          onMessageReceived: webview.javaScriptCallback)
       ..setNavigationDelegate(NavigationDelegate(
         onPageFinished: webview.onWebviewPageLoad,
       ));

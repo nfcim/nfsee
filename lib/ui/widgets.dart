@@ -47,7 +47,7 @@ class WebViewTab extends StatelessWidget {
     final view = WebViewWidget(controller: ctrl);
     rootBundle.loadString(assetUrl!).then((fileText) {
       ctrl.loadRequest(Uri.dataFromString(fileText,
-        mimeType: 'text/html', encoding: Encoding.getByName('utf-8')));
+          mimeType: 'text/html', encoding: Encoding.getByName('utf-8')));
     });
     return view;
   }
