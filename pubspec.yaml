@@ -1,10 +1,11 @@
 name: nfsee
 description: An NFC data dumper.
+publish_to: none
 
 version: 2.3.0+20301
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ">=3.2.0 <4.0.0"
   flutter: ">=3.0.0 <4.0.0"
 
 dependencies:
@@ -12,7 +13,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  flutter_nfc_kit: "^3.5.0"
+  flutter_nfc_kit: ^3.6.0-rc.1
   collection: "^1.17.2"
   cupertino_icons: "^1.0.3"
   drift: ^2.16.0
@@ -21,11 +22,9 @@ dependencies:
   path: "^1.8.0"
   intl: ^0.19.0
   url_launcher: "^6.0.9"
-  webview_flutter: ^3.0.4
+  webview_flutter: ^4.2.0
   package_info_plus: ^6.0.0
   ndef: any
-dependency_overrides:
-  js: "^0.6.4" # flutter_nfc_kit requires js 0.7 but not really uses it
 
 dev_dependencies:
   analyzer: ^6.4.1
