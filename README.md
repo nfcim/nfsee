@@ -8,10 +8,13 @@ Currently NFSee can run on Android and iOS powered by Flutter.
 
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
      alt="Get it on F-Droid"
-     height="80">](https://f-droid.org/packages/im.nfc.nfsee/)
+     height="50">](https://f-droid.org/packages/im.nfc.nfsee/)
 [<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
      alt="Get it on Google Play"
-     height="80">](https://play.google.com/store/apps/details?id=im.nfc.nfsee)
+     height="50">](https://play.google.com/store/apps/details?id=im.nfc.nfsee)
+[<img src="https://developer.apple.com/app-store/marketing/guidelines/images/badge-download-on-the-app-store.svg"
+     alt="Download on the App Store"
+     height="50">](https://apps.apple.com/us/app/nfsee/id1496080962)
 
 ## Build
 
@@ -47,4 +50,3 @@ flutter build # for release version
 [^3]: Tested with NXP DESFire EV2 MF3 D22
 
 [^4]: Tested with NXP MIFARE Classic EV1 4K S70
-
