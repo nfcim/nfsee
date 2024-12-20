@@ -135,8 +135,6 @@ extension PBOCTransactionTypeExtension on PBOCTransactionType {
         return S(context).purchase;
       case PBOCTransactionType.CompoundPurchase:
         return S(context).compoundPurchase;
-      default:
-        return S(context).unknown;
     }
   }
 }
@@ -210,8 +208,6 @@ extension BeijingSubwayExtension on BeijingSubway {
         return S(context).batong;
       case BeijingSubway.CapitalAirport:
         return S(context).capitalAirport;
-      default:
-        return "Unknown";
     }
   }
 }

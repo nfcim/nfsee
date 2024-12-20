@@ -78,16 +78,13 @@ class WebViewManager {
   };
   WebViewController? _cont;
 
-  late JavascriptChannel channel =
-      JavascriptChannel(name: "nfsee", onMessageReceived: _dispatch);
-
-  _dispatch(JavascriptMessage msg) {
+  javaScriptCallback(JavaScriptMessage msg) {
     log("[Webview] Incoming msg ${msg.message}");
     final ev = WebViewEvent(message: msg.message);
     _streams[webviewOwner]?.add(ev);
   }
 
-  onWebviewInit(WebViewController cont) {
+  setWebviewCtrl(WebViewController cont) {
     log("[Webview] Init");
     _cont = cont;
     // Fire and forget
@@ -116,7 +113,7 @@ class WebViewManager {
     if (_cont == null) throw "Not initialized";
     log("[Webview] Run script $js");
     // https://stackoverflow.com/questions/42887438/wkwebview-evaluatejavascript-returns-unsupported-type-error
-    await _cont!.runJavascript("$js;\n(function() {})();");
+    await _cont!.runJavaScript("$js;\n(function() {})();");
   }
 
   Stream<WebViewEvent> stream(WebViewOwner owner) {

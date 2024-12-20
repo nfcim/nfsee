@@ -613,7 +613,9 @@ class _NFSeeMergeableMaterialState extends State<NFSeeMergeableMaterial>
   bool _debugHasConsecutiveGaps(List<MergeableMaterialItem> children) {
     for (int i = 0; i < widget.children.length - 1; i += 1) {
       if (widget.children[i] is MaterialGap &&
-          widget.children[i + 1] is MaterialGap) return true;
+          widget.children[i + 1] is MaterialGap) {
+        return true;
+      }
     }
     return false;
   }

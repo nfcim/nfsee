@@ -43,15 +43,13 @@ class WebViewTab extends StatelessWidget {
   const WebViewTab({this.title, this.assetUrl});
 
   Widget _buildWebView() {
-    return WebView(
-      initialUrl: 'about:blank',
-      onWebViewCreated: (WebViewController webViewController) async {
-        String fileText = await rootBundle.loadString(assetUrl!);
-        webViewController.loadUrl(Uri.dataFromString(fileText,
-                mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))
-            .toString());
-      },
-    );
+    final ctrl = WebViewController();
+    final view = WebViewWidget(controller: ctrl);
+    rootBundle.loadString(assetUrl!).then((fileText) {
+      ctrl.loadRequest(Uri.dataFromString(fileText,
+        mimeType: 'text/html', encoding: Encoding.getByName('utf-8')));
+    });
+    return view;
   }
 
   Widget _buildAndroid(BuildContext context) {

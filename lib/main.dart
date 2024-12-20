@@ -263,15 +263,18 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
     );
 
     final top = _buildTop(context);
+    final webviewController = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..addJavaScriptChannel("NFSee", onMessageReceived: webview.javaScriptCallback)
+      ..setNavigationDelegate(NavigationDelegate(
+        onPageFinished: webview.onWebviewPageLoad,
+      ));
+    webview.setWebviewCtrl(webviewController);
+
     final stack = Stack(children: <Widget>[
       Offstage(
         offstage: true,
-        child: WebView(
-          onWebViewCreated: webview.onWebviewInit,
-          onPageFinished: webview.onWebviewPageLoad,
-          javascriptMode: JavascriptMode.unrestricted,
-          javascriptChannels: {webview.channel},
-        ),
+        child: WebViewWidget(controller: webviewController),
       ),
       top
     ]);
