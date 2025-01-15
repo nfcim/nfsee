@@ -1,0 +1,7 @@
+* Android: targets SDK 34 and requires minimum SDK 26.
+* Upgrade build tools and dependencies.
+* Ensure history doesn't become unreadable when an invalid card is read (#26).
+* Update App Icons:
+  * Add adaptive and monochrome icons on Android.
+  * Add dark and tinted icons on iOS.
+* Show Flutter builtin open-source license page instead of handcrafted HTML.
