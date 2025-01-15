@@ -1,21 +1,15 @@
 PODS:
   - Flutter (1.0.0)
-  - flutter_nfc_kit (2.0.0):
-    - Flutter
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
-  - flutter_nfc_kit (from `.symlinks/plugins/flutter_nfc_kit/ios`)
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
-  flutter_nfc_kit:
-    :path: ".symlinks/plugins/flutter_nfc_kit/ios"
 
 SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_nfc_kit: 965c98c3fa68f5609f1cc89abb968fe1b8ffdbaa
 
 PODFILE CHECKSUM: cc1f88378b4bfcf93a6ce00d2c587857c6008d3b
 
