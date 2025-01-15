@@ -99,6 +99,12 @@ dependencies {
 }
 
 
+// F-droid splits APKs by ABI, and requires different versionCode for each ABI.
+// For flutter version X.Y.Z, version code is X0Y0ZA, where A is the ABI code.
+// See:
+// * https://developer.android.com/build/gradle-tips
+// * https://developer.android.com/studio/build/configure-apk-splits
+// * https://gitlab.com/fdroid/fdroiddata/-/blob/master/metadata/im.nfc.nfsee.yml
 ext.abiCodes = ["x86_64": 1, "armeabi-v7a": 2, "arm64-v8a": 3]
 import com.android.build.OutputFile
 android.applicationVariants.all { variant ->
