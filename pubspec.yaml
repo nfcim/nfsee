@@ -45,6 +45,13 @@ flutter:
     - assets/html/
 
 flutter_icons:
-  android: false
+  android: true
+  image_path_android: "assets/icons/icon_android_square.png"
+  min_sdk_android: 26
+  adaptive_icon_background: "#E9882D"
+  adaptive_icon_foreground: "assets/icons/icon_android_foreground_monochrome.png"
+  adaptive_icon_monochrome: "assets/icons/icon_android_foreground_monochrome.png"
   ios: true
-  image_path_ios: "assets/icons/icon_full.png"
+  image_path_ios: "assets/icons/icon_ios_light.png"
+  image_path_ios_dark_transparent: "assets/icons/icon_ios_dark.png"
+  image_path_ios_tinted_grayscale: "assets/icons/icon_ios_tinted.png"
