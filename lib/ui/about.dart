@@ -99,8 +99,15 @@ class _AboutActState extends State<AboutAct> {
             ),
             ListTile(
               title: Text(S(context).openSourceLicenses),
-              onTap: () => launchAssetPage(S(context).openSourceLicenses,
-                  S(context).thirdPartyLicenseContent),
+              onTap: () => showAboutDialog(
+                  context: context,
+                  applicationName: _appName,
+                  applicationVersion: '$_projectVersion ($_projectCode)',
+                  applicationLegalese: '© 2021-2025 nfc.im',
+                  applicationIcon: Image.asset(
+                    'assets/icons/icon_android_square.png', width: 60, height: 60
+                    ),
+                  ),
             ),
             Divider(
               height: 0,
