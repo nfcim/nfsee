@@ -61,7 +61,7 @@ class _AboutActState extends State<AboutAct> {
         child: Center(
             child: Column(
           children: <Widget>[
-            Image.asset('assets/icons/icon_square.png', width: 100),
+            Image.asset('assets/icons/icon_android_square.png', width: 100),
             Text(
               _appName,
               style: Theme.of(context).textTheme.titleLarge,
