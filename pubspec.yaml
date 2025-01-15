@@ -56,3 +56,5 @@ flutter_icons:
   image_path_ios: "assets/icons/icon_ios_light.png"
   image_path_ios_dark_transparent: "assets/icons/icon_ios_dark.png"
   image_path_ios_tinted_grayscale: "assets/icons/icon_ios_tinted.png"
+  remove_alpha_ios: true
+  background_color_ios: "#E9882D"
