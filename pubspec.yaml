@@ -2,7 +2,7 @@ name: nfsee
 description: An NFC data dumper.
 publish_to: none
 
-version: 2.3.0+20301
+version: 2.4.0+20400
 
 environment:
   sdk: ">=3.2.0 <4.0.0"
