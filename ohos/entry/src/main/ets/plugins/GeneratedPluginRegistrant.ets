@@ -1,6 +1,7 @@
 import { FlutterEngine, Log } from '@ohos/flutter_ohos';
 import FlutterNfcKitPlugin from 'flutter_nfc_kit';
 import PackageInfoPlugin from 'package_info_plus';
+import PathProviderPlugin from 'path_provider_ohos';
 import UrlLauncherPlugin from 'url_launcher_ohos';
 import WebViewFlutterPlugin from 'webview_flutter_ohos';
 
@@ -18,6 +19,7 @@ export class GeneratedPluginRegistrant {
     try {
       flutterEngine.getPlugins()?.add(new FlutterNfcKitPlugin());
       flutterEngine.getPlugins()?.add(new PackageInfoPlugin());
+      flutterEngine.getPlugins()?.add(new PathProviderPlugin());
       flutterEngine.getPlugins()?.add(new UrlLauncherPlugin());
       flutterEngine.getPlugins()?.add(new WebViewFlutterPlugin());
     } catch (e) {

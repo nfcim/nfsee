@@ -9,6 +9,7 @@
     "url_launcher_ohos": "file:../har/url_launcher_ohos.har",
     "webview_flutter_ohos": "file:../har/webview_flutter_ohos.har",
     "package_info_plus": "file:../har/package_info_plus.har",
-    "flutter_nfc_kit": "file:../har/flutter_nfc_kit.har"
+    "flutter_nfc_kit": "file:../har/flutter_nfc_kit.har",
+    "path_provider_ohos": "file:../har/path_provider_ohos.har"
   }
 }

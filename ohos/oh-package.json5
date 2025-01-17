@@ -18,6 +18,7 @@
     "webview_flutter_ohos": "file:./har/webview_flutter_ohos.har",
     "package_info_plus": "file:./har/package_info_plus.har",
     "flutter_nfc_kit": "file:./har/flutter_nfc_kit.har",
-    "@ohos/flutter_module": "file:./entry"
+    "@ohos/flutter_module": "file:./entry",
+    "path_provider_ohos": "file:./har/path_provider_ohos.har"
   }
 }

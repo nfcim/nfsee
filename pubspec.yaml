@@ -19,7 +19,10 @@ dependencies:
   cupertino_icons: ^1.0.0
   drift: ^2.0.0
   sqlite3_flutter_libs: <=0.5.26
-  path_provider: ^2.0.0
+  path_provider:
+    git:
+      path: packages/path_provider/path_provider
+      url: https://gitee.com/openharmony-sig/flutter_packages.git
   path: ^1.8.0
   intl: ^0.17.0
   url_launcher:
