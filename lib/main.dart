@@ -311,7 +311,8 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
 
     _reading = true;
     Future modal;
-    if (defaultTargetPlatform == TargetPlatform.android) {
+    if (defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.ohos) {
       modal = showModalBottomSheet(
         context: context,
         builder: _buildReadModal,
