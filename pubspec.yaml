@@ -5,7 +5,7 @@ publish_to: none
 version: 2.4.0+20400
 
 environment:
-  sdk: ">=3.2.0 <4.0.0"
+  sdk: ">=2.19.0 <4.0.0"
   flutter: ">=3.0.0 <4.0.0"
 
 dependencies:
@@ -13,27 +13,37 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  flutter_nfc_kit: ^3.6.0-rc.1
-  collection: ^1.19.0
-  cupertino_icons: ^1.0.8
-  drift: ^2.22.1
+  flutter_nfc_kit: 
+    path: ../flutter_nfc_kit
+  collection: ^1.17.0
+  cupertino_icons: ^1.0.0
+  drift: ^2.0.0
   sqlite3_flutter_libs: <=0.5.26
-  path_provider: ^2.1.5
-  path: ^1.9.0
-  intl: ^0.19.0
-  url_launcher: ^6.3.1
-  webview_flutter: ^4.10.0
-  package_info_plus: ^8.1.2
-  ndef: ^0.3.4
+  path_provider: ^2.0.0
+  path: ^1.8.0
+  intl: ^0.17.0
+  url_launcher:
+    git:
+      path: packages/url_launcher/url_launcher
+      url: https://gitee.com/openharmony-sig/flutter_packages.git
+  webview_flutter:
+    git:
+      path: packages/webview_flutter/webview_flutter
+      url: https://gitee.com/openharmony-sig/flutter_packages.git
+  package_info_plus:
+    git:
+      path: packages/package_info_plus/package_info_plus
+      url: https://gitee.com/openharmony-sig/flutter_plus_plugins.git
+  ndef: <=0.3.3
 
 dev_dependencies:
-  analyzer: ^6.11.0
-  lints: ^5.1.1
+  analyzer: ^5.0.0
+  lints: ^2.0.0
   flutter_test:
     sdk: flutter
-  drift_dev: ^2.22.1
-  build_runner: ^2.4.14
-  flutter_launcher_icons: ^0.14.2
+  drift_dev: ^2.0.0
+  build_runner: ^2.0.0
+  flutter_launcher_icons: ^0.13.0
 
 flutter:
   uses-material-design: true

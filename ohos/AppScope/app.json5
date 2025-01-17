@@ -1,0 +1,10 @@
+{
+  "app": {
+    "bundleName": "im.nfc.nfsee",
+    "vendor": "example",
+    "versionCode": 20400,
+    "versionName": "2.4.0",
+    "icon": "$media:app_icon",
+    "label": "$string:app_name"
+  }
+}

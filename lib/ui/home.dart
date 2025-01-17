@@ -345,7 +345,7 @@ class HomeState extends State<HomeAct>
       ],
     );
 
-    return PopScope(canPop: expanded && !expanding, child: top);
+    return top;
   }
 
   Widget _buildDetail(BuildContext ctx) {

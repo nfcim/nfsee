@@ -1,0 +1,14 @@
+{
+  "name": "entry",
+  "version": "1.0.0",
+  "description": "Please describe the basic information.",
+  "main": "",
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "url_launcher_ohos": "file:../har/url_launcher_ohos.har",
+    "webview_flutter_ohos": "file:../har/webview_flutter_ohos.har",
+    "package_info_plus": "file:../har/package_info_plus.har",
+    "flutter_nfc_kit": "file:../har/flutter_nfc_kit.har"
+  }
+}
