@@ -10,6 +10,7 @@
     "webview_flutter_ohos": "file:../har/webview_flutter_ohos.har",
     "package_info_plus": "file:../har/package_info_plus.har",
     "flutter_nfc_kit": "file:../har/flutter_nfc_kit.har",
-    "path_provider_ohos": "file:../har/path_provider_ohos.har"
+    "path_provider_ohos": "file:../har/path_provider_ohos.har",
+    "sqlite3_flutter_libs": "file:../har/sqlite3_flutter_libs.har"
   }
 }

@@ -637,21 +637,23 @@ packages:
     source: hosted
     version: "7.0.0"
   sqlite3:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: sqlite3
-      sha256: "281b672749af2edf259fc801f0fcba092257425bcd32a0ce1c8237130bc934c7"
-      url: "https://pub.dev"
-    source: hosted
+      path: sqlite3
+      ref: "sqlite3-1.11.2-ohos"
+      resolved-ref: e50fc90ca1c0801d09e9f660b01abf03b77fbc02
+      url: "https://gitee.com/jiegec/fluttertpc_sqlite3.dart.git"
+    source: git
     version: "1.11.2"
   sqlite3_flutter_libs:
     dependency: "direct main"
     description:
-      name: sqlite3_flutter_libs
-      sha256: "7ae52b23366e5295005022e62fa093f64bfe190810223ea0ebf733a4cd140bce"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.5.26"
+      path: sqlite3_flutter_libs
+      ref: "sqlite3-1.11.2-ohos"
+      resolved-ref: e50fc90ca1c0801d09e9f660b01abf03b77fbc02
+      url: "https://gitee.com/jiegec/fluttertpc_sqlite3.dart.git"
+    source: git
+    version: "0.5.15"
   sqlparser:
     dependency: transitive
     description:

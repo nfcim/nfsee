@@ -18,7 +18,11 @@ dependencies:
   collection: ^1.17.0
   cupertino_icons: ^1.0.0
   drift: ^2.0.0
-  sqlite3_flutter_libs: <=0.5.26
+  sqlite3_flutter_libs:
+    git:
+      path: sqlite3_flutter_libs
+      url: https://gitee.com/jiegec/fluttertpc_sqlite3.dart.git
+      ref: sqlite3-1.11.2-ohos
   path_provider:
     git:
       path: packages/path_provider/path_provider
@@ -38,6 +42,13 @@ dependencies:
       path: packages/package_info_plus/package_info_plus
       url: https://gitee.com/openharmony-sig/flutter_plus_plugins.git
   ndef: <=0.3.3
+
+dependency_overrides:
+  sqlite3:
+    git:
+      path: sqlite3
+      url: https://gitee.com/jiegec/fluttertpc_sqlite3.dart.git
+      ref: sqlite3-1.11.2-ohos
 
 dev_dependencies:
   analyzer: ^5.0.0
