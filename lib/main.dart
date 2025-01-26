@@ -242,9 +242,10 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
         } else {
           webviewOwner = WebViewOwner.Main;
         }
-        await webview.reload();
+        // webview.reload may hang on ohos, animate first
         topController!.animateToPage(e,
             duration: Duration(milliseconds: 500), curve: Curves.ease);
+        await webview.reload();
       },
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
