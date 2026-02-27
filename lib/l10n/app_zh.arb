@@ -34,7 +34,9 @@
     "upSecuredCredit": "银联准贷记卡",
     "visa": "维萨卡",
     "mc": "万事达卡",
+    "mcChina": "万事达中国卡",
     "amex": "美国运通卡",
+    "amexChina": "美国运通中国卡",
     "jcb": "JCB卡",
     "discover": "发现卡",
     "cityUnion": "城市一卡通",
@@ -149,5 +151,6 @@
     "encoding": "编码",
     "combinedCard": "多功能卡",
     "cardType": "卡类型",
-    "suzhouCitizenCard": "苏州市民卡"
+    "suzhouCitizenCard": "苏州市民卡",
+    "cardCategory": "银行卡类别"
 }

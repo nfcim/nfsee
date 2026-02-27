@@ -149,7 +149,7 @@ List<Detail> parseTransactionDetails(
   addDetail('currency', S(context).currency, Icons.local_atm);
   addDetail('amount_other', S(context).amountOther, Icons.attach_money);
 
-  // all remaining data, clone to avoid concurrent modificationL
+  // all remaining data, clone to avoid concurrent modification
   final remain = {}..addAll(data);
   remain.forEach(
       (k, _) => addDetail(k, '${S(context).rawData}: $k', Icons.error));
@@ -197,6 +197,8 @@ List<Detail> parseCardDetails(Map<String, dynamic> data, BuildContext context) {
   // PBOC
   addDetail('balance', S(context).balance, Icons.account_balance,
       formatTransactionBalance);
+  // PPSE
+  addDetail('card_category', S(context).cardCategory, Icons.credit_card);
   // T Union
   addDetail('tu_type', S(context).tuType, Icons.person);
   // T Union

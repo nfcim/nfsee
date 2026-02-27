@@ -26,7 +26,9 @@ enum CardType {
   UPSecuredCredit,
   Visa,
   MC,
+  MCChina,
   AMEX,
+  AMEXChina,
   JCB,
   Discover,
   CityUnion,
@@ -62,8 +64,12 @@ extension CardTypeExtension on CardType? {
         return S(context).visa;
       case CardType.MC:
         return S(context).mc;
+      case CardType.MCChina:
+        return S(context).mcChina;
       case CardType.AMEX:
         return S(context).amex;
+      case CardType.AMEXChina:
+        return S(context).amexChina;
       case CardType.JCB:
         return S(context).jcb;
       case CardType.Discover:

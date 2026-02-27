@@ -6,9 +6,11 @@
         ['A000000333010103', 'UPSecuredCredit'],
         ['A000000003', 'Visa'],
         ['A000000004', 'MC'],
+        ['A000000010', 'MCChina'], //Full AID A0000000108888
         ['A000000025', 'AMEX'],
         ['A000000065', 'JCB'],
         ['A000000324', 'Discover'],
+        ['A000000790', 'AMEXChina'], // A000000790010602 for AMEXChinaDebit, A000000790010502 for AMEXChinaCredit
     ];
     const PBOC_TTI2NAME = {
         '01': 'Load',
@@ -187,7 +189,8 @@
                             item['terminal'] = extractField();
                             break;
                         case 0x9C:
-                            item['type'] = ISO8583_ProcessingCode2Name[extractField()];
+                            let transactionTypeCode = extractField();
+                            item['type'] = ISO8583_ProcessingCode2Name[transactionTypeCode] ?? 'Unknown:' + transactionTypeCode;
                             break;
                         case 0x9F36:
                             item['number'] = parseInt(extractField(), 16);
@@ -461,6 +464,17 @@
         }
         log(`PPSE DF Name: ${DFName} (${cardType})`);
         if (!cardType) return {};
+        var cardCategory;
+        let AppLabel = ExtractFromTLV(fci, ['6F', 'A5', 'BF0C', '61', '50']);
+        if (AppLabel) {
+            const AppLabelString = GBKDecoder.decode(AppLabel).toLowerCase();
+            if (AppLabelString.includes("debit"))
+                cardCategory = "Debit";
+            else if (AppLabelString.includes("quasicredit"))
+                cardCategory = "Quasi Credit";
+            else if (AppLabelString.includes("credit"))
+                cardCategory = "Credit";
+        }
         fci = await _transceive('00A40400' + buf2hex(select));
         if (!fci.endsWith('9000')) return {};
         const log_entry = ExtractFromTLV(fci, ['6F', 'A5', 'BF0C', '9F4D']);
@@ -519,6 +533,7 @@
             'atc': atc,
             'transactions': transactions,
             'pin_retry': pin_retry,
+            'card_category': cardCategory,
         }
     };
 
