@@ -316,20 +316,13 @@
         };
     };
 
-    let ReadTransWuhan = async () => {
-        const balance_atc_trans = await ReadPBOCBalanceATCAndTrans();
-        let mf = await _transceive('00A40000023F00');
-        if (!mf.endsWith('9000'))
-            return {};
-        let f15 = await _transceive('00B095001C');
-        if (!f15.endsWith('9000'))
-            return {};
-        let f0a = await _transceive('00B08A0005');
-        if (!f0a.endsWith('9000'))
-            return {};
-        const number = f0a.slice(0, 10);
+    let ReadTransWuhan = async (fci) => {
+        let f15 = await BasicInfoFile(fci);
+        if (!f15) return {};
+        const number = f15.slice(24, 40);
         const issue_date = f15.slice(40, 48);
         const expiry_date = f15.slice(48, 56);
+        const balance_atc_trans = await ReadPBOCBalanceATCAndTrans();
         return {
             'card_type': 'WuhanTong',
             'card_number': number,
@@ -874,37 +867,16 @@
                 return await ReadMifareDESFire(r.slice(0, -4));
             }
 
-            // CityUnion
-            r = await _transceive('00A4040009A0000000038698070100');
+            // Shenzhentong
+            r = await _transceive('00A40400075041592E535A54');
             if (r.endsWith('9000')) {
-                addSubCard(await ReadCityUnion(r.slice(0, -4)));
+                addSubCard(await ReadTransShenzhen(r.slice(0, -4)));
             }
 
-            // TUnion
-            r = await _transceive('00A4040008A00000063201010500');
+            // Wuhantong AP1.WHCTC
+            r = await _transceive('00A40400094150312e5748435443');
             if (r.endsWith('9000')) {
-                addSubCard(await ReadTUnion(r.slice(0, -4)));
-            }
-
-            // TransShenzhen / TransWuhan
-            r = await _transceive('00A4000002100100');
-            if (r.endsWith('9000')) {
-                r = r.slice(0, -4);
-                let DFName = ExtractFromTLV(r, ['6F', '84']);
-                if (DFName) {
-                    const DFNameHex = buf2hex(DFName);
-                    // log("DFName in hex: " + DFNameHex);
-                    if (DFNameHex === 'B0C4C3C5CDA8C7AEB0FC') {
-                        addSubCard(await ReadMacauPass(r));
-                    }
-                    DFName = GBKDecoder.decode(DFName);
-                    if (DFName.startsWith('PAY.SZT')) {
-                        addSubCard(await ReadTransShenzhen(r));
-                    }
-                    else if (DFName.startsWith('AP1.WHCTC')) {
-                        addSubCard(await ReadTransWuhan());
-                    }
-                }
+                addSubCard(await ReadTransWuhan(r.slice(0, -4)));
             }
 
             // LingnanTong
@@ -923,6 +895,34 @@
             r = await _transceive('00A404000B535558494E2E4444463031');
             if (r.endsWith('9000')) {
                 addSubCard(await ReadSuzhouCitizenCard(r.slice(0, -4)));
+            }
+
+            // Macau Pass
+            r = await _transceive('00A404000AB0C4C3C5CDA8C7AEB0FC');
+            if (r.endsWith('9000')) {
+                addSubCard(await ReadMacauPass(r.slice(0, -4)));
+            } else {
+                // Macau Pass implementation in AMTJAVACARD.
+                // Put the whole Macau Pass in the very end place because after select AMTJAVACARD some other AID select commands will fail to run on some multi-purpose card.
+                r = await _transceive('00A404000B414D544A41564143415244');
+                if (r.endsWith('9000')) {
+                    r = await _transceive('00A404000AB0C4C3C5CDA8C7AEB0FC');
+                    if (r.endsWith('9000')) {
+                        addSubCard(await ReadMacauPass(r.slice(0, -4)));
+                    }
+                }
+            }
+
+            // CityUnion
+            r = await _transceive('00A4040009A0000000038698070100');
+            if (r.endsWith('9000')) {
+                addSubCard(await ReadCityUnion(r.slice(0, -4)));
+            }
+
+            // TUnion
+            r = await _transceive('00A4040008A00000063201010500');
+            if (r.endsWith('9000')) {
+                addSubCard(await ReadTUnion(r.slice(0, -4)));
             }
 
             // put it here because iOS fails here
