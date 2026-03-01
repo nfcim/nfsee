@@ -34,7 +34,9 @@
     "upSecuredCredit": "UnionPay Secured Credit",
     "visa": "Visa",
     "mc": "MasterCard",
+    "mcChina": "MasterCard China",
     "amex": "American Express",
+    "amexChina": "American Express China",
     "jcb": "JCB",
     "discover": "Discover",
     "cityUnion": "City Union",
@@ -149,5 +151,6 @@
     "encoding": "Encoding",
     "combinedCard": "Multi-purpose card",
     "cardType": "Card Type",
-    "suzhouCitizenCard": "Suzhou Citizen Card"
+    "suzhouCitizenCard": "Suzhou Citizen Card",
+    "cardCategory": "Bank card category"
 }
