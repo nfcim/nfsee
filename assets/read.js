@@ -840,9 +840,11 @@
                 returnMap = { ...returnMap, ...subCard };
             }
         }
-        if (tag.type === "felica" && tag.systemCode === "8008") {
-            // Octopus
-            return await ReadOctopus();
+        if (tag.type === "iso18092") {
+            if (tag.systemCode === "8008") {
+                // Octopus
+                return await ReadOctopus();
+            }
         } else if (tag.type === "mifare_ultralight") {
             return await ReadMifareUltralight();
         } else if (tag.type === "mifare_plus") {
