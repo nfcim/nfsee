@@ -319,7 +319,7 @@
     let ReadTransWuhan = async (fci) => {
         let f15 = await BasicInfoFile(fci);
         if (!f15) return {};
-        const number = f15.slice(24, 40);
+        const number = f15.slice(31, 40);
         const issue_date = f15.slice(40, 48);
         const expiry_date = f15.slice(48, 56);
         const balance_atc_trans = await ReadPBOCBalanceATCAndTrans();
