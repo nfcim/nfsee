@@ -153,8 +153,10 @@ class _PlatformAdaptingHomePageState extends State<PlatformAdaptingHomePage> {
       case 'poll':
         error = null;
         try {
-          final tag =
-              await FlutterNfcKit.poll(iosAlertMessage: S(context).waitForCard);
+          final tag = await FlutterNfcKit.poll(
+            iosAlertMessage: S(context).waitForCard,
+            readIso18092: true,
+          );
           final json = tag.toJson();
 
           // try to read ndef and insert into json

@@ -319,7 +319,7 @@
     let ReadTransWuhan = async (fci) => {
         let f15 = await BasicInfoFile(fci);
         if (!f15) return {};
-        const number = f15.slice(24, 40);
+        const number = f15.slice(31, 40);
         const issue_date = f15.slice(40, 48);
         const expiry_date = f15.slice(48, 56);
         const balance_atc_trans = await ReadPBOCBalanceATCAndTrans();
@@ -840,9 +840,11 @@
                 returnMap = { ...returnMap, ...subCard };
             }
         }
-        if (tag.type === "felica" && tag.systemCode === "8008") {
-            // Octopus
-            return await ReadOctopus();
+        if (tag.type === "iso18092") {
+            if (tag.systemCode === "8008") {
+                // Octopus
+                return await ReadOctopus();
+            }
         } else if (tag.type === "mifare_ultralight") {
             return await ReadMifareUltralight();
         } else if (tag.type === "mifare_plus") {
